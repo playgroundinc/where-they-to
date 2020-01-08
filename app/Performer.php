@@ -4,17 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Performer extends Model
 {
     //
+
     protected $fillable = [
-      'username',
-      'password',
-      'name',
-      'bio',
-      'email'
+      'type'
     ];
     protected $attributes = array(
-      'events' => '{}',
+      'type' => '{}',
     );
 }

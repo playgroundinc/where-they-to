@@ -16,4 +16,7 @@
 
 Route::get('/', 'PagesController@home');
 
-
+Route::resources([
+  'users' => 'UserController',
+  'performers' => 'PerformerController'
+]);
