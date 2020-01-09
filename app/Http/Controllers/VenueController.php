@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Venue;
 
-use App\Performer;
-
-class PerformerController extends Controller
+class VenueController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() 
+    public function index()
     {
         //
-        $performers = Performer::all();
-        return view('performers.index', compact('performers'));
+        $venues = Venue::all();
+        return view('venues.index', compact('venues'));
     }
 
     /**
@@ -28,9 +27,9 @@ class PerformerController extends Controller
     public function create()
     {
         //
-
-        return view('performers.create');
+        return view('venues.create');
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -42,13 +41,15 @@ class PerformerController extends Controller
         //
         $attributes = request()->validate([
           'name' => 'required',
-          'bio' => 'required',
-          'user' => 'required'
+          'description' => 'required',
+          'address' => 'required',
+          'city' => 'required',
         ]);
-  
-        Performer::create($attributes);
-  
-        return redirect('/performers');
+        $venue = new Venue();
+        $venue->user()->associate($request->user());
+        $venue::create($attributes);
+        // $venue->save();
+        return redirect('/venues');
     }
 
     /**
@@ -57,10 +58,13 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Performer $performer)
+    public function show(Venue $venue)
     {
         //
-        return view('performers.show', compact('performer'));
+        $user = $venue->user;
+        var_dump($user['id']);
+
+        return view('venues.show', compact('venue'));
     }
 
     /**

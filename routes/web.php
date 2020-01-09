@@ -18,5 +18,6 @@ Route::get('/', 'PagesController@home');
 
 Route::resources([
   'users' => 'UserController',
-  'performers' => 'PerformerController'
+  'performers' => 'PerformerController',
+  'venues' => 'VenueController',
 ]);

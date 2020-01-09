@@ -5,7 +5,7 @@
   <ul>
     @foreach ($users as $user)
       <li>
-        <a href="/users/{{ $user->id}}">{{ $user->name }}</a>
+        <a href="/users/{{ $user->id}}">{{ $user->username }}</a>
       </li>
     @endforeach
   </ul>

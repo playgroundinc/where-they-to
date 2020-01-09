@@ -1,11 +1,11 @@
 @extends('layout')
 
 @section('content')
-  <h1>Performers</h1>
+  <h1>Venues</h1>
   <ul>
-    @foreach ($performers as $performer)
+    @foreach ($venues as $venue)
       <li>
-        <a href="/performers/{{ $performer->id }}">{{ $performer->name }}</a>
+        <a href="/venues/{{ $venue->id }}">{{ $venue->name }}</a>
       </li>
     @endforeach
   </ul>

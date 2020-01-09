@@ -46,12 +46,13 @@ class UserController extends Controller
           'type' => Rule::in(UserType::$types),
           'username' => 'required',
           'password' => 'required',
-          'name' => 'required',
-          'bio' => 'required',
           'email' => 'required'
         ]);
         $user = User::create($attributes);
-        return view('performers.create', ['id'=>$user->id]);
+        if (intval($attributes['type']) === UserType::VENUE) {
+          return view('venues.create', ['id'=>$user['id']]);
+        } 
+        return view('performers.create', ['id'=>$user['id']]);
     }
 
     /**
@@ -63,6 +64,9 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
+        $performer = User::find($user->id)->venue;
+        var_dump($performer);
+        die();
         return view('users.show', compact('user'));
     }
 
@@ -88,7 +92,7 @@ class UserController extends Controller
     public function update(User $user)
     {
         //
-        $user->update(request(['email', 'name', 'bio']));
+        $user->update(request(['email', 'name']));
         return redirect('/users');
 
     }

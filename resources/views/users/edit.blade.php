@@ -8,12 +8,6 @@
     <div>
       <label for="email">Email Address:</label>
       <input type="email" id="email" name="email" placeholder="email" value={{ $user->email }}>
-      <label for="name">Name:</label>
-      <input type="text" name="name" id="name" placeholder="Your Name" value={{ $user->name }}>
-    </div>
-    <div>
-      <label for="bio">Bio:</label>
-      <textarea name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio">{{ $user->bio }}</textarea>
     </div>
     <div><input type="submit" value="Update Profile"></div>
   </form>

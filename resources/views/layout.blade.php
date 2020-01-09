@@ -7,6 +7,16 @@
   <title></title>
 </head>
 <body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/users">All Users</a></li>
+        <li><a href="/performers">All Performers</a></li>
+        <li><a href="/venues">All Venues</a></li>
+      </ul>
+    </nav>
+  </header>
   <div id="root" class="container">
   @yield('content')
   </div>  

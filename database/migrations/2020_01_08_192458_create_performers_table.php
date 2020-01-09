@@ -20,6 +20,9 @@ class CreatePerformersTable extends Migration
             $table->timestamps();
             $table->integer('family')->default('0');
             $table->json('type');
+            $table->string('name');
+            $table->text('bio');
+            $table->integer('user_id');
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -30,10 +33,22 @@ class CreatePerformersTable extends Migration
           $table->timestamps();
           $table->tinyInteger('type')->unsigned()->default(UserType::PERFORMER);
           $table->json('events');
-          $table->string('name');
-          $table->text('bio');
           $table->integer('socialLinks')->default('0');
       });
+
+      Schema::create('venues', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->integer('family')->default('0');
+        $table->string('name');
+        $table->string('address');
+        $table->string('city');
+        $table->string('province')->default('Ontario');
+        $table->integer('accessibility')->default('0');
+        $table->integer('neighbourhood')->default('0');
+        $table->text('description');
+        $table->integer('user_id')->unsigned()->default('1');
+    });
     }
 
     /**

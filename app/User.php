@@ -5,13 +5,17 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
-{
+{ 
     //
+    // public function performer() {
+    //   return $this->hasOne('App\Performer', 'user');
+    // }
+    public function venue() {
+      return $this->hasOne('App\Venue');
+    }
     protected $fillable = [
       'username',
       'password',
-      'name',
-      'bio',
       'email'
     ];
     protected $attributes = array(
