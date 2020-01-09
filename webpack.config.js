@@ -3,8 +3,8 @@ let path = require('path');
 
 module.exports = {
   entry: {
-    app: './resources/js/app.js',
-    vendor: ['vue', 'axios']
+    vendor: ['vue', 'axios'],
+    app: './resources/js/app.js'
   },
   output: {
     path: path.resolve(__dirname, 'public/js'),

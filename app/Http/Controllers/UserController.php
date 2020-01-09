@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\User;
+use App\Enums\UserType;
+use BenSampo\Enum\Rules\EnumValue;
 
 class UserController extends Controller
 {
@@ -16,7 +19,7 @@ class UserController extends Controller
     {
         //
         $users = User::all();
-        return $users;
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -40,6 +43,7 @@ class UserController extends Controller
     {
         //
         $attributes = request()->validate([
+          'type' => Rule::in(UserType::$types),
           'username' => 'required',
           'password' => 'required',
           'name' => 'required',
@@ -47,8 +51,6 @@ class UserController extends Controller
           'email' => 'required'
         ]);
         $user = User::create($attributes);
-        // var_dump($user->id);
-        // die();
         return view('performers.create', ['id'=>$user->id]);
     }
 
@@ -58,9 +60,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
         //
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -69,9 +72,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
         //
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -81,9 +85,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(User $user)
     {
         //
+        $user->update(request(['email', 'name', 'bio']));
+        return redirect('/users');
+
     }
 
     /**
@@ -92,8 +99,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         //
+        $user->delete();
+        return redirect('/users');
     }
 }

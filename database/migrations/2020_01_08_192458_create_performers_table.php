@@ -28,7 +28,7 @@ class CreatePerformersTable extends Migration
           $table->string('email')->unique();
           $table->bigIncrements('id');
           $table->timestamps();
-          $table->tinyInteger('type')->unsigned()->default(UserType::Performer);
+          $table->tinyInteger('type')->unsigned()->default(UserType::PERFORMER);
           $table->json('events');
           $table->string('name');
           $table->text('bio');

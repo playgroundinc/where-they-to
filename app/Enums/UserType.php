@@ -11,6 +11,7 @@ use BenSampo\Enum\Enum;
  */
 final class UserType extends Enum
 {
-    const Performer =   1;
-    const Venue =   2;
+    const PERFORMER =   1;
+    const VENUE =   2;
+    public static $types = [self::PERFORMER, self::VENUE];
 }
