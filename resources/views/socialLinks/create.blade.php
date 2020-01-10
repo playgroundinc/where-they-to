@@ -8,6 +8,7 @@
     <input type="text" id="facebook" name="facebook" placeholder="Facebook URL">
     <input type="text" id="instagram" name="instagram" placeholder="Instagram Handle">
     <input type="text" id="twitter" name="twitter" placeholder="Twitter Handle">
+    <input type="text" id="youtube" name="youtube" placeholder="Youtube">
     <input type="text" id="website" name="website" placeholder="Website">
     <input type="submit" value="Submit">
   </form>

@@ -48,6 +48,7 @@ class UserController extends Controller
           'password' => 'required',
           'email' => 'required'
         ]);
+
         $user = User::create($attributes);
         if (intval($attributes['type']) === UserType::VENUE) {
           return view('venues.create', ['id'=>$user['id']]);
@@ -64,8 +65,14 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
-        $performer = User::find($user->id)->venue;
-        return view('users.show', compact('user'));
+        if (intval($user->type) === UserType::VENUE) {
+          $venue = User::find($user->id)->venue;
+          return view('users.show', compact('user', 'venue'));
+
+        } else {
+          $performer = User::find($user->id)->performer;
+          return view('users.show', compact('user', 'performer'));
+        }
     }
 
     /**

@@ -48,7 +48,7 @@ class PerformerController extends Controller
         $performer = Performer::create($attributes);
         $user = User::find($request['id']);
         $user->performer()->save($performer);
-        return redirect('/performers');
+        return view('socialLinks.create', ['id' => $user['id']]);
     }
 
     /**

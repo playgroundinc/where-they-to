@@ -45,6 +45,7 @@ class SocialLinksController extends Controller
           'twitter' => 'required',
           'instagram' => 'required',
           'website' => 'required',
+          'youtube' => 'required',
         ]);
         $socialLinks = SocialLinks::create($attributes);
         $user = User::find($request['id']);

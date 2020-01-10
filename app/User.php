@@ -19,9 +19,7 @@ class User extends Model
     protected $fillable = [
       'username',
       'password',
-      'email'
+      'email',
+      'type'
     ];
-    protected $attributes = array(
-      'events' => '{}',
-    );
 }

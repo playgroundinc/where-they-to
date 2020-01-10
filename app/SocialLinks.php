@@ -15,6 +15,8 @@ class SocialLinks extends Model
       'twitter',
       'facebook',
       'instagram',
-      'website'
+      'website',
+      'youtube',
+      'user_id'
     ];
 }

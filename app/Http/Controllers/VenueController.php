@@ -49,8 +49,8 @@ class VenueController extends Controller
         $venue = Venue::create($attributes);
         $user = User::find($request['id']);
         $user->venue()->save($venue);
-        // $venue->save();
-        return redirect('/venues');
+        return view('socialLinks.create', ['id' => $user['id']]);
+
     }
 
     /**
@@ -73,9 +73,10 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Venue $venue)
     {
         //
+        return view('venues.edit', compact('venue'));
     }
 
     /**
@@ -85,9 +86,11 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Venue $venue)
     {
         //
+        $venue->update(request(['name', 'address', 'city', 'description']));
+        return redirect('/venues');
     }
 
     /**

@@ -13,10 +13,6 @@
         <option value="2">Venue</option>
       </select>
     </div>
-    <div>
-      <input type="hidden" name="events" value="0">
-      <input type="hidden" name="socialLinks" value="1">
-    </div>
     <div><input type="submit" value="Create Profile"></div>
   </form>
 @endsection
