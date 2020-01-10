@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\SocialLinks;
+use App\User;
 use Illuminate\Http\Request;
 
-use App\Performer;
-use App\User;
-
-class PerformerController extends Controller
+class SocialLinksController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() 
+    public function index()
     {
         //
-        $performers = Performer::all();
-        return view('performers.index', compact('performers'));
+        $socialLinks = SocialLinks::all();
+        return $socialLinks;
     }
 
     /**
@@ -29,9 +28,9 @@ class PerformerController extends Controller
     public function create()
     {
         //
-
-        return view('performers.create');
+        return view('socialLinks.create');
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -40,37 +39,37 @@ class PerformerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      // 
         $attributes = request()->validate([
-          'name' => 'required',
-          'bio' => 'required',
+          'facebook' => 'required',
+          'twitter' => 'required',
+          'instagram' => 'required',
+          'website' => 'required',
         ]);
-        $performer = Performer::create($attributes);
+        $socialLinks = SocialLinks::create($attributes);
         $user = User::find($request['id']);
-        $user->performer()->save($performer);
-        return redirect('/performers');
+        $user->socialLinks()->save($socialLinks);
+        return redirect('/users');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function show(Performer $performer)
+    public function show(SocialLinks $socialLinks)
     {
         //
-
-        return view('performers.show', compact('performer'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(SocialLinks $socialLinks)
     {
         //
     }
@@ -79,10 +78,10 @@ class PerformerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, SocialLinks $socialLinks)
     {
         //
     }
@@ -90,10 +89,10 @@ class PerformerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SocialLinks $socialLinks)
     {
         //
     }

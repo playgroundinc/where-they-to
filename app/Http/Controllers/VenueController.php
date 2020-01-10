@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Venue;
+use App\User;
 
 class VenueController extends Controller
 {
@@ -45,9 +46,9 @@ class VenueController extends Controller
           'address' => 'required',
           'city' => 'required',
         ]);
-        $venue = new Venue();
-        $venue->user()->associate($request->user());
-        $venue::create($attributes);
+        $venue = Venue::create($attributes);
+        $user = User::find($request['id']);
+        $user->venue()->save($venue);
         // $venue->save();
         return redirect('/venues');
     }
@@ -62,7 +63,6 @@ class VenueController extends Controller
     {
         //
         $user = $venue->user;
-        var_dump($user['id']);
 
         return view('venues.show', compact('venue'));
     }

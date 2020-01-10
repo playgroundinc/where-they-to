@@ -65,8 +65,6 @@ class UserController extends Controller
     {
         //
         $performer = User::find($user->id)->venue;
-        var_dump($performer);
-        die();
         return view('users.show', compact('user'));
     }
 

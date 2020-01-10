@@ -22,7 +22,7 @@ class CreatePerformersTable extends Migration
             $table->json('type');
             $table->string('name');
             $table->text('bio');
-            $table->integer('user_id');
+            $table->integer('user_id')->unsigned()->default(1);
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -33,7 +33,7 @@ class CreatePerformersTable extends Migration
           $table->timestamps();
           $table->tinyInteger('type')->unsigned()->default(UserType::PERFORMER);
           $table->json('events');
-          $table->integer('socialLinks')->default('0');
+          $table->integer('social_links_id')->default('0');
       });
 
       Schema::create('venues', function (Blueprint $table) {
@@ -47,7 +47,16 @@ class CreatePerformersTable extends Migration
         $table->integer('accessibility')->default('0');
         $table->integer('neighbourhood')->default('0');
         $table->text('description');
-        $table->integer('user_id')->unsigned()->default('1');
+        $table->integer('user_id')->unsigned()->default('0');
+    });
+    Schema::create('social_links', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->string('facebook')->default('');
+        $table->string('instagram')->default('');
+        $table->string('twitter')->default('');
+        $table->string('website')->default('');
+        $table->integer('user_id')->unsigned()->default('0');
     });
     }
 

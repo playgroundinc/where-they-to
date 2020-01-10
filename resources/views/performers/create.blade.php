@@ -4,8 +4,8 @@
   <h1>Create a Performer profile</h1>
   <form method="POST" action="/performers">
   {{ csrf_field() }}
-    <div>
-      <input type="hidden" name="user" value={{ $id }}>
+  <div>
+    <input type="hidden" name="id" value={{ $id ?? '0' }}>
       <input type="text" name="name">
       <textarea name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio"></textarea>
       <input type="hidden" name="events" value="0">

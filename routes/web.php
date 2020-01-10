@@ -15,6 +15,11 @@
 // GET /projects 
 
 Route::get('/', 'PagesController@home');
+Route::get('/social-links','SocialLinksController@index');
+Route::post('/social-links', 'SocialLinksController@store');
+Route::get('/social-links/create', 'SocialLinksController@create');
+Route::delete('/social-links', 'SocialLinksController@destroy');
+Route::get('/social-links/{id}', 'SocialLinksController@show');
 
 Route::resources([
   'users' => 'UserController',
