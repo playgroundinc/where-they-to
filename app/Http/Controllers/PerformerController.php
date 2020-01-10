@@ -60,8 +60,15 @@ class PerformerController extends Controller
     public function show(Performer $performer)
     {
         //
-
-        return view('performers.show', compact('performer'));
+        $socialLinks = User::find($performer->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
+        return view('performers.show', compact('performer', 'socialLinks', 'platforms'));
     }
 
     /**

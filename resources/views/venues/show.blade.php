@@ -5,4 +5,9 @@
   <div>{{ $venue->description }}</div>
   <p>{{ $venue->address }}</p>
   <p>{{ $venue->city }}, {{$venue->province }}</p>
+  @foreach($platforms as $platform)
+    @if (strlen($socialLinks[$platform]) > 0)
+      {{ $platform }} : {{ $socialLinks[$platform] }}
+    @endif
+  @endforeach
 @endsection

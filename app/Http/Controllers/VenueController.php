@@ -62,9 +62,16 @@ class VenueController extends Controller
     public function show(Venue $venue)
     {
         //
-        $user = $venue->user;
+        $socialLinks = User::find($venue->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
 
-        return view('venues.show', compact('venue'));
+        return view('venues.show', compact('venue', 'socialLinks', 'platforms'));
     }
 
     /**
