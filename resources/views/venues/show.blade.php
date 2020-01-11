@@ -10,4 +10,5 @@
       {{ $platform }} : {{ $socialLinks[$platform] }}
     @endif
   @endforeach
+  <a href="/venues/{{$venue->id}}/edit">Edit Venue Profile</a>
 @endsection

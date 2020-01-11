@@ -59,9 +59,10 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function show(SocialLinks $socialLinks)
+    public function show(SocialLinks $socialLink)
     {
         //
+
     }
 
     /**
@@ -70,7 +71,7 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function edit(SocialLinks $socialLinks)
+    public function edit(SocialLinks $socialLink)
     {
         //
     }
@@ -82,9 +83,11 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SocialLinks $socialLinks)
+    public function update(SocialLinks $socialLink)
     {
         //
+        $socialLink->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
+        return redirect(request('redirect_to'));
     }
 
     /**

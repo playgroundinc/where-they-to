@@ -83,7 +83,15 @@ class VenueController extends Controller
     public function edit(Venue $venue)
     {
         //
-        return view('venues.edit', compact('venue'));
+        $socialLinks = User::find($venue->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
+        return view('venues.edit', compact('venue', 'socialLinks', 'platforms'));
     }
 
     /**
@@ -97,7 +105,7 @@ class VenueController extends Controller
     {
         //
         $venue->update(request(['name', 'address', 'city', 'description']));
-        return redirect('/venues');
+        return redirect('/venues/'.$venue->id);
     }
 
     /**

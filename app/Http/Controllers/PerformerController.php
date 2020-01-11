@@ -77,9 +77,19 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Performer $performer)
     {
         //
+        $socialLinks = User::find($performer->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
+        return view('performers.edit', compact('performer', 'socialLinks', 'platforms'));
+        
     }
 
     /**
@@ -89,9 +99,11 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Performer $performer)
     {
         //
+        $performer->update(request(['name', 'bio']));
+        return redirect('/performers/'.$performer->id);
     }
 
     /**

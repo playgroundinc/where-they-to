@@ -98,7 +98,7 @@ class UserController extends Controller
     {
         //
         $user->update(request(['email', 'name']));
-        return redirect('/users');
+        return redirect('/users/'.$user->id);
 
     }
 

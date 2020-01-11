@@ -18,14 +18,14 @@ class VenuesTableSeeder extends Seeder
         'address' => Str::random(10),
         'city' => Str::random(10),
         'description' => Str::random(20),
-        'user_id' => '1',
+        'user_id' => '2',
       ]);
       DB::table('venues')->insert([
         'name' => Str::random(10),
         'address' => Str::random(10),
         'city' => Str::random(10),
         'description' => Str::random(20),
-        'user_id' => '2',
+        'user_id' => '4',
       ]);
     }
 }

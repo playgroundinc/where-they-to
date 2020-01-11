@@ -2,7 +2,6 @@
 
 @section('content')
   <h1>Edit venue profile</h1>
-  {{ $venue }}
   <form method="POST" action="/venues/{{ $venue->id }}">
   {{ csrf_field() }}
   @method('PUT')
@@ -18,4 +17,16 @@
     </div>
     <div><input type="submit" value="Update Profile"></div>
   </form>
+  <div>
+    <h2>Edit Social Links</h2>
+    <form action="/social-links/{{ $socialLinks->id }}" method="POST">
+      {{ csrf_field() }}
+      @method('PUT')
+      <input type="hidden" name="redirect_to" value="/venues/{{ $venue->id}}">
+      @foreach($platforms as $platform)   
+        <input type="text" name={{ $platform }} value={{ $socialLinks[$platform]}} > 
+      @endforeach
+      <input type="submit" value="Update Social Links">
+    </form>
+  </div>
 @endsection

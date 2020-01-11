@@ -28,5 +28,21 @@ class SocialLinksTableSeeder extends Seeder
         'youtube' => Str::random(20),
         'user_id' => '2',
       ]);
+      DB::table('social_links')->insert([
+        'facebook' => Str::random(10),
+        'instagram' => Str::random(10),
+        'twitter' => Str::random(10),
+        'website' => Str::random(20),
+        'youtube' => Str::random(20),
+        'user_id' => '3',
+      ]);
+      DB::table('social_links')->insert([
+        'facebook' => Str::random(10),
+        'instagram' => Str::random(10),
+        'twitter' => Str::random(10),
+        'website' => Str::random(20),
+        'youtube' => Str::random(20),
+        'user_id' => '4',
+      ]);
     }
 }

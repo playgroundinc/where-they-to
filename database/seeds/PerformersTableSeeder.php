@@ -22,7 +22,7 @@ class PerformersTableSeeder extends Seeder
         'name' => Str::random(10),
         'bio' => Str::random(20),
         'type' => '0',
-        'user_id' => '2',
+        'user_id' => '3',
       ]);
     }
 }

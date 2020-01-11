@@ -1,6 +1,5 @@
 @extends ('layout')
 @section('content')
-  {{ $socialLinks }}
   <h1>{{ $performer->name }}</h1>
   <div>{{ $performer->bio }}</div>
   @foreach($platforms as $platform)
@@ -8,4 +7,5 @@
       {{ $platform }} : {{ $socialLinks[$platform] }}
     @endif
   @endforeach
+  <a href="/performers/{{$performer->id}}/edit">Edit Profile</a>
 @endsection
