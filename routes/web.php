@@ -20,4 +20,5 @@ Route::resources([
   'users' => 'UserController',
   'performers' => 'PerformerController',
   'venues' => 'VenueController',
+  'social-links' => 'SocialLinksController',
 ]);

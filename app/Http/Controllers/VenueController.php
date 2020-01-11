@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Venue;
+use App\User;
 
 class VenueController extends Controller
 {
@@ -45,11 +46,11 @@ class VenueController extends Controller
           'address' => 'required',
           'city' => 'required',
         ]);
-        $venue = new Venue();
-        $venue->user()->associate($request->user());
-        $venue::create($attributes);
-        // $venue->save();
-        return redirect('/venues');
+        $venue = Venue::create($attributes);
+        $user = User::find($request['id']);
+        $user->venue()->save($venue);
+        return view('socialLinks.create', ['id' => $user['id']]);
+
     }
 
     /**
@@ -61,10 +62,16 @@ class VenueController extends Controller
     public function show(Venue $venue)
     {
         //
-        $user = $venue->user;
-        var_dump($user['id']);
+        $socialLinks = User::find($venue->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
 
-        return view('venues.show', compact('venue'));
+        return view('venues.show', compact('venue', 'socialLinks', 'platforms'));
     }
 
     /**
@@ -73,9 +80,18 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Venue $venue)
     {
         //
+        $socialLinks = User::find($venue->user['id'])->socialLinks;
+        $platforms = [
+          'facebook',
+          'twitter',
+          'instagram',
+          'youtube',
+          'website',
+        ];
+        return view('venues.edit', compact('venue', 'socialLinks', 'platforms'));
     }
 
     /**
@@ -85,9 +101,11 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Venue $venue)
     {
         //
+        $venue->update(request(['name', 'address', 'city', 'description']));
+        return redirect('/venues/'.$venue->id);
     }
 
     /**

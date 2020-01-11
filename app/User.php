@@ -7,18 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 { 
     //
-    // public function performer() {
-    //   return $this->hasOne('App\Performer', 'user');
-    // }
+    public function performer() {
+      return $this->hasOne('App\Performer');
+    }
     public function venue() {
       return $this->hasOne('App\Venue');
+    }
+    public function socialLinks() {
+      return $this->hasOne('App\SocialLinks');
     }
     protected $fillable = [
       'username',
       'password',
-      'email'
+      'email',
+      'type'
     ];
-    protected $attributes = array(
-      'events' => '{}',
-    );
 }

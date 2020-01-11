@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Performer extends Model
+class SocialLinks extends Model
 {
     //
     public function user()
@@ -12,12 +12,11 @@ class Performer extends Model
       return $this->belongsTo(User::class);
     }
     protected $fillable = [
-      'type',
-      'name',
-      'bio',
+      'twitter',
+      'facebook',
+      'instagram',
+      'website',
+      'youtube',
       'user_id'
     ];
-    protected $attributes = array(
-      'type' => '{}',
-    );
 }

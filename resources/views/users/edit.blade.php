@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-  <h1>Update {{ $user->name}}'s profile</h1>
+  <h1>Update {{ $user->username}}'s profile</h1>
   <form method="POST" action="/users/{{ $user->id }}">
   {{ csrf_field() }}
   @method('PUT')

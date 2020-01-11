@@ -5,6 +5,8 @@
   <form method="POST" action="/venues">
   {{ csrf_field() }}
     <div>
+      <input type="hidden" name="id" value={{ $id }}>
+
       <label for="name">Name:</label>
       <input type="text" id="name" name="name">
       <label for="address">Address:</label>
