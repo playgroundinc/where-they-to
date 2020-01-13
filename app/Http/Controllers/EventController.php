@@ -70,7 +70,6 @@ class EventController extends Controller
     public function show(Event $event)
     {
         //
-        var_dump($event->venue);
         return view('events.show', compact('event'));
     }
 
