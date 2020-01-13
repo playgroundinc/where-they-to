@@ -11,11 +11,16 @@ class Performer extends Model
     {
       return $this->belongsTo(User::class);
     }
+    public function family() 
+    {
+      return $this->belongsTo(Family::class);
+    }
     protected $fillable = [
       'type',
       'name',
       'bio',
-      'user_id'
+      'user_id',
+      'family_id'
     ];
     protected $attributes = array(
       'type' => '{}',

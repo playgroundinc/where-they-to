@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\SocialLinks;
 use App\User;
+use App\Family;
 use Illuminate\Http\Request;
 
 class SocialLinksController extends Controller
@@ -48,9 +49,15 @@ class SocialLinksController extends Controller
           'youtube' => 'required',
         ]);
         $socialLinks = SocialLinks::create($attributes);
-        $user = User::find($request['id']);
-        $user->socialLinks()->save($socialLinks);
-        return redirect('/users');
+        if ($request['user_id']) {
+          $user = User::find($request['id']);
+          $user->socialLinks()->save($socialLinks);
+          return redirect('/users');
+        } elseif ($request['family_id']) {
+          $family = Family::find($request['family_id']);
+          $family->socialLinks()->save($socialLinks);
+          return redirect('/families');
+        }
     }
 
     /**
