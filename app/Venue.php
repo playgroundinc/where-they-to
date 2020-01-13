@@ -11,12 +11,17 @@ class Venue extends Model
     {
       return $this->belongsTo(User::class);
     }
+
+    public function events() {
+      return $this->belongsToMany(Event::class);
+    }
     protected $fillable = [
       'name',
       'description',
       'city',
       'address',
       'user_id',
-      'family_id'
+      'family_id',
+      'event_id'
     ];
 }

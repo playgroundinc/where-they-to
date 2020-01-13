@@ -15,13 +15,22 @@ class CreatePerformersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-          $table->string('username')->unique();
-          $table->string('password');
-          $table->string('email')->unique();
-          $table->bigIncrements('id');
-          $table->timestamps();
-          $table->tinyInteger('type')->unsigned()->nullable();
+      Schema::create('users', function (Blueprint $table) {
+        $table->string('username')->unique();
+        $table->string('password');
+        $table->string('email')->unique();
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->tinyInteger('type')->unsigned()->nullable();
+      });
+
+      Schema::create('events', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->string('name');
+        $table->string('date');
+        $table->text('description');
+        $table->integer('type');
       });
 
       Schema::create('families', function (Blueprint $table) {
@@ -29,18 +38,23 @@ class CreatePerformersTable extends Migration
         $table->timestamps();
         $table->string('name');
         $table->text('description');
+        $table->bigInteger('event_id')->unsigned()->nullable();
+        $table->foreign('event_id')->references('id')->on('events');
       });
+
       Schema::create('performers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
-            $table->json('type');
-            $table->string('name');
-            $table->text('bio');
-            $table->bigInteger('family_id')->unsigned()->nullable();
-            $table->foreign('family_id')->references('id')->on('families');
-            $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+          $table->bigIncrements('id');
+          $table->timestamps();
+          $table->json('type');
+          $table->string('name');
+          $table->text('bio');
+          $table->bigInteger('family_id')->unsigned()->nullable();
+          $table->foreign('family_id')->references('id')->on('families');
+          $table->bigInteger('user_id')->unsigned()->nullable();
+          $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+          $table->bigInteger('event_id')->unsigned()->nullable();
+          $table->foreign('event_id')->references('id')->on('events');
+      });
 
       Schema::create('venues', function (Blueprint $table) {
         $table->bigIncrements('id');
@@ -56,8 +70,10 @@ class CreatePerformersTable extends Migration
         $table->foreign('family_id')->references('id')->on('families');
         $table->bigInteger('user_id')->unsigned()->nullable();
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        $table->bigInteger('event_id')->unsigned()->nullable();
+        $table->foreign('event_id')->references('id')->on('events');
     });
-    
+
     Schema::create('social_links', function (Blueprint $table) {
         $table->bigIncrements('id');
         $table->timestamps();
@@ -70,6 +86,8 @@ class CreatePerformersTable extends Migration
         $table->foreign('family_id')->references('id')->on('families')->onDelete('cascade');
         $table->bigInteger('user_id')->unsigned()->nullable();
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        $table->bigInteger('event_id')->unsigned()->nullable();
+        $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
     });
     }
 
@@ -80,6 +98,12 @@ class CreatePerformersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('social_links');
+        Schema::dropIfExists('venues');
         Schema::dropIfExists('performers');
+        Schema::dropIfExists('families');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('events');
+
     }
 }

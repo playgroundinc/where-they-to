@@ -15,12 +15,19 @@ class Performer extends Model
     {
       return $this->belongsTo(Family::class);
     }
+
+    public function events() 
+    {
+      return $this->belongsToMany(Event::class);
+    }
+
     protected $fillable = [
       'type',
       'name',
       'bio',
       'user_id',
-      'family_id'
+      'family_id',
+      'event_id'
     ];
     protected $attributes = array(
       'type' => '{}',

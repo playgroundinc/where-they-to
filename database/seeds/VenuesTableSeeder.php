@@ -19,6 +19,7 @@ class VenuesTableSeeder extends Seeder
         'city' => Str::random(10),
         'description' => Str::random(20),
         'user_id' => '2',
+        'event_id' => '1',
       ]);
       DB::table('venues')->insert([
         'name' => Str::random(10),
@@ -26,6 +27,7 @@ class VenuesTableSeeder extends Seeder
         'city' => Str::random(10),
         'description' => Str::random(20),
         'user_id' => '4',
+        'event_id' => '2'
       ]);
     }
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class FamiliesTableSeeder extends Seeder
+class EventsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,15 +12,17 @@ class FamiliesTableSeeder extends Seeder
     public function run()
     {
       //
-      DB::table('families')->insert([
+      DB::table('events')->insert([
         'name' => Str::random(10),
         'description' => Str::random(20),
-        'event_id' => '1'
+        'date' => Str::random(10),
+        'type' => '1',
       ]);
-      DB::table('families')->insert([
+      DB::table('events')->insert([
         'name' => Str::random(10),
         'description' => Str::random(20),
-        'event_id' => '2'
+        'date' => Str::random(10),
+        'type' => '1',
       ]);
     }
 }
