@@ -16,9 +16,15 @@
 
 Route::get('/', 'PagesController@home');
 
+Route::post('/families/performers/{id}', 'FamilyController@performer');
+Route::post('/families/performers/{id}/destroy', 'FamilyController@performerDestroy');
+
 Route::resources([
   'users' => 'UserController',
   'performers' => 'PerformerController',
   'venues' => 'VenueController',
   'social-links' => 'SocialLinksController',
+  'families' => 'FamilyController'
 ]);
+
+

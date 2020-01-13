@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Performer;
 use App\User;
+use App\Family;
 
 class PerformerController extends Controller
 {
@@ -48,7 +49,7 @@ class PerformerController extends Controller
         $performer = Performer::create($attributes);
         $user = User::find($request['id']);
         $user->performer()->save($performer);
-        return view('socialLinks.create', ['id' => $user['id']]);
+        return view('socialLinks.create', ['user_id' => $user['id']]);
     }
 
     /**
@@ -68,7 +69,10 @@ class PerformerController extends Controller
           'youtube',
           'website',
         ];
-        return view('performers.show', compact('performer', 'socialLinks', 'platforms'));
+        $family = Family::find($performer->family_id);
+        var_dump($family);
+  
+        return view('performers.show', compact('performer', 'socialLinks', 'platforms', 'family'));
     }
 
     /**

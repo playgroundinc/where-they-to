@@ -14,6 +14,7 @@
         <li><a href="/users">All Users</a></li>
         <li><a href="/performers">All Performers</a></li>
         <li><a href="/venues">All Venues</a></li>
+        <li><a href="/families">All Families</a></li>
       </ul>
     </nav>
   </header>

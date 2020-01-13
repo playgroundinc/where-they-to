@@ -11,6 +11,10 @@ class SocialLinks extends Model
     {
       return $this->belongsTo(User::class);
     }
+    public function family() 
+    {
+      return $this->belongsTo('App\Family');
+    }
     protected $fillable = [
       'twitter',
       'facebook',

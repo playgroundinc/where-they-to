@@ -23,8 +23,9 @@
       {{ csrf_field() }}
       @method('PUT')
       <input type="hidden" name="redirect_to" value="/venues/{{ $venue->id}}">
-      @foreach($platforms as $platform)   
-        <input type="text" name={{ $platform }} value={{ $socialLinks[$platform]}} > 
+      @foreach($platforms as $platform)
+        <label for="{{ $platform}}">{{ ucfirst($platform) }}:</label>
+        <input type="text" id="{{ $platform }}" name="{{ $platform }}" value={{ $socialLinks[$platform]}} > 
       @endforeach
       <input type="submit" value="Update Social Links">
     </form>

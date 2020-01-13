@@ -16,6 +16,7 @@ class Venue extends Model
       'description',
       'city',
       'address',
-      'user_id'
+      'user_id',
+      'family_id'
     ];
 }
