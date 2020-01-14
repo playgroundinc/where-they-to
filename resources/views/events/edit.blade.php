@@ -8,12 +8,11 @@
     <input type="text" name="name" id="name" value="{{ $event->name }}">
     <label for="description">description</label>
     <textarea name="description" id="description" cols="30" rows="10">{{ $event->description }}</textarea>
-    <label for="type">Type</label>
-    <select name="type" id="type">
-      <option value="1">Drag</option>
-      <option value="2">Viewing Party</option>
-      <option value="3">Burlesque</option>
-      <option value="4">Variety of Performers</option>
+    <label for="eventType">Event Type</label>
+    <select name="eventType" id="eventType">
+      @foreach($eventTypes as $index=>$eventType) 
+        <option value="{{$eventType->id}}" {{ $eventType->id === $event->eventType->id ? 'selected' : '' }}>{{ $eventType->name }}</option>
+      @endforeach
     </select>
     <label for="date">Date</label>
     <input type="text" name="date" id="date" value="{{ $event->date }}">

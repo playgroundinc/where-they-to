@@ -6,6 +6,7 @@ use App\Event;
 use App\Performer;
 use App\Venue;
 use App\Family;
+use App\EventType;
 
 use Illuminate\Http\Request;
 
@@ -23,6 +24,9 @@ class EventController extends Controller
 
         $family = Family::find($request['family']);
         $family->events()->save($event);
+
+        $eventType = EventType::find($request['eventType']);
+        $eventType->events()->save($event);
 
         $performers = Performer::find(request('performers'));
         $event->performers()->detach();
@@ -52,7 +56,8 @@ class EventController extends Controller
         $performers = Performer::all();
         $families = Family::all();
         $venues = Venue::all();
-        return view('events.create', compact('performers', 'families', 'venues'));
+        $eventTypes = EventType::all();
+        return view('events.create', compact('performers', 'families', 'venues', 'eventTypes'));
     }
 
     /**
@@ -68,8 +73,8 @@ class EventController extends Controller
           'name' => 'required',
           'description' => 'required',
           'date' => 'required',
-          'type' => 'required'
         ]);
+
         $event = Event::create($attributes);
         $this->saveFields($request, $event);
         
@@ -102,7 +107,8 @@ class EventController extends Controller
         $venues = Venue::all();
         $performers = Performer::all();
         $families = Family::all();
-        return view('events.edit', compact('event', 'venues', 'performers', 'families'));
+        $eventTypes = EventType::all();
+        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes'));
     }
 
     /**

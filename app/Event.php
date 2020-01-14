@@ -26,6 +26,10 @@ class Event extends Model
     {
       return $this->hasOne(SocialLinks::class);
     }
+    public function eventType() 
+    {
+      return $this->belongsTo(EventType::class);
+    }
 
     protected $fillable = [
       'name',

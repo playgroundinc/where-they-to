@@ -21,6 +21,11 @@ class Performer extends Model
       return $this->belongsToMany(Event::class);
     }
 
+    public function performerTypes()
+    {
+      return $this->belongsToMany(PerformerType::class);
+    }
+
     protected $fillable = [
       'type',
       'name',

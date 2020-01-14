@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
           UsersTableSeeder::class,
           VenuesTableSeeder::class,
           FamiliesTableSeeder::class,
+          PerformerTypesTableSeeder::class,
+          EventTypesTableSeeder::class,
           EventsTableSeeder::class,
           PerformersTableSeeder::class,
           SocialLinksTableSeeder::class,

@@ -7,7 +7,7 @@
   <h2>Description</h2>
   <p>{{ $event->description }}</p>
   <h2>Type</h2>
-  <p>{{ $event->type }}</p>
+  <p>{{ $event->eventType->name }}</p>
   <h2>Family</h2>
   <a href="/families/{{$event->family->id}}">{{ $event->family->name }}</a>
   <h2>Performers</h2>

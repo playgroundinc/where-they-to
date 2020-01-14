@@ -38,30 +38,40 @@ class CreatePerformersTable extends Migration
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });
 
-      Schema::create('families', function (Blueprint $table) {
-        $table->bigIncrements('id');
-        $table->timestamps();
-        $table->string('name');
-        $table->text('description');
-      });
+    Schema::create('families', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->timestamps();
+      $table->string('name');
+      $table->text('description');
+    });
+
+    Schema::create('event_types', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->string('name');
+    });
+
+    Schema::create('performer_types', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->string('name');
+    });
 
     Schema::create('events', function (Blueprint $table) {
         $table->bigIncrements('id');
         $table->timestamps();
         $table->string('name');
-        $table->string('date');
+        $table->string('date')->nullable();
         $table->text('description');
-        $table->integer('type');
         $table->bigInteger('venue_id')->unsigned()->nullable();
         $table->foreign('venue_id')->references('id')->on('venues');
         $table->bigInteger('family_id')->unsigned()->nullable();
         $table->foreign('family_id')->references('id')->on('families');
+        $table->bigInteger('event_type_id')->unsigned()->nullable();
+        $table->foreign('event_type_id')->references('id')->on('event_types');
       });
 
       Schema::create('performers', function (Blueprint $table) {
           $table->bigIncrements('id');
           $table->timestamps();
-          $table->json('type');
           $table->string('name');
           $table->text('bio');
           $table->bigInteger('family_id')->unsigned()->nullable();
@@ -97,6 +107,8 @@ class CreatePerformersTable extends Migration
         Schema::dropIfExists('social_links');
         Schema::dropIfExists('performers');
         Schema::dropIfExists('events');
+        Schema::dropIfExists('performer_types');
+        Schema::dropIfExists('event_types');
         Schema::dropIfExists('families');
         Schema::dropIfExists('venues');
         Schema::dropIfExists('users');
