@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\EventType;
 use App\PerformerType;
 use Illuminate\Http\Request;
 
-class PerformerTypeController extends Controller
+class TypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +16,9 @@ class PerformerTypeController extends Controller
     public function index()
     {
         //
+        $eventTypes = EventType::all();
+        $performerTypes = PerformerType::all();
+        return view('types.index', compact('eventTypes', 'performerTypes'));
     }
 
     /**
@@ -24,7 +28,8 @@ class PerformerTypeController extends Controller
      */
     public function create()
     {
-        //
+      //
+      return view('types.create');
     }
 
     /**
@@ -36,6 +41,15 @@ class PerformerTypeController extends Controller
     public function store(Request $request)
     {
         //
+        $attributes = request()->validate([
+          'name' => 'required'
+        ]);
+        if ($request['type'] === 'performer'):
+          PerformerType::create($attributes);
+        elseif ($request['type'] === 'event'):
+          EventType::create($attributes);
+        endif;
+        return redirect('/types');
     }
 
     /**
@@ -78,8 +92,19 @@ class PerformerTypeController extends Controller
      * @param  \App\PerformerType  $performerType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PerformerType $performerType)
+    public function destroy($id)
     {
         //
+        if (request('type') === 'event'):
+          $type = EventType::find($id);
+          $events = $type->events;
+          foreach($events as $event):
+            $event->event_type_id = null;
+            $event->save();
+          endforeach;
+          $type->delete();
+        endif;
+        return redirect('/types');
+
     }
 }

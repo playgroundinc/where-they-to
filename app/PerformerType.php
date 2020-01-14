@@ -10,4 +10,7 @@ class PerformerType extends Model
   public function performers() {
     return $this->belongsToMany(Performer::class);
   }
+  protected $fillable = [
+    'name',
+  ];
 }

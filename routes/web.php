@@ -25,7 +25,8 @@ Route::resources([
   'venues' => 'VenueController',
   'social-links' => 'SocialLinksController',
   'families' => 'FamilyController',
-  'events' => 'EventController'
+  'events' => 'EventController',
+  'types' => 'TypeController',
 ]);
 
 

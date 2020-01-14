@@ -47,11 +47,13 @@ class CreatePerformersTable extends Migration
 
     Schema::create('event_types', function (Blueprint $table) {
       $table->bigIncrements('id');
+      $table->timestamps();
       $table->string('name');
     });
 
     Schema::create('performer_types', function (Blueprint $table) {
       $table->bigIncrements('id');
+      $table->timestamps();
       $table->string('name');
     });
 

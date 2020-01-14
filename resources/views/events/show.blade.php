@@ -6,8 +6,10 @@
   <p>{{ $event->date }}</p>
   <h2>Description</h2>
   <p>{{ $event->description }}</p>
-  <h2>Type</h2>
-  <p>{{ $event->eventType->name }}</p>
+  @if (isset($event->eventType))
+    <h2>Type</h2>
+    <p>{{ $event->eventType->name }}</p>
+  @endif
   <h2>Family</h2>
   <a href="/families/{{$event->family->id}}">{{ $event->family->name }}</a>
   <h2>Performers</h2>
