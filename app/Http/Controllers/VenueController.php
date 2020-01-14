@@ -62,14 +62,10 @@ class VenueController extends Controller
     public function show(Venue $venue)
     {
         //
+        $events = $venue->events;
         $socialLinks = User::find($venue->user['id'])->socialLinks;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
+        $platforms = config('enums.platforms');
+
 
         return view('venues.show', compact('venue', 'socialLinks', 'platforms'));
     }
@@ -84,13 +80,7 @@ class VenueController extends Controller
     {
         //
         $socialLinks = User::find($venue->user['id'])->socialLinks;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
+        $platforms = config('enums.platforms');
         return view('venues.edit', compact('venue', 'socialLinks', 'platforms'));
     }
 

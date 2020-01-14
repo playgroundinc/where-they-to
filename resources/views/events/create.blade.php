@@ -29,7 +29,12 @@
       @endforeach
     </select>
     <label for="performer">Performer:</label>
-    <select name="performer" id="performer">
+    <select name="performers[0]" id="performer">
+      @foreach($performers as $performer) 
+        <option value="{{$performer->id}}">{{$performer->name}}</option>
+      @endforeach
+    </select>
+    <select name="performers[1]">
       @foreach($performers as $performer) 
         <option value="{{$performer->id}}">{{$performer->name}}</option>
       @endforeach

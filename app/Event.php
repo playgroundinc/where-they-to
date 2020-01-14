@@ -9,7 +9,7 @@ class Event extends Model
     //
     public function venue() 
     {
-      return $this->hasOne(Venue::class);
+      return $this->belongsTo(Venue::class);
     }
 
     public function performers() 
@@ -19,7 +19,7 @@ class Event extends Model
 
     public function family() 
     {
-      return $this->hasOne(Family::class);
+      return $this->belongsTo(Family::class);
     }
 
     public function socialLinks() 

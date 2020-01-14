@@ -24,22 +24,38 @@ class CreatePerformersTable extends Migration
         $table->tinyInteger('type')->unsigned()->nullable();
       });
 
-      Schema::create('events', function (Blueprint $table) {
+      Schema::create('venues', function (Blueprint $table) {
         $table->bigIncrements('id');
         $table->timestamps();
         $table->string('name');
-        $table->string('date');
+        $table->string('address');
+        $table->string('city');
+        $table->string('province')->default('Ontario');
+        $table->integer('accessibility')->default('0');
+        $table->integer('neighbourhood')->default('0');
         $table->text('description');
-        $table->integer('type');
-      });
+        $table->bigInteger('user_id')->unsigned()->nullable();
+        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+    });
 
       Schema::create('families', function (Blueprint $table) {
         $table->bigIncrements('id');
         $table->timestamps();
         $table->string('name');
         $table->text('description');
-        $table->bigInteger('event_id')->unsigned()->nullable();
-        $table->foreign('event_id')->references('id')->on('events');
+      });
+
+    Schema::create('events', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->timestamps();
+        $table->string('name');
+        $table->string('date');
+        $table->text('description');
+        $table->integer('type');
+        $table->bigInteger('venue_id')->unsigned()->nullable();
+        $table->foreign('venue_id')->references('id')->on('venues');
+        $table->bigInteger('family_id')->unsigned()->nullable();
+        $table->foreign('family_id')->references('id')->on('families');
       });
 
       Schema::create('performers', function (Blueprint $table) {
@@ -52,27 +68,7 @@ class CreatePerformersTable extends Migration
           $table->foreign('family_id')->references('id')->on('families');
           $table->bigInteger('user_id')->unsigned()->nullable();
           $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-          $table->bigInteger('event_id')->unsigned()->nullable();
-          $table->foreign('event_id')->references('id')->on('events');
       });
-
-      Schema::create('venues', function (Blueprint $table) {
-        $table->bigIncrements('id');
-        $table->timestamps();
-        $table->string('name');
-        $table->string('address');
-        $table->string('city');
-        $table->string('province')->default('Ontario');
-        $table->integer('accessibility')->default('0');
-        $table->integer('neighbourhood')->default('0');
-        $table->text('description');
-        $table->bigInteger('family_id')->unsigned()->nullable();
-        $table->foreign('family_id')->references('id')->on('families');
-        $table->bigInteger('user_id')->unsigned()->nullable();
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        $table->bigInteger('event_id')->unsigned()->nullable();
-        $table->foreign('event_id')->references('id')->on('events');
-    });
 
     Schema::create('social_links', function (Blueprint $table) {
         $table->bigIncrements('id');
@@ -99,11 +95,11 @@ class CreatePerformersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('social_links');
-        Schema::dropIfExists('venues');
         Schema::dropIfExists('performers');
-        Schema::dropIfExists('families');
-        Schema::dropIfExists('users');
         Schema::dropIfExists('events');
+        Schema::dropIfExists('families');
+        Schema::dropIfExists('venues');
+        Schema::dropIfExists('users');
 
     }
 }

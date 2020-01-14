@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         $this->call([
           UsersTableSeeder::class,
-          EventsTableSeeder::class,
-          FamiliesTableSeeder::class,
           VenuesTableSeeder::class,
+          FamiliesTableSeeder::class,
+          EventsTableSeeder::class,
           PerformersTableSeeder::class,
           SocialLinksTableSeeder::class,
         ]);

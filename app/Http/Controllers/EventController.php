@@ -6,6 +6,7 @@ use App\Event;
 use App\Performer;
 use App\Venue;
 use App\Family;
+
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -15,6 +16,24 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private function saveFields($request, $event) {
+        $venue = Venue::find($request['venue']);
+        $venue->events()->save($event);
+
+        $family = Family::find($request['family']);
+        $family->events()->save($event);
+
+        $performers = Performer::find(request('performers'));
+        $event->performers()->detach();
+        foreach($performers as $performer):
+          $event->performers()->attach($performer);
+        endforeach;
+    }
+
+    private function updateFields($request, $event) {
+
+    }
     public function index()
     {
         //
@@ -52,13 +71,10 @@ class EventController extends Controller
           'type' => 'required'
         ]);
         $event = Event::create($attributes);
-        $venue = Venue::find($request['venue']);
-        $family = Family::find($request['family']);
-        $performer = Performer::find($request['performer']);
-        $event->venue()->save($venue);
-        $event->family()->save($family);
-        $event->performers()->attach($performer);
-        return view('events.show', compact('event'));
+        $this->saveFields($request, $event);
+        
+        $platforms = config('enums.platforms');
+        return view('events.show', compact('event', 'platforms'));
     }
 
     /**
@@ -70,7 +86,8 @@ class EventController extends Controller
     public function show(Event $event)
     {
         //
-        return view('events.show', compact('event'));
+        $platforms = config('enums.platforms');
+        return view('events.show', compact('event', 'platforms'));
     }
 
     /**
@@ -82,6 +99,10 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         //
+        $venues = Venue::all();
+        $performers = Performer::all();
+        $families = Family::all();
+        return view('events.edit', compact('event', 'venues', 'performers', 'families'));
     }
 
     /**
@@ -94,6 +115,14 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         //
+        $event->update(request([
+          'name',
+          'description',
+          'date',
+          'type'
+        ]));
+        $this->saveFields($request, $event);
+        return redirect('/events/'.$event->id);
     }
 
     /**

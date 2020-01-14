@@ -14,7 +14,7 @@ class Family extends Model
       return $this->hasOne(SocialLinks::class);
     }
     public function events() {
-      return $this->belongsToMany(Event::class);
+      return $this->hasMany(Event::class);
     }
     protected $fillable = [
       'name',

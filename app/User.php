@@ -14,7 +14,7 @@ class User extends Model
       return $this->hasOne(Venue::class);
     }
     public function socialLinks() {
-      return $this->hasOne(Venue::class);
+      return $this->hasOne(SocialLinks::class);
     }
     protected $fillable = [
       'username',

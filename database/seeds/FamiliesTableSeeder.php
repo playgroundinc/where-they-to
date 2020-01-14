@@ -15,12 +15,10 @@ class FamiliesTableSeeder extends Seeder
       DB::table('families')->insert([
         'name' => Str::random(10),
         'description' => Str::random(20),
-        'event_id' => '1'
       ]);
       DB::table('families')->insert([
         'name' => Str::random(10),
         'description' => Str::random(20),
-        'event_id' => '2'
       ]);
     }
 }

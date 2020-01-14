@@ -13,7 +13,7 @@ class Venue extends Model
     }
 
     public function events() {
-      return $this->belongsToMany(Event::class);
+      return $this->hasMany(Event::class);
     }
     protected $fillable = [
       'name',
@@ -22,6 +22,5 @@ class Venue extends Model
       'address',
       'user_id',
       'family_id',
-      'event_id'
     ];
 }
