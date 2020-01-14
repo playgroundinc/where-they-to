@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Performer;
 use App\User;
 use App\Family;
+use App\Event;
 
 class PerformerController extends Controller
 {
@@ -70,8 +71,6 @@ class PerformerController extends Controller
           'website',
         ];
         $family = Family::find($performer->family_id);
-        var_dump($family);
-  
         return view('performers.show', compact('performer', 'socialLinks', 'platforms', 'family'));
     }
 

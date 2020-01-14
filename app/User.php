@@ -8,13 +8,13 @@ class User extends Model
 { 
     //
     public function performer() {
-      return $this->hasOne('App\Performer');
+      return $this->hasOne(Performer::class);
     }
     public function venue() {
-      return $this->hasOne('App\Venue');
+      return $this->hasOne(Venue::class);
     }
     public function socialLinks() {
-      return $this->hasOne('App\SocialLinks');
+      return $this->hasOne(SocialLinks::class);
     }
     protected $fillable = [
       'username',

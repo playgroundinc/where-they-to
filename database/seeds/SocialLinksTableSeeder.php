@@ -19,6 +19,7 @@ class SocialLinksTableSeeder extends Seeder
         'website' => Str::random(20),
         'youtube' => Str::random(20),
         'user_id' => '1',
+        'event_id' => '1'
       ]);
       DB::table('social_links')->insert([
         'facebook' => Str::random(10),
