@@ -16,7 +16,10 @@ class CreatePerformerTypesTable extends Migration
         Schema::create('performer_performer_types', function (Blueprint $table) {
           $table->bigIncrements('id');
           $table->bigInteger('performer_id')->unsigned();
+          $table->foreign('performer_id')->references('id')->on('performers')->onDelete('cascade');
           $table->bigInteger('performer_type_id')->unsigned();
+          $table->foreign('performer_type_id')->references('id')->on('performer_types')->onDelete('cascade');
+
         });
     }
 
