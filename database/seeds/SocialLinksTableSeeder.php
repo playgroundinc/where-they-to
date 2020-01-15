@@ -12,37 +12,38 @@ class SocialLinksTableSeeder extends Seeder
     public function run()
     {
       //
+      $faker = Faker\Factory::create();
       DB::table('social_links')->insert([
-        'facebook' => Str::random(10),
-        'instagram' => Str::random(10),
-        'twitter' => Str::random(10),
-        'website' => Str::random(20),
-        'youtube' => Str::random(20),
+        'facebook' => $faker->word,
+        'instagram' => $faker->word,
+        'twitter' => $faker->word,
+        'website' => $faker->word,
+        'youtube' => $faker->word,
         'user_id' => '1',
         'event_id' => '1'
       ]);
       DB::table('social_links')->insert([
-        'facebook' => Str::random(10),
-        'instagram' => Str::random(10),
-        'twitter' => Str::random(10),
-        'website' => Str::random(20),
-        'youtube' => Str::random(20),
+        'facebook' => $faker->word,
+        'instagram' => $faker->word,
+        'twitter' => $faker->word,
+        'website' => $faker->word,
+        'youtube' => $faker->word,
         'user_id' => '2',
       ]);
       DB::table('social_links')->insert([
-        'facebook' => Str::random(10),
-        'instagram' => Str::random(10),
-        'twitter' => Str::random(10),
-        'website' => Str::random(20),
-        'youtube' => Str::random(20),
+        'facebook' => $faker->word,
+        'instagram' => $faker->word,
+        'twitter' => $faker->word,
+        'website' => $faker->word,
+        'youtube' => $faker->word,
         'user_id' => '3',
       ]);
       DB::table('social_links')->insert([
-        'facebook' => Str::random(10),
-        'instagram' => Str::random(10),
-        'twitter' => Str::random(10),
-        'website' => Str::random(20),
-        'youtube' => Str::random(20),
+        'facebook' => $faker->word,
+        'instagram' => $faker->word,
+        'twitter' => $faker->word,
+        'website' => $faker->word,
+        'youtube' => $faker->word,
         'user_id' => '4',
       ]);
     }
