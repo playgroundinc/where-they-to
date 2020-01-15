@@ -12,7 +12,7 @@
       <textarea class="input" name="bio" id="bio" cols="30" rows="10"></textarea>
     </div>
     <label class="label" for="performerType">Type</label>
-    <select class="input" name="performerType" id="performerType">
+    <select class="input" name="performerType" id="performerType"> 
       @foreach($performerTypes as $index=>$type)
         <option value="{{ $type->id }}" {{ intval($index) === 0 ? 'selected' : '' }}>{{ $type->name }}</option>
       @endforeach

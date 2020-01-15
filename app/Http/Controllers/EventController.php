@@ -140,5 +140,8 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         //
+        $event->performers()->detach();
+        $event->delete();
+        return redirect('/events');
     }
 }

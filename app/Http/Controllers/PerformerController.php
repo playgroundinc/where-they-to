@@ -101,11 +101,11 @@ class PerformerController extends Controller
     {
         //
         $performer->update(request(['name', 'bio']));
-
-        $performerType = PerformerType::find(request('performerType'));
         $performer->performerTypes()->detach();
-        $performer->performerTypes()->attach($performerType);
-        
+        foreach (request('performerType') as $performerTypeId):
+          $performerType = PerformerType::find($performerTypeId);
+          $performer->performerTypes()->attach($performerType);
+        endforeach;
         return redirect('/performers/'.$performer->id);
     }
 
@@ -115,8 +115,12 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Performer $performer)
     {
         //
+        $performer->performerTypes()->detach();
+        $performer->events()->detach();
+        $performer->delete();
+        return redirect('/performers');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Venue;
 use App\User;
+use App\Event;
 
 class VenueController extends Controller
 {
@@ -49,7 +50,8 @@ class VenueController extends Controller
         $venue = Venue::create($attributes);
         $user = User::find($request['id']);
         $user->venue()->save($venue);
-        return view('socialLinks.create', ['id' => $user['id']]);
+        $user_id = $user['id'];
+        return view('socialLinks.create', compact('user_id'));
 
     }
 
@@ -104,8 +106,10 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Venue $venue)
     {
         //
+        $venue->delete();
+        return redirect('/venues');
     }
 }

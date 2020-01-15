@@ -53,15 +53,15 @@
   {{ csrf_field() }}
   <input type="hidden" name="family_id" value="{{ $family->id }}">
   <label class="label" for="facebook">Facebook</label>
-  <input class="input" type="text" id="facebook" name="facebook" placeholder="Facebook URL">
+  <input class="input" type="text" id="facebook" name="facebook">
   <label class="label" for="instagram">Instagram</label>
-  <input class="input" type="text" id="instagram" name="instagram" placeholder="Instagram Handle">
+  <input class="input" type="text" id="instagram" name="instagram">
   <label class="label" for="twitter">Twitter</label>
-  <input class="input" type="text" id="twitter" name="twitter" placeholder="Twitter Handle">
+  <input class="input" type="text" id="twitter" name="twitter">
   <label class="label" for="youtube">YouTube</label>
-  <input class="input" type="text" id="youtube" name="youtube" placeholder="Youtube">
+  <input class="input" type="text" id="youtube" name="youtube">
   <label class="label" for="website">Website</label>
-  <input class="input" type="text" id="website" name="website" placeholder="Website">
+  <input class="input" type="text" id="website" name="website">
   <input class="btn" type="submit" value="Submit">
 </form>
 @endif
