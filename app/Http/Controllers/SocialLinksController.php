@@ -50,7 +50,7 @@ class SocialLinksController extends Controller
         ]);
         $socialLinks = SocialLinks::create($attributes);
         if ($request['user_id']) {
-          $user = User::find($request['id']);
+          $user = User::find($request['user_id']);
           $user->socialLinks()->save($socialLinks);
           return redirect('/users');
         } elseif ($request['family_id']) {

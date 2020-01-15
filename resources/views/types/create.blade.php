@@ -9,6 +9,7 @@
     <input type="text" name="name" id="name">
     <input type="submit" value="Add Event Type">
   </form>
+
   <h2>Add new Performer Type</h2>
   <form action="/types" method="POST">
     {{ csrf_field() }}

@@ -8,6 +8,7 @@ use App\Performer;
 use App\User;
 use App\Family;
 use App\Event;
+use App\PerformerType;
 
 class PerformerController extends Controller
 {
@@ -31,8 +32,8 @@ class PerformerController extends Controller
     public function create()
     {
         //
-
-        return view('performers.create');
+        $performerTypes = PerformerType::all();
+        return view('performers.create', compact('performerTypes'));
     }
     /**
      * Store a newly created resource in storage.
@@ -48,8 +49,13 @@ class PerformerController extends Controller
           'bio' => 'required',
         ]);
         $performer = Performer::create($attributes);
+        
+        $performerType = PerformerType::find($request['performerType']);
+        $performer->performerTypes()->attach($performerType);
+      
         $user = User::find($request['id']);
         $user->performer()->save($performer);
+
         return view('socialLinks.create', ['user_id' => $user['id']]);
     }
 
@@ -63,13 +69,7 @@ class PerformerController extends Controller
     {
         //
         $socialLinks = User::find($performer->user['id'])->socialLinks;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
+        $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
         return view('performers.show', compact('performer', 'socialLinks', 'platforms', 'family'));
     }
@@ -84,14 +84,9 @@ class PerformerController extends Controller
     {
         //
         $socialLinks = User::find($performer->user['id'])->socialLinks;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
-        return view('performers.edit', compact('performer', 'socialLinks', 'platforms'));
+        $performerTypes = PerformerType::all();
+        $platforms = config('enums.platforms');
+        return view('performers.edit', compact('performer', 'socialLinks', 'platforms', 'performerTypes'));
         
     }
 
@@ -106,6 +101,11 @@ class PerformerController extends Controller
     {
         //
         $performer->update(request(['name', 'bio']));
+
+        $performerType = PerformerType::find(request('performerType'));
+        $performer->performerTypes()->detach();
+        $performer->performerTypes()->attach($performerType);
+        
         return redirect('/performers/'.$performer->id);
     }
 

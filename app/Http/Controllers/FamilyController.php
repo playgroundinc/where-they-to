@@ -61,13 +61,7 @@ class FamilyController extends Controller
         //
         $performers = $family->performers;
         $socialLinks = $family->socialLinks;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
+        $platforms = config('enums.platforms');
         return view('families.show', compact('family', 'performers', 'socialLinks', 'platforms'));
     }
 
@@ -83,13 +77,7 @@ class FamilyController extends Controller
         $socialLinks = $family->socialLinks;
         $allPerformers = Performer::all();
         $familyPerformers = $family->performers;
-        $platforms = [
-          'facebook',
-          'twitter',
-          'instagram',
-          'youtube',
-          'website',
-        ];
+        $platforms = config('enums.platforms');
         return view('families.edit', compact('allPerformers', 'familyPerformers', 'family', 'socialLinks', 'platforms'));
 
     }

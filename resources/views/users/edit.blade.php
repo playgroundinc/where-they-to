@@ -5,18 +5,13 @@
   <form method="POST" action="/users/{{ $user->id }}">
   {{ csrf_field() }}
   @method('PUT')
-    <div>
-      <label for="email">Email Address:</label>
-      <input type="email" id="email" name="email" placeholder="email" value={{ $user->email }}>
-    </div>
-    <div><input type="submit" value="Update Profile"></div>
+    <label class="label" for="email">Email Address:</label>
+    <input class="input" type="email" id="email" name="email" placeholder="email" value={{ $user->email }}>
+    <input class="btn" type="submit" value="Update Profile">
   </form>
-  <a href="/users/{{ $user->id}}">Return to Profile </a>
-  <div>
-    <form action="/users/{{ $user->id }}" method="POST">
+  <form action="/users/{{ $user->id }}" method="POST">
       {{ csrf_field() }}
       @method('DELETE')
-      <input type="submit" value="Delete User">
+      <input class="btn btn--danger" type="submit" value="Delete User">
     </form>
-  </div>
 @endsection

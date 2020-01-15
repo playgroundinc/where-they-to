@@ -12,14 +12,19 @@
   @endif
   <h2>Family</h2>
   <a href="/families/{{$event->family->id}}">{{ $event->family->name }}</a>
+  @if (count($event->performers) > 0)
   <h2>Performers</h2>
   <ul>
     @foreach($event->performers as $performer) 
       <li><a href="/performers/{{$performer->id}}">{{ $performer->name }}</a></li>
     @endforeach   
   </ul>
+  @endif
+  <div>
   <h2>Venue</h2>
-  <a href="/venues/{{$event->venue->id}}">{{ $event->venue->name }}</a>
+    <a href="/venues/{{$event->venue->id}}">{{ $event->venue->name }}</a>
+  </div>
+  @if (!empty($event->socialLinks))
   <h2>Social Links</h2>
   <ul>
     @foreach($platforms as $index=>$platform) 
@@ -28,5 +33,6 @@
       @endif
     @endforeach
   </ul>
-  <a href="/events/{{$event->id}}/edit">Edit Event</a>
+  @endif
+  <a class="btn" href="/events/{{$event->id}}/edit">Edit Event</a>
 @endsection
