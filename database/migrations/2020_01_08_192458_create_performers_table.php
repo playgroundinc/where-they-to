@@ -62,6 +62,7 @@ class CreatePerformersTable extends Migration
         $table->timestamps();
         $table->string('name');
         $table->string('date')->nullable();
+        $table->string('time')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();
         $table->foreign('venue_id')->references('id')->on('venues');

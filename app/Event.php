@@ -35,6 +35,9 @@ class Event extends Model
       'name',
       'description',
       'date',
+      'time',
       'type'
     ];
+  
+
 }

@@ -15,7 +15,9 @@
       @endforeach
     </select>
     <label class="label" for="date">Date</label>
-    <input class="input" type="text" name="date" id="date" value="{{ $event->date }}">
+    <input class="input" type="date" name="date" id="date" value="{{ $event->date }}">
+    <label class="label" for="time">Time</label>
+    <input class="input" type="time" value="{{ $event->time}}">
     <label class="label" for="venue">Venue</label>
     <select class="input" name="venue" id="venue">
       @foreach($venues as $venue) 
@@ -44,5 +46,10 @@
     </select>
 
     <input class="btn" type="submit" value="Update Event">
+  </form>
+  <form action="/events/{{$event->id}}" method="POST">
+    {{csrf_field()}}
+    @method('DELETE')
+    <input class="btn btn--danger" type="submit" value="Delete Event">
   </form>
 @endsection 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Event;
 use App\Performer;
 use App\Venue;
@@ -70,9 +72,10 @@ class EventController extends Controller
     {
         //
         $attributes = request()->validate([
+          'date' => 'required',
+          'time' => 'required',
           'name' => 'required',
           'description' => 'required',
-          'date' => 'required',
         ]);
 
         $event = Event::create($attributes);
@@ -91,6 +94,8 @@ class EventController extends Controller
     public function show(Event $event)
     {
         //
+
+        $event->date = Carbon::parse($event->date.' '.$event->time)->format('M d, Y @ h:i A');
         $platforms = config('enums.platforms');
         return view('events.show', compact('event', 'platforms'));
     }
@@ -140,5 +145,8 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         //
+        $event->performers()->detach();
+        $event->delete();
+        return redirect('/events');
     }
 }
