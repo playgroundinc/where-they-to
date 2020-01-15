@@ -94,7 +94,6 @@ class EventController extends Controller
     public function show(Event $event)
     {
         //
-
         $event->date = Carbon::parse($event->date.' '.$event->time)->format('M d, Y @ h:i A');
         $platforms = config('enums.platforms');
         return view('events.show', compact('event', 'platforms'));

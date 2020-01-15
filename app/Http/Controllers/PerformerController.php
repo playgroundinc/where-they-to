@@ -53,7 +53,7 @@ class PerformerController extends Controller
         $performerType = PerformerType::find($request['performerType']);
         $performer->performerTypes()->attach($performerType);
       
-        $user = User::find($request['id']);
+        $user = User::find($request['user_id']);
         $user->performer()->save($performer);
 
         return view('socialLinks.create', ['user_id' => $user['id']]);
