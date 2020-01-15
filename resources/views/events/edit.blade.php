@@ -48,8 +48,8 @@
     <input class="btn" type="submit" value="Update Event">
   </form>
   <form action="/events/{{$event->id}}" method="POST">
-    {{csrf_field()}}
-    @method('DELETE')
+    {{ csrf_field() }}
+    @method("DELETE")
     <input class="btn btn--danger" type="submit" value="Delete Event">
   </form>
 @endsection 

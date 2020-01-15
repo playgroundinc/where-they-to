@@ -59,17 +59,17 @@ class CreatePerformersTable extends Migration
 
     Schema::create('events', function (Blueprint $table) {
         $table->bigIncrements('id');
-        $table->timestamps();
         $table->string('name');
+        $table->timestamps();
         $table->string('date')->nullable();
         $table->string('time')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();
-        $table->foreign('venue_id')->references('id')->on('venues');
+        $table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
         $table->bigInteger('family_id')->unsigned()->nullable();
-        $table->foreign('family_id')->references('id')->on('families');
+        $table->foreign('family_id')->references('id')->on('families')->onDelete('set null');
         $table->bigInteger('event_type_id')->unsigned()->nullable();
-        $table->foreign('event_type_id')->references('id')->on('event_types');
+        $table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('set null');
       });
 
       Schema::create('performers', function (Blueprint $table) {
@@ -81,7 +81,6 @@ class CreatePerformersTable extends Migration
           $table->foreign('family_id')->references('id')->on('families');
           $table->bigInteger('user_id')->unsigned()->nullable();
           $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-          $table->bigInteger('type')->unsigned()->nullable();
       });
 
     Schema::create('social_links', function (Blueprint $table) {

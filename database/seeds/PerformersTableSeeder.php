@@ -12,21 +12,22 @@ class PerformersTableSeeder extends Seeder
     public function run()
     {
       //
+      $faker = Faker\Factory::create();
       DB::table('performers')->insert([
-        'name' => Str::random(10),
-        'bio' => Str::random(20),
+        'name' => $faker->firstName,
+        'bio' => $faker->text,
         'user_id' => '1',
         'family_id' => '1',
       ]);
       DB::table('performers')->insert([
-        'name' => Str::random(10),
-        'bio' => Str::random(20),
+        'name' => $faker->firstName,
+        'bio' => $faker->text,
         'user_id' => '3',
         'family_id' => '2',
       ]);
       DB::table('performers')->insert([
-        'name' => Str::random(10),
-        'bio' => Str::random(20),
+        'name' => $faker->firstName,
+        'bio' => $faker->text,
         'user_id' => '5',
         'family_id' => '1',
       ]);

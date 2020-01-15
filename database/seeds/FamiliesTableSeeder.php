@@ -12,13 +12,14 @@ class FamiliesTableSeeder extends Seeder
     public function run()
     {
       //
+      $faker = Faker\Factory::create();
       DB::table('families')->insert([
-        'name' => Str::random(10),
-        'description' => Str::random(20),
+        'name' => $faker->lastName,
+        'description' => $faker->text,
       ]);
       DB::table('families')->insert([
-        'name' => Str::random(10),
-        'description' => Str::random(20),
+        'name' => $faker->lastName,
+        'description' => $faker->text,
       ]);
     }
 }
