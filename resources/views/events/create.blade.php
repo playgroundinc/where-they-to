@@ -9,7 +9,9 @@
     <label class="label" for="description">description</label>
     <textarea class="input" name="description" id="description" cols="30" rows="10"></textarea>
     <label class="label" for="date">Date</label>
-    <input class="input" type="text" name="date" id="date">
+    <input class="input" type="date" name="date" id="date">
+    <label class="label" for="time">Time</label>
+    <input class="input" type="time" name="time" id="time">
     <label class="label" for="eventType">Event Type</label>
     <select class="input" name="eventType" id="eventType">
       @foreach($eventTypes as $index=>$eventType) 
