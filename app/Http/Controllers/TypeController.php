@@ -102,8 +102,10 @@ class TypeController extends Controller
             $event->event_type_id = null;
             $event->save();
           endforeach;
-          $type->delete();
+        elseif (request('type') === 'performer'): 
+          $type = PerformerType::find($id);
         endif;
+        $type->delete();
         return redirect('/types');
 
     }

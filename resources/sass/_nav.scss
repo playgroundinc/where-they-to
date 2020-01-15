@@ -1,0 +1,15 @@
+nav ul {
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  li {
+    list-style: none;
+    a {
+      padding: 20px;
+      text-decoration: none;
+      color: rebeccapurple;
+      font-family: $main-font;
+      text-transform: uppercase;
+    }
+  }
+}

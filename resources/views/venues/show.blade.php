@@ -9,10 +9,10 @@
     <p>{{ $venue->address }}</p>
     <p>{{ $venue->city }}, {{$venue->province }}</p>
     <h2>Social Links</h2>
-    <ul>
-      @foreach($platforms as $platform)
-        @if (strlen($socialLinks[$platform]) > 0)
-        <li>{{ $platform }} : {{ $socialLinks[$platform] }}</li>
+    <ul class="list">
+      @foreach($platforms as $index=>$platform)
+        @if (strlen($socialLinks[$index]) > 0)
+        <li class="list-item">{{ $platform }} : {{ $socialLinks[$index] }}</li>
         @endif
       @endforeach
     </ul>
@@ -23,5 +23,5 @@
     @endforeach
     </ul>
   </div>
-  <a href="/venues/{{$venue->id}}/edit">Edit Venue Profile</a>
+  <a class="btn" href="/venues/{{$venue->id}}/edit">Edit Venue Profile</a>
 @endsection

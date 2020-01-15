@@ -2,12 +2,12 @@
 
 @section('content')
   <h1>Users</h1>
-  <ul>
+  <ul class="list">
     @foreach ($users as $user)
-      <li>
-        <a href="/users/{{ $user->id}}">{{ $user->username }}</a>
+      <li class="list-item">
+        <a class="list-link" href="/users/{{ $user->id}}">{{ $user->username }}</a>
       </li>
     @endforeach
   </ul>
-  <a href="/users/create">Create an account</a>
+  <a class="btn" href="/users/create">Create an account</a>
 @endsection

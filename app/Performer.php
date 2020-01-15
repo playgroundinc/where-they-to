@@ -27,14 +27,10 @@ class Performer extends Model
     }
 
     protected $fillable = [
-      'type',
       'name',
       'bio',
       'user_id',
       'family_id',
       'event_id'
     ];
-    protected $attributes = array(
-      'type' => '{}',
-    );
 }

@@ -1,0 +1,121 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Source Sans Pro", "sans-serif";
+  font-weight: normal;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid black;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-radius: 0;
+}
+
+.label {
+  font-family: "Source Sans Pro", "sans-serif";
+  padding: 10px 0;
+  display: block;
+}
+
+.btn {
+  display: inline-block;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  font-family: "Source Sans Pro", "sans-serif";
+  border: 1px solid black;
+  background: black;
+  color: white;
+  margin: 10px 10px 10px 0;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+.btn--danger {
+  background-color: #cd2026;
+  border: 1px solid #cd2026;
+}
+
+.list {
+  padding: 0;
+}
+
+.list .list-item {
+  list-style-type: none;
+}
+
+.list .list-item--flex {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+}
+
+.list .list-item--flex .btn {
+  margin: 20px;
+}
+
+.list .list-item .list-link {
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: 10px 0;
+}
+
+nav ul {
+  padding: 0;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: end;
+          justify-content: flex-end;
+}
+
+nav ul li {
+  list-style: none;
+}
+
+nav ul li a {
+  padding: 20px;
+  text-decoration: none;
+  color: rebeccapurple;
+  font-family: "Source Sans Pro", "sans-serif";
+  text-transform: uppercase;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.container {
+  max-width: 1000px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.container--inner {
+  max-width: 70%;
+}
+
+h1 {
+  text-align: center;
+}
+
+main {
+  padding-bottom: 100px;
+}
+

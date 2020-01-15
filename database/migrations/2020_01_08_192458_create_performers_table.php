@@ -80,6 +80,7 @@ class CreatePerformersTable extends Migration
           $table->foreign('family_id')->references('id')->on('families');
           $table->bigInteger('user_id')->unsigned()->nullable();
           $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+          $table->bigInteger('type')->unsigned()->nullable();
       });
 
     Schema::create('social_links', function (Blueprint $table) {

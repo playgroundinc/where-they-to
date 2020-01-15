@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+
 use App\User;
+use App\PerformerType;
+
 use App\Enums\UserType;
+
 use BenSampo\Enum\Rules\EnumValue;
 
 class UserController extends Controller
@@ -50,10 +54,13 @@ class UserController extends Controller
         ]);
 
         $user = User::create($attributes);
+        $user_id = $user['id'];
+        $performerTypes = PerformerType::all();
         if (intval($attributes['type']) === UserType::VENUE) {
-          return view('venues.create', ['id'=>$user['id']]);
+          
+          return view('venues.create', compact('user_id', 'performerTypes'));
         } 
-        return view('performers.create', ['id'=>$user['id']]);
+        return view('performers/create', compact('user_id', 'performerTypes'));
     }
 
     /**

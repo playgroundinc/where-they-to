@@ -1,17 +1,9 @@
 @extends ('layout')
 @section('content')
-{{ $performer }}
   <h1>{{ $performer->name }}</h1>
-  <div>
-    <h2>Bio</h2>
-    <p>{{ $performer->bio }}</p>
-  </div>
-  <h2>Social Links</h2>
   <ul>
-  @foreach($platforms as $platform)
-    @if (strlen($socialLinks[$platform]) > 0)
-      <li>{{ $platform }} : {{ $socialLinks[$platform] }}</li>
-    @endif
+  @foreach($performer->performerTypes as $type)
+    <li>{{ $type->name }}</li>
   @endforeach
   </ul>
   @if (isset($family)) 
@@ -21,6 +13,17 @@
     </div>
   @endif
   <div>
-    <a href="/performers/{{$performer->id}}/edit">Edit Profile</a>
+    <h2>Bio</h2>
+    <p>{{ $performer->bio }}</p>
   </div>
+  <h2>Social Links</h2>
+  <ul class="list">
+  @foreach($platforms as $index=>$platform)
+    @if (strlen($socialLinks[$index]) > 0)
+      <li class="list-item">{{ $platform }} : {{ $socialLinks[$index] }}</li>
+    @endif
+  @endforeach
+  </ul>
+  <a class="btn" href="/performers/{{$performer->id}}/edit">Edit Profile</a>
+
 @endsection
