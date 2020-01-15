@@ -58,9 +58,10 @@ class TypeController extends Controller
      * @param  \App\PerformerType  $performerType
      * @return \Illuminate\Http\Response
      */
-    public function show(PerformerType $performerType)
+    public function show($id)
     {
         //
+        return redirect('/types');
     }
 
     /**
@@ -69,9 +70,10 @@ class TypeController extends Controller
      * @param  \App\PerformerType  $performerType
      * @return \Illuminate\Http\Response
      */
-    public function edit(PerformerType $performerType)
+    public function edit($id)
     {
         //
+        return redirect('/types');
     }
 
     /**
@@ -81,9 +83,17 @@ class TypeController extends Controller
      * @param  \App\PerformerType  $performerType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PerformerType $performerType)
+    public function update($id)
     {
         //
+        $postType = request('type');
+        if ($postType === 'event'):
+          $type = EventType::find($id);
+        else: 
+          $type = PerformerType::find($id);
+        endif;
+        $type->update(['name'=>request('name')]);
+        return redirect('/types');
     }
 
     /**
@@ -97,13 +107,9 @@ class TypeController extends Controller
         //
         if (request('type') === 'event'):
           $type = EventType::find($id);
-          $events = $type->events;
-          foreach($events as $event):
-            $event->event_type_id = null;
-            $event->save();
-          endforeach;
         elseif (request('type') === 'performer'): 
           $type = PerformerType::find($id);
+          $type->performers()->detach();
         endif;
         $type->delete();
         return redirect('/types');

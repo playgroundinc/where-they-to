@@ -29,7 +29,7 @@ class SocialLinksController extends Controller
     public function create()
     {
         //
-        return view('socialLinks.create');
+        return view('socialLinks.create', compact('user_id'));
     }
 
     /**
@@ -48,10 +48,14 @@ class SocialLinksController extends Controller
           'website' => 'required',
           'youtube' => 'required',
         ]);
+
         $socialLinks = SocialLinks::create($attributes);
         if ($request['user_id']) {
           $user = User::find($request['user_id']);
           $user->socialLinks()->save($socialLinks);
+          if ($request['redirect_to']){
+            return redirect($request['redirect_to']);
+          }
           return redirect('/users');
         } elseif ($request['family_id']) {
           $family = Family::find($request['family_id']);
@@ -69,7 +73,7 @@ class SocialLinksController extends Controller
     public function show(SocialLinks $socialLink)
     {
         //
-
+        return redirect('/');
     }
 
     /**
@@ -81,6 +85,7 @@ class SocialLinksController extends Controller
     public function edit(SocialLinks $socialLink)
     {
         //
+        return redirect('/');
     }
 
     /**
@@ -106,5 +111,6 @@ class SocialLinksController extends Controller
     public function destroy(SocialLinks $socialLinks)
     {
         //
+        return  redirect('/');
     }
 }

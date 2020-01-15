@@ -20,10 +20,12 @@
     @endforeach   
   </ul>
   @endif
+  @if (isset($event->venue))
   <div>
-  <h2>Venue</h2>
+    <h2>Venue</h2>
     <a href="/venues/{{$event->venue->id}}">{{ $event->venue->name }}</a>
   </div>
+  @endif
   @if (!empty($event->socialLinks))
   <h2>Social Links</h2>
   <ul>
