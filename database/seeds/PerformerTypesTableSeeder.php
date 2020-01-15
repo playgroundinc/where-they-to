@@ -12,11 +12,12 @@ class PerformerTypesTableSeeder extends Seeder
     public function run()
     {
         //
+      $faker = Faker\Factory::create();
       DB::table('performer_types')->insert([
-        'name' => Str::random(10),
+        'name' => $faker->word,
       ]);
       DB::table('performer_types')->insert([
-        'name' => Str::random(10),
+        'name' => $faker->word,
       ]);
     }
 }

@@ -11,12 +11,13 @@ class EventTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        //      
+      //      
+      $faker = Faker\Factory::create();
       DB::table('event_types')->insert([
-        'name' => Str::random(10),
+        'name' => $faker->word,
       ]);
       DB::table('event_types')->insert([
-        'name' => Str::random(10),
+        'name' => $faker->word,
       ]);
     }
 }

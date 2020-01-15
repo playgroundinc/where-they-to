@@ -59,8 +59,8 @@ class CreatePerformersTable extends Migration
 
     Schema::create('events', function (Blueprint $table) {
         $table->bigIncrements('id');
-        $table->timestamps();
         $table->string('name');
+        $table->timestamps();
         $table->string('date')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();
