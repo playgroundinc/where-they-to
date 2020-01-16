@@ -21,6 +21,10 @@ class CreatePerformersTable extends Migration
         $table->string('email')->unique();
         $table->bigIncrements('id');
         $table->timestamps();
+        $table->string('name')->nullable();
+        $table->timestamp('email_verified_at')->nullable();
+        $table->integer('role')->default(1);
+        $table->rememberToken();
         $table->tinyInteger('type')->unsigned()->nullable();
       });
 
