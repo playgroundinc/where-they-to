@@ -7,6 +7,7 @@ use App\Performer;
 use App\Venue;
 use App\Family;
 use App\EventType;
+use App\Ticket;
 
 use Illuminate\Http\Request;
 
@@ -108,7 +109,8 @@ class EventController extends Controller
         $performers = Performer::all();
         $families = Family::all();
         $eventTypes = EventType::all();
-        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes'));
+        $eventTickets = Ticket::all();
+        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes', 'eventTickets'));
     }
 
     /**
@@ -143,5 +145,31 @@ class EventController extends Controller
         $event->performers()->detach();
         $event->delete();
         return redirect('/events');
+    }
+
+    public function createTickets($id) 
+    {
+      $attributes = request()->validate([
+        'price' => 'required',
+        'description' => 'required',
+        'url' => 'nullable'
+      ]);
+      $ticket = Ticket::create($attributes);
+
+      $event = Event::find($id);
+      $ticket->events()->attach($event);
+      return redirect('/events');
+    }
+    public function updateTickets($id) {
+      $event = Event::find($id);
+      $event->tickets()->detach();
+      $tickets = request('tickets');
+      foreach($tickets as $ticket):
+        $ticket = Ticket::find($ticket);
+        $event->tickets()->attach($ticket);
+      endforeach;
+      return redirect('/events');
+      // $event->tickets()->detach();
+
     }
 }

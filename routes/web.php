@@ -19,8 +19,10 @@ Route::get('/', 'PagesController@home');
 Route::post('/families/performers/{id}', 'FamilyController@performer');
 Route::post('/families/performers/{id}/destroy', 'FamilyController@performerDestroy');
 
+Route::post('/events/{id}/tickets', 'EventController@createTickets');
+Route::put('/events/{id}/tickets', 'EventController@updateTickets');
+
 Route::resources([
-  'users' => 'UserController',
   'performers' => 'PerformerController',
   'venues' => 'VenueController',
   'social-links' => 'SocialLinksController',
@@ -28,5 +30,11 @@ Route::resources([
   'events' => 'EventController',
   'types' => 'TypeController',
 ]);
+
+Route::group(['middleware' => 'auth:api'], function(){
+  // Users
+  Route::get('users', 'UserController@index')->middleware('isAdmin');
+  Route::get('users/{id}', 'UserController@show')->middleware('isAdminOrSelf');
+});
 
 

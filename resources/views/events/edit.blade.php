@@ -45,6 +45,31 @@
 
     <input class="btn" type="submit" value="Update Event">
   </form>
+  <h2>Tickets</h2>
+  <form action="/events/{{$event->id}}/tickets" method="POST">
+    {{ csrf_field() }}
+    @method('PUT')
+    @foreach($event->tickets as $index=>$ticket)
+      <label for="tickets{{$index}}" class="label">Ticket</label>
+      <select class="input" name="tickets[{{$index}}]" id="tickets{{$index}}">
+        @foreach($eventTickets as $ticket) 
+          <option value="{{$ticket->id}}">${{ $ticket->price }} - {{ $ticket->description }}</option>
+        @endforeach
+      </select>
+    @endforeach
+    <input class="btn" type="submit" value="Update Tickets">
+  </form>
+  <h2>Create New Ticket</h2>
+  <form action="/events/{{$event->id}}/tickets" method="POST">
+    {{ csrf_field() }}
+    <label for="ticket_description" class="label">Description</label>
+    <input class="input" type="text" name="description" id="ticket_description">
+    <label for="price" class="label">Price</label>
+    <input class="input" type="number" name="price" id="price">
+    <label class="label" for="url">Ticket Link</label>
+    <input class="input" type="text" name="url" id="url">
+    <input class="btn" type="submit" value="Add Tickets">
+  </form>
   <form action="/events/{{$event->id}}" method="POST">
     {{ csrf_field() }}
     @method("DELETE")

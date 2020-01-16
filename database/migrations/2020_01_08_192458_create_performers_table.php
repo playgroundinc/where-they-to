@@ -16,7 +16,7 @@ class CreatePerformersTable extends Migration
     public function up()
     {
       Schema::create('users', function (Blueprint $table) {
-        $table->string('username')->unique();
+        $table->string('username')->unique()->nullable();
         $table->string('password');
         $table->string('email')->unique();
         $table->bigIncrements('id');
