@@ -1,15 +1,56 @@
 <template>
-    <div class="container">
-        <div class="card card-default">
-            <div class="card-header">Bienvenue</div>
-            <div class="card-body">
-                <p>
-                    American  Main Barbary Coast scuttle hardtack spanker fire ship grapple jack code  of conduct port. Port red ensign Shiver me timbers provost salmagundi  bring a spring upon her cable pillage cog crow's nest lateen sail.  Barbary Coast quarterdeck lass coffer keel hulk mizzen me square-rigged  loot.
-                </p>
-                <p>
-                    Yardarm starboard keelhaul list schooner prow booty cackle  fruit gabion topmast. Plunder shrouds Nelsons folly jack Arr parley warp  grog blossom ballast pressgang. Knave crack Jennys tea cup flogging log  man-of-war hearties killick long clothes six pounders hulk.
-                </p>
-            </div>
-        </div>
-    </div>
+  <div>
+    <h1>Home</h1>
+    <h2>Performers</h2>
+    <ul>
+      <li v-for="performer in performers">
+        <a :href="'performers/' + performer.id"> {{ performer.name }}</a>
+      </li>
+    </ul>
+    <h2>Events</h2>
+    <ul>
+      <li v-for="event in events">
+        <a :href="'events/' + event.id"> {{ event.name }}</a>
+      </li>
+    </ul>
+    <h2>Venues</h2>
+    <ul>
+      <li v-for="venue in venues">
+        <a :href="'venues/' + venue.id"> {{ venue.name }}</a>
+      </li>
+    </ul>
+    <h2>Families</h2>
+    <ul>
+      <li v-for="family in families">
+        <a :href="'families/' + family.id"> {{ family.name }}</a>
+      </li>
+    </ul>
+  </div>
 </template>
+
+<script>
+  export default {
+    data() {
+      return {
+        performers: [],
+        events: [],
+        venues: [],
+        families: [],
+      }
+    },
+    methods: {
+      _getData(route) {
+        axios.get(`/${route}`)
+        .then(({data}) => {
+          this[route] = data;
+        })
+      }
+    },
+    created() {
+      this._getData('performers');
+      this._getData('events');
+      this._getData('venues');
+      this._getData('families');
+    }
+  }
+</script>

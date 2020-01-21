@@ -21,7 +21,7 @@ class PerformerController extends Controller
     {
         //
         $performers = Performer::all();
-        return view('performers.index', compact('performers'));
+        return $performers;
     }
 
     /**

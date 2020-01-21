@@ -18,7 +18,7 @@ class VenueController extends Controller
     {
         //
         $venues = Venue::all();
-        return view('venues.index', compact('venues'));
+        return $venues;
     }
 
     /**

@@ -26,3 +26,8 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', 'AuthController@logout');
   });
 });
+
+Route::get('/performers', 'performerController@index');
+Route::get('/events', 'eventController@index');
+Route::get('/venues', 'venueController@index');
+Route::get('/families', 'familyController@index');
