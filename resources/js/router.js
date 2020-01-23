@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Users from './pages/Users'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
+import Performers from './pages/performer/Performers'
 // Routes
 const routes = [
   {
@@ -55,6 +56,15 @@ const routes = [
     path: '/users',
     name: 'users',
     component: Users,
+    meta: {
+      auth: false,
+    }
+  },
+  // PERFORMER ROUTES
+  {
+    path: '/performers',
+    name: 'performers',
+    component: Performers,
     meta: {
       auth: false,
     }

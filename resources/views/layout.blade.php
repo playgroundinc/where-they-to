@@ -17,7 +17,6 @@
   <div id="app">
     <index></index>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
   <script src="{{ asset('js/app.js') }}" defer></script>
 </body>
 </html>

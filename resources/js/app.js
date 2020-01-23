@@ -18,10 +18,13 @@ Vue.use(VueRouter)
 // Set Vue authentication
 Vue.use(VueAxios, axios)
 axios.defaults.baseURL = `${process.env.MIX_APP_URL}/api`
-Vue.use(VueAuth, auth)
-// Load Index
-Vue.component('index', Index)
-const app = new Vue({
-  el: '#app',
-  router
+
+Vue.use(require('@websanova/vue-auth'), {
+  auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
+  http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
+  router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
 });
+
+Index.router = Vue.router
+// Load Index
+new Vue(Index).$mount('#app');

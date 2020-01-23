@@ -13,21 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('register', 'UserController@register');
+Route::post('login', 'UserController@authenticate');
+Route::get('open', 'DataController@open');
 
-Route::prefix('auth')->group(function () {
-  Route::post('register', 'AuthController@register');
-  Route::post('login', 'AuthController@login');
-  Route::get('refresh', 'AuthController@refresh');
-  Route::group(['middleware' => 'auth:api'], function(){
-    Route::get('user', 'AuthController@user');
-    Route::post('logout', 'AuthController@logout');
-  });
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('user', 'UserController@getAuthenticatedUser');
+    Route::get('closed', 'DataController@closed');
 });
-
-Route::get('/performers', 'performerController@index');
-Route::get('/events', 'eventController@index');
-Route::get('/venues', 'venueController@index');
-Route::get('/families', 'familyController@index');
