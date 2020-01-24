@@ -6,20 +6,22 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
-    public function register(RegisterFormRequest $request)
-    {
-      $user = new User();
-      $user->email = $request->email;
-      $user->name = $request->name;
-      $user->password = bcrypt($request->password);
-      $user->save();
 
-      return response([
-        'status' => 'success',
-        'data' => $user
-      ], 200);
-    }
-    public function login(Request $request)
+  public function register(RegisterFormRequest $request)
+  {
+    $user = new User();
+    $user->email = $request->email;
+    $user->name = $request->name;
+    $user->password = bcrypt($request->password);
+    $user->save();
+
+    return response([
+      'status' => 'success',
+      'data' => $user
+    ], 200);
+  }
+  
+  public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {

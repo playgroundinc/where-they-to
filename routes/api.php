@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::post('auth/register', 'UserController@register');
-Route::post('login', 'UserController@authenticate');
+Route::post('auth/login', 'UserController@authenticate');
 Route::get('open', 'DataController@open');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
