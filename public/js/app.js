@@ -3263,16 +3263,13 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     login: function login() {
       var app = this;
-      this.$auth.login({
-        params: {
-          email: app.email,
-          password: app.password
-        },
-        success: function success() {},
-        error: function error() {},
-        rememberMe: true,
-        redirect: '/',
-        fetchUser: true
+      var user = {
+        email: app.email,
+        password: app.password
+      };
+      this.$store.dispatch({
+        type: 'login',
+        user: user
       });
     }
   }
@@ -22752,9 +22749,29 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     families: []
   },
   actions: {
-    login: function login(_ref, user) {
+    login: function login(_ref, data) {
       var commit = _ref.commit;
-      commit('auth_success', token, user);
+      return new Promise(function (resolve, reject) {
+        commit('auth_request');
+        var user = data.user;
+        axios({
+          url: 'http://127.0.0.1:8000/api/auth/login',
+          data: user,
+          method: 'POST'
+        }).then(function (resp) {
+          console.log(resp);
+          var token = resp.data.token;
+          var user = resp.data.user;
+          localStorage.setItem('token', token);
+          axios.defaults.headers.common['Authorization'] = token;
+          commit('auth_success', token, user);
+          resolve(resp);
+        })["catch"](function (err) {
+          commit('auth_error');
+          localStorage.removeItem('token');
+          reject(err);
+        });
+      });
     },
     setState: function setState(_ref2, name, value) {
       var commit = _ref2.commit;
@@ -22762,13 +22779,21 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     }
   },
   mutations: {
-    auth_success: function auth_success(state, token, user) {
-      state.user = user;
-      state.token = token;
-      state.status = 'Logged In';
+    auth_request: function auth_request(state) {
+      state.status = 'loading';
     },
-    set_state: function set_state(state, name, array) {
-      state[name] = array;
+    auth_success: function auth_success(state, token, user) {
+      state.status = 'success';
+      state.token = token;
+      state.user = user;
+      console.log(state);
+    },
+    auth_error: function auth_error(state) {
+      state.status = 'error';
+    },
+    logout: function logout(state) {
+      state.status = '';
+      state.token = '';
     }
   },
   getters: {
