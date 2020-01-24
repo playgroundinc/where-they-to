@@ -9,13 +9,9 @@ class AuthController extends Controller
     public function register(RegisterFormRequest $request)
     {
       $user = new User();
-      var_dump($user);
-      die();
       $user->email = $request->email;
       $user->name = $request->name;
       $user->password = bcrypt($request->password);
-      var_dump($user);
-      die();
       $user->save();
 
       return response([

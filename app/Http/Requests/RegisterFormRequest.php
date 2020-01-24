@@ -23,8 +23,6 @@ class RegisterFormRequest extends FormRequest
      */
     public function rules()
     {
-        var_dump('name');
-        die();
         return [
             //
             'name' => 'required|string|unique:users',

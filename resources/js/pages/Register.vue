@@ -22,42 +22,48 @@
                 <input type="password" id="password" class="form-control" v-model="password" required>
                 <span class="help-block" v-if="error && errors.password">{{ errors.password }}</span>
             </div>
+            <div class="form-group" v-bind:class="{ 'has-error': error && errors.password }">
+                <label for="password_confirmation">Confirm Password</label>
+                <input type="password" id="password_confirmation" class="form-control" v-model="password_confirmation" required>
+                <span class="help-block" v-if="error && errors.password">{{ errors.password }}</span>
+            </div>
             <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
 </template>
 <script> 
-    export default {
-        data(){
-            return {
-                name: '',
-                email: '',
-                password: '',
-                error: false,
-                errors: {},
-                success: false
-            };
-        },
-        methods: {
-            register(){
-                var app = this
-                console.log(app.name);
-                this.$auth.register({
-                    data: {
-                        name: app.name,
-                        email: app.email,
-                        password: app.password
-                    }, 
-                    success: function () {
-                        app.success = true
-                    },
-                    error: function (resp) {
-                        app.error = true;
-                        app.errors = resp.response.data.errors;
-                    },
-                    redirect: null
-                });                
-            }
-        }
+  export default {
+    data(){
+      return {
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        error: false,
+        errors: {},
+        success: false
+      };
+    },
+    methods: {
+      register(){
+        var app = this
+        this.$auth.register({
+          data: {
+            name: app.name,
+            email: app.email,
+            password: app.password,
+            password_confirmation: app.password_confirmation,
+          }, 
+          success: function () {
+            app.success = true
+          },
+          error: function (resp) {
+            app.error = true;
+            app.errors = resp.response.data.errors;
+          },
+          redirect: null
+        });                
+      }
     }
+  }
 </script>

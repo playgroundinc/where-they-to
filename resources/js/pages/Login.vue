@@ -23,38 +23,28 @@
 </template>
 <script>
   export default {
-    data() {
+    data(){
       return {
         email: null,
         password: null,
-        has_error: false
+        error: false
       }
-    },
-    mounted() {
-      //
     },
     methods: {
-      login() {
-        // get the redirect object
-        var redirect = this.$auth.redirect()
+      login(){
         var app = this
         this.$auth.login({
-          params: {
-            email: app.email,
-            password: app.password
-          },
-          success: function() {
-            // handle redirection
-            const redirectTo = redirect ? redirect.from.name : this.$auth.user().role === 2 ? 'admin.dashboard' : 'dashboard'
-            this.$router.push({name: redirectTo})
-          },
-          error: function() {
-            app.has_error = true
-          },
-          rememberMe: true,
-          fetchUser: true
-        })
-      }
+            params: {
+              email: app.email,
+              password: app.password
+            }, 
+            success: function () {},
+            error: function () {},
+            rememberMe: true,
+            redirect: '/dashboard',
+            fetchUser: true,
+        });       
+      },
     }
   }
 </script>

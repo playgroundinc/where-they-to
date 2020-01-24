@@ -3240,32 +3240,21 @@ __webpack_require__.r(__webpack_exports__);
     return {
       email: null,
       password: null,
-      has_error: false
+      error: false
     };
-  },
-  mounted: function mounted() {//
   },
   methods: {
     login: function login() {
-      // get the redirect object
-      var redirect = this.$auth.redirect();
       var app = this;
       this.$auth.login({
         params: {
           email: app.email,
           password: app.password
         },
-        success: function success() {
-          // handle redirection
-          var redirectTo = redirect ? redirect.from.name : this.$auth.user().role === 2 ? 'admin.dashboard' : 'dashboard';
-          this.$router.push({
-            name: redirectTo
-          });
-        },
-        error: function error() {
-          app.has_error = true;
-        },
+        success: function success() {},
+        error: function error() {},
         rememberMe: true,
+        redirect: '/dashboard',
         fetchUser: true
       });
     }
@@ -3311,12 +3300,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       name: '',
       email: '',
       password: '',
+      password_confirmation: '',
       error: false,
       errors: {},
       success: false
@@ -3325,12 +3320,12 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     register: function register() {
       var app = this;
-      console.log(app.name);
       this.$auth.register({
         data: {
           name: app.name,
           email: app.email,
-          password: app.password
+          password: app.password,
+          password_confirmation: app.password_confirmation
         },
         success: function success() {
           app.success = true;
@@ -5583,6 +5578,51 @@ var render = function() {
                         return
                       }
                       _vm.password = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm.error && _vm.errors.password
+                  ? _c("span", { staticClass: "help-block" }, [
+                      _vm._v(_vm._s(_vm.errors.password))
+                    ])
+                  : _vm._e()
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "form-group",
+                class: { "has-error": _vm.error && _vm.errors.password }
+              },
+              [
+                _c("label", { attrs: { for: "password_confirmation" } }, [
+                  _vm._v("Confirm Password")
+                ]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.password_confirmation,
+                      expression: "password_confirmation"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "password",
+                    id: "password_confirmation",
+                    required: ""
+                  },
+                  domProps: { value: _vm.password_confirmation },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.password_confirmation = $event.target.value
                     }
                   }
                 }),
