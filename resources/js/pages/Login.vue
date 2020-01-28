@@ -25,11 +25,8 @@
         error: false
       }
     },
-    computed: {
-
-    },
     mounted: function() {
-      console.log(this.$store.state);
+      console.log(this.$auth.user());
     },
     methods: {
       login(){
@@ -41,6 +38,8 @@
         this.$store.dispatch({
           type: 'login', 
           user
+        }).then(function(data) {
+          console.log(data);
         })
       },
     }

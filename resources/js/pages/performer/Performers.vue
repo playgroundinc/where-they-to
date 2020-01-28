@@ -1,3 +1,4 @@
+
 <template>
   <div class="main">
     <h1>Performers</h1>
@@ -10,22 +11,18 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
 export default {
+
     data() {
       return {
-        performers: [],
       }
     },
-    methods: {
-      _getData(route) {
-        axios.get(`/${route}`)
-        .then(({data}) => {
-          this[route] = data;
-        })
+    computed: mapState(['performers', 'user']),
+    mounted() {
+      if (!this.performers.length > 0) {
       }
-    },
-    created() {
-      this._getData('performers');
     }
   }
 </script>

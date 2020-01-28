@@ -71,7 +71,7 @@ class PerformerController extends Controller
         $socialLinks = User::find($performer->user['id'])->socialLinks;
         $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
-        return view('performers.show', compact('performer', 'socialLinks', 'platforms', 'family'));
+        return response()->json(['performer' => $performer, 'platforms' => $platforms, 'family' => $family, 'socialLinks' => $socialLinks]);
     }
 
     /**

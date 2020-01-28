@@ -6,7 +6,10 @@ import Login from './pages/Login'
 import Users from './pages/Users'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
+
 import Performers from './pages/performer/Performers'
+import Performer from './pages/performer/Performer';
+
 // Routes
 const routes = [
   {
@@ -69,6 +72,14 @@ const routes = [
       auth: false,
     }
   },
+  {
+    path: '/performers/:id',
+    name: 'performer',
+    component: Performer,
+    meta: {
+      auth: false,
+    }
+  }
 ]
 const router = new VueRouter({
   history: true,
