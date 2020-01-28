@@ -27,5 +27,7 @@ Route::resources([
   'users' => 'UserController',
   'events' => 'EventController',
   'venues' => 'VenueController',
-  'families' => 'FamilyController'
+  'families' => 'FamilyController',
 ]);
+
+Route::get('/performerTypes', 'TypeController@performerIndex');

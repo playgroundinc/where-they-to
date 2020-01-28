@@ -41,7 +41,7 @@ export default new Vuex.Store({
         .then((resp) => {
           commit('set_state', {
             name: route,
-            value: resp.data,
+            value: resp.data[route],
           })
           resolve(resp);
           return resp.data;

@@ -14,7 +14,6 @@
   <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
-  <header>
   <div id="app">
     <index></index>
   </div>

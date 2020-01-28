@@ -16,10 +16,10 @@
       <li>
         <router-link to="/events" exact>Events</router-link>
       </li>
-      <li v-if="!user">
+      <li v-if="user !== 0">
         <router-link to="/register">Register</router-link>
       </li>
-      <li v-if="!user">
+      <li v-if="user !== 0">
         <router-link to="/login">Login</router-link>
       </li>
     </ul>

@@ -9,6 +9,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 
 import Performers from './pages/performer/Performers'
 import Performer from './pages/performer/Performer';
+import EditPerformer from './pages/performer/Edit';
 
 // Routes
 const routes = [
@@ -76,6 +77,14 @@ const routes = [
     path: '/performers/:id',
     name: 'performer',
     component: Performer,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/performers/:id/edit',
+    name: 'edit performer',
+    component: EditPerformer,
     meta: {
       auth: false,
     }

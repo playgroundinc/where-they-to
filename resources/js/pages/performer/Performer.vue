@@ -4,10 +4,19 @@
     <h1>{{ performer.name }}</h1>
     <h2>Bio</h2>
     <p>{{ performer.bio }}</p>
+    <h2>Family</h2>
+    <a :href="'/families/' + family.id" >{{ family.name }}</a>
     <h2>Social Links</h2>
-    <ul>
+    <ul v-if="socialLinks">
       <li>Facebook: {{ socialLinks.facebook }}</li> 
+      <li>Twitter: {{ socialLinks.twitter }}</li>
+      <li>Instagram: {{ socialLinks.instagram }}</li>
+      <li>YouTube: {{ socialLinks.youtube }}</li>
+      <li>Website: {{ socialLinks.website }}</li>
     </ul>
+    <div v-if="performer.user && performer.user.id === user">
+      <a :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
+    </div>
   </div>
 </template>
 
@@ -26,14 +35,16 @@ export default {
       }
     },
     computed: {
-      ...mapState(['performers']),
+      ...mapState(['user']),
     },
     async mounted() {
       const response = await this.$store.dispatch('fetchSingle', {
         route: 'performers',
         id: this.id,
       })
-      console.log(response);
+      if(this.user === 0) {
+        this.$store.dispatch('findUser');
+      }
       this.performer = response.data.performer;
       this.socialLinks = response.data.socialLinks;
       this.family = response.data.family;
