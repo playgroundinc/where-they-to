@@ -29,7 +29,8 @@ class UserController extends Controller
         } catch (JWTException $e) {
           return response()->json(['error' => 'could_not_create_token'], 500);
       }
-      return response()->json(compact('token'));
+      $user = JWTAuth::user();
+      return response()->json(compact('token', 'user'));
     }
 
     public function register(Request $request)
@@ -83,6 +84,17 @@ class UserController extends Controller
         //
         $users = User::all();
         return view('users.index', compact('users'));
+    }
+
+    public function profile($id) {
+      $user = User::find($id);
+      if ($user['type'] === UserType::VENUE): 
+        $venue = $user->venue;
+        return response()->json(compact('venue'));
+      else: 
+        $performer = $user->performer;
+        return response()->json(compact('performer'));
+      endif;
     }
 
     /**

@@ -10,6 +10,10 @@ import AdminDashboard from './pages/admin/Dashboard'
 import Performers from './pages/performer/Performers'
 import Performer from './pages/performer/Performer';
 import EditPerformer from './pages/performer/Edit';
+import CreatePerformer from './pages/performer/Create';
+
+import CreateSocialLinks from './pages/socialLinks/Create';
+
 
 // Routes
 const routes = [
@@ -85,6 +89,24 @@ const routes = [
     path: '/performers/:id/edit',
     name: 'edit performer',
     component: EditPerformer,
+    meta: {
+      auth: false,
+    }
+  },
+
+  {
+    path: '/performers/create',
+    name: 'createPerformer',
+    component: CreatePerformer,
+    meta: {
+      auth: false,
+    }
+  },
+
+  {
+    path: '/social-links/create',
+    name: 'createSocialLinks',
+    component: CreateSocialLinks,
     meta: {
       auth: false,
     }

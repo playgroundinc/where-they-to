@@ -10,7 +10,7 @@
         <textarea class="input" name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio" v-model="performer.bio"></textarea>
       </div>
       <label class="label" for="performerType0">Performer Type</label>
-      <select class="input" name="performerType[0]" id="performerType0">
+      <select class="input" name="performerType[0]" id="performerType0" v-model="performer.type">
         <option v-for="performerType in performerTypes" :key="performerType.id"></option>
       </select>
       
@@ -30,6 +30,7 @@
         socialLinks: [],
         family: {},
         platforms: [],
+        type: '',
       }
     },
     computed: {
@@ -47,6 +48,7 @@
       this.socialLinks = response.data.socialLinks;
       this.family = response.data.family;
       this.platforms = response.data.platforms;
+      this.type = response.data.type;
       this.$store.dispatch('fetchState', { 
         route: 'performerTypes',
       })

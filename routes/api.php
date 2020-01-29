@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::post('auth/register', 'UserController@register');
 Route::post('auth/login', 'UserController@authenticate');
-Route::get('open', 'DataController@open');
+Route::get('user/{id}/profile', 'UserController@profile');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
@@ -28,6 +28,7 @@ Route::resources([
   'events' => 'EventController',
   'venues' => 'VenueController',
   'families' => 'FamilyController',
+  'social-links' => 'SocialLinksController',
 ]);
 
 Route::get('/performerTypes', 'TypeController@performerIndex');

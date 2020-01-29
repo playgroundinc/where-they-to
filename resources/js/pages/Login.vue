@@ -26,7 +26,6 @@
       }
     },
     mounted: function() {
-      console.log(this.$auth.user());
     },
     methods: {
       login(){
@@ -38,9 +37,11 @@
         this.$store.dispatch({
           type: 'login', 
           user
-        }).then(function(data) {
-          console.log(data);
-        })
+        }).then(() => {
+          this.$router.push("/");
+        }).catch((error) => {
+          console.log(error);
+        }) 
       },
     }
   } 

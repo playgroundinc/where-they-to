@@ -16,11 +16,14 @@
       <li>
         <router-link to="/events" exact>Events</router-link>
       </li>
-      <li v-if="user !== 0">
+      <li v-if="!user">
         <router-link to="/register">Register</router-link>
       </li>
-      <li v-if="user !== 0">
+      <li v-if="!user">
         <router-link to="/login">Login</router-link>
+      </li>
+      <li v-if="user">
+        <a href="#" v-on:click.prevent="logout">Logout</a>
       </li>
     </ul>
     <router-view></router-view>
@@ -35,7 +38,12 @@
       }
     },
     computed: {
-      ...mapState(['performers', 'events', 'venues', 'families','user']),
+      ...mapState(['performers', 'events', 'venues', 'families', 'user', 'profile']),
+    },
+    methods: {
+      logout: function() {
+        this.$store.dispatch('logout');
+      }
     },
     async mounted() {
       this.$store.dispatch('fetchState', { 
@@ -50,6 +58,7 @@
       this.$store.dispatch('fetchState', { 
         route: 'families',
       })
+      this.$store.dispatch('findUser');
     },
     components: {
         //

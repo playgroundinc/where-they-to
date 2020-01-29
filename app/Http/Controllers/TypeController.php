@@ -118,6 +118,6 @@ class TypeController extends Controller
     
     public function performerIndex() {
       $performerTypes = PerformerType::all();
-      return response()->json(['performerTypes' => $performerTypes]);
+      return response()->json(compact('performerTypes'));
     }
 }

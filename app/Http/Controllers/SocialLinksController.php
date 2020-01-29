@@ -53,15 +53,12 @@ class SocialLinksController extends Controller
         if ($request['user_id']) {
           $user = User::find($request['user_id']);
           $user->socialLinks()->save($socialLinks);
-          if ($request['redirect_to']){
-            return redirect($request['redirect_to']);
-          }
-          return redirect('/users');
         } elseif ($request['family_id']) {
           $family = Family::find($request['family_id']);
           $family->socialLinks()->save($socialLinks);
-          return redirect('/families');
         }
+        return response()->json(['status' => 'success'], 201);
+
     }
 
     /**

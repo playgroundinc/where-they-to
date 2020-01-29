@@ -54,34 +54,20 @@
       };
     },
     mounted: function() {
-      console.log(this.$store);
     },
     methods: {
-      register(){
-        console.log(this.$store);
-        var app = this
-        this.$auth.register({
-          data: {
-            username: app.username,
-            email: app.email,
-            password: app.password,
-            password_confirmation: app.password_confirmation,
-            type: app.type,
-          }, 
-          success: function (res) {
-            const { user } = res.data;
-            this.$store.commit('set_state', {
-              name: 'user',
-              value: res.data.user.id,
-            });
-            // app.success = true
-          },
-          error: function (resp) {
-            app.error = true;
-            app.errors = resp.response.data.errors;
-          },
-          redirect: null
-        });                
+      register: function() {
+        let data = {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password_confirmation,
+          type: this.type,
+        };
+        this.$store
+          .dispatch("register", data)
+          .then(() => this.$router.push("/"))
+          .catch(err => console.log(err));
       }
     }
   }

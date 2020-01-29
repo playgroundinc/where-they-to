@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Home</h1>
+    {{ user }}
     <h2>Performers</h2>
     <ul>
       <li v-for="performer in performers" v-bind:key="performer.id">
@@ -36,19 +37,10 @@ import { mapState } from 'vuex'
       }
     },
     computed: {
-      ...mapState(['performers', 'events', 'families', 'venues'])
+      ...mapState(['performers', 'events', 'families', 'venues', 'user'])
     },
     methods: {
-      async _getData(route) {
-        try {
-          const resp = await this.$store.dispatch('fetchState', {
-            route,
-          })
-          this[route] = resp.data
-        } catch(err) {
-          console.log(err);
-        }
-      }
+  
     },
     created() {
       // this._getData('performers');

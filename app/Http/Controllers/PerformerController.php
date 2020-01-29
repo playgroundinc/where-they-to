@@ -56,7 +56,7 @@ class PerformerController extends Controller
         $user = User::find($request['id']);
         $user->performer()->save($performer);
 
-        return view('socialLinks.create', ['user_id' => $user['id']]);
+        return response()->json(['status' => 'success'], 201);
     }
 
     /**
@@ -71,7 +71,8 @@ class PerformerController extends Controller
         $socialLinks = User::find($performer->user['id'])->socialLinks;
         $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
-        return response()->json(['performer' => $performer, 'platforms' => $platforms, 'family' => $family, 'socialLinks' => $socialLinks]);
+        $type = $performer->performerTypes;
+        return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
     }
 
     /**
@@ -84,7 +85,7 @@ class PerformerController extends Controller
     {
         //
         $socialLinks = User::find($performer->user['id'])->socialLinks;
-        $performerTypes = PerformerType::all();
+        $performerTypes = PerformerType::all(); 
         $platforms = config('enums.platforms');
         return view('performers.edit', compact('performer', 'socialLinks', 'platforms', 'performerTypes'));
         
