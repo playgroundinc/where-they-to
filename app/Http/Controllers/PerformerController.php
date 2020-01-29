@@ -68,7 +68,11 @@ class PerformerController extends Controller
     public function show(Performer $performer)
     {
         //
-        $socialLinks = User::find($performer->user['id'])->socialLinks;
+        $user = User::find($performer->user['id']);
+        $socialLinks = array();
+        if (isset($user)) {
+          $socialLinks = $user->socialLinks;
+        }
         $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
         $type = $performer->performerTypes;
@@ -107,7 +111,7 @@ class PerformerController extends Controller
           $performerType = PerformerType::find($performerTypeId);
           $performer->performerTypes()->attach($performerType);
         endforeach;
-        return redirect('/performers/'.$performer->id);
+        return response()->json(['status'=>'success'], 200);
     }
 
     /**

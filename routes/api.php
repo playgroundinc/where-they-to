@@ -31,4 +31,6 @@ Route::resources([
   'social-links' => 'SocialLinksController',
 ]);
 
+Route::put('/performers/{id}', 'PerformerController@update');
+
 Route::get('/performerTypes', 'TypeController@performerIndex');

@@ -35,7 +35,7 @@
     methods: {
       handleSubmit: function() {
         let data = {
-          user_id: this.user,
+          user_id: this.user.id,
           facebook: this.facebook,
           instagram: this.instagram,
           twitter: this.twitter,

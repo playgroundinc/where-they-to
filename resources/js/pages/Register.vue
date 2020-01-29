@@ -66,7 +66,13 @@
         };
         this.$store
           .dispatch("register", data)
-          .then(() => this.$router.push("/"))
+          .then((resp) => {
+            if (resp.data.user.type === "1") {
+              this.$router.push('/performers/create');
+            } else if (resp.data.user.type === "2") {
+              this.$router.push('./venues/create');
+            }
+          })
           .catch(err => console.log(err));
       }
     }

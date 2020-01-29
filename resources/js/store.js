@@ -110,7 +110,10 @@ export default new Vuex.Store({
         }).then(res => {
           commit('set_state', {
             name: 'user',
-            value: res.data.user.id,
+            value: {
+              id: res.data.user.id,
+              type: res.data.user.type,
+            }
           })
           return res.data.user
         }).catch((error)=> {
@@ -122,12 +125,12 @@ export default new Vuex.Store({
         })
       }
     },
-    createPerformer({commit}, data) {
+    create({commit}, payload) {
       return new Promise((resolve, reject) => {
         axios({
-          url: 'http://127.0.0.1:8000/api/performers',
+          url: `http://127.0.0.1:8000/api/${payload.route}`,
           method: "POST",
-          data
+          data: payload.data,
         }).then((resp) => {
           resolve(resp);
           return resp.data;
@@ -136,20 +139,19 @@ export default new Vuex.Store({
         });
       })
     },
-    createSocialLinks({commit}, data) {
+    edit({commit}, payload) {
       return new Promise((resolve, reject) => {
         axios({
-          url: 'http://127.0.0.1:8000/api/social-links',
-          method: "POST",
-          data
+          url: `http://127.0.0.1:8000/api/${payload.route}`,
+          method: "PUT",
+          data: payload.data,
         }).then((resp) => {
-          console.log(resp);
           resolve(resp);
           return resp.data;
-        }).catch((err) => {
-          reject(err);
+        }).catch((error) => {
+          console.log(error)
         });
-      })
+      });
     }
 
   },
@@ -160,7 +162,10 @@ export default new Vuex.Store({
     auth_success(state, payload){
       state.status = 'success'
       state.token = payload.token
-      state.user = payload.user.id
+      state.user = {
+        id: payload.user.id,
+        type: payload.user.type
+      }
     },
     auth_error(state){
       state.status = 'error'

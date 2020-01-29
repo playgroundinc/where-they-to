@@ -38,7 +38,7 @@
           name: this.name,
           bio: this.bio,
           performerType: this.performerType,
-          id: this.user
+          id: this.user.id
         }
         this.$store
           .dispatch('createPerformer', data)

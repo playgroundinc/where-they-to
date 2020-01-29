@@ -4157,8 +4157,12 @@ __webpack_require__.r(__webpack_exports__);
         password_confirmation: this.password_confirmation,
         type: this.type
       };
-      this.$store.dispatch("register", data).then(function () {
-        return _this.$router.push("/");
+      this.$store.dispatch("register", data).then(function (resp) {
+        if (resp.data.user.type === "1") {
+          _this.$router.push('/performers/create');
+        } else if (resp.data.user.type === "2") {
+          _this.$router.push('./venues/create');
+        }
       })["catch"](function (err) {
         return console.log(err);
       });
@@ -4303,7 +4307,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: this.name,
         bio: this.bio,
         performerType: this.performerType,
-        id: this.user
+        id: this.user.id
       };
       this.$store.dispatch('createPerformer', data).then(function () {
         _this.$router.push('/social-links/create');
@@ -4396,14 +4400,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       id: this.$route.params.id,
-      performer: {},
-      socialLinks: [],
-      family: {},
-      platforms: [],
-      type: ''
+      performerType: '',
+      name: '',
+      bio: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes'])),
+  methods: {
+    handleSubmit: function handleSubmit() {
+      var _this = this;
+
+      var data = {
+        name: this.name,
+        bio: this.bio,
+        performerType: [this.performerType]
+      };
+      var route = "performers/".concat(this.id);
+      this.$store.dispatch('edit', {
+        route: route,
+        data: data
+      }).then(function () {
+        _this.$router.push("/performers/".concat(_this.id));
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    }
+  },
   mounted: function () {
     var _mounted = _asyncToGenerator(
     /*#__PURE__*/
@@ -4426,16 +4448,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 this.$store.dispatch('findUser');
               }
 
-              this.performer = response.data.performer;
-              this.socialLinks = response.data.socialLinks;
-              this.family = response.data.family;
-              this.platforms = response.data.platforms;
-              this.type = response.data.type;
+              this.name = response.data.performer.name;
+              this.bio = response.data.performer.bio;
+              this.type = response.data.performer.type;
               this.$store.dispatch('fetchState', {
                 route: 'performerTypes'
               });
 
-            case 10:
+            case 8:
             case "end":
               return _context.stop();
           }
@@ -4508,7 +4528,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      id: this.$route.params.id || '',
+      id: this.$route.params.id,
       performer: {},
       socialLinks: [],
       family: {},
@@ -4656,7 +4676,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       var data = {
-        user_id: this.user,
+        user_id: this.user.id,
         facebook: this.facebook,
         instagram: this.instagram,
         twitter: this.twitter,
@@ -7306,15 +7326,20 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.performer
+  return _vm.id
     ? _c("div", { staticClass: "main" }, [
-        _vm._v("\n  " + _vm._s(_vm.performerTypes) + "\n  "),
         _c("h1", [_vm._v("Edit Performer profile")]),
         _vm._v(" "),
         _c(
           "form",
           {
-            attrs: { method: "POST", action: "'/performers/' + performer.id" }
+            attrs: { action: "'/performers/' + id" },
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.handleSubmit($event)
+              }
+            }
           },
           [
             _c("div", [
@@ -7327,19 +7352,19 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.performer.name,
-                    expression: "performer.name"
+                    value: _vm.name,
+                    expression: "name"
                   }
                 ],
                 staticClass: "input",
                 attrs: { type: "text", name: "name" },
-                domProps: { value: _vm.performer.name },
+                domProps: { value: _vm.name },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.$set(_vm.performer, "name", $event.target.value)
+                    _vm.name = $event.target.value
                   }
                 }
               }),
@@ -7353,8 +7378,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.performer.bio,
-                    expression: "performer.bio"
+                    value: _vm.bio,
+                    expression: "bio"
                   }
                 ],
                 staticClass: "input",
@@ -7365,13 +7390,13 @@ var render = function() {
                   rows: "10",
                   placeholder: "Performer bio"
                 },
-                domProps: { value: _vm.performer.bio },
+                domProps: { value: _vm.bio },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.$set(_vm.performer, "bio", $event.target.value)
+                    _vm.bio = $event.target.value
                   }
                 }
               })
@@ -7390,8 +7415,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.performer.type,
-                    expression: "performer.type"
+                    value: _vm.performerType,
+                    expression: "performerType"
                   }
                 ],
                 staticClass: "input",
@@ -7406,19 +7431,30 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.$set(
-                      _vm.performer,
-                      "type",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
+                    _vm.performerType = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
                   }
                 }
               },
-              _vm._l(_vm.performerTypes, function(performerType) {
-                return _c("option", { key: performerType.id })
+              _vm._l(_vm.performerTypes.performerTypes, function(
+                performerType
+              ) {
+                return _c("option", {
+                  key: performerType.id,
+                  domProps: {
+                    value: performerType.id,
+                    textContent: _vm._s(performerType.name)
+                  }
+                })
               }),
               0
-            )
+            ),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "btn",
+              attrs: { type: "submit", value: "Edit Profile" }
+            })
           ]
         ),
         _vm._v(" "),
@@ -7426,7 +7462,7 @@ var render = function() {
           "a",
           {
             staticClass: "btn btn--danger",
-            attrs: { href: "/performers/" + _vm.performer.id }
+            attrs: { href: "/performers/" + _vm.id }
           },
           [_vm._v("Delete Profile")]
         )
@@ -7492,7 +7528,7 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _vm.performer.user && _vm.performer.user.id === _vm.user
+    _vm.performer.user && _vm.performer.user.id === _vm.user.id
       ? _c("div", [
           _c(
             "a",
@@ -24893,6 +24929,13 @@ var routes = [{
     auth: false
   }
 }, {
+  path: '/performers/create',
+  name: 'createPerformer',
+  component: _pages_performer_Create__WEBPACK_IMPORTED_MODULE_10__["default"],
+  meta: {
+    auth: false
+  }
+}, {
   path: '/performers/:id',
   name: 'performer',
   component: _pages_performer_Performer__WEBPACK_IMPORTED_MODULE_8__["default"],
@@ -24903,13 +24946,6 @@ var routes = [{
   path: '/performers/:id/edit',
   name: 'edit performer',
   component: _pages_performer_Edit__WEBPACK_IMPORTED_MODULE_9__["default"],
-  meta: {
-    auth: false
-  }
-}, {
-  path: '/performers/create',
-  name: 'createPerformer',
-  component: _pages_performer_Create__WEBPACK_IMPORTED_MODULE_10__["default"],
   meta: {
     auth: false
   }
@@ -25061,7 +25097,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         }).then(function (res) {
           commit('set_state', {
             name: 'user',
-            value: res.data.user.id
+            value: {
+              id: res.data.user.id,
+              type: res.data.user.type
+            }
           });
           return res.data.user;
         })["catch"](function (error) {
@@ -25073,13 +25112,13 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       }
     },
-    createPerformer: function createPerformer(_ref7, data) {
+    create: function create(_ref7, payload) {
       var commit = _ref7.commit;
       return new Promise(function (resolve, reject) {
         axios({
-          url: 'http://127.0.0.1:8000/api/performers',
+          url: "http://127.0.0.1:8000/api/".concat(payload.route),
           method: "POST",
-          data: data
+          data: payload.data
         }).then(function (resp) {
           resolve(resp);
           return resp.data;
@@ -25088,19 +25127,18 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       });
     },
-    createSocialLinks: function createSocialLinks(_ref8, data) {
+    edit: function edit(_ref8, payload) {
       var commit = _ref8.commit;
       return new Promise(function (resolve, reject) {
         axios({
-          url: 'http://127.0.0.1:8000/api/social-links',
-          method: "POST",
-          data: data
+          url: "http://127.0.0.1:8000/api/".concat(payload.route),
+          method: "PUT",
+          data: payload.data
         }).then(function (resp) {
-          console.log(resp);
           resolve(resp);
           return resp.data;
-        })["catch"](function (err) {
-          reject(err);
+        })["catch"](function (error) {
+          console.log(error);
         });
       });
     }
@@ -25112,7 +25150,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     auth_success: function auth_success(state, payload) {
       state.status = 'success';
       state.token = payload.token;
-      state.user = payload.user.id;
+      state.user = {
+        id: payload.user.id,
+        type: payload.user.type
+      };
     },
     auth_error: function auth_error(state) {
       state.status = 'error';

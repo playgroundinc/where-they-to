@@ -19,7 +19,7 @@
         <li>Website: {{ socialLinks.website }}</li>
       </ul>
     </div>
-    <div v-if="performer.user && performer.user.id === user">
+    <div v-if="performer.user && performer.user.id === user.id">
       <a :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
     </div>
   </div>
@@ -32,7 +32,7 @@ export default {
 
     data() {
       return {
-        id: this.$route.params.id || '',
+        id: this.$route.params.id,
         performer: {},
         socialLinks: [],
         family: {},

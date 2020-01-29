@@ -77,6 +77,16 @@ const routes = [
       auth: false,
     }
   },
+
+  {
+    path: '/performers/create',
+    name: 'createPerformer',
+    component: CreatePerformer,
+    meta: {
+      auth: false,
+    }
+  },
+  
   {
     path: '/performers/:id',
     name: 'performer',
@@ -94,14 +104,6 @@ const routes = [
     }
   },
 
-  {
-    path: '/performers/create',
-    name: 'createPerformer',
-    component: CreatePerformer,
-    meta: {
-      auth: false,
-    }
-  },
 
   {
     path: '/social-links/create',
