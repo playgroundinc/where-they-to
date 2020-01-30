@@ -65,9 +65,10 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Performer $performer)
+    public function show($id)
     {
         //
+        $performer = Performer::find($id);
         $user = User::find($performer->user['id']);
         $socialLinks = array();
         if (isset($user)) {
@@ -85,9 +86,10 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Performer $performer)
+    public function edit($id)
     {
         //
+        $performer = Performer::find($id);
         $socialLinks = User::find($performer->user['id'])->socialLinks;
         $performerTypes = PerformerType::all(); 
         $platforms = config('enums.platforms');
@@ -102,9 +104,10 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Performer $performer)
+    public function update($id)
     {
         //
+        $performer = Performer::find($id);
         $performer->update(request(['name', 'bio']));
         $performer->performerTypes()->detach();
         foreach (request('performerType') as $performerTypeId):

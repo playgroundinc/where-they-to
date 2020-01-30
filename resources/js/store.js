@@ -125,10 +125,14 @@ export default new Vuex.Store({
         })
       }
     },
-    create({commit}, payload) {
+    create({commit, state}, payload) {
       return new Promise((resolve, reject) => {
+        const user = localStorage.getItem('token');
         axios({
           url: `http://127.0.0.1:8000/api/${payload.route}`,
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+          },
           method: "POST",
           data: payload.data,
         }).then((resp) => {
@@ -139,10 +143,13 @@ export default new Vuex.Store({
         });
       })
     },
-    edit({commit}, payload) {
+    edit({commit, state}, payload) {
       return new Promise((resolve, reject) => {
         axios({
           url: `http://127.0.0.1:8000/api/${payload.route}`,
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+          },
           method: "PUT",
           data: payload.data,
         }).then((resp) => {

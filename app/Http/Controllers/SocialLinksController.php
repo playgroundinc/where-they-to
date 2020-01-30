@@ -67,10 +67,11 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function show(SocialLinks $socialLink)
+    public function show($id)
     {
         //
-        return redirect('/');
+        $socialLinks = SocialLinks::find($id);
+        return response()->json(compact('socialLinks'));
     }
 
     /**
@@ -92,11 +93,12 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function update(SocialLinks $socialLink)
+    public function update($id)
     {
         //
+        $socialLink = SocialLinks::find($id);
         $socialLink->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
-        return redirect(request('redirect_to'));
+        return response()->json(['status' => 'success'], 200);
     }
 
     /**

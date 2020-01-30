@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <h1>Create Social Links</h1>
+    <h1>Edit Social Links</h1>
     <form action="/socialLinks" v-on:submit.prevent="handleSubmit"> 
       <label class="label" for="facebook">Facebook</label>
       <input type="text" class="input" id="facebook" name="facebook" v-model="facebook">
@@ -22,6 +22,8 @@
   export default {
     data() {
       return {
+        performerId: this.$route.params.id,
+        socialLinksId: this.$route.params.slid,
         facebook: '',
         instagram: '',
         twitter: '',
@@ -43,18 +45,25 @@
           youtube: this.youtube,
         }
         this.$store
-        .dispatch('create', { route: 'social-links',  data })
+        .dispatch('edit', { route: `social-links/${this.socialLinksId}`,  data })
         .then(() => {
-          this.$router.push('/');
+          this.$router.push(`/performers/${this.performerId}`);
         }).catch((err) => {
           console.log(err);
         })
       }
     },
     async mounted() {
-      if(this.user === 0) {
-        this.$store.dispatch('findUser');
-      }
+      const response = await this.$store.dispatch('fetchSingle', {
+        route: 'social-links',
+        id: this.socialLinksId,
+      });
+      const { socialLinks } = response.data;
+      this.facebook = socialLinks.facebook;
+      this.instagram = socialLinks.instagram;
+      this.twitter = socialLinks.twitter;
+      this.website = socialLinks.website;
+      this.youtube = socialLinks.youtube;
     }
 
   }

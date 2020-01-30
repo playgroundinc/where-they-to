@@ -41,7 +41,7 @@
           id: this.user.id
         }
         this.$store
-          .dispatch('createPerformer', data)
+          .dispatch('create', { route: 'performers', data})
           .then(() => {
             this.$router.push('/social-links/create');
           }).catch((err) => {

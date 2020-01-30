@@ -13,6 +13,7 @@ import EditPerformer from './pages/performer/Edit';
 import CreatePerformer from './pages/performer/Create';
 
 import CreateSocialLinks from './pages/socialLinks/Create';
+import EditSocialLinks from './pages/socialLinks/Edit';
 
 
 // Routes
@@ -109,6 +110,14 @@ const routes = [
     path: '/social-links/create',
     name: 'createSocialLinks',
     component: CreateSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/performers/:id/social-links/:slid/edit',
+    name: 'editSocialLinks',
+    component: EditSocialLinks,
     meta: {
       auth: false,
     }

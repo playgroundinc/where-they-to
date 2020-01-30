@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Home</h1>
-    {{ user }}
     <h2>Performers</h2>
     <ul>
       <li v-for="performer in performers" v-bind:key="performer.id">

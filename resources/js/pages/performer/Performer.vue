@@ -18,6 +18,7 @@
         <li>YouTube: {{ socialLinks.youtube }}</li>
         <li>Website: {{ socialLinks.website }}</li>
       </ul>
+      <a v-if="performer.user && performer.user.id === user.id" :href="'/performers/' + id + '/social-links/' + socialLinks.id + '/edit'" class="btn">Edit Social Links</a>
     </div>
     <div v-if="performer.user && performer.user.id === user.id">
       <a :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
@@ -47,9 +48,7 @@ export default {
         route: 'performers',
         id: this.id,
       })
-      if(this.user === 0) {
-        this.$store.dispatch('findUser');
-      }
+      this.$store.dispatch('findUser');
       this.performer = response.data.performer;
       this.socialLinks = response.data.socialLinks;
       this.family = response.data.family;
