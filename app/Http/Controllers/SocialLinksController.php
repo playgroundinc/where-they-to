@@ -96,8 +96,12 @@ class SocialLinksController extends Controller
     public function update($id)
     {
         //
-        $socialLink = SocialLinks::find($id);
-        $socialLink->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
+        $socialLinks = SocialLinks::find($id);
+        $user = $socialLinks->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
+        $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
         return response()->json(['status' => 'success'], 200);
     }
 

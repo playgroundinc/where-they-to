@@ -15,6 +15,11 @@ import CreatePerformer from './pages/performer/Create';
 import CreateSocialLinks from './pages/socialLinks/Create';
 import EditSocialLinks from './pages/socialLinks/Edit';
 
+import Venues from './pages/venues/Venues';
+import Venue from './pages/venues/Venue';
+import EditVenue from './pages/venues/Edit';
+import CreateVenue from './pages/venues/Create';
+
 
 // Routes
 const routes = [
@@ -69,6 +74,41 @@ const routes = [
       auth: false,
     }
   },
+  // VENUES ROUTES
+  {
+    path: '/venues',
+    name: 'venues',
+    component: Venues,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/venues/:id',
+    name: 'venue',
+    component: Venue,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/venues/:id/edit',
+    name: 'editVenue',
+    component: EditVenue,
+    meta: {
+      auth: false,
+    }
+  },
+
+  {
+    path: '/venues/create',
+    name: 'createVenue',
+    component: CreateVenue,
+    meta: {
+      auth: false,
+    }
+  },
+
   // PERFORMER ROUTES
   {
     path: '/performers',
@@ -115,7 +155,7 @@ const routes = [
     }
   },
   {
-    path: '/performers/:id/social-links/:slid/edit',
+    path: '/users/:id/social-links/:slid/edit',
     name: 'editSocialLinks',
     component: EditSocialLinks,
     meta: {

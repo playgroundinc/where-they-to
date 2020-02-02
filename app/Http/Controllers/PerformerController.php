@@ -21,7 +21,11 @@ class PerformerController extends Controller
     {
         //
         $performers = Performer::all();
-        return $performers;
+        foreach ($performers as $index=>$performer) {
+          $user = User::find($performer['user_id']);
+          $performers[$index]['socialLinks'] = $user->socialLinks;
+        }
+        return response()->json($performers, 200);
     }
 
     /**
@@ -108,6 +112,10 @@ class PerformerController extends Controller
     {
         //
         $performer = Performer::find($id);
+        $user = $performer->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
         $performer->update(request(['name', 'bio']));
         $performer->performerTypes()->detach();
         foreach (request('performerType') as $performerTypeId):
@@ -123,12 +131,17 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Performer $performer)
+    public function destroy($id)
     {
         //
+        $performer = Performer::find($id);
+        $user = $performer->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
         $performer->performerTypes()->detach();
         $performer->events()->detach();
         $performer->delete();
-        return redirect('/performers');
+        return response()->json(['status' => 'success'], 200);
     }
 }

@@ -1,6 +1,6 @@
 
 <template>
-  <div class="main">
+  <div class="main" v-if="performer">
     <h1>{{ performer.name }}</h1>
     <h2>Bio</h2>
 
@@ -9,18 +9,18 @@
       <h2>Family</h2>
       <a :href="'/families/' + family.id" >{{ family.name }}</a>
     </div> 
-    <div v-if="socialLinks">
+    <div v-if="performer.socialLinks">
       <h2>Social Links</h2>
       <ul>
-        <li>Facebook: {{ socialLinks.facebook }}</li> 
-        <li>Twitter: {{ socialLinks.twitter }}</li>
-        <li>Instagram: {{ socialLinks.instagram }}</li>
-        <li>YouTube: {{ socialLinks.youtube }}</li>
-        <li>Website: {{ socialLinks.website }}</li>
+        <li>Facebook: {{ performer.socialLinks.facebook }}</li> 
+        <li>Twitter: {{ performer.socialLinks.twitter }}</li>
+        <li>Instagram: {{ performer.socialLinks.instagram }}</li>
+        <li>YouTube: {{ performer.socialLinks.youtube }}</li>
+        <li>Website: {{ performer.socialLinks.website }}</li>
       </ul>
-      <a v-if="performer.user && performer.user.id === user.id" :href="'/performers/' + id + '/social-links/' + socialLinks.id + '/edit'" class="btn">Edit Social Links</a>
+      <a v-if="performer.user_id && user && performer.user_id === user.id" :href="'/users/' + user.id + '/social-links/' + performer.socialLinks.id + '/edit'" class="btn">Edit Social Links</a>
     </div>
-    <div v-if="performer.user && performer.user.id === user.id">
+    <div v-if="performer.user_id && user && performer.user_id === user.id">
       <a :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
     </div>
   </div>
@@ -34,25 +34,24 @@ export default {
     data() {
       return {
         id: this.$route.params.id,
-        performer: {},
-        socialLinks: [],
-        family: {},
-        platforms: []
+        platforms: [],
       }
     },
     computed: {
-      ...mapState(['user']),
+      ...mapState(['user', 'performers', 'families']),
+      performer: function() {
+        this.$forceUpdate();
+        return this.performers.find(entry => Number(entry.id) === Number(this.id))
+      },
+      family: function() {
+        this.$forceUpdate();
+        return this.families.find(entry => Number(entry.id) === Number(this.performer.family_id));
+      }
     },
-    async mounted() {
-      const response = await this.$store.dispatch('fetchSingle', {
-        route: 'performers',
-        id: this.id,
-      })
-      this.$store.dispatch('findUser');
-      this.performer = response.data.performer;
-      this.socialLinks = response.data.socialLinks;
-      this.family = response.data.family;
-      this.platforms = response.data.platforms;
+    created() {
+      if (!this.user) {
+        this.$store.dispatch('findUser');
+      }
     }
 
   }

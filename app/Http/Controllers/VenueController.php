@@ -18,6 +18,10 @@ class VenueController extends Controller
     {
         //
         $venues = Venue::all();
+        foreach ($venues as $index=>$venue) {
+          $user = User::find($venue['user_id']);
+          $venues[$index]['socialLinks'] = $user->socialLinks;
+        }
         return $venues;
     }
 
@@ -61,15 +65,11 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Venue $venue)
-    {
+    public function show($id)
+    { 
         //
-        $events = $venue->events;
-        $socialLinks = User::find($venue->user['id'])->socialLinks;
-        $platforms = config('enums.platforms');
-
-
-        return view('venues.show', compact('venue', 'socialLinks', 'platforms'));
+        $venue = Venue::find($id);
+        return response()->json(compact('venue'));
     }
 
     /**
@@ -93,11 +93,16 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Venue $venue)
+    public function update($id)
     {
         //
+        $venue = Venue::find($id);
+        $user = $venue->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
         $venue->update(request(['name', 'address', 'city', 'description']));
-        return redirect('/venues/'.$venue->id);
+        return response()->json(['status'=> 'success'], 200);
     }
 
     /**

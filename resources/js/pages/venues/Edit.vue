@@ -1,17 +1,17 @@
 <template>
   <div class="main" v-if="id">
     <h1>Edit Performer profile</h1>
-    <form v-on:submit.prevent="handleSubmit" action="'/performers/' + id">
+    <form v-on:submit.prevent="handleSubmit" action="'/venues/' + id">
       <div >
         <label class="label" for="name">Name</label>
         <input class="input" type="text" name="name" v-model="name">
-        <label class="label" for="bio">Bio</label>
-        <textarea class="input" name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio" v-model="bio"></textarea>
+        <label class="label" for="description">Bio</label>
+        <textarea class="input" name="description" id="description" cols="30" rows="10" placeholder="Venue description" v-model="description"></textarea>
+        <label class="label" for="address">Address</label>
+        <input class="input" type="text" name="address" v-model="address">
+        <label class="label" for="city">City</label>
+        <input class="input" type="text" name="city" v-model="city">
       </div>
-      <label class="label" for="performerType0">Performer Type</label>
-      <select class="input" name="performerType[0]" id="performerType0" v-model="performerType">
-        <option v-bind:value="performerType.id" v-for="performerType in performerTypes.performerTypes" :key="performerType.id" v-text="performerType.name" ></option>
-      </select>
       <input class="btn" type="submit" value="Edit Profile">
       
     </form>
@@ -26,56 +26,57 @@
     data() {
       return {
         id: this.$route.params.id,
-        performerType: '',
         name: '',
-        bio: ''
+        description: '',
+        address: '',
+        city: ''
       }
     },
     computed: {
-      ...mapState(['performers', 'user', 'performerTypes']),
+      ...mapState(['venues', 'user']),
     },
     methods: {
       handleSubmit: function() {
         let data = {
           name: this.name,
-          bio: this.bio,
-          performerType: [this.performerType],
+          description: this.description,
+          address: this.address,
+          city: this.city,
         }
-        let route = `performers`;
+        let route = `venues`;
         this.$store
           .dispatch('edit', {
             route, 
             id: this.id,
             data
           }).then(() => {
-            this.$router.push(`/performers/${this.id}`)
+            this.$router.push(`/venues/${this.id}`)
           }).catch((err)=>{
             console.log(err);
           });
       },
       handleDelete: function() {
         this.$store.dispatch('destroy', {
-          route: 'performers',
+          route: 'venues',
           id: this.id,
         }).then(()=>{
-          this.$router.push('/performers');
+          this.$router.push('/venues');
         });
       }
     },
     async mounted() {
       const response = await this.$store.dispatch('fetchSingle', {
-        route: 'performers',
+        route: 'venues',
         id: this.id,
       })
+      console.log(response);
       if(this.user === 0) {
         this.$store.dispatch('findUser');
       }
-      this.name = response.data.performer.name;
-      this.bio = response.data.performer.bio;
-      this.type = response.data.performer.type;
-      this.$store.dispatch('fetchState', { 
-        route: 'performerTypes',
-      })
+      this.name = response.data.venue.name;
+      this.description = response.data.venue.description;
+      this.address = response.data.venue.address;
+      this.city = response.data.venue.city;
     }
 
   }

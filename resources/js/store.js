@@ -113,6 +113,8 @@ export default new Vuex.Store({
             value: {
               id: res.data.user.id,
               type: res.data.user.type,
+              socialLinks: res.data.user.socialLinks,
+              profile: res.data.user.profile,
             }
           })
           return res.data.user
@@ -136,6 +138,9 @@ export default new Vuex.Store({
           method: "POST",
           data: payload.data,
         }).then((resp) => {
+          this.dispatch('fetchState', {
+            route: payload.route,
+          })
           resolve(resp);
           return resp.data;
         }).catch((err) => {
@@ -146,21 +151,44 @@ export default new Vuex.Store({
     edit({commit, state}, payload) {
       return new Promise((resolve, reject) => {
         axios({
-          url: `http://127.0.0.1:8000/api/${payload.route}`,
+          url: `http://127.0.0.1:8000/api/${payload.route}/${payload.id}`,
           headers: {
             'Authorization': `Bearer ${state.token}`,
           },
           method: "PUT",
           data: payload.data,
         }).then((resp) => {
+          this.dispatch('fetchState', { route: payload.route });
+          resolve(resp);
+          console.log(resp);
+          return resp.data;
+        }).catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+      });
+    },
+    destroy({state}, payload) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `http://127.0.0.1:8000/api/${payload.route}/${payload.id}`,
+          headers: {
+            'Authorization': `Bearer ${state.token}`,
+          },
+          method: "DELETE",
+        }).then((resp) => {
+          this.dispatch('fetchState', {
+            route: payload.route
+          })
+          this.dispatch('findUser');
           resolve(resp);
           return resp.data;
         }).catch((error) => {
-          console.log(error)
-        });
-      });
-    }
-
+          console.log(error);
+          reject(error);
+        })
+      })
+    },
   },
   mutations: {
     auth_request(state){
@@ -171,7 +199,8 @@ export default new Vuex.Store({
       state.token = payload.token
       state.user = {
         id: payload.user.id,
-        type: payload.user.type
+        type: payload.user.type,
+        socialLinks: payload.user.socialLinks
       }
     },
     auth_error(state){
@@ -189,8 +218,5 @@ export default new Vuex.Store({
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    singlePerformer: (state) => (id) => {
-      return state.performers.filter(performer => Number(performer.id) === Number(id));
-    }
   }
 })

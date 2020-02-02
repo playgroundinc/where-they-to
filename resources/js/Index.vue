@@ -22,9 +22,14 @@
       <li v-if="!user">
         <router-link to="/login">Login</router-link>
       </li>
+      <li v-if="user && user.profile">
+        <a v-if="user.type === 1" :href="'/performers/' + user.profile.id + '/edit'">Edit Profile</a>
+        <a v-if="user.type === 2" :href="'/venues/' + user.profile.id + '/edit'">Edit Profile</a>
+      </li>
       <li v-if="user">
         <a href="#" v-on:click.prevent="logout">Logout</a>
       </li>
+
     </ul>
     <router-view></router-view>
   </div>

@@ -45,9 +45,13 @@
           youtube: this.youtube,
         }
         this.$store
-        .dispatch('edit', { route: `social-links/${this.socialLinksId}`,  data })
+        .dispatch('edit', { 
+          route: 'performers',
+          id: `social-links/${this.socialLinksId}`,
+          data 
+        })
         .then(() => {
-          this.$router.push(`/performers/${this.performerId}`);
+          this.$router.push(`/performers/${this.user.profile.id}`);
         }).catch((err) => {
           console.log(err);
         })
