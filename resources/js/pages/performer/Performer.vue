@@ -40,11 +40,9 @@ export default {
     computed: {
       ...mapState(['user', 'performers', 'families']),
       performer: function() {
-        this.$forceUpdate();
         return this.performers.find(entry => Number(entry.id) === Number(this.id))
       },
       family: function() {
-        this.$forceUpdate();
         return this.families.find(entry => Number(entry.id) === Number(this.performer.family_id));
       }
     },

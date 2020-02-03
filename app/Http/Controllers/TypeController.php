@@ -120,4 +120,9 @@ class TypeController extends Controller
       $performerTypes = PerformerType::all();
       return response()->json(compact('performerTypes'));
     }
+
+    public function eventIndex() {
+      $eventTypes = EventType::all();
+      return response()->json($eventTypes);
+    }
 }

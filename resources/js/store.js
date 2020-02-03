@@ -13,6 +13,8 @@ export default new Vuex.Store({
     venues: [],
     families: [],
     performerTypes: [],
+    eventTypes: [],
+    tickets: [],
   },
   actions: {
     login({commit}, data) {

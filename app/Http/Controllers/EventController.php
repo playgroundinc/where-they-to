@@ -27,12 +27,19 @@ class EventController extends Controller
         $family->events()->save($event);
 
         $eventType = EventType::find($request['eventType']);
+        
         $eventType->events()->save($event);
 
         $performers = Performer::find(request('performers'));
         $event->performers()->detach();
         foreach($performers as $performer):
           $event->performers()->attach($performer);
+        endforeach;
+
+        $tickets = Ticket::find(request('tickets'));
+        $event->tickets()->detach();
+        foreach($tickets as $ticket):
+          $event->tickets()->attach($ticket);
         endforeach;
     }
 
@@ -43,6 +50,10 @@ class EventController extends Controller
     {
         //
         $events = Event::all();
+        foreach($events as $index=>$event):
+          $events[$index]['performers'] = $event->performers;
+          $events[$index]['tickets'] = $event->tickets;
+        endforeach;
         return $events;
     }
 
@@ -78,9 +89,7 @@ class EventController extends Controller
 
         $event = Event::create($attributes);
         $this->saveFields($request, $event);
-        
-        $platforms = config('enums.platforms');
-        return view('events.show', compact('event', 'platforms'));
+        return response()->json(['status'=> 'success'], 200);
     }
 
     /**
@@ -129,8 +138,8 @@ class EventController extends Controller
           'date',
           'type'
         ]));
-        $this->saveFields($request, $event);
-        return redirect('/events/'.$event->id);
+        $this->saveFields(request(), $event);
+        return response()->json(['status' => 'success'], 200);
     }
 
     /**
@@ -169,7 +178,5 @@ class EventController extends Controller
         $event->tickets()->attach($ticket);
       endforeach;
       return redirect('/events');
-      // $event->tickets()->detach();
-
     }
 }

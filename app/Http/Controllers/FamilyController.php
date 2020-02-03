@@ -50,8 +50,14 @@ class FamilyController extends Controller
           'description' => 'required',
         ]);
         $family = Family::create($attributes);
-        $family_id = $family->id;
-        return view('socialLinks.create', compact('family_id'));
+        $user = Performer::find(request('user')->performer['id']);
+        $family->performers()->save($user);
+        $performers = request('performers');
+        foreach ($performers as $performer):
+          $newPerformer = Performer::find($performer);
+          $family->performers()->save($newPerformer);
+        endforeach;
+        return response()->json(['status' => 'success'], 200);
     }
 
     /**

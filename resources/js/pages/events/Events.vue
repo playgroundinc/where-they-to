@@ -10,22 +10,14 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
 export default {
     data() {
       return {
-        events: [],
       }
     },
-    methods: {
-      _getData(route) {
-        axios.get(`/${route}`)
-        .then(({data}) => {
-          this[route] = data;
-        })
-      }
-    },
-    created() {
-      this._getData('events');
+    computed: {
+      ...mapState(['events', 'user'])
     }
   }
 </script>

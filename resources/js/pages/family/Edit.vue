@@ -1,5 +1,5 @@
 <template>
-  <div class="main" v-if="family">
+  <div class="main" v-if="family && user">
     <h1>Edit Family</h1>
     <form action="/families/" v-on:submit.prevent="handleSubmit">
       <label class="label" for="name">Name</label>
@@ -12,11 +12,13 @@
     <ul class="list container--inner">
         <li class="list-item list-item--flex" v-for="performer in family.performers" v-bind:key="performer.id">
           <a :href="'/performers/' + performer.id" v-text="performer.name"></a>
-          <button v-on:click.prevent="removePerformer(performer.id)">Remove Performer</button>
+          <button v-if="performer.id !== user.profile.id" v-on:click.prevent="removePerformer(performer.id)">Remove Performer</button>
+          <button v-if="performer.id === user.profile.id" v-on:click.prevent="leaveFamily(performer.id)">Leave Family</button>
         </li>
     </ul>
     <h2>Add New Performer</h2>
-    <select name="performers" id="performers" v-model="newPerformer">
+    <label for="newPerformer" class="label">New Performer</label>
+    <select class="input" name="newPerformer" id="newPerformer" v-model="newPerformer">
       <option v-for="performer in performers" v-bind:key="performer.id" v-text="performer.name" :value="performer.id"></option>
     </select>
     <button class="btn" v-on:click.prevent="addPerformer">Add New Performer</button>
@@ -34,16 +36,10 @@
       }
     },
     computed: {
-      ...mapState(['families', 'performers']),
+      ...mapState(['families', 'performers', 'user']),
       family: function() {
         return this.families.find(entry => Number(entry.id) === Number(this.id))
       },
-      familyMember: function() {
-        if (this.user && this.user.profile) {
-          return this.family.performers.find(entry => Number(entry.id) === Number(this.user.profile.id)) 
-        } 
-        return false;
-      }
     },
     methods: {
       removePerformer: function(id) {
@@ -65,6 +61,16 @@
           })
         })
       },
+      leaveFamily: function(id) {
+        this.$store.dispatch('destroy', {
+          route: 'families',
+          id: `performers/${id}/delete`
+        }).then(() => {
+          this.$router.push({path: `families/${id}`});
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
       handleSubmit: function() {
         let data = {
           name: this.family.name,
@@ -77,7 +83,7 @@
             id: this.id,
             data
           }).then(() => {
-            this.$router.push(`/families/${this.id}`)
+            this.$router.push(`families/${this.id}`)
           }).catch((err)=>{
             console.log(err);
           });

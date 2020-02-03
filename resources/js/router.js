@@ -7,9 +7,14 @@ import Users from './pages/Users'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
 
+import Events from './pages/events/Events';
+import Event from './pages/events/Event';
+import EditEvent from './pages/events/Edit';
+
 import Families from './pages/family/Families';
 import Family from './pages/family/Family';
 import EditFamily from './pages/family/Edit';
+import CreateFamily from './pages/family/Create';
 
 import Performers from './pages/performer/Performers'
 import Performer from './pages/performer/Performer';
@@ -167,11 +172,45 @@ const routes = [
     }
   },
 
+  // EVENTS ROUTES
+
+  {
+    path: '/events',
+    name: 'events',
+    component: Events,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/events/:id/edit',
+    name: 'editEvent',
+    component: EditEvent,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/events/:id',
+    name: 'Event',
+    component: Event,
+    meta: {
+      auth: false,
+    }
+  },
   // FAMILIES ROUTES
   {
     path: '/families',
     name: 'families',
     component: Families,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/families/create',
+    name: 'createFamily',
+    component: CreateFamily,
     meta: {
       auth: false,
     }
