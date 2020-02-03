@@ -111,10 +111,11 @@ class VenueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Venue $venue)
+    public function destroy($id)
     {
         //
+        $venue = Venue::find($id);
         $venue->delete();
-        return redirect('/venues');
+        return response()->json(['status' => 'success'], 200);
     }
 }

@@ -7,6 +7,10 @@ import Users from './pages/Users'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
 
+import Families from './pages/family/Families';
+import Family from './pages/family/Family';
+import EditFamily from './pages/family/Edit';
+
 import Performers from './pages/performer/Performers'
 import Performer from './pages/performer/Performer';
 import EditPerformer from './pages/performer/Edit';
@@ -83,6 +87,15 @@ const routes = [
       auth: false,
     }
   },
+
+  {
+    path: '/venues/create',
+    name: 'createVenue',
+    component: CreateVenue,
+    meta: {
+      auth: false,
+    }
+  },
   {
     path: '/venues/:id',
     name: 'venue',
@@ -95,15 +108,6 @@ const routes = [
     path: '/venues/:id/edit',
     name: 'editVenue',
     component: EditVenue,
-    meta: {
-      auth: false,
-    }
-  },
-
-  {
-    path: '/venues/create',
-    name: 'createVenue',
-    component: CreateVenue,
     meta: {
       auth: false,
     }
@@ -158,6 +162,48 @@ const routes = [
     path: '/users/:id/social-links/:slid/edit',
     name: 'editSocialLinks',
     component: EditSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+
+  // FAMILIES ROUTES
+  {
+    path: '/families',
+    name: 'families',
+    component: Families,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/families/:id/social-links',
+    name: 'familySocialLinks',
+    component: CreateSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/families/:fid/social-links/:slid/edit',
+    name: 'EditFamilySocialLinks',
+    component: EditSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/families/:id/edit',
+    name: 'editFamily',
+    component: EditFamily,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/families/:id',
+    name: 'family',
+    component: Family,
     meta: {
       auth: false,
     }

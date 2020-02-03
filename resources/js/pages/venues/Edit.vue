@@ -1,6 +1,6 @@
 <template>
   <div class="main" v-if="id">
-    <h1>Edit Performer profile</h1>
+    <h1>Edit Venue profile</h1>
     <form v-on:submit.prevent="handleSubmit" action="'/venues/' + id">
       <div >
         <label class="label" for="name">Name</label>
@@ -69,7 +69,6 @@
         route: 'venues',
         id: this.id,
       })
-      console.log(response);
       if(this.user === 0) {
         this.$store.dispatch('findUser');
       }

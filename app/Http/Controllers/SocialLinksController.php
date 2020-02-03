@@ -98,11 +98,19 @@ class SocialLinksController extends Controller
         //
         $socialLinks = SocialLinks::find($id);
         $user = $socialLinks->user;
-        if ($user->id !== request('user')->id):
-          return response()->json(['status' => 'unauthorized'], 401);
+        if (request('family_id')) {
+          $userPerformer = request('user')->performer;
+          if (intval($userPerformer['family_id']) === intval(request('family_id'))):
+            $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
+            return response()->json(['message'=>'success'], 200);
+          endif;
+          return response()->json(['message' => 'unauthorized'], 401);
+        }
+        if (request('user_id') && $user->id === request('user')->id):
+          $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
+          return response()->json(['status' => 'success'], 200);
         endif;
-        $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
-        return response()->json(['status' => 'success'], 200);
+        return response()->json(['status' => 'unauthorized'], 401);
     }
 
     /**

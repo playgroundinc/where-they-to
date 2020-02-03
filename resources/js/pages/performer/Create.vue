@@ -1,6 +1,6 @@
 <template>
   <div class="main" v-if="user">
-    <h1>Edit Performer profile</h1>
+    <h1>Create Performer profile</h1>
     <form method="POST" action="/performers" v-on:submit.prevent="handleSubmit">
       <div >
         <label class="label" for="name">Name</label>

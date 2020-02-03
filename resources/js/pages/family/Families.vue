@@ -1,3 +1,4 @@
+
 <template>
   <div class="main">
     <h1>Families</h1>
@@ -10,22 +11,13 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
 export default {
     data() {
       return {
-        families: [],
       }
     },
-    methods: {
-      _getData(route) {
-        axios.get(`/${route}`)
-        .then(({data}) => {
-          this[route] = data;
-        })
-      }
-    },
-    created() {
-      this._getData('families');
-    }
+    computed: mapState(['families', 'user']),
   }
 </script>

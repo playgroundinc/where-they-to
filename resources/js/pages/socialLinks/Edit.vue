@@ -22,7 +22,7 @@
   export default {
     data() {
       return {
-        performerId: this.$route.params.id,
+        family_id: this.$route.params.fid || null,
         socialLinksId: this.$route.params.slid,
         facebook: '',
         instagram: '',
@@ -37,21 +37,43 @@
     methods: {
       handleSubmit: function() {
         let data = {
-          user_id: this.user.id,
           facebook: this.facebook,
           instagram: this.instagram,
           twitter: this.twitter,
           website: this.website,
           youtube: this.youtube,
         }
+        if (this.family_id) {
+          data['family_id'] = this.family_id;
+        } else {
+          data['user_id'] = this.user.id;
+        }
         this.$store
         .dispatch('edit', { 
-          route: 'performers',
-          id: `social-links/${this.socialLinksId}`,
+          route: 'social-links',
+          id: `${this.socialLinksId}`,
           data 
         })
         .then(() => {
-          this.$router.push(`/performers/${this.user.profile.id}`);
+          if (this.family_id) {
+            this.$store.dispatch('fetchState', {
+              route: 'families',
+            })
+            return this.$router.push(`/families/${this.family_id}`);
+          }
+          if (this.user.type === 1) {
+            this.$store.dispatch('fetchState', {
+              route: 'performers',
+            })
+            return this.$router.push(`/performers/${this.user.profile.id}`);
+          }
+          if (this.user.type === 2) {
+            this.$store.dispatch('fetchState', {
+              route: 'venues',
+            })
+            return this.$router.push(`/venues/${this.user.profile.id}`);
+          }
+          return this.$router.push('/');
         }).catch((err) => {
           console.log(err);
         })

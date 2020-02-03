@@ -17,7 +17,11 @@ class FamilyController extends Controller
     {
         //
         $families = Family::all();
-        return $families;
+        foreach ($families as $index=>$family):
+          $families[$index]['socialLinks'] = $family->socialLinks;
+          $families[$index]['performers'] = $family->performers;
+        endforeach;
+        return response()->json($families, 200);
     }
 
     /**
@@ -89,11 +93,17 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Family $family)
+    public function update($id)
     {
         //
-        $family->update(request(['name', 'description']));
-        return redirect('/families/'.$family->id);
+        $family = Family::find($id);
+        $user = request('user');
+        $userPerformer = $user->performer;
+        if ($userPerformer['family_id'] === $family['id']):
+          $family->update(request(['name', 'description']));
+          return response()->json(['status' => 'success'], 200);
+        endif;
+        return response()->json(['message' => 'unauthorized'], 405);
     }
 
     /**
@@ -117,19 +127,26 @@ class FamilyController extends Controller
     public function performer($id) {
       $family = Family::find($id);
       $performer = Performer::find(request('performer'));
-      $family->performers()->save($performer);
-      $allPerformers = Performer::all();
-      $familyPerformers = Family::find($id)->performers;
-      return redirect('/families/'.$family->id.'/edit')->with(compact('allPerformers', 'familyPerformers', 'family'));
+      $userPerformer = request('user')->performer;
+      if (intval($id) === intval($userPerformer['family_id'])):
+        $family->performers()->save($performer);
+        $allPerformers = Performer::all();
+        $familyPerformers = Family::find($id)->performers;
+        return response()->json(['status' => 'success'], 200);
+      endif;
+      return response()->json(['message' => 'unauthorized user'], 401);
     }
+
     public function performerDestroy($id) {
       $performer = Performer::find($id);
-      $family_id = $performer->family_id;
-      $performer->family_id = null;
-      $performer->save();
-      $allPerformers = Performer::all();
-      $family = Family::find($family_id);
-      $familyPerformers = $family->performers;
-      return redirect('families/'.$family_id.'/edit')->with(compact('allPerformers', 'familyPerformers', 'family'));
+      $family = $performer->family;
+      $userPerformer = request('user')->performer;
+      if (intval($family['id']) === intval($userPerformer['family_id'])):
+        $performer->family()->dissociate();
+        $performer->save();
+        return response()->json(['status' => 'success'], 200);
+      endif;
+      return response()->json(['message' => 'unauthorized user'], 401);
+
     }
 }
