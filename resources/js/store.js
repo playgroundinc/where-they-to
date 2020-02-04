@@ -162,7 +162,6 @@ export default new Vuex.Store({
         }).then((resp) => {
           this.dispatch('fetchState', { route: payload.route });
           resolve(resp);
-          console.log(resp);
           return resp.data;
         }).catch((error) => {
           console.log(error);
@@ -178,16 +177,16 @@ export default new Vuex.Store({
             'Authorization': `Bearer ${state.token}`,
           },
           method: "DELETE",
+          data: payload.data,
         }).then((resp) => {
           this.dispatch('fetchState', {
             route: payload.route
           })
-          this.dispatch('findUser');
           resolve(resp);
           return resp.data;
         }).catch((error) => {
-          console.log(error);
           reject(error);
+          return error.message;
         })
       })
     },

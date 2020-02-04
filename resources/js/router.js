@@ -10,6 +10,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import Events from './pages/events/Events';
 import Event from './pages/events/Event';
 import EditEvent from './pages/events/Edit';
+import CreateEvent from './pages/events/Create';
 
 import Families from './pages/family/Families';
 import Family from './pages/family/Family';
@@ -178,6 +179,14 @@ const routes = [
     path: '/events',
     name: 'events',
     component: Events,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/events/create',
+    name: 'createEvents',
+    component: CreateEvent,
     meta: {
       auth: false,
     }

@@ -1,70 +1,49 @@
 <template>
-  <div class="main" v-if="user && event">
-    <h1>Edit Event</h1>
+  <div class="main" v-if="user">
+    <h1>Create Event</h1>
     <form action="/events" v-on:submit.prevent="handleSubmit">
       <label class="label" for="name" >Name</label>
-      <input class="input" type="text" name="name" id="name" v-model="event.name">
+      <input class="input" type="text" name="name" id="name" v-model="name">
       <label class="label" for="description">description</label>
-      <textarea class="input" name="description" id="description" cols="30" rows="10" v-model="event.description"></textarea>
+      <textarea class="input" name="description" id="description" cols="30" rows="10" v-model="description"></textarea>
       <label class="label" for="date">Date</label>
-      <input class="input" type="text" name="date" id="date" v-model="event.date">
+      <input class="input" type="text" name="date" id="date" v-model="date">
+      <label for="date" class="label">Time</label>
+      <input class="input" type="text" id="time" name="time" v-model="time">
       <label class="label" for="venue">Venue</label>
-      <div v-if="venue">
-        <select class="input" name="venue" id="venue" v-model="event.venue_id">
-          <option v-for="venue in venues" v-bind:key="venue.id" :value="venue.id" v-text="venue.name" :selected="{ true: venue.id === event.venue_id }"></option>
-        </select>
-      </div>
+      <select class="input" name="venue" id="venue" v-model="venue">
+        <option v-for="venue in venues" v-bind:key="venue.id" :value="venue.id" v-text="venue.name"></option>
+      </select>
       <fieldset v-if="eventTypes">
         <legend for="type" class="label">Event Type</legend>
         <ul class="list">
           <li class="list-item" v-for="eventType in eventTypes" v-bind:key="eventType.id" >
-            <input type="radio" name="type" :value="eventType.id" :id="eventType.name" :checked="Number(eventType.id) === Number(event['event_type_id'])" v-model="type">
+            <input type="radio" name="type" :value="eventType.id" :id="eventType.name" v-model="type">
             <label :for="eventType.name" v-text="eventType.name"></label>
           </li>
         </ul> 
       </fieldset>
       <div v-if="family">
         <label class="label" for="family">Family</label>
-        <select class="input" name="family" id="family" v-model="event.family_id">
+        <select class="input" name="family" id="family" v-model="family">
             <option v-for="family in families" v-bind:key="family.id" :value="family.id" v-text="family.name"></option>
         </select>
       </div>
-      <fieldset v-if="event.performers">
-        <legend class="label">Current Performers</legend>
-        <ul class="list">
-          <li class="list-item" v-for="eventPerformer in event.performers" v-bind:key="eventPerformer.id" >
-            <div v-if="eventPerformer.id !== user.profile.id">
-              <p>{{ eventPerformer.name }}</p>
-              <button @click.prevent="removePerformer(eventPerformer.id)">Remove Performer</button>
-            </div>
-          </li>
-        </ul> 
-      </fieldset>
       <fieldset v-if="performers">
         <legend for="newPerformers" class="label">Performers</legend>
         <ul class="list">
-          <li class="list-item" v-for="performer in filteredPerformers" v-bind:key="performer.id" >
-            <p>{{ performer.name }}</p>
-            <button @click.prevent="addPerformer(performer.id)">Add Performer</button>
-          </li>
-        </ul> 
-      </fieldset>
-      <h2>Current Tickets</h2>
-      <fieldset v-if="event.tickets">
-        <legend for="eventTickets" class="label">Current Tickets</legend>
-        <ul class="list">
-          <li class="list-item" v-for="eventTicket in event.tickets" v-bind:key="eventTicket.id" >
-            <p>${{eventTicket.price}} {{eventTicket.description }}</p>
-            <button @click.prevent="deleteTicket(eventTicket.id)">Remove Ticket</button>
+          <li class="list-item" v-for="performer in performers" v-bind:key="performer.id" >
+            <input v-if="performer.id !== user.profile.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
+            <label v-if="performer.id !== user.profile.id" :for="performer.name" v-text="performer.name"></label>
           </li>
         </ul> 
       </fieldset>
       <fieldset v-if="tickets">
         <legend for="tickets" class="label">Tickets</legend>
         <ul class="list">
-          <li class="list-item" v-for="ticket in filteredTickets" v-bind:key="ticket.id" >
-            <p>${{ ticket.price }} {{ ticket.description}}</p>
-            <button @click.prevent="updateTickets(ticket.id)">Add Ticket to Event</button>
+          <li class="list-item" v-for="ticket in tickets" v-bind:key="ticket.id" >
+            <input type="checkbox" :name="ticket.id" :value="ticket.id" :id="ticket.id" v-model="newTickets">
+            <label :for="ticket.id">${{ ticket.price}} {{ ticket.description }}</label>
           </li>
         </ul> 
         <div v-if="newTicket">
@@ -89,8 +68,15 @@ export default {
   data() {
     return {
       id: this.$route.params.id || '',
+      name: '',
+      description: '',
+      date: '',
+      time: '',
+      venue: '',
       newPerformers: [],
       newTickets: [],
+      family: '',
+      type: '',
       newTicket: false,
       ticketPrice: 0,
       ticketDescription: '',
@@ -99,29 +85,6 @@ export default {
   },
   computed: {
     ...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']),
-    event: function() {
-      return this.events.find(entry => Number(entry.id) === Number(this.id))
-    },
-    family: function() {
-      return this.families.find((entry) => Number(entry.id) === Number(this.event.family_id))
-    },
-    venue: function() {
-      return this.venues.find((entry) => Number(entry.id) === Number(this.event.venue_id))
-    },
-    filteredTickets: function() {
-      return this.tickets.filter(entry => !this.event.tickets.find((item) => Number(item.id) === Number(entry.id)));
-    },
-    filteredPerformers: function() {
-      return this.performers.filter(entry => !this.event.performers.find((item) => Number(item.id) === Number(entry.id)));
-    },
-    type: {
-      get() {
-        return this.event.event_type_id;
-      },
-      set(value) {
-        this.event.event_type_id = value;
-      }
-    }
   },
   methods: {
     addTicket: function() {
@@ -129,20 +92,21 @@ export default {
     },
     handleSubmit: function() {
       let data = {
-        name: this.event.name,
-        description: this.event.description,
-        date: this.event.date,
-        time: this.event.time,
-        venue: this.venue['id'],
-        family: this.family['id'],
+        name: this.name,
+        description: this.description,
+        date: this.date,
+        time: this.time,
+        venue: this.venue,
+        family: this.family,
         eventType: this.type,
+        performers: this.newPerformers,
+        tickets: this.newTickets
       }
-      this.$store.dispatch('edit', {
+      this.$store.dispatch('create', {
         route: 'events',
-        id: this.id,
         data,
       }).then((resp) => {
-        this.$router.push({path: `/events/${this.id}`})
+        this.$router.push({path: `/events`})
       });
     },
     updateTickets: function(ticket) {
@@ -165,8 +129,6 @@ export default {
         route: 'tickets',
         data,
       }).then((resp) => {
-        const ticket = resp.data[0].id;
-        this.updateTickets(ticket);
         this.ticketPrice = 0;
         this.ticketDescription = '';
         this.ticketUrl = '';
