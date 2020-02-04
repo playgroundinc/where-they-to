@@ -20,15 +20,18 @@ class EventController extends Controller
      */
 
     private function saveFields($request, $event) {
-        $venue = Venue::find($request['venue']);
-        $venue->events()->save($event);
-
-        $family = Family::find($request['family']);
-        $family->events()->save($event);
-
-        $eventType = EventType::find($request['eventType']);
-        $eventType->events()->save($event);
-
+        if ($request['venue']):
+          $venue = Venue::find($request['venue']);
+          $venue->events()->save($event);
+        endif;
+        if ($request['family']):
+          $family = Family::find($request['family']);
+          $family->events()->save($event);
+        endif;
+        if ($request['eventType']):
+          $eventType = EventType::find($request['eventType']);
+          $eventType->events()->save($event);
+        endif;
         if ($request['performers']):
           $performers = Performer::find(request('performers'));
           $event->performers()->detach();

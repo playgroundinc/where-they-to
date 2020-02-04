@@ -133,9 +133,13 @@ export default {
         description: this.event.description,
         date: this.event.date,
         time: this.event.time,
-        venue: this.venue['id'],
-        family: this.family['id'],
         eventType: this.type,
+      }
+      if (this.venue) {
+        data['venue'] = this.venue['id']
+      }
+      if (this.family) {
+        data['family'] = this.family['id']
       }
       this.$store.dispatch('edit', {
         route: 'events',
