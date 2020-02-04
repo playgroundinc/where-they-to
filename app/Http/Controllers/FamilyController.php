@@ -118,16 +118,22 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Family $family)
+    public function destroy($id)
     {
         //
-        $performers = $family->performers;
-        foreach($performers as $performer) {
-          $performer->family_id = null;
-          $performer->save();
-        }
-        $family->delete();
-        return redirect('/families');
+        $family = Family::find($id);
+        $user = request('user');
+        $userPerformer = $user->performer;
+        if ($userPerformer['family_id'] === $family['id']):
+          $performers = $family->performers;
+          foreach($performers as $performer) {
+            $performer->family_id = null;
+            $performer->save();
+          }
+          $family->delete();
+          return response()->json(['status' => 'success'], 200);
+        endif;
+        return response()->json(['status' => 'unauthorized'], 401);
     }
 
     public function performer($id) {

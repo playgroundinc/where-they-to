@@ -45,6 +45,9 @@
         this.$store
           .dispatch('create', { route: 'venues', data})
           .then(() => {
+            this.$router.dispatch('fetchState', {
+              route: 'venues'
+            })
             this.$router.push('/social-links/create');
           }).catch((err) => {
             console.log(err)

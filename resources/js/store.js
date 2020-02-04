@@ -140,9 +140,6 @@ export default new Vuex.Store({
           method: "POST",
           data: payload.data,
         }).then((resp) => {
-          this.dispatch('fetchState', {
-            route: payload.route,
-          })
           resolve(resp);
           return resp.data;
         }).catch((err) => {

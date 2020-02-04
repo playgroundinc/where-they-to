@@ -59,6 +59,7 @@ class EventController extends Controller
         foreach($events as $index=>$event):
           $events[$index]['performers'] = $event->performers;
           $events[$index]['tickets'] = $event->tickets;
+          $events[$index]['social_links'] = $event->socialLinks;
         endforeach;
         return $events;
     }
@@ -94,6 +95,8 @@ class EventController extends Controller
         ]);
 
         $event = Event::create($attributes);
+        $user = request('user');
+        $user->events()->save($event);
         $this->saveFields(request(), $event);
         return response()->json(['status'=> 'success'], 200);
     }
@@ -139,14 +142,19 @@ class EventController extends Controller
     {
         //
         $event = Event::find($id);
-        $event->update(request([
-          'name',
-          'description',
-          'date',
-          'type'
-        ]));
-        $this->saveFields(request(), $event);
-        return response()->json(['status' => 'success'], 200);
+        $user = $event->user;
+        $validatedUser = request('user');
+        if ($user['id'] === $validatedUser['id']):
+          $event->update(request([
+            'name',
+            'description',
+            'date',
+            'type'
+          ]));
+          $this->saveFields(request(), $event);
+          return response()->json(['status' => 'success'], 200);
+        endif;
+        return response()->json(['status' => 'unauthorized'], 401);
     }
 
     /**
@@ -155,12 +163,18 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Event $event)
+    public function destroy($id)
     {
         //
-        $event->performers()->detach();
-        $event->delete();
-        return redirect('/events');
+        $event = Event::find($id);
+        $user = $event->user;
+        $validatedUser = request('user');
+        if ($user['id'] === $validatedUser['id']):
+          $event->performers()->detach();
+          $event->delete();
+          return response()->json(['status' => 'success'], 200);
+        endif; 
+        return response()->json(['status' => 'unauthorized'], 401);
     }
 
     public function addTicket($id) 

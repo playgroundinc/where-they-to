@@ -23,6 +23,7 @@
     data() {
       return {
         family_id: this.$route.params.fid || null,
+        event_id: this.$route.params.eid || null,
         socialLinksId: this.$route.params.slid,
         facebook: '',
         instagram: '',
@@ -45,6 +46,8 @@
         }
         if (this.family_id) {
           data['family_id'] = this.family_id;
+        } else if (this.event_id) {
+          data['event_id'] = this.event_id;
         } else {
           data['user_id'] = this.user.id;
         }
@@ -55,6 +58,12 @@
           data 
         })
         .then(() => {
+          if (this.event_id) {
+            this.$store.dispatch('fetchState', {
+              route: 'events',
+            })
+            return this.$router.push(`/events/${this.event_id}`);
+          }
           if (this.family_id) {
             this.$store.dispatch('fetchState', {
               route: 'families',

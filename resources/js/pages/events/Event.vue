@@ -47,7 +47,20 @@
       </ul>
       <p v-else>No tickets currently listed</p>
     </div>
-    <a :href="'/events/' + event.id + '/edit'" class="btn">Edit Event</a>
+    <div>
+      <h2>Social Links</h2>
+      <ul v-if="event.social_links">
+        <li v-if="event.social_links.facebook">Facebook: {{event.social_links.facebook }}</li>
+        <li v-if="event.social_links.instagram">Instagram: {{event.social_links.instagram }}</li>
+        <li v-if="event.social_links.twitter">Twitter: {{ event.social_links.twitter }}</li>
+        <li v-if="event.social_links.youtube">Youtube: {{ event.social_links.youtube }}</li>
+        <li v-if="event.social_links.website">Website: {{ event.social_links.website }}</li>
+      </ul>
+    </div>
+    <div>
+
+    </div>
+    <a v-if="user.id === event.user_id" :href="'/events/' + event.id + '/edit'" class="btn">Edit Event</a>
 
   </div>
 </template>

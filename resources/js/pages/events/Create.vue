@@ -106,6 +106,9 @@ export default {
         route: 'events',
         data,
       }).then((resp) => {
+        this.$store.dispatch('fetchState', {
+          route: 'events',
+        })
         this.$router.push({path: `/events`})
       });
     },
@@ -129,6 +132,9 @@ export default {
         route: 'tickets',
         data,
       }).then((resp) => {
+        this.$store.dispatch('fetchState', {
+          route: 'tickets',
+        })
         this.ticketPrice = 0;
         this.ticketDescription = '';
         this.ticketUrl = '';

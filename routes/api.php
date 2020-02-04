@@ -32,6 +32,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::delete('families/performers/{id}/delete', 'FamilyController@performerDestroy');
     Route::put('families/{id}', 'FamilyController@update');
+    Route::delete('families/{id}', 'FamilyController@destroy');
     Route::post('families', 'FamilyController@store');
     Route::post('families/{id}/performer', 'FamilyController@performer');
 

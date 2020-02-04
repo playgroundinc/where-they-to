@@ -4379,6 +4379,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         route: 'events',
         data: data
       }).then(function (resp) {
+        _this.$store.dispatch('fetchState', {
+          route: 'events'
+        });
+
         _this.$router.push({
           path: "/events"
         });
@@ -4406,6 +4410,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         route: 'tickets',
         data: data
       }).then(function (resp) {
+        _this2.$store.dispatch('fetchState', {
+          route: 'tickets'
+        });
+
         _this2.ticketPrice = 0;
         _this2.ticketDescription = '';
         _this2.ticketUrl = '';
@@ -4471,6 +4479,9 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
 //
 //
 //
@@ -4651,6 +4662,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
+    handleDelete: function handleDelete() {
+      var _this7 = this;
+
+      var data = {};
+      this.$store.dispatch('destroy', {
+        route: 'events',
+        id: this.id,
+        data: data
+      }).then(function () {
+        _this7.$router.push('/events');
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
     updateTickets: function updateTickets(ticket) {
       var data = {
         ticket: ticket
@@ -4662,7 +4687,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     createTicket: function createTicket() {
-      var _this7 = this;
+      var _this8 = this;
 
       var data = {
         price: this.ticketPrice,
@@ -4675,12 +4700,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }).then(function (resp) {
         var ticket = resp.data[0].id;
 
-        _this7.updateTickets(ticket);
+        _this8.updateTickets(ticket);
 
-        _this7.ticketPrice = 0;
-        _this7.ticketDescription = '';
-        _this7.ticketUrl = '';
-        _this7.newTicket = false;
+        _this8.ticketPrice = 0;
+        _this8.ticketDescription = '';
+        _this8.ticketUrl = '';
+        _this8.newTicket = false;
       });
     },
     deleteTicket: function deleteTicket(ticket) {
@@ -4742,6 +4767,19 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4990,6 +5028,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5005,6 +5048,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.families.find(function (entry) {
         return Number(entry.id) === Number(_this.id);
       });
+    },
+    filteredPerformers: function filteredPerformers() {
+      var _this2 = this;
+
+      return this.performers.filter(function (entry) {
+        return !_this2.family.performers.find(function (item) {
+          return Number(item.id) === Number(entry.id);
+        });
+      });
     }
   }),
   methods: {
@@ -5014,29 +5066,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: "performers/".concat(id, "/delete")
       });
     },
-    addPerformer: function addPerformer() {
-      var _this2 = this;
+    addPerformer: function addPerformer(id) {
+      var _this3 = this;
 
       var data = {
-        performer: this.newPerformer
+        performer: id
       };
       this.$store.dispatch('create', {
         route: "families/".concat(this.id, "/performer"),
         data: data
       }).then(function () {
-        _this2.$store.dispatch('fetchState', {
+        _this3.$store.dispatch('fetchState', {
           route: 'families'
         });
       });
     },
     leaveFamily: function leaveFamily(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$store.dispatch('destroy', {
         route: 'families',
         id: "performers/".concat(id, "/delete")
       }).then(function () {
-        _this3.$router.push({
+        _this4.$router.push({
           path: "families/".concat(id)
         });
       })["catch"](function (err) {
@@ -5044,7 +5096,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     handleSubmit: function handleSubmit() {
-      var _this4 = this;
+      var _this5 = this;
 
       var data = {
         name: this.family.name,
@@ -5056,7 +5108,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function () {
-        _this4.$router.push("families/".concat(_this4.id));
+        _this5.$router.push("/families/".concat(_this5.id));
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    destroyFamily: function destroyFamily() {
+      var _this6 = this;
+
+      var data = {};
+      this.$store.dispatch('destroy', {
+        route: 'families',
+        id: this.id,
+        data: data
+      }).then(function () {
+        _this6.$router.push('/families');
       })["catch"](function (err) {
         console.log(err);
       });
@@ -5336,20 +5402,65 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       id: this.$route.params.id,
-      performerType: '',
       name: '',
       bio: ''
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes']), {
+    performer: function performer() {
+      var _this = this;
+
+      return this.performers.find(function (entry) {
+        return Number(entry.id) === Number(_this.id);
+      });
+    },
+    types: {
+      get: function get() {
+        if (this.performer) {
+          return this.performer.type;
+        }
+
+        return [];
+      },
+      set: function set(value) {
+        if (this.performer) {
+          this.performer.type = value;
+        }
+      }
+    },
+    filteredPerformerTypes: function filteredPerformerTypes() {
+      var _this2 = this;
+
+      if (this.performerTypes.performerTypes) {
+        return this.performerTypes.performerTypes.filter(function (entry) {
+          return !_this2.performer.type.find(function (item) {
+            return Number(item.id) === Number(entry.id);
+          });
+        });
+      }
+    }
+  }),
   methods: {
     handleSubmit: function handleSubmit() {
-      var _this = this;
+      var _this3 = this;
 
       var data = {
         name: this.name,
@@ -5362,19 +5473,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function () {
-        _this.$router.push("/performers/".concat(_this.id));
+        _this3.$router.push("/performers/".concat(_this3.id));
       })["catch"](function (err) {
         console.log(err);
       });
     },
     handleDelete: function handleDelete() {
-      var _this2 = this;
+      var _this4 = this;
 
       this.$store.dispatch('destroy', {
         route: 'performers',
         id: this.id
       }).then(function () {
-        _this2.$router.push('/performers');
+        _this4.$router.push('/performers');
       });
     }
   },
@@ -5614,7 +5725,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       twitter: '',
       website: '',
       youtube: '',
-      family_id: this.$route.params.id || null
+      family_id: this.$route.params.id || null,
+      event_id: this.$route.params.eid || null
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])),
@@ -5632,6 +5744,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (this.family_id) {
         data['family_id'] = this.family_id;
+      } else if (this.event_id) {
+        data['event_id'] = this.event_id;
       } else {
         data['user_id'] = this.user.id;
       }
@@ -5639,7 +5753,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.dispatch('create', {
         route: 'social-links',
         data: data
-      }).then(function () {
+      }).then(function (resp) {
+        console.log(resp);
+
+        if (_this.event_id) {
+          _this.$store.dispatch('fetchState', {
+            route: 'events'
+          });
+
+          return _this.$router.push("/events/".concat(_this.event_id));
+        }
+
+        if (_this.family_id) {
+          _this.$store.dispatch('fetchState', {
+            route: 'families'
+          });
+
+          return _this.$router.push("/families/".concat(_this.family_id));
+        }
+
+        _this.$store.dispatch('findUser');
+
         _this.$router.push('/');
       })["catch"](function (err) {
         console.log(err);
@@ -5724,6 +5858,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       family_id: this.$route.params.fid || null,
+      event_id: this.$route.params.eid || null,
       socialLinksId: this.$route.params.slid,
       facebook: '',
       instagram: '',
@@ -5747,6 +5882,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (this.family_id) {
         data['family_id'] = this.family_id;
+      } else if (this.event_id) {
+        data['event_id'] = this.event_id;
       } else {
         data['user_id'] = this.user.id;
       }
@@ -5756,6 +5893,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: "".concat(this.socialLinksId),
         data: data
       }).then(function () {
+        if (_this.event_id) {
+          _this.$store.dispatch('fetchState', {
+            route: 'events'
+          });
+
+          return _this.$router.push("/events/".concat(_this.event_id));
+        }
+
         if (_this.family_id) {
           _this.$store.dispatch('fetchState', {
             route: 'families'
@@ -5928,6 +6073,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         route: 'venues',
         data: data
       }).then(function () {
+        _this.$router.dispatch('fetchState', {
+          route: 'venues'
+        });
+
         _this.$router.push('/social-links/create');
       })["catch"](function (err) {
         console.log(err);
@@ -9816,6 +9965,40 @@ var render = function() {
               attrs: { type: "submit", value: "Update Event" }
             })
           ]
+        ),
+        _vm._v(" "),
+        this.event.social_links
+          ? _c(
+              "a",
+              {
+                attrs: {
+                  href:
+                    "/events/" +
+                    this.id +
+                    "/social-links/" +
+                    this.event.social_links.id
+                }
+              },
+              [_vm._v("Update Social Links")]
+            )
+          : _c(
+              "a",
+              { attrs: { href: "/events/" + this.id + "/social-links" } },
+              [_vm._v("Create Social Links")]
+            ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn--danger",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.handleDelete($event)
+              }
+            }
+          },
+          [_vm._v("Delete Event")]
         )
       ])
     : _vm._e()
@@ -9941,14 +10124,66 @@ var render = function() {
             : _c("p", [_vm._v("No tickets currently listed")])
         ]),
         _vm._v(" "),
-        _c(
-          "a",
-          {
-            staticClass: "btn",
-            attrs: { href: "/events/" + _vm.event.id + "/edit" }
-          },
-          [_vm._v("Edit Event")]
-        )
+        _c("div", [
+          _c("h2", [_vm._v("Social Links")]),
+          _vm._v(" "),
+          _vm.event.social_links
+            ? _c("ul", [
+                _vm.event.social_links.facebook
+                  ? _c("li", [
+                      _vm._v(
+                        "Facebook: " + _vm._s(_vm.event.social_links.facebook)
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.event.social_links.instagram
+                  ? _c("li", [
+                      _vm._v(
+                        "Instagram: " + _vm._s(_vm.event.social_links.instagram)
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.event.social_links.twitter
+                  ? _c("li", [
+                      _vm._v(
+                        "Twitter: " + _vm._s(_vm.event.social_links.twitter)
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.event.social_links.youtube
+                  ? _c("li", [
+                      _vm._v(
+                        "Youtube: " + _vm._s(_vm.event.social_links.youtube)
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.event.social_links.website
+                  ? _c("li", [
+                      _vm._v(
+                        "Website: " + _vm._s(_vm.event.social_links.website)
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div"),
+        _vm._v(" "),
+        _vm.user.id === _vm.event.user_id
+          ? _c(
+              "a",
+              {
+                staticClass: "btn",
+                attrs: { href: "/events/" + _vm.event.id + "/edit" }
+              },
+              [_vm._v("Edit Event")]
+            )
+          : _vm._e()
       ])
     : _vm._e()
 }
@@ -10274,6 +10509,99 @@ var render = function() {
               }
             }),
             _vm._v(" "),
+            _c("h2", [_vm._v("Current Performers")]),
+            _vm._v(" "),
+            _c(
+              "ul",
+              { staticClass: "list container--inner" },
+              _vm._l(_vm.family.performers, function(performer) {
+                return _c(
+                  "li",
+                  {
+                    key: performer.id,
+                    staticClass: "list-item list-item--flex"
+                  },
+                  [
+                    _c("a", {
+                      attrs: { href: "/performers/" + performer.id },
+                      domProps: { textContent: _vm._s(performer.name) }
+                    }),
+                    _vm._v(" "),
+                    performer.id !== _vm.user.profile.id
+                      ? _c(
+                          "button",
+                          {
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.removePerformer(performer.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Remove Performer")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    performer.id === _vm.user.profile.id
+                      ? _c(
+                          "button",
+                          {
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.leaveFamily(performer.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Leave Family")]
+                        )
+                      : _vm._e()
+                  ]
+                )
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c("h2", [_vm._v("Add New Performer")]),
+            _vm._v(" "),
+            _vm.performers
+              ? _c("fieldset", [
+                  _c(
+                    "legend",
+                    { staticClass: "label", attrs: { for: "newPerformers" } },
+                    [_vm._v("Performers")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "list" },
+                    _vm._l(_vm.filteredPerformers, function(performer) {
+                      return _c(
+                        "li",
+                        { key: performer.id, staticClass: "list-item" },
+                        [
+                          _c("p", [_vm._v(_vm._s(performer.name))]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.addPerformer(performer.id)
+                                }
+                              }
+                            },
+                            [_vm._v("Add Performer")]
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _c("input", {
               staticClass: "btn",
               attrs: { type: "submit", value: "Submit" }
@@ -10281,115 +10609,18 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _c("h2", [_vm._v("Current Performers")]),
-        _vm._v(" "),
-        _c(
-          "ul",
-          { staticClass: "list container--inner" },
-          _vm._l(_vm.family.performers, function(performer) {
-            return _c(
-              "li",
-              { key: performer.id, staticClass: "list-item list-item--flex" },
-              [
-                _c("a", {
-                  attrs: { href: "/performers/" + performer.id },
-                  domProps: { textContent: _vm._s(performer.name) }
-                }),
-                _vm._v(" "),
-                performer.id !== _vm.user.profile.id
-                  ? _c(
-                      "button",
-                      {
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.removePerformer(performer.id)
-                          }
-                        }
-                      },
-                      [_vm._v("Remove Performer")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                performer.id === _vm.user.profile.id
-                  ? _c(
-                      "button",
-                      {
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.leaveFamily(performer.id)
-                          }
-                        }
-                      },
-                      [_vm._v("Leave Family")]
-                    )
-                  : _vm._e()
-              ]
-            )
-          }),
-          0
-        ),
-        _vm._v(" "),
-        _c("h2", [_vm._v("Add New Performer")]),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "newPerformer" } }, [
-          _vm._v("New Performer")
-        ]),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.newPerformer,
-                expression: "newPerformer"
-              }
-            ],
-            staticClass: "input",
-            attrs: { name: "newPerformer", id: "newPerformer" },
-            on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.newPerformer = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
-            }
-          },
-          _vm._l(_vm.performers, function(performer) {
-            return _c("option", {
-              key: performer.id,
-              domProps: {
-                value: performer.id,
-                textContent: _vm._s(performer.name)
-              }
-            })
-          }),
-          0
-        ),
-        _vm._v(" "),
         _c(
           "button",
           {
-            staticClass: "btn",
+            staticClass: "btn btn--danger",
             on: {
               click: function($event) {
                 $event.preventDefault()
-                return _vm.addPerformer($event)
+                return _vm.destroyFamily($event)
               }
             }
           },
-          [_vm._v("Add New Performer")]
+          [_vm._v("Delete Family")]
         )
       ])
     : _vm._e()
@@ -10811,54 +11042,75 @@ var render = function() {
               })
             ]),
             _vm._v(" "),
-            _c(
-              "label",
-              { staticClass: "label", attrs: { for: "performerType0" } },
-              [_vm._v("Performer Type")]
-            ),
+            _c("h2", [_vm._v("Performer Types")]),
             _vm._v(" "),
             _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.performerType,
-                    expression: "performerType"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { name: "performerType[0]", id: "performerType0" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.performerType = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
-              },
-              _vm._l(_vm.performerTypes.performerTypes, function(
-                performerType
-              ) {
-                return _c("option", {
-                  key: performerType.id,
-                  domProps: {
-                    value: performerType.id,
-                    textContent: _vm._s(performerType.name)
-                  }
-                })
+              "ul",
+              { staticClass: "list container--inner" },
+              _vm._l(_vm.types, function(type) {
+                return _c(
+                  "li",
+                  { key: type.id, staticClass: "list-item list-item--flex" },
+                  [
+                    _c("p", { domProps: { textContent: _vm._s(type.name) } }),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.removePerformerType(type.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Remove Type")]
+                    )
+                  ]
+                )
               }),
               0
             ),
+            _vm._v(" "),
+            _c("h2", [_vm._v("Add New Type")]),
+            _vm._v(" "),
+            _vm.filteredPerformerTypes
+              ? _c("fieldset", [
+                  _c(
+                    "legend",
+                    { staticClass: "label", attrs: { for: "newPerformers" } },
+                    [_vm._v("Performer Types")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "list" },
+                    _vm._l(_vm.filteredPerformerTypes, function(performerType) {
+                      return _c(
+                        "li",
+                        { key: performerType.id, staticClass: "list-item" },
+                        [
+                          _c("p", [_vm._v(_vm._s(performerType.name))]),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.addPerformerTyper(performerType.id)
+                                }
+                              }
+                            },
+                            [_vm._v("Add Type")]
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
@@ -11050,7 +11302,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "main" }, [
-    !_vm.family_id
+    !_vm.family_id && !_vm.event_id
       ? _c("div", [
           !_vm.user.socialLinks
             ? _c("div", [
@@ -11246,7 +11498,7 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _vm.family_id
+    _vm.family_id || _vm.event_id
       ? _c("div", [
           _c("h1", [_vm._v("Create Social Links")]),
           _vm._v(" "),
@@ -28788,15 +29040,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************!*\
   !*** ./resources/js/pages/events/Edit.vue ***!
   \********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Edit_vue_vue_type_template_id_3d2b8af2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Edit.vue?vue&type=template&id=3d2b8af2& */ "./resources/js/pages/events/Edit.vue?vue&type=template&id=3d2b8af2&");
 /* harmony import */ var _Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Edit.vue?vue&type=script&lang=js& */ "./resources/js/pages/events/Edit.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Edit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -28826,7 +29077,7 @@ component.options.__file = "resources/js/pages/events/Edit.vue"
 /*!*********************************************************************!*\
   !*** ./resources/js/pages/events/Edit.vue?vue&type=script&lang=js& ***!
   \*********************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30234,6 +30485,20 @@ var routes = [{
     auth: false
   }
 }, {
+  path: '/events/:eid/social-links',
+  name: 'EventSocials',
+  component: _pages_socialLinks_Create__WEBPACK_IMPORTED_MODULE_19__["default"],
+  meta: {
+    auth: false
+  }
+}, {
+  path: '/events/:eid/social-links/:slid',
+  name: 'EditEventSocials',
+  component: _pages_socialLinks_Edit__WEBPACK_IMPORTED_MODULE_20__["default"],
+  meta: {
+    auth: false
+  }
+}, {
   path: '/events/:id',
   name: 'Event',
   component: _pages_events_Event__WEBPACK_IMPORTED_MODULE_8__["default"],
@@ -30444,8 +30709,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       }
     },
     create: function create(_ref7, payload) {
-      var _this = this;
-
       var commit = _ref7.commit,
           state = _ref7.state;
       return new Promise(function (resolve, reject) {
@@ -30458,10 +30721,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
           method: "POST",
           data: payload.data
         }).then(function (resp) {
-          _this.dispatch('fetchState', {
-            route: payload.route
-          });
-
           resolve(resp);
           return resp.data;
         })["catch"](function (err) {
@@ -30470,7 +30729,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       });
     },
     edit: function edit(_ref8, payload) {
-      var _this2 = this;
+      var _this = this;
 
       var commit = _ref8.commit,
           state = _ref8.state;
@@ -30483,7 +30742,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
           method: "PUT",
           data: payload.data
         }).then(function (resp) {
-          _this2.dispatch('fetchState', {
+          _this.dispatch('fetchState', {
             route: payload.route
           });
 
@@ -30496,7 +30755,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       });
     },
     destroy: function destroy(_ref9, payload) {
-      var _this3 = this;
+      var _this2 = this;
 
       var state = _ref9.state;
       return new Promise(function (resolve, reject) {
@@ -30508,7 +30767,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
           method: "DELETE",
           data: payload.data
         }).then(function (resp) {
-          _this3.dispatch('fetchState', {
+          _this2.dispatch('fetchState', {
             route: payload.route
           });
 

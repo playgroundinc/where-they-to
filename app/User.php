@@ -20,6 +20,9 @@ class User extends Authenticatable implements JWTSubject
     public function socialLinks() {
       return $this->hasOne(SocialLinks::class);
     }
+    public function events() {
+      return $this->hasMany(Event::class);
+    }
     protected $fillable = [
       'username',
       'password',

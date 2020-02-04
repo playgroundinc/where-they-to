@@ -80,6 +80,9 @@
       </fieldset>
       <input class="btn" type="submit" value="Update Event">
     </form>
+    <a v-if="this.event.social_links" :href="'/events/' + this.id + '/social-links/' + this.event.social_links.id">Update Social Links</a>
+    <a v-else :href="'/events/' + this.id + '/social-links'">Create Social Links</a>
+    <button class="btn btn--danger" @click.prevent="handleDelete">Delete Event</button>
   </div>
 </template>
 
@@ -148,6 +151,18 @@ export default {
       }).then((resp) => {
         this.$router.push({path: `/events/${this.id}`})
       });
+    },
+    handleDelete: function() {
+      let data = {}
+      this.$store.dispatch('destroy', {
+        route: 'events',
+        id: this.id,
+        data,
+      }).then(() => {
+        this.$router.push('/events');
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     updateTickets: function(ticket) {
       let data = {

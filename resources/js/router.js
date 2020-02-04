@@ -200,6 +200,22 @@ const routes = [
     }
   },
   {
+    path: '/events/:eid/social-links',
+    name: 'EventSocials',
+    component: CreateSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/events/:eid/social-links/:slid',
+    name: 'EditEventSocials',
+    component: EditSocialLinks,
+    meta: {
+      auth: false,
+    }
+  },
+  {
     path: '/events/:id',
     name: 'Event',
     component: Event,

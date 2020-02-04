@@ -19,7 +19,8 @@ class EventsTableSeeder extends Seeder
         'date' => '2020-01-15',
         'event_type_id' => '1',
         'venue_id' => '2',
-        'family_id' => '1'
+        'family_id' => '1',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'name' => $faker->word,
@@ -27,7 +28,8 @@ class EventsTableSeeder extends Seeder
         'date' => '2020-05-15',
         'event_type_id' => '1',
         'venue_id' => '1',
-        'family_id' => '2'
+        'family_id' => '2',
+        'user_id' => '2',
       ]);
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div v-if="!family_id">
+    <div v-if="!family_id && !event_id">
       <div  v-if="!user.socialLinks">
         <h1>Create Social Links</h1>
         <form action="/socialLinks" v-on:submit.prevent="handleSubmit"> 
@@ -23,7 +23,7 @@
         <a :href="'/users/' + user.id + '/social-links/' + user.socialLinks.id + '/edit'">Click here</a>
       </div>
     </div>
-    <div v-if="family_id">
+    <div v-if="family_id || event_id">
       <h1>Create Social Links</h1>
         <form action="/socialLinks" v-on:submit.prevent="handleSubmit"> 
           <label class="label" for="facebook">Facebook</label>
@@ -53,6 +53,7 @@
         website: '',
         youtube: '',
         family_id: this.$route.params.id || null,
+        event_id: this.$route.params.eid || null,
       }
     },
     computed: {
@@ -69,6 +70,8 @@
         }
         if (this.family_id) {
           data['family_id'] = this.family_id;
+        } else if (this.event_id) {
+          data['event_id'] = this.event_id;
         } else {
           data['user_id'] = this.user.id;
         }
@@ -77,8 +80,23 @@
           route: 'social-links',  
           data 
         })
-        .then(() => {
+        .then((resp) => {
+          console.log(resp);
+          if (this.event_id) {
+            this.$store.dispatch('fetchState', {
+              route: 'events'
+            })
+            return this.$router.push(`/events/${this.event_id}`);
+          }
+          if (this.family_id) {
+            this.$store.dispatch('fetchState', {
+              route: 'families'
+            })
+            return this.$router.push(`/families/${this.family_id}`);
+          }
+          this.$store.dispatch('findUser');
           this.$router.push('/');
+
         }).catch((err) => {
           console.log(err);
         })
