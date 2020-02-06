@@ -4901,6 +4901,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4975,6 +4976,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function () {
+        _this.$store.dispatch('fetchState', {
+          route: 'families'
+        });
+
         _this.$router.push("/families");
       })["catch"](function (err) {
         console.log(err);
@@ -5154,6 +5159,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5293,13 +5299,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       name: '',
       bio: '',
-      performerType: ''
+      newPerformerTypes: []
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes'])),
@@ -5310,7 +5322,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var data = {
         name: this.name,
         bio: this.bio,
-        performerType: this.performerType,
+        performerType: this.newPerformerTypes,
         id: this.user.id
       };
       this.$store.dispatch('create', {
@@ -5486,6 +5498,38 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id
       }).then(function () {
         _this4.$router.push('/performers');
+      });
+    },
+    addPerformerType: function addPerformerType(performerType_id) {
+      var _this5 = this;
+
+      var data = {
+        performerType_id: performerType_id
+      };
+      this.$store.dispatch('edit', {
+        route: 'performers',
+        id: "".concat(this.id, "/performerType"),
+        data: data
+      }).then(function (resp) {
+        _this5.$store.dispatch('fetchState', {
+          route: 'performers'
+        });
+      });
+    },
+    removePerformerType: function removePerformerType(performerType_id) {
+      var _this6 = this;
+
+      var data = {
+        performerType_id: performerType_id
+      };
+      this.$store.dispatch('destroy', {
+        route: 'performers',
+        id: "".concat(this.id, "/performerType"),
+        data: data
+      }).then(function (resp) {
+        _this6.$store.dispatch('fetchState', {
+          route: 'performers'
+        });
       });
     }
   },
@@ -5754,8 +5798,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         route: 'social-links',
         data: data
       }).then(function (resp) {
-        console.log(resp);
-
         if (_this.event_id) {
           _this.$store.dispatch('fetchState', {
             route: 'events'
@@ -5771,6 +5813,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           return _this.$router.push("/families/".concat(_this.family_id));
         }
+
+        _this.$store.dispatch('fetchState', {
+          route: 'performers'
+        });
+
+        _this.$store.dispatch('fetchState', {
+          route: 'venues'
+        });
 
         _this.$store.dispatch('findUser');
 
@@ -9365,7 +9415,7 @@ var render = function() {
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
-              attrs: { type: "submit", value: "Update Event" }
+              attrs: { type: "submit", value: "Create Event" }
             })
           ]
         )
@@ -10222,7 +10272,11 @@ var render = function() {
         ])
       }),
       0
-    )
+    ),
+    _vm._v(" "),
+    _c("a", { staticClass: "btn", attrs: { href: "/events/create" } }, [
+      _vm._v("Create Event")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -10405,7 +10459,7 @@ var render = function() {
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
-              attrs: { type: "submit", value: "Submit" }
+              attrs: { type: "submit", value: "Create Family" }
             })
           ]
         )
@@ -10660,7 +10714,11 @@ var render = function() {
         ])
       }),
       0
-    )
+    ),
+    _vm._v(" "),
+    _c("a", { staticClass: "btn", attrs: { href: "/families/create" } }, [
+      _vm._v("Create a Family")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -10875,46 +10933,83 @@ var render = function() {
             ),
             _vm._v(" "),
             _c(
-              "select",
+              "fieldset",
               {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.performerType,
-                    expression: "performerType"
-                  }
-                ],
                 staticClass: "input",
-                attrs: { name: "performerType[0]", id: "performerType0" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.performerType = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
+                attrs: { name: "performerTypes", id: "performerTypes" }
               },
-              _vm._l(_vm.performerTypes.performerTypes, function(
-                performerType
-              ) {
-                return _c("option", {
-                  key: performerType.id,
-                  domProps: {
-                    value: performerType.id,
-                    textContent: _vm._s(performerType.name)
-                  }
-                })
-              }),
-              0
+              [
+                _c(
+                  "legend",
+                  { staticClass: "label", attrs: { for: "performerTypes" } },
+                  [_vm._v("Performer Types")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  { staticClass: "list" },
+                  _vm._l(_vm.performerTypes, function(performerType) {
+                    return _c(
+                      "li",
+                      { key: performerType.id, staticClass: "list-item" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.newPerformerTypes,
+                              expression: "newPerformerTypes"
+                            }
+                          ],
+                          attrs: {
+                            type: "checkbox",
+                            name: performerType.name,
+                            id: performerType.name
+                          },
+                          domProps: {
+                            value: performerType.id,
+                            checked: Array.isArray(_vm.newPerformerTypes)
+                              ? _vm._i(
+                                  _vm.newPerformerTypes,
+                                  performerType.id
+                                ) > -1
+                              : _vm.newPerformerTypes
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$a = _vm.newPerformerTypes,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = performerType.id,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 &&
+                                    (_vm.newPerformerTypes = $$a.concat([$$v]))
+                                } else {
+                                  $$i > -1 &&
+                                    (_vm.newPerformerTypes = $$a
+                                      .slice(0, $$i)
+                                      .concat($$a.slice($$i + 1)))
+                                }
+                              } else {
+                                _vm.newPerformerTypes = $$c
+                              }
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("label", {
+                          attrs: { for: performerType.name },
+                          domProps: { textContent: _vm._s(performerType.name) }
+                        })
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ]
             ),
             _vm._v(" "),
             _c("input", {
@@ -11098,7 +11193,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  return _vm.addPerformerTyper(performerType.id)
+                                  return _vm.addPerformerType(performerType.id)
                                 }
                               }
                             },

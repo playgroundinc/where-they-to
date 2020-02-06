@@ -81,7 +81,6 @@
           data 
         })
         .then((resp) => {
-          console.log(resp);
           if (this.event_id) {
             this.$store.dispatch('fetchState', {
               route: 'events'
@@ -94,6 +93,12 @@
             })
             return this.$router.push(`/families/${this.family_id}`);
           }
+          this.$store.dispatch('fetchState', {
+            route: 'performers'
+          })
+          this.$store.dispatch('fetchState', {
+            route: 'venues'
+          })
           this.$store.dispatch('findUser');
           this.$router.push('/');
 

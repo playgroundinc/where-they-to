@@ -21,7 +21,7 @@
           <ul class="list">
             <li class="list-item" v-for="performerType in filteredPerformerTypes" v-bind:key="performerType.id" >
               <p>{{ performerType.name }}</p>
-              <button @click.prevent="addPerformerTyper(performerType.id)">Add Type</button>
+              <button @click.prevent="addPerformerType(performerType.id)">Add Type</button>
             </li>
         </ul> 
       </fieldset>
@@ -93,6 +93,34 @@
         }).then(()=>{
           this.$router.push('/performers');
         });
+      },
+      addPerformerType: function(performerType_id) {
+        let data = {
+          performerType_id,
+        }
+        this.$store.dispatch('edit', {
+          route: 'performers',
+          id: `${this.id}/performerType`, 
+          data
+        }).then((resp)=> {
+          this.$store.dispatch('fetchState', {
+            route: 'performers'
+          });
+        })
+      },
+      removePerformerType: function(performerType_id) {
+        let data = {
+          performerType_id,
+        }
+        this.$store.dispatch('destroy', {
+          route: 'performers',
+          id: `${this.id}/performerType`, 
+          data
+        }).then((resp)=> {
+          this.$store.dispatch('fetchState', {
+            route: 'performers'
+          });
+        })
       }
     },
     async mounted() {

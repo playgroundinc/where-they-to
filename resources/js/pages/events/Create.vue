@@ -57,7 +57,7 @@
         </div>
         <button v-if="!newTicket" class="btn" @click.prevent="addTicket">Create New Ticket</button>
       </fieldset>
-      <input class="btn" type="submit" value="Update Event">
+      <input class="btn" type="submit" value="Create Event">
     </form>
   </div>
 </template>

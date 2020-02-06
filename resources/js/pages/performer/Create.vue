@@ -9,9 +9,15 @@
         <textarea class="input" name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio" v-model="bio"></textarea>
       </div>
       <label class="label" for="performerType0">Performer Type</label>
-      <select class="input" name="performerType[0]" id="performerType0" v-model="performerType">
-        <option v-bind:value="performerType.id" v-for="performerType in performerTypes.performerTypes" :key="performerType.id" v-text="performerType.name"></option>
-      </select>
+      <fieldset class="input" name="performerTypes" id="performerTypes">
+        <legend for="performerTypes" class="label">Performer Types</legend>
+        <ul class="list">
+          <li class="list-item" v-for="performerType in performerTypes" v-bind:key="performerType.id" >
+            <input type="checkbox" :name="performerType.name" :value="performerType.id" :id="performerType.name" v-model="newPerformerTypes">
+            <label :for="performerType.name" v-text="performerType.name"></label>
+          </li>
+        </ul> 
+      </fieldset>
       <input type="hidden" name="id" v-model="user">
       <input class="btn" type="submit">
     </form>
@@ -26,7 +32,7 @@
       return {
         name: '',
         bio: '',
-        performerType: '',
+        newPerformerTypes: [],
       }
     },
     computed: {
@@ -37,7 +43,7 @@
         let data = {
           name: this.name,
           bio: this.bio,
-          performerType: this.performerType,
+          performerType: this.newPerformerTypes,
           id: this.user.id
         }
         this.$store

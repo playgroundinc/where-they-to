@@ -7,6 +7,7 @@
         <a :href="'families/' + family.id"> {{ family.name }}</a>
       </li>
     </ul>
+    <a href="/families/create" class="btn">Create a Family</a>
   </div>
 </template>
 

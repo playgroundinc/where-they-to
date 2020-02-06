@@ -126,6 +126,20 @@ class PerformerController extends Controller
         return response()->json(['status'=>'success'], 200);
     }
 
+    public function addType($id) {
+      $performer = Performer::find($id);
+      $performerType = PerformerType::find(request('performerType_id'));
+      $performer->performerTypes()->attach($performerType);
+      return response()->json(['status'=>'success'], 200);
+    }
+
+    public function removeType($id) {
+      $performer = Performer::find($id);
+      $performerType = PerformerType::find(request('performerType_id'));
+      $performer->performerTypes()->detach($performerType);
+      return response()->json(['status'=>'success'], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

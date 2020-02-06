@@ -6,6 +6,7 @@
         <a :href="'events/' + event.id"> {{ event.name }}</a>
       </li>
     </ul>
+    <a href="/events/create" class="btn">Create Event</a>
   </div>
 </template>
 

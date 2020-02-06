@@ -40,6 +40,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('performers', 'PerformerController@store');
     Route::delete('performers/{id}', 'PerformerController@destroy');
     Route::put('performers/{id}', 'PerformerController@update');
+    Route::put('performers/{id}/performerType', 'PerformerController@addType');
+    Route::delete('performers/{id}/performerType', 'PerformerController@removeType');
 
     Route::post('social-links', 'SocialLinksController@store');
     Route::put('social-links/{id}', 'SocialLinksController@update');
