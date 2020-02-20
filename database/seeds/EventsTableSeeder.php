@@ -21,7 +21,8 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'event_type_id' => '1',
         'venue_id' => '2',
-        'family_id' => '1'
+        'family_id' => '1',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->format('Y-m-d'),
@@ -31,7 +32,8 @@ class EventsTableSeeder extends Seeder
         'date' => '2020-05-15',
         'event_type_id' => '1',
         'venue_id' => '1',
-        'family_id' => '2'
+        'family_id' => '2',
+        'user_id' => '2',
       ]);
     }
 }

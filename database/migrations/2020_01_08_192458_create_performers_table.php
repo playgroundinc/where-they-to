@@ -16,11 +16,15 @@ class CreatePerformersTable extends Migration
     public function up()
     {
       Schema::create('users', function (Blueprint $table) {
-        $table->string('username')->unique();
+        $table->string('username')->unique()->nullable();
         $table->string('password');
         $table->string('email')->unique();
         $table->bigIncrements('id');
         $table->timestamps();
+        $table->string('name')->nullable();
+        $table->timestamp('email_verified_at')->nullable();
+        $table->integer('role')->default(1);
+        $table->rememberToken();
         $table->tinyInteger('type')->unsigned()->nullable();
       });
 
@@ -70,6 +74,8 @@ class CreatePerformersTable extends Migration
         $table->foreign('family_id')->references('id')->on('families')->onDelete('set null');
         $table->bigInteger('event_type_id')->unsigned()->nullable();
         $table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('set null');
+        $table->bigInteger('user_id')->unsigned()->nullable();
+        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
       });
 
       Schema::create('performers', function (Blueprint $table) {

@@ -36,5 +36,15 @@
     @endforeach
   </ul>
   @endif
+  <div>
+    <h2>Tickets</h2>
+      @foreach ($event->tickets as $ticket)
+        <p>${{ $ticket->price }} - {{ $ticket->description }}</p>
+        @if(isset($ticket->url))
+          <a href="{{ $ticket->url }}">Ticket Link</a>
+        @endif
+      @endforeach
+  </div>
   <a class="btn" href="/events/{{$event->id}}/edit">Edit Event</a>
+
 @endsection

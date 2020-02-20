@@ -13,7 +13,11 @@ class SocialLinks extends Model
     }
     public function family() 
     {
-      return $this->belongsTo('App\Family');
+      return $this->belongsTo(Family::class);
+    }
+    public function event() 
+    {
+      return $this->belongsTo(Event::class);
     }
     protected $fillable = [
       'twitter',
@@ -21,6 +25,8 @@ class SocialLinks extends Model
       'instagram',
       'website',
       'youtube',
-      'user_id'
+      'user_id',
+      'event_id',
+      'family_id'
     ];
 }

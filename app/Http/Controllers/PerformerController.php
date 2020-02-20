@@ -21,7 +21,12 @@ class PerformerController extends Controller
     {
         //
         $performers = Performer::all();
-        return view('performers.index', compact('performers'));
+        foreach ($performers as $index=>$performer) {
+          $user = User::find($performer['user_id']);
+          $performers[$index]['socialLinks'] = $user->socialLinks;
+          $performers[$index]['type'] = $performer->performerTypes;
+        }
+        return response()->json($performers, 200);
     }
 
     /**
@@ -56,7 +61,7 @@ class PerformerController extends Controller
         $user = User::find($request['user_id']);
         $user->performer()->save($performer);
 
-        return view('socialLinks.create', ['user_id' => $user['id']]);
+        return response()->json(['status' => 'success'], 201);
     }
 
     /**
@@ -65,13 +70,19 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Performer $performer)
+    public function show($id)
     {
         //
-        $socialLinks = User::find($performer->user['id'])->socialLinks;
+        $performer = Performer::find($id);
+        $user = User::find($performer->user['id']);
+        $socialLinks = array();
+        if (isset($user)) {
+          $socialLinks = $user->socialLinks;
+        }
         $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
-        return view('performers.show', compact('performer', 'socialLinks', 'platforms', 'family'));
+        $type = $performer->performerTypes;
+        return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
     }
 
     /**
@@ -80,11 +91,12 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Performer $performer)
+    public function edit($id)
     {
         //
+        $performer = Performer::find($id);
         $socialLinks = User::find($performer->user['id'])->socialLinks;
-        $performerTypes = PerformerType::all();
+        $performerTypes = PerformerType::all(); 
         $platforms = config('enums.platforms');
         return view('performers.edit', compact('performer', 'socialLinks', 'platforms', 'performerTypes'));
         
@@ -97,16 +109,35 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Performer $performer)
+    public function update($id)
     {
         //
+        $performer = Performer::find($id);
+        $user = $performer->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
         $performer->update(request(['name', 'bio']));
         $performer->performerTypes()->detach();
         foreach (request('performerType') as $performerTypeId):
           $performerType = PerformerType::find($performerTypeId);
           $performer->performerTypes()->attach($performerType);
         endforeach;
-        return redirect('/performers/'.$performer->id);
+        return response()->json(['status'=>'success'], 200);
+    }
+
+    public function addType($id) {
+      $performer = Performer::find($id);
+      $performerType = PerformerType::find(request('performerType_id'));
+      $performer->performerTypes()->attach($performerType);
+      return response()->json(['status'=>'success'], 200);
+    }
+
+    public function removeType($id) {
+      $performer = Performer::find($id);
+      $performerType = PerformerType::find(request('performerType_id'));
+      $performer->performerTypes()->detach($performerType);
+      return response()->json(['status'=>'success'], 200);
     }
 
     /**
@@ -115,12 +146,17 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Performer $performer)
+    public function destroy($id)
     {
         //
+        $performer = Performer::find($id);
+        $user = $performer->user;
+        if ($user->id !== request('user')->id):
+          return response()->json(['status' => 'unauthorized'], 401);
+        endif;
         $performer->performerTypes()->detach();
         $performer->events()->detach();
         $performer->delete();
-        return redirect('/performers');
+        return response()->json(['status' => 'success'], 200);
     }
 }

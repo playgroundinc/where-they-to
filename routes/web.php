@@ -11,22 +11,6 @@
 |
 */
 
+// Route to handle page reload in Vue except for api routes
 
-// GET /projects 
-
-Route::get('/', 'PagesController@home');
-
-Route::post('/families/performers/{id}', 'FamilyController@performer');
-Route::post('/families/performers/{id}/destroy', 'FamilyController@performerDestroy');
-
-Route::resources([
-  'users' => 'UserController',
-  'performers' => 'PerformerController',
-  'venues' => 'VenueController',
-  'social-links' => 'SocialLinksController',
-  'families' => 'FamilyController',
-  'events' => 'EventController',
-  'types' => 'TypeController',
-]);
-
-
+Route::get('/{any}', 'SinglePageController@index')->where('any', '.*');

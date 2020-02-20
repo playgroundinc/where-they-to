@@ -1,32 +1,38 @@
-import Vue from 'vue';
-import axios from 'axios';
+import 'es6-promise/auto'
+import axios from 'axios'
+import './bootstrap'
+import Vue from 'vue'
+import VueAuth from '@websanova/vue-auth'
+import VueAxios from 'vue-axios'
+import VueRouter from 'vue-router'
+import Index from './Index'
+import router from './router'
+import store from './store'
 
-import Form from './core/form';
 
-import Example from './components/Example';
+// Set Vue globally
+window.Vue = Vue
+// Set Vue router
+Vue.router = router
+Vue.use(VueRouter)
+// Set Vue authentication
+Vue.use(VueAxios, axios);
+axios.defaults.baseURL = `${process.env.MIX_APP_URL}/api`
+axios.defaults.headers.common = {
+  'X-Requested-With': 'XMLHttpRequest',
+  'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+}
+Vue.use(require('@websanova/vue-auth'), {
+  auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
+  http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
+  router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
+});
 
-window.axios = axios;
-window.Form = Form;
-
+Index.router = Vue.router
+// Load Index
 new Vue({
-  el: '#root',  
-  data: {
-    form: new Form({
-      title: "",
-      description: "",
-    }),
-  },
-  components: {
-    Example,
-  },
-  methods: {
-    onSubmit() {
-      this.form.submit('post', '/projects')
-      .then(alert('handling it!'))
-      .catch((error) => console.log(error));
-    },
-    onSuccess(res) {
-      form.reset();
-    }
-  }
-})
+  el: "#app",
+  router,
+  store,
+  render: app => app(Index),
+});

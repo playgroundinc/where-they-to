@@ -19,38 +19,56 @@ class UsersTableSeeder extends Seeder
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '1',
+      'role' => '1',
     ]);
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '2',
+      'role' => '2',
     ]);
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '1',
+      'role' => '2',
     ]);
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '2',
+      'role' => '2',
     ]);
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '1',
+      'role' => '1',
     ]);
     DB::table('users')->insert([
       'username' => $faker->userName,
       'email' => $faker->email,
-      'password' => $faker->password,
+      'password' => Hash::make('admin'),
+      'email_verified_at' => now(),
+      'remember_token' => Str::random(10),
       'type' => '2',
+      'role' => '2',
     ]);    
   }
 }

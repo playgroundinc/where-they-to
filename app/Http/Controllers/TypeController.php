@@ -115,4 +115,14 @@ class TypeController extends Controller
         return redirect('/types');
 
     }
+    
+    public function performerIndex() {
+      $performerTypes = PerformerType::all();
+      return response()->json($performerTypes, 200);
+    }
+
+    public function eventIndex() {
+      $eventTypes = EventType::all();
+      return response()->json($eventTypes, 200);
+    }
 }
