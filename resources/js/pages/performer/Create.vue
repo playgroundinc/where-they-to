@@ -44,7 +44,7 @@
           name: this.name,
           bio: this.bio,
           performerType: this.newPerformerTypes,
-          id: this.user.id
+          user_id: this.user.id
         }
         this.$store
           .dispatch('create', { route: 'performers', data})

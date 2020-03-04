@@ -242,7 +242,8 @@ class EventController extends Controller
       $events = Event::where('date', '=', $date)
         ->get()
         ->toJSON();
-      return response($events);
+      $date = Carbon::parse($date)->format('F j');
+      return response()->json(['events' => $events, 'date' => $date]);
     }
 
     public function week($date) {

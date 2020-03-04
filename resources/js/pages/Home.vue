@@ -2,20 +2,34 @@
   <div>
     <h1>Where They To</h1>
     <h2>On Tonight</h2>
-    <ul>
-      <li v-if="!todays.length > 0">Nothing On Tonight</li>
-      <li v-for="today in todays" v-bind:key="today.id">
-        <a> {{ today.name }}</a>
-      </li>
-    </ul>
+    <div>
+      <p v-if="!todays.length > 0">Nothing On Tonight</p>
+      <div v-for="today in todays" v-bind:key="today.id">
+        <a :href="'/events/' + today.id">
+          <h3>
+            {{ today.name }}
+          </h3>
+        </a>
+        <p>{{ today.time }}</p>
+        <a :href="'/venues' + venue(today.venue_id, 'link')">{{ venue(today.venue_id ) }}</a>
+      </div>
+    </div>
     <h2>This Week</h2>
     <div>
-      <p v-if="!weeks.length > 0">Nothing On This Week</p>
-      <div v-for="week in weeks" v-bind:key="week.id">
-        {{ week }}
-        <h3><a :href="'/events/' + week.id ">{{ week.name }}</a></h3>
-        <p>{{week.date }} @ {{ week.time }}</p>
-        <p>Venue: <a :href="'/venues/' + venue(week['venue_id'], 'link')"> {{ venue(week['venue_id']) }}</a></p>
+      <p v-if="!weeks.length">Nothing On This Week</p>
+      <div v-for="weekdays in weeks" v-bind:key="weekdays.id">
+        <div v-for="(weekday, index) in weekdays" v-bind:key="weekday.id">
+          <h2 class="title">{{ index }}</h2>
+          <div v-for="day in weekday" v-bind:key="day.id">
+            <a :href="'/events/' + day.id">
+              <h3>
+                {{day.name}}
+              </h3>
+            </a>
+            <p>{{ day.time }}</p>
+            <a :href="'/venues' + venue(day.venue_id, 'link')">{{ venue(day.venue_id ) }}</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -27,7 +41,7 @@ import { mapState } from 'vuex'
     data() {
       return {
         todays: {},
-        weeks: {},
+        weeks: [],
       }
     },
     computed: {
@@ -45,7 +59,7 @@ import { mapState } from 'vuex'
         if (venue) {
           return venue.name
         }
-      }
+      },
     },
     mounted() {
       const date = new Date();
@@ -54,14 +68,21 @@ import { mapState } from 'vuex'
         parameter: 'date',
         date: today,
       }).then((response) => {
-        this.todays = response.data;
+        this.todays = JSON.parse(response.data.events);
       });
-      this.$store.dispatch('fetchDate', {
-        parameter: 'week',
-        date: today,
-      }).then((response) => {
-        this.weeks = response.data;
-      })
+      const tempArray = [];
+      for (let i = 1; i < 7; i = i + 1) {
+        const thisWeeks = {};
+        let weekdate = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate() + i}`;
+        this.$store.dispatch('fetchDate', {
+          parameter: 'date',
+          date: weekdate,
+        }).then((response) => {
+          thisWeeks[response.data.date] = JSON.parse(response.data.events);
+          tempArray.push(thisWeeks);
+        });
+      }
+      this.weeks = tempArray;
     }
   }
 </script>

@@ -3993,12 +3993,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       todays: {},
-      weeks: {}
+      weeks: []
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'families', 'venues', 'performers'])),
@@ -4031,14 +4045,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       parameter: 'date',
       date: today
     }).then(function (response) {
-      _this.todays = response.data;
+      _this.todays = JSON.parse(response.data.events);
     });
-    this.$store.dispatch('fetchDate', {
-      parameter: 'week',
-      date: today
-    }).then(function (response) {
-      _this.weeks = response.data;
-    });
+    var tempArray = [];
+
+    var _loop = function _loop(i) {
+      var thisWeeks = {};
+      var weekdate = "".concat(date.getFullYear(), "-").concat(date.getMonth() + 1, "-").concat(date.getDate() + i);
+
+      _this.$store.dispatch('fetchDate', {
+        parameter: 'date',
+        date: weekdate
+      }).then(function (response) {
+        thisWeeks[response.data.date] = JSON.parse(response.data.events);
+        tempArray.push(thisWeeks);
+      });
+    };
+
+    for (var i = 1; i < 7; i = i + 1) {
+      _loop(i);
+    }
+
+    this.weeks = tempArray;
   }
 });
 
@@ -5333,7 +5361,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: this.name,
         bio: this.bio,
         performerType: this.newPerformerTypes,
-        id: this.user.id
+        user_id: this.user.id
       };
       this.$store.dispatch('create', {
         route: 'performers',
@@ -8233,15 +8261,29 @@ var render = function() {
     _c("h2", [_vm._v("On Tonight")]),
     _vm._v(" "),
     _c(
-      "ul",
+      "div",
       [
         !_vm.todays.length > 0
-          ? _c("li", [_vm._v("Nothing On Tonight")])
+          ? _c("p", [_vm._v("Nothing On Tonight")])
           : _vm._e(),
         _vm._v(" "),
         _vm._l(_vm.todays, function(today) {
-          return _c("li", { key: today.id }, [
-            _c("a", [_vm._v(" " + _vm._s(today.name))])
+          return _c("div", { key: today.id }, [
+            _c("a", { attrs: { href: "/events/" + today.id } }, [
+              _c("h3", [
+                _vm._v("\n          " + _vm._s(today.name) + "\n        ")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("p", [_vm._v(_vm._s(today.time))]),
+            _vm._v(" "),
+            _c(
+              "a",
+              {
+                attrs: { href: "/venues" + _vm.venue(today.venue_id, "link") }
+              },
+              [_vm._v(_vm._s(_vm.venue(today.venue_id)))]
+            )
           ])
         })
       ],
@@ -8253,34 +8295,52 @@ var render = function() {
     _c(
       "div",
       [
-        !_vm.weeks.length > 0
+        !_vm.weeks.length
           ? _c("p", [_vm._v("Nothing On This Week")])
           : _vm._e(),
         _vm._v(" "),
-        _vm._l(_vm.weeks, function(week) {
-          return _c("div", { key: week.id }, [
-            _vm._v("\n      " + _vm._s(week) + "\n      "),
-            _c("h3", [
-              _c("a", { attrs: { href: "/events/" + week.id } }, [
-                _vm._v(_vm._s(week.name))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("p", [_vm._v(_vm._s(week.date) + " @ " + _vm._s(week.time))]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v("Venue: "),
-              _c(
-                "a",
-                {
-                  attrs: {
-                    href: "/venues/" + _vm.venue(week["venue_id"], "link")
-                  }
-                },
-                [_vm._v(" " + _vm._s(_vm.venue(week["venue_id"])))]
+        _vm._l(_vm.weeks, function(weekdays) {
+          return _c(
+            "div",
+            { key: weekdays.id },
+            _vm._l(weekdays, function(weekday, index) {
+              return _c(
+                "div",
+                { key: weekday.id },
+                [
+                  _c("h2", { staticClass: "title" }, [_vm._v(_vm._s(index))]),
+                  _vm._v(" "),
+                  _vm._l(weekday, function(day) {
+                    return _c("div", { key: day.id }, [
+                      _c("a", { attrs: { href: "/events/" + day.id } }, [
+                        _c("h3", [
+                          _vm._v(
+                            "\n              " +
+                              _vm._s(day.name) +
+                              "\n            "
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(day.time))]),
+                      _vm._v(" "),
+                      _c(
+                        "a",
+                        {
+                          attrs: {
+                            href: "/venues" + _vm.venue(day.venue_id, "link")
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.venue(day.venue_id)))]
+                      )
+                    ])
+                  })
+                ],
+                2
               )
-            ])
-          ])
+            }),
+            0
+          )
         })
       ],
       2
