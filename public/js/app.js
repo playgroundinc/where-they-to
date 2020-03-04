@@ -3900,24 +3900,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4011,24 +3993,52 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      todays: {},
+      weeks: {}
+    };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['performers', 'events', 'families', 'venues', 'user'])),
-  methods: {},
-  created: function created() {// this._getData('performers');
-    // this._getData('events');
-    // this._getData('venues');
-    // this._getData('families');
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'families', 'venues', 'performers'])),
+  methods: {
+    family: function family(id) {
+      return this.families.find(function (entry) {
+        return Number(entry.id) === Number(id);
+      });
+    },
+    venue: function venue(id, field) {
+      var venue = this.venues.find(function (entry) {
+        return Number(entry.id) === Number(id);
+      });
+
+      if (field === 'link' && venue) {
+        return venue.id;
+      }
+
+      if (venue) {
+        return venue.name;
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var date = new Date();
+    var today = "".concat(date.getFullYear(), "-").concat(date.getMonth() + 1, "-").concat(date.getDate());
+    this.$store.dispatch('fetchDate', {
+      parameter: 'date',
+      date: today
+    }).then(function (response) {
+      _this.todays = response.data;
+    });
+    this.$store.dispatch('fetchDate', {
+      parameter: 'week',
+      date: today
+    }).then(function (response) {
+      _this.weeks = response.data;
+    });
   }
 });
 
@@ -4838,7 +4848,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      id: this.$route.params.id,
+      id: this.$route.params.id || '',
       family_id: null
     };
   },
@@ -8102,66 +8112,6 @@ var render = function() {
     [
       _vm.$auth.ready()
         ? _c("ul", [
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/", exact: "" } }, [
-                  _vm._v("Home")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/users" } }, [
-                  _vm._v("Users")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/venues", exact: "" } }, [
-                  _vm._v("Venues")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/performers", exact: "" } }, [
-                  _vm._v("Performers")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/events", exact: "" } }, [
-                  _vm._v("Events")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "li",
-              [
-                _c("router-link", { attrs: { to: "/families", exact: "" } }, [
-                  _vm._v("Families")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
             !_vm.user
               ? _c(
                   "li",
@@ -8278,62 +8228,62 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Home")]),
+    _c("h1", [_vm._v("Where They To")]),
     _vm._v(" "),
-    _c("h2", [_vm._v("Performers")]),
+    _c("h2", [_vm._v("On Tonight")]),
     _vm._v(" "),
     _c(
       "ul",
-      _vm._l(_vm.performers, function(performer) {
-        return _c("li", { key: performer.id }, [
-          _c("a", { attrs: { href: "performers/" + performer.id } }, [
-            _vm._v(" " + _vm._s(performer.name))
+      [
+        !_vm.todays.length > 0
+          ? _c("li", [_vm._v("Nothing On Tonight")])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm._l(_vm.todays, function(today) {
+          return _c("li", { key: today.id }, [
+            _c("a", [_vm._v(" " + _vm._s(today.name))])
           ])
-        ])
-      }),
-      0
+        })
+      ],
+      2
     ),
     _vm._v(" "),
-    _c("h2", [_vm._v("Events")]),
+    _c("h2", [_vm._v("This Week")]),
     _vm._v(" "),
     _c(
-      "ul",
-      _vm._l(_vm.events, function(event) {
-        return _c("li", { key: event.id }, [
-          _c("a", { attrs: { href: "events/" + event.id } }, [
-            _vm._v(" " + _vm._s(event.name))
+      "div",
+      [
+        !_vm.weeks.length > 0
+          ? _c("p", [_vm._v("Nothing On This Week")])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm._l(_vm.weeks, function(week) {
+          return _c("div", { key: week.id }, [
+            _vm._v("\n      " + _vm._s(week) + "\n      "),
+            _c("h3", [
+              _c("a", { attrs: { href: "/events/" + week.id } }, [
+                _vm._v(_vm._s(week.name))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("p", [_vm._v(_vm._s(week.date) + " @ " + _vm._s(week.time))]),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v("Venue: "),
+              _c(
+                "a",
+                {
+                  attrs: {
+                    href: "/venues/" + _vm.venue(week["venue_id"], "link")
+                  }
+                },
+                [_vm._v(" " + _vm._s(_vm.venue(week["venue_id"])))]
+              )
+            ])
           ])
-        ])
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c("h2", [_vm._v("Venues")]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.venues, function(venue) {
-        return _c("li", { key: venue.id }, [
-          _c("a", { attrs: { href: "venues/" + venue.id } }, [
-            _vm._v(" " + _vm._s(venue.name))
-          ])
-        ])
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c("h2", [_vm._v("Families")]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.families, function(family) {
-        return _c("li", { key: family.id }, [
-          _c("a", { attrs: { href: "families/" + family.id } }, [
-            _vm._v(" " + _vm._s(family.name))
-          ])
-        ])
-      }),
-      0
+        })
+      ],
+      2
     )
   ])
 }
@@ -9144,6 +9094,7 @@ var render = function() {
                         "li",
                         { key: performer.id, staticClass: "list-item" },
                         [
+                          _vm.user.profile &&
                           performer.id !== _vm.user.profile.id
                             ? _c("input", {
                                 directives: [
@@ -9193,6 +9144,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
+                          _vm.user.profile &&
                           performer.id !== _vm.user.profile.id
                             ? _c("label", {
                                 attrs: { for: performer.name },
@@ -10224,7 +10176,7 @@ var render = function() {
         _vm._v(" "),
         _c("div"),
         _vm._v(" "),
-        _vm.user.id === _vm.event.user_id
+        _vm.user && _vm.user.id === _vm.event.user_id
           ? _c(
               "a",
               {
@@ -30772,8 +30724,21 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       });
     },
-    findUser: function findUser(_ref6) {
+    fetchDate: function fetchDate(_ref6, data) {
       var commit = _ref6.commit;
+      return new Promise(function (resolve, reject) {
+        var date = data.date;
+        var parameter = data.parameter;
+        axios.get("http://127.0.0.1:8000/api/events/".concat(parameter, "/").concat(date)).then(function (resp) {
+          resolve(resp);
+          return resp;
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    findUser: function findUser(_ref7) {
+      var commit = _ref7.commit;
       var user = localStorage.getItem('token');
 
       if (user) {
@@ -30803,9 +30768,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       }
     },
-    create: function create(_ref7, payload) {
-      var commit = _ref7.commit,
-          state = _ref7.state;
+    create: function create(_ref8, payload) {
+      var commit = _ref8.commit,
+          state = _ref8.state;
       return new Promise(function (resolve, reject) {
         var user = localStorage.getItem('token');
         axios({
@@ -30823,11 +30788,11 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       });
     },
-    edit: function edit(_ref8, payload) {
+    edit: function edit(_ref9, payload) {
       var _this = this;
 
-      var commit = _ref8.commit,
-          state = _ref8.state;
+      var commit = _ref9.commit,
+          state = _ref9.state;
       return new Promise(function (resolve, reject) {
         axios({
           url: "http://127.0.0.1:8000/api/".concat(payload.route, "/").concat(payload.id),
@@ -30849,10 +30814,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         });
       });
     },
-    destroy: function destroy(_ref9, payload) {
+    destroy: function destroy(_ref10, payload) {
       var _this2 = this;
 
-      var state = _ref9.state;
+      var state = _ref10.state;
       return new Promise(function (resolve, reject) {
         axios({
           url: "http://127.0.0.1:8000/api/".concat(payload.route, "/").concat(payload.id),

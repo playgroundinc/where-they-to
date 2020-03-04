@@ -65,7 +65,7 @@ class CreatePerformersTable extends Migration
         $table->bigIncrements('id');
         $table->string('name');
         $table->timestamps();
-        $table->string('date')->nullable();
+        $table->date('date');
         $table->string('time')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();

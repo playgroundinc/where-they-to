@@ -92,7 +92,7 @@ class EventController extends Controller
         //
         $attributes = request()->validate([
           'date' => 'required',
-          'time' => 'required',
+          'time' => 'nullable',
           'name' => 'required',
           'description' => 'required',
         ]);
@@ -235,5 +235,23 @@ class EventController extends Controller
         $event->tickets()->attach($ticket);
       endforeach;
       return redirect('/events');
+    }
+
+    public function date($date) {
+      $today = Carbon::parse($date);
+      $events = Event::where('date', '=', $date)
+        ->get()
+        ->toJSON();
+      return response($events);
+    }
+
+    public function week($date) {
+      $today = Carbon::parse($date);
+      $thisWeek = $today->addDays(6);
+      $events = Event::where('date', '>=', $date)
+        ->where('date', '<=', $thisWeek)
+        ->get()
+        ->toJSON();
+      return response($events);
     }
 }

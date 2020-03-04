@@ -1,24 +1,6 @@
 <template>
   <div id="content" class="container">
     <ul v-if="$auth.ready()">
-      <li>
-        <router-link to="/" exact>Home</router-link>
-      </li>
-      <li>
-        <router-link to="/users">Users</router-link>
-      </li>
-      <li>
-        <router-link to="/venues" exact>Venues</router-link>
-      </li>
-      <li>
-        <router-link to="/performers" exact>Performers</router-link>
-      </li>
-      <li>
-        <router-link to="/events" exact>Events</router-link>
-      </li>
-      <li>
-        <router-link to="/families" exact>Families</router-link>
-      </li>
       <li v-if="!user">
         <router-link to="/register">Register</router-link>
       </li>

@@ -33,8 +33,8 @@
         <legend for="newPerformers" class="label">Performers</legend>
         <ul class="list">
           <li class="list-item" v-for="performer in performers" v-bind:key="performer.id" >
-            <input v-if="performer.id !== user.profile.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
-            <label v-if="performer.id !== user.profile.id" :for="performer.name" v-text="performer.name"></label>
+            <input v-if="user.profile && performer.id !== user.profile.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
+            <label v-if="user.profile && performer.id !== user.profile.id" :for="performer.name" v-text="performer.name"></label>
           </li>
         </ul> 
       </fieldset>

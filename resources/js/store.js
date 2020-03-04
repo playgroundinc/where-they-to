@@ -100,6 +100,19 @@ export default new Vuex.Store({
         })
       })
     },
+    fetchDate({commit}, data) {
+      return new Promise((resolve, reject) => {
+        const { date } = data;
+        const { parameter } = data;
+        axios.get(`http://127.0.0.1:8000/api/events/${parameter}/${date}`)
+        .then((resp) => {
+          resolve(resp);
+          return resp;
+        }).catch((err) => {
+          reject(err);
+        })
+      })
+    },
     findUser({commit}) {
       const user = localStorage.getItem('token');
       if (user) {

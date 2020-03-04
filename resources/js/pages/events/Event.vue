@@ -60,7 +60,7 @@
     <div>
 
     </div>
-    <a v-if="user.id === event.user_id" :href="'/events/' + event.id + '/edit'" class="btn">Edit Event</a>
+    <a v-if="user && user.id === event.user_id" :href="'/events/' + event.id + '/edit'" class="btn">Edit Event</a>
 
   </div>
 </template>
@@ -72,7 +72,7 @@ export default {
 
     data() {
       return {
-        id: this.$route.params.id,
+        id: this.$route.params.id || '',
         family_id: null,
       }
     },

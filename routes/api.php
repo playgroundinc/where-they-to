@@ -69,7 +69,8 @@ Route::get('tickets', 'TicketController@index');
 Route::get('families', 'FamilyController@index');
 
 Route::get('events', 'EventController@index');
-
+Route::get('events/date/{date}', 'EventController@date');
+Route::get('events/week/{date}', 'EventController@week');
 
 Route::resources([
   'users' => 'UserController',
