@@ -23,25 +23,27 @@ class UserController extends Controller
       $credentials = $request->only('email', 'password');
 
         try {
-          if (! $token = JWTAuth::attempt($credentials)) {
+          if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'invalid_credentials'], 400);
           }
         } catch (JWTException $e) {
           return response()->json(['error' => 'could_not_create_token'], 500);
       }
       $user = JWTAuth::user();
-      $user = array(
-        'id' => $user['id'],
-        'type' => $user['type'],
-        'socialLinks' => $user->socialLinks,
-      );
-      return response()->json(compact('token', 'user'));
+      if ($user) {
+        $user = array(
+          'id' => $user['id'],
+          'type' => $user['type'],
+          'socialLinks' => $user->socialLinks,
+        );
+        return response()->json(compact('token', 'user'));
+      }
+      return response()->json(['error' => 'could_not_create_token'], 500);
     }
 
     public function register(Request $request)
       {
         $validator = Validator::make($request->all(), [
-          'username' => 'required|string|max:255',
           'email' => 'required|string|email|max:255|unique:users',
           'password' => 'required|string|min:6|confirmed',
           'type' => 'required',
@@ -52,7 +54,6 @@ class UserController extends Controller
         }
 
         $user = User::create([
-          'username' => $request->get('username'),
           'email' => $request->get('email'),
           'password' => Hash::make($request->get('password')),
           'type' => $request->get('type')
@@ -82,11 +83,9 @@ class UserController extends Controller
         return response()->json(['token_absent'], $e->getStatusCode());
       }
       $user['socialLinks'] = $user->socialLinks;
-      if ($user['type'] === 1) {
-        $user['profile'] = $user->performer;
-      } else {
-        $user['profile'] = $user->venue;
-      }
+      $user['performers'] = $user->performers;
+      $user['venues'] = $user->venues;
+      $user['events'] = $user->events;
       return response()->json(compact('user'));
     }
     /**

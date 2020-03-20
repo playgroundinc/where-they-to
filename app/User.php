@@ -11,11 +11,11 @@ class User extends Authenticatable implements JWTSubject
 { 
     use Notifiable;
     //
-    public function performer() {
-      return $this->hasOne(Performer::class);
+    public function performers() {
+      return $this->hasMany(Performer::class);
     }
-    public function venue() {
-      return $this->hasOne(Venue::class);
+    public function venues() {
+      return $this->hasMany(Venue::class);
     }
     public function socialLinks() {
       return $this->hasOne(SocialLinks::class);
@@ -24,10 +24,11 @@ class User extends Authenticatable implements JWTSubject
       return $this->hasMany(Event::class);
     }
     protected $fillable = [
-      'username',
       'password',
       'email',
-      'type'
+      'type',
+      'performers',
+      'venues'
     ];
 
     protected $hidden = [

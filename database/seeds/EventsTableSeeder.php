@@ -75,6 +75,176 @@ class EventsTableSeeder extends Seeder
         'user_id' => '2',
       ]);
       DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(2),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(2),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(2),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(3),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(3),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(3),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(3),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(4),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(4),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(4),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(5),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(5),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(5),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(5),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(6),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(6),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
+        'date' => Carbon::now()->addDay(6),
+        'time' => '10:00pm',
+        'name' => $faker->word,
+        'description' => $faker->text,
+        'event_type_id' => '1',
+        'venue_id' => '1',
+        'family_id' => '2',
+        'user_id' => '2',
+      ]);
+      DB::table('events')->insert([
         'date' => Carbon::now()->addDay(7),
         'time' => '10:00pm',
         'name' => $faker->word,

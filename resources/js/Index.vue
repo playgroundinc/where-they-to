@@ -1,30 +1,25 @@
 <template>
   <div id="content" class="container">
     <ul v-if="$auth.ready()">
-      <li v-if="!user">
-        <router-link to="/register">Register</router-link>
+      <li v-if="user">
+        <router-link to="/">Home</router-link>
       </li>
       <li v-if="!user">
-        <router-link to="/login">Login</router-link>
-      </li>
-      <li v-if="user && user.profile">
-        <a v-if="user.type === 1" :href="'/performers/' + user.profile.id + '/edit'">Edit Profile</a>
-        <a v-if="user.type === 2" :href="'/venues/' + user.profile.id + '/edit'">Edit Profile</a>
-      </li>
-      <li v-if="user && !user.profile">
-        <a v-if="user.type === 1" :href="'/performers/create'">Create Profile</a>
-        <a v-if="user.type === 2" :href="'/venues/create'">Create Profile</a>
+        <router-link to="/register">Log-In / Register</router-link>
       </li>
       <li v-if="user">
-        <a href="#" v-on:click.prevent="logout">Logout</a>
+        <router-link to="/dashboard">Dashboard</router-link>
       </li>
-
+      <li>
+        <a href="#" @click.prevent="logout">Logout</a>
+      </li>
     </ul>
     <router-view></router-view>
   </div>
 </template>
 <script>  
   import { mapState } from 'vuex'
+  import List from './components/Lists';
   export default {
     data() {
       return {
@@ -56,6 +51,7 @@
     },
     components: {
         //
+        List,
     }
   }
 </script>

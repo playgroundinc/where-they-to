@@ -45,9 +45,6 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register,
-    meta: {
-      auth: false
-    }
   },
   {
     path: '/login',
@@ -62,9 +59,6 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
-    meta: {
-      auth: true
-    }
   },
   // ADMIN ROUTES
   {
@@ -271,6 +265,11 @@ const routes = [
     meta: {
       auth: false,
     }
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
   }
 ]
 const router = new VueRouter({

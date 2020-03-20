@@ -24,15 +24,21 @@ class EventController extends Controller
     private function saveFields($request, $event) {
         if ($request['venue']):
           $venue = Venue::find($request['venue']);
-          $venue->events()->save($event);
+          if ($venue) {
+            $venue->events()->save($event);
+          }
         endif;
         if ($request['family']):
           $family = Family::find($request['family']);
-          $family->events()->save($event);
+          if ($family) {
+            $family->events()->save($event);
+          }
         endif;
         if ($request['eventType']):
           $eventType = EventType::find($request['eventType']);
-          $eventType->events()->save($event);
+          if ($eventType) {
+            $eventType->events()->save($event);
+          }
         endif;
         if ($request['performers']):
           $performers = Performer::find(request('performers'));
@@ -91,14 +97,17 @@ class EventController extends Controller
     {
         //
         $attributes = request()->validate([
-          'date' => 'required',
           'time' => 'nullable',
           'name' => 'required',
           'description' => 'required',
         ]);
+        $date = Carbon::parse(request('date'));
 
         $event = Event::create($attributes);
+        $event->date = $date;
+        $event->save();
         $user = request('user');
+        // return response()->json($user);
         $user->events()->save($event);
         $this->saveFields(request(), $event);
         return response()->json(['status'=> 'success'], 200);

@@ -62,11 +62,11 @@
     methods: {
       handleSubmit: function() {
         let data = {
-          facebook: this.facebook,
-          instagram: this.instagram,
-          twitter: this.twitter,
-          website: this.website,
-          youtube: this.youtube,
+          facebook: (this.facebook.length > 0) ? this.facebook : null,
+          instagram: (this.instagram.length > 0) ? this.instagram : null,
+          twitter: (this.twitter.length > 0) ? this.twitter : null,
+          website: (this.website.length > 0) ? this.website : null,
+          youtube: (this.youtube.length > 0) ? this.youtube : null,
         }
         if (this.family_id) {
           data['family_id'] = this.family_id;

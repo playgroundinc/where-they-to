@@ -8,7 +8,6 @@
         <label class="label" for="bio">Bio</label>
         <textarea class="input" name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio" v-model="bio"></textarea>
       </div>
-      <label class="label" for="performerType0">Performer Type</label>
       <fieldset class="input" name="performerTypes" id="performerTypes">
         <legend for="performerTypes" class="label">Performer Types</legend>
         <ul class="list">

@@ -129,7 +129,9 @@ export default new Vuex.Store({
               id: res.data.user.id,
               type: res.data.user.type,
               socialLinks: res.data.user.socialLinks,
-              profile: res.data.user.profile,
+              venues: res.data.user.venues,
+              performers: res.data.user.performers,
+              events: res.data.user.events
             }
           })
           return res.data.user
