@@ -44,7 +44,8 @@ class Event extends Model
       'description',
       'date',
       'time',
-      'type'
+      'type',
+      'timezone'
     ];
   
 

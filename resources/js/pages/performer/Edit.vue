@@ -62,8 +62,8 @@
         }
       },
       filteredPerformerTypes: function() {
-        if (this.performerTypes.performerTypes) {
-          return this.performerTypes.performerTypes.filter(entry => !this.performer.type.find((item) => Number(item.id) === Number(entry.id)));
+        if (this.performerTypes) {
+          return this.performerTypes.filter(entry => !this.performer.type.find((item) => Number(item.id) === Number(entry.id)));
         }
       },
     },

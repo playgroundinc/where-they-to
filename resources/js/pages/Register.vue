@@ -29,11 +29,19 @@
           <span class="help-block" v-if="error && errors.password">{{ errors.password }}</span>
         </select>
       </div>
+      <Location :country="country" :city="city" :province="province"></Location>
+      <label for="timezone" class="label">Timezone</label>
+      <select name="timezone" id="timezone" class="input" v-model="timezone">
+        <option v-for="timezone in timezones" v-bind:key="timezone" :value="timezone">{{ timezone }}</option>
+      </select>
       <button type="submit" class="btn btn-default">Submit</button>
     </form>
   </div>
 </template>
 <script> 
+  import mapState from 'vuex';
+  import timezones from '../components/Timezone';
+  import Location from '../components/Location';
   export default {
     data(){
       return {
@@ -41,12 +49,21 @@
         password: '',
         password_confirmation: '',
         type: "1",
+        city: '',
+        province: '',
+        country: '',
+        timezone: '',
         error: false,
         errors: {},
-        success: false
+        success: false,
+        timezones: timezones,
       };
     },
     mounted: function() {
+  
+    },
+    components: {
+      Location,
     },
     methods: {
       register: function() {
@@ -55,6 +72,9 @@
           password: this.password,
           password_confirmation: this.password_confirmation,
           type: this.type,
+          city: this.city,
+          country: this.country,
+          timezone: this.timezone,
         };
         this.$store
           .dispatch("register", data)

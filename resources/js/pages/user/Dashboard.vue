@@ -22,6 +22,23 @@
     components: {
       //
       List,
+    },
+    mounted() {
+      if (this.$route.query.performer) {
+        this.$store.dispatch('fetchState', {
+          route: 'performers'
+        });
+      }
+      if (this.$route.query.venue) {
+        this.$store.dispatch('fetchState', {
+          route: 'venues'
+        });
+      }
+      if (this.$route.query.events) {
+        this.$store.dispatch('fetchState', {
+          route: 'events'
+        });
+      }
     }
   }
 </script>

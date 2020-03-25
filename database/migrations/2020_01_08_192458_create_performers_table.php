@@ -23,6 +23,10 @@ class CreatePerformersTable extends Migration
         $table->string('name')->nullable();
         $table->timestamp('email_verified_at')->nullable();
         $table->integer('role')->default(1);
+        $table->string('city')->nullable();
+        $table->string('region')->nullable();
+        $table->string('country')->nullable();
+        $table->string('timezone')->nullable();
         $table->rememberToken();
         $table->tinyInteger('type')->unsigned()->nullable();
       });
@@ -66,6 +70,7 @@ class CreatePerformersTable extends Migration
         $table->timestamps();
         $table->date('date')->nullable();
         $table->string('time')->nullable();
+        $table->string('timezone')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();
         $table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');

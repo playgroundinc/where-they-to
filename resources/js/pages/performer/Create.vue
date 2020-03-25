@@ -48,7 +48,10 @@
         this.$store
           .dispatch('create', { route: 'performers', data})
           .then(() => {
-            this.$router.push('/social-links/create');
+            this.$store.dispatch('fetchState', {
+              route: 'performers'
+            });
+            this.$router.push('/dashboard?performer=1');
           }).catch((err) => {
             console.log(err)
           });

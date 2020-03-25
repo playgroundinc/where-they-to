@@ -100,6 +100,7 @@ class EventController extends Controller
           'time' => 'nullable',
           'name' => 'required',
           'description' => 'required',
+          'timezone' => 'nullable',
         ]);
         $date = Carbon::parse(request('date'));
 
