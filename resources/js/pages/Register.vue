@@ -29,7 +29,7 @@
           <span class="help-block" v-if="error && errors.password">{{ errors.password }}</span>
         </select>
       </div>
-      <Location :country="country" :city="city" :province="province"></Location>
+      <Location :country="country" :city="city" :state="state" @changed="echoLocation"></Location>
       <label for="timezone" class="label">Timezone</label>
       <select name="timezone" id="timezone" class="input" v-model="timezone">
         <option v-for="timezone in timezones" v-bind:key="timezone" :value="timezone">{{ timezone }}</option>
@@ -50,7 +50,7 @@
         password_confirmation: '',
         type: "1",
         city: '',
-        province: '',
+        state: '',
         country: '',
         timezone: '',
         error: false,
@@ -74,6 +74,7 @@
           type: this.type,
           city: this.city,
           country: this.country,
+          region: this.state,
           timezone: this.timezone,
         };
         this.$store
@@ -86,6 +87,10 @@
             }
           })
           .catch(err => console.log(err));
+      },
+      echoLocation: function(location) {
+        console.log(location)
+        this[location.key] = location.value;
       }
     }
   }

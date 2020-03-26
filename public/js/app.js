@@ -4052,24 +4052,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
-      refCountry: '',
-      refState: '',
-      refCity: ''
+      country: '',
+      state: '',
+      city: ''
     };
-  },
-  props: {
-    country: {
-      required: true
-    },
-    province: {
-      required: true
-    },
-    city: {
-      required: true
-    }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['states', 'cities'])),
   methods: {
+    passToParent: function passToParent(ref) {
+      this.$emit('changed', {
+        key: ref,
+        value: this[ref]
+      });
+    },
     fetchLocations: function () {
       var _fetchLocations = _asyncToGenerator(
       /*#__PURE__*/
@@ -4093,20 +4088,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   result: result
                 };
                 this.$store.dispatch('fetchLocation', data);
-                _context.next = 11;
+                this.passToParent(ref);
+                _context.next = 12;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 9:
+                _context.prev = 9;
                 _context.t0 = _context["catch"](1);
                 console.log(_context.t0);
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[1, 8]]);
+        }, _callee, this, [[1, 9]]);
       }));
 
       function fetchLocations(_x, _x2, _x3) {
@@ -4368,7 +4364,7 @@ __webpack_require__.r(__webpack_exports__);
       password_confirmation: '',
       type: "1",
       city: '',
-      province: '',
+      state: '',
       country: '',
       timezone: '',
       error: false,
@@ -4392,6 +4388,7 @@ __webpack_require__.r(__webpack_exports__);
         type: this.type,
         city: this.city,
         country: this.country,
+        region: this.state,
         timezone: this.timezone
       };
       this.$store.dispatch("register", data).then(function (resp) {
@@ -4403,6 +4400,10 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         return console.log(err);
       });
+    },
+    echoLocation: function echoLocation(location) {
+      console.log(location);
+      this[location.key] = location.value;
     }
   }
 });
@@ -8512,8 +8513,8 @@ var render = function() {
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.refCountry,
-            expression: "refCountry"
+            value: _vm.country,
+            expression: "country"
           }
         ],
         staticClass: "input",
@@ -8529,13 +8530,13 @@ var render = function() {
                   var val = "_value" in o ? o._value : o.value
                   return val
                 })
-              _vm.refCountry = $event.target.multiple
+              _vm.country = $event.target.multiple
                 ? $$selectedVal
                 : $$selectedVal[0]
             },
             function($event) {
               $event.preventDefault()
-              return _vm.fetchLocations("country", "states", "refCountry")
+              return _vm.fetchLocations("country", "states", "country")
             }
           ]
         }
@@ -8554,7 +8555,7 @@ var render = function() {
     _vm._v(" "),
     _vm.states.length > 0
       ? _c("div", [
-          _c("label", { staticClass: "label", attrs: { for: "province" } }, [
+          _c("label", { staticClass: "label", attrs: { for: "region" } }, [
             _vm._v("Province/Region")
           ]),
           _vm._v(" "),
@@ -8565,12 +8566,12 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.refState,
-                  expression: "refState"
+                  value: _vm.state,
+                  expression: "state"
                 }
               ],
               staticClass: "input",
-              attrs: { name: "province" },
+              attrs: { id: "region", name: "region" },
               on: {
                 change: [
                   function($event) {
@@ -8582,16 +8583,16 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.refState = $event.target.multiple
+                    _vm.state = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
                   function($event) {
                     $event.preventDefault()
                     return _vm.fetchLocations(
-                      "country=" + _vm.refCountry + "&state",
+                      "country=" + _vm.country + "&state",
                       "cities",
-                      "refState"
+                      "state"
                     )
                   }
                 ]
@@ -8628,26 +8629,31 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.refCity,
-                  expression: "refCity"
+                  value: _vm.city,
+                  expression: "city"
                 }
               ],
               staticClass: "input",
               attrs: { name: "city" },
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.refCity = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.city = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    return _vm.passToParent("city")
+                  }
+                ]
               }
             },
             [
@@ -9129,11 +9135,8 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("Location", {
-              attrs: {
-                country: _vm.country,
-                city: _vm.city,
-                province: _vm.province
-              }
+              attrs: { country: _vm.country, city: _vm.city, state: _vm.state },
+              on: { changed: _vm.echoLocation }
             }),
             _vm._v(" "),
             _c("label", { staticClass: "label", attrs: { for: "timezone" } }, [
