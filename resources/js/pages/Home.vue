@@ -1,30 +1,37 @@
 <template>
   <div>
-    <h1>Home</h1>
-    <h2>Performers</h2>
-    <ul>
-      <li v-for="performer in performers" v-bind:key="performer.id">
-        <a :href="'performers/' + performer.id"> {{ performer.name }}</a>
-      </li>
-    </ul>
-    <h2>Events</h2>
-    <ul>
-      <li v-for="event in events" v-bind:key="event.id">
-        <a :href="'events/' + event.id"> {{ event.name }}</a>
-      </li>
-    </ul>
-    <h2>Venues</h2>
-    <ul>
-      <li v-for="venue in venues" v-bind:key="venue.id">
-        <a :href="'venues/' + venue.id"> {{ venue.name }}</a>
-      </li>
-    </ul>
-    <h2>Families</h2>
-    <ul>
-      <li v-for="family in families" v-bind:key="family.id">
-        <a :href="'families/' + family.id"> {{ family.name }}</a>
-      </li>
-    </ul>
+    <h1>Where They To</h1>
+    <h2>On Tonight</h2>
+    <div>
+      <p v-if="!todays.length > 0">Nothing On Tonight</p>
+      <div v-for="today in todays" v-bind:key="today.id">
+        <a :href="'/events/' + today.id">
+          <h3>
+            {{ today.name }}
+          </h3>
+        </a>
+        <p>{{ today.time }}</p>
+        <a :href="'/venues' + venue(today.venue_id, 'link')">{{ venue(today.venue_id ) }}</a>
+      </div>
+    </div>
+    <h2>This Week</h2>
+    <div>
+      <p v-if="!weeks.length">Nothing On This Week</p>
+      <div v-for="weekdays in weeks" v-bind:key="weekdays.id">
+        <div v-for="(weekday, index) in weekdays" v-bind:key="weekday.id">
+          <h2 class="title">{{ index }}</h2>
+          <div v-for="day in weekday" v-bind:key="day.id">
+            <a :href="'/events/' + day.id">
+              <h3>
+                {{day.name}}
+              </h3>
+            </a>
+            <p>{{ day.time }}</p>
+            <a :href="'/venues' + venue(day.venue_id, 'link')">{{ venue(day.venue_id ) }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,19 +40,49 @@ import { mapState } from 'vuex'
   export default {
     data() {
       return {
+        todays: {},
+        weeks: [],
       }
     },
     computed: {
-      ...mapState(['performers', 'events', 'families', 'venues', 'user'])
+      ...mapState(['user', 'events', 'families', 'venues', 'performers']),
     },
     methods: {
-  
+      family(id) {
+        return this.families.find((entry) => Number(entry.id) === Number(id))
+      },
+      venue(id, field) {
+        const venue = this.venues.find((entry) => Number(entry.id) === Number(id));
+        if (field === 'link' && venue) {
+          return venue.id
+        }
+        if (venue) {
+          return venue.name
+        }
+      },
     },
-    created() {
-      // this._getData('performers');
-      // this._getData('events');
-      // this._getData('venues');
-      // this._getData('families');
+    mounted() {
+      const date = new Date();
+      const today = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+      this.$store.dispatch('fetchDate', {
+        parameter: 'date',
+        date: today,
+      }).then((response) => {
+        this.todays = JSON.parse(response.data.events);
+      });
+      const tempArray = [];
+      for (let i = 1; i < 7; i = i + 1) {
+        const thisWeeks = {};
+        let weekdate = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate() + i}`;
+        this.$store.dispatch('fetchDate', {
+          parameter: 'date',
+          date: weekdate,
+        }).then((response) => {
+          thisWeeks[response.data.date] = JSON.parse(response.data.events);
+          tempArray.push(thisWeeks);
+        });
+      }
+      this.weeks = tempArray;
     }
   }
 </script>

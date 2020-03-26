@@ -18,10 +18,6 @@ class VenueController extends Controller
     {
         //
         $venues = Venue::all();
-        foreach ($venues as $index=>$venue) {
-          $user = User::find($venue['user_id']);
-          $venues[$index]['socialLinks'] = $user->socialLinks;
-        }
         return $venues;
     }
 
@@ -52,10 +48,9 @@ class VenueController extends Controller
           'city' => 'required',
         ]);
         $venue = Venue::create($attributes);
-        $user = User::find($request['id']);
-        $user->venue()->save($venue);
-        $user_id = $user['id'];
-        return view('socialLinks.create', compact('user_id'));
+        $user = User::find($request['user']->id);
+        $user->venues()->save($venue);
+        return response()->json(['status' => 'success'], 201);
 
     }
 

@@ -7,6 +7,9 @@ export default new Vuex.Store({
   state: {
     status: '',
     user: 0,
+    cities: [],
+    states: [],
+    countries: [],
     token: localStorage.getItem('token') || '',
     events: [],
     performers: [],
@@ -100,6 +103,19 @@ export default new Vuex.Store({
         })
       })
     },
+    fetchDate({commit}, data) {
+      return new Promise((resolve, reject) => {
+        const { date } = data;
+        const { parameter } = data;
+        axios.get(`http://127.0.0.1:8000/api/events/${parameter}/${date}`)
+        .then((resp) => {
+          resolve(resp);
+          return resp;
+        }).catch((err) => {
+          reject(err);
+        })
+      })
+    },
     findUser({commit}) {
       const user = localStorage.getItem('token');
       if (user) {
@@ -116,7 +132,9 @@ export default new Vuex.Store({
               id: res.data.user.id,
               type: res.data.user.type,
               socialLinks: res.data.user.socialLinks,
-              profile: res.data.user.profile,
+              venues: res.data.user.venues,
+              performers: res.data.user.performers,
+              events: res.data.user.events
             }
           })
           return res.data.user
@@ -187,6 +205,51 @@ export default new Vuex.Store({
         })
       })
     },
+    clearState({state}, payload) {
+      this.commit('set_state', {
+        name: payload.name, 
+        value: [],
+      })
+    },
+    fetchLocation({state}, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get(`https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?${payload.route}=${payload.value}`)
+          .then((resp) => {
+            const location = [];
+            if (resp.data && resp.data.details && resp.data.details.regionalBlocs) {
+              resp.data.details.regionalBlocs.forEach((item) => {
+                location.push(item.state_name);
+              })            
+              this.commit('set_state', {
+                name: payload.result,
+                value: location
+              })
+              resolve(resp);
+              return;
+            }
+            if (resp.data) {
+              for (let item in resp.data) {
+                if (resp.data[item].city_name) {
+                  location.push(resp.data[item].city_name);
+                }
+              }    
+              this.commit('set_state', {
+                name: payload.result,
+                value: location
+              })
+              resolve(resp);
+              return
+            }
+            resolve(resp);
+            return
+            
+          }).catch((error) => {
+            console.log(error);
+            reject(error);
+            return;
+          })
+      })
+    }
   },
   mutations: {
     auth_request(state){

@@ -1,6 +1,6 @@
 <template>
   <div class="main" v-if="user">
-    <h1>Edit Performer profile</h1>
+    <h1>Create Venue Profile</h1>
     <form v-on:submit.prevent="handleSubmit" action="'/venues/' + id">
       <div >
         <label class="label" for="name">Name</label>
@@ -45,10 +45,10 @@
         this.$store
           .dispatch('create', { route: 'venues', data})
           .then(() => {
-            this.$router.dispatch('fetchState', {
+            this.$store.dispatch('fetchState', {
               route: 'venues'
             })
-            this.$router.push('/social-links/create');
+            this.$router.push('/dashboard?venue=1');
           }).catch((err) => {
             console.log(err)
           });

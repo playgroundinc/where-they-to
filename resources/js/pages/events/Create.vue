@@ -4,12 +4,16 @@
     <form action="/events" v-on:submit.prevent="handleSubmit">
       <label class="label" for="name" >Name</label>
       <input class="input" type="text" name="name" id="name" v-model="name">
-      <label class="label" for="description">description</label>
+      <label class="label" for="description">Description</label>
       <textarea class="input" name="description" id="description" cols="30" rows="10" v-model="description"></textarea>
       <label class="label" for="date">Date</label>
       <input class="input" type="text" name="date" id="date" v-model="date">
       <label for="date" class="label">Time</label>
       <input class="input" type="text" id="time" name="time" v-model="time">
+      <label for="timezone" class="label">Timezone</label>
+      <select name="timezone" id="timezone" class="input" v-model="timezone">
+        <option v-for="timezone in timezones" v-bind:key="timezone" :value="timezone">{{ timezone }}</option>
+      </select>
       <label class="label" for="venue">Venue</label>
       <select class="input" name="venue" id="venue" v-model="venue">
         <option v-for="venue in venues" v-bind:key="venue.id" :value="venue.id" v-text="venue.name"></option>
@@ -33,8 +37,8 @@
         <legend for="newPerformers" class="label">Performers</legend>
         <ul class="list">
           <li class="list-item" v-for="performer in performers" v-bind:key="performer.id" >
-            <input v-if="performer.id !== user.profile.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
-            <label v-if="performer.id !== user.profile.id" :for="performer.name" v-text="performer.name"></label>
+            <input v-if="user.profile && performer.id !== user.profile.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
+            <label v-if="user.profile && performer.id !== user.profile.id" :for="performer.name" v-text="performer.name"></label>
           </li>
         </ul> 
       </fieldset>
@@ -47,10 +51,10 @@
           </li>
         </ul> 
         <div v-if="newTicket">
-          <label for="ticketDescription" class="label">Description</label>
-          <input class="input" type="text" name="ticketDescription" id="ticketDescription" v-model="ticketDescription">
           <label class="label" for="ticketPrice">Ticket Price</label>  
           <input class="input" type="number" name="ticketPrice" v-model="ticketPrice">
+          <label for="ticketDescription" class="label">Description</label>
+          <input class="input" type="text" name="ticketDescription" id="ticketDescription" v-model="ticketDescription">
           <label class="label" for="ticketUrl">Ticket URL</label>
           <input class="input" type="url" name="ticketUrl" v-model="ticketUrl">
           <button class="btn" v-on:click.prevent="createTicket">Add Ticket</button>
@@ -64,6 +68,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import timezones from '../../components/Timezone'
 export default {
   data() {
     return {
@@ -81,6 +86,8 @@ export default {
       ticketPrice: 0,
       ticketDescription: '',
       ticketUrl: '',
+      timezone: '',
+      timezones: timezones || '',
     }
   },
   computed: {
@@ -100,7 +107,8 @@ export default {
         family: this.family,
         eventType: this.type,
         performers: this.newPerformers,
-        tickets: this.newTickets
+        tickets: this.newTickets,
+        timezone: this.timezone,
       }
       this.$store.dispatch('create', {
         route: 'events',
@@ -109,7 +117,7 @@ export default {
         this.$store.dispatch('fetchState', {
           route: 'events',
         })
-        this.$router.push({path: `/events`})
+        this.$router.push({path: `/dashboard?events=1`})
       });
     },
     updateTickets: function(ticket) {

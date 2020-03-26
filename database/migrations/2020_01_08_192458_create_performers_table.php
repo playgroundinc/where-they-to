@@ -16,7 +16,6 @@ class CreatePerformersTable extends Migration
     public function up()
     {
       Schema::create('users', function (Blueprint $table) {
-        $table->string('username')->unique()->nullable();
         $table->string('password');
         $table->string('email')->unique();
         $table->bigIncrements('id');
@@ -24,6 +23,10 @@ class CreatePerformersTable extends Migration
         $table->string('name')->nullable();
         $table->timestamp('email_verified_at')->nullable();
         $table->integer('role')->default(1);
+        $table->string('city')->nullable();
+        $table->string('region')->nullable();
+        $table->string('country')->nullable();
+        $table->string('timezone')->nullable();
         $table->rememberToken();
         $table->tinyInteger('type')->unsigned()->nullable();
       });
@@ -65,8 +68,9 @@ class CreatePerformersTable extends Migration
         $table->bigIncrements('id');
         $table->string('name');
         $table->timestamps();
-        $table->string('date')->nullable();
+        $table->date('date')->nullable();
         $table->string('time')->nullable();
+        $table->string('timezone')->nullable();
         $table->text('description');
         $table->bigInteger('venue_id')->unsigned()->nullable();
         $table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
@@ -92,11 +96,11 @@ class CreatePerformersTable extends Migration
     Schema::create('social_links', function (Blueprint $table) {
         $table->bigIncrements('id');
         $table->timestamps();
-        $table->string('facebook')->default('');
-        $table->string('instagram')->default('');
-        $table->string('twitter')->default('');
-        $table->string('website')->default('');
-        $table->string('youtube')->default('');
+        $table->string('facebook')->nullable()->default('');
+        $table->string('instagram')->nullable()->default('');
+        $table->string('twitter')->nullable()->default('');
+        $table->string('website')->nullable()->default('');
+        $table->string('youtube')->nullable()->default('');
         $table->bigInteger('family_id')->unsigned()->nullable();
         $table->foreign('family_id')->references('id')->on('families')->onDelete('cascade');
         $table->bigInteger('user_id')->unsigned()->nullable();

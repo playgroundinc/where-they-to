@@ -23,7 +23,9 @@ class PerformerController extends Controller
         $performers = Performer::all();
         foreach ($performers as $index=>$performer) {
           $user = User::find($performer['user_id']);
-          $performers[$index]['socialLinks'] = $user->socialLinks;
+          if (isset($user)) {
+            $performers[$index]['socialLinks'] = $user->socialLinks;
+          }
           $performers[$index]['type'] = $performer->performerTypes;
         }
         return response()->json($performers, 200);
@@ -54,12 +56,22 @@ class PerformerController extends Controller
           'bio' => 'required',
         ]);
         $performer = Performer::create($attributes);
-        
-        $performerType = PerformerType::find($request['performerType']);
-        $performer->performerTypes()->attach($performerType);
-      
-        $user = User::find($request['user_id']);
-        $user->performer()->save($performer);
+        if ($request['performerType']) {
+          $types = PerformerType::find($request['performerType']);
+          if ($types) {
+            $performer->performerTypes()->detach();
+            foreach ($types as $type) {
+              $performer->performerTypes()->attach($type);
+            }
+          }
+        }
+
+        $user = User::find($request['user']->id);
+
+        if ($user) {
+          $user->performers()->save($performer);
+        }
+
 
         return response()->json(['status' => 'success'], 201);
     }

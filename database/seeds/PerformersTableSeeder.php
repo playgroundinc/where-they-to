@@ -22,13 +22,13 @@ class PerformersTableSeeder extends Seeder
       DB::table('performers')->insert([
         'name' => $faker->firstName,
         'bio' => $faker->text,
-        'user_id' => '3',
+        'user_id' => '1',
         'family_id' => '2',
       ]);
       DB::table('performers')->insert([
         'name' => $faker->firstName,
         'bio' => $faker->text,
-        'user_id' => '5',
+        'user_id' => '1',
         'family_id' => '1',
       ]);
     }

@@ -29,6 +29,7 @@ Vue.use(require('@websanova/vue-auth'), {
 });
 
 Index.router = Vue.router
+
 // Load Index
 new Vue({
   el: "#app",

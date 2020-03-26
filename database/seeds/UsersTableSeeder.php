@@ -17,7 +17,6 @@ class UsersTableSeeder extends Seeder
       //
     $faker = Faker\Factory::create();
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
@@ -26,7 +25,6 @@ class UsersTableSeeder extends Seeder
       'role' => '1',
     ]);
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
@@ -35,7 +33,6 @@ class UsersTableSeeder extends Seeder
       'role' => '2',
     ]);
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
@@ -44,7 +41,6 @@ class UsersTableSeeder extends Seeder
       'role' => '2',
     ]);
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
@@ -53,7 +49,6 @@ class UsersTableSeeder extends Seeder
       'role' => '2',
     ]);
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
@@ -62,7 +57,6 @@ class UsersTableSeeder extends Seeder
       'role' => '1',
     ]);
     DB::table('users')->insert([
-      'username' => $faker->userName,
       'email' => $faker->email,
       'password' => Hash::make('admin'),
       'email_verified_at' => now(),
