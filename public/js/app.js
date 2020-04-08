@@ -4046,6 +4046,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -8553,7 +8555,7 @@ var render = function() {
       2
     ),
     _vm._v(" "),
-    _vm.states.length > 0
+    _vm.country
       ? _c("div", [
           _c("label", { staticClass: "label", attrs: { for: "region" } }, [
             _vm._v("Province/Region")
@@ -8599,9 +8601,13 @@ var render = function() {
               }
             },
             [
-              _c("option", { attrs: { value: "" } }, [
-                _vm._v("Select Province/Region")
-              ]),
+              _vm.states.length > 0
+                ? _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Select Province/Region")
+                  ])
+                : _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Loading...")
+                  ]),
               _vm._v(" "),
               _vm._l(_vm.states, function(state, index) {
                 return _c(
@@ -8616,7 +8622,7 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _vm.states.length && _vm.cities.length > 0
+    _vm.state
       ? _c("div", [
           _c("label", { staticClass: "label", attrs: { for: "city" } }, [
             _vm._v("City")
@@ -8657,7 +8663,13 @@ var render = function() {
               }
             },
             [
-              _c("option", { attrs: { value: "" } }, [_vm._v("Select City")]),
+              _vm.cities.length > 0
+                ? _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Select City")
+                  ])
+                : _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Loading...")
+                  ]),
               _vm._v(" "),
               _vm._l(_vm.cities, function(city, index) {
                 return _c("option", { key: index, domProps: { value: city } }, [
