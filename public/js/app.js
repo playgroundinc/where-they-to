@@ -4313,49 +4313,53 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_Timezone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Timezone */ "./resources/js/components/Timezone.js");
-/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Location */ "./resources/js/components/Location.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Location */ "./resources/js/components/Location.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4371,13 +4375,17 @@ __webpack_require__.r(__webpack_exports__);
       timezone: '',
       error: false,
       errors: {},
-      success: false,
-      timezones: _components_Timezone__WEBPACK_IMPORTED_MODULE_1__["default"]
+      success: false
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    if (!this.timezones.length > 0) {
+      this.$store.dispatch('fetchTimezones');
+    }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['timezones'])),
   components: {
-    Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
+    Location: _components_Location__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
     register: function register() {
@@ -4404,7 +4412,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     echoLocation: function echoLocation(location) {
-      console.log(location);
       this[location.key] = location.value;
     }
   }
@@ -9633,8 +9640,7 @@ var render = function() {
                         "li",
                         { key: performer.id, staticClass: "list-item" },
                         [
-                          _vm.user.profile &&
-                          performer.id !== _vm.user.profile.id
+                          _vm.user.id && performer.id !== _vm.user.id
                             ? _c("input", {
                                 directives: [
                                   {
@@ -9683,8 +9689,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm.user.profile &&
-                          performer.id !== _vm.user.profile.id
+                          _vm.user.id && performer.id !== _vm.user.id
                             ? _c("label", {
                                 attrs: { for: performer.name },
                                 domProps: {
@@ -10215,7 +10220,7 @@ var render = function() {
                         "li",
                         { key: eventPerformer.id, staticClass: "list-item" },
                         [
-                          eventPerformer.id !== _vm.user.profile.id
+                          eventPerformer.id !== _vm.user.id
                             ? _c("div", [
                                 _c("p", [_vm._v(_vm._s(eventPerformer.name))]),
                                 _vm._v(" "),
@@ -31338,7 +31343,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     families: [],
     performerTypes: [],
     eventTypes: [],
-    tickets: []
+    tickets: [],
+    timezones: []
   },
   actions: {
     login: function login(_ref, data) {
@@ -31555,10 +31561,23 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         value: []
       });
     },
-    fetchLocation: function fetchLocation(_ref12, payload) {
+    fetchTimezones: function fetchTimezones(_ref12) {
       var _this3 = this;
 
       var state = _ref12.state;
+      return new Promise(function (resolve, reject) {
+        axios.get('https://cors-anywhere.herokuapp.com/http://worldtimeapi.org/api/timezone').then(function (resp) {
+          _this3.commit('set_state', {
+            name: 'timezones',
+            value: resp.data
+          });
+        });
+      });
+    },
+    fetchLocation: function fetchLocation(_ref13, payload) {
+      var _this4 = this;
+
+      var state = _ref13.state;
       return new Promise(function (resolve, reject) {
         axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value)).then(function (resp) {
           var location = [];
@@ -31568,7 +31587,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
               location.push(item.state_name);
             });
 
-            _this3.commit('set_state', {
+            _this4.commit('set_state', {
               name: payload.result,
               value: location
             });
@@ -31584,7 +31603,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
               }
             }
 
-            _this3.commit('set_state', {
+            _this4.commit('set_state', {
               name: payload.result,
               value: location
             });

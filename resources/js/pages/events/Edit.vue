@@ -33,7 +33,7 @@
         <legend class="label">Current Performers</legend>
         <ul class="list">
           <li class="list-item" v-for="eventPerformer in event.performers" v-bind:key="eventPerformer.id" >
-            <div v-if="eventPerformer.id !== user.profile.id">
+            <div v-if="eventPerformer.id !== user.id">
               <p>{{ eventPerformer.name }}</p>
               <button @click.prevent="removePerformer(eventPerformer.id)">Remove Performer</button>
             </div>

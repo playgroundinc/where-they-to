@@ -39,8 +39,7 @@
   </div>
 </template>
 <script> 
-  import mapState from 'vuex';
-  import timezones from '../components/Timezone';
+  import { mapState } from 'vuex';
   import Location from '../components/Location';
   export default {
     data(){
@@ -56,11 +55,15 @@
         error: false,
         errors: {},
         success: false,
-        timezones: timezones,
       };
     },
     mounted: function() {
-  
+      if (!this.timezones.length > 0) {
+        this.$store.dispatch('fetchTimezones');
+      }
+    },
+    computed: {
+      ...mapState(['timezones' ]),
     },
     components: {
       Location,
@@ -89,7 +92,6 @@
           .catch(err => console.log(err));
       },
       echoLocation: function(location) {
-        console.log(location)
         this[location.key] = location.value;
       }
     }
