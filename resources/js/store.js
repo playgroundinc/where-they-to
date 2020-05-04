@@ -18,6 +18,7 @@ export default new Vuex.Store({
     performerTypes: [],
     eventTypes: [],
     tickets: [],
+    timezones: [],
   },
   actions: {
     login({commit}, data) {
@@ -209,6 +210,17 @@ export default new Vuex.Store({
       this.commit('set_state', {
         name: payload.name, 
         value: [],
+      })
+    },
+    fetchTimezones({ state }) {
+      return new Promise((resolve, reject) => {
+        axios.get('https://cors-anywhere.herokuapp.com/http://worldtimeapi.org/api/timezone')
+        .then((resp) => {
+          this.commit('set_state', {
+            name: 'timezones',
+            value: resp.data,
+          })
+        })
       })
     },
     fetchLocation({state}, payload) {

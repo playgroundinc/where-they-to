@@ -4046,30 +4046,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
-      refCountry: '',
-      refState: '',
-      refCity: ''
+      country: '',
+      state: '',
+      city: ''
     };
-  },
-  props: {
-    country: {
-      required: true
-    },
-    province: {
-      required: true
-    },
-    city: {
-      required: true
-    }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['states', 'cities'])),
   methods: {
+    passToParent: function passToParent(ref) {
+      this.$emit('changed', {
+        key: ref,
+        value: this[ref]
+      });
+    },
     fetchLocations: function () {
       var _fetchLocations = _asyncToGenerator(
       /*#__PURE__*/
@@ -4093,20 +4090,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   result: result
                 };
                 this.$store.dispatch('fetchLocation', data);
-                _context.next = 11;
+                this.passToParent(ref);
+                _context.next = 12;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 9:
+                _context.prev = 9;
                 _context.t0 = _context["catch"](1);
                 console.log(_context.t0);
 
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[1, 8]]);
+        }, _callee, this, [[1, 9]]);
       }));
 
       function fetchLocations(_x, _x2, _x3) {
@@ -4315,49 +4313,53 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_Timezone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Timezone */ "./resources/js/components/Timezone.js");
-/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Location */ "./resources/js/components/Location.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Location */ "./resources/js/components/Location.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4368,18 +4370,22 @@ __webpack_require__.r(__webpack_exports__);
       password_confirmation: '',
       type: "1",
       city: '',
-      province: '',
+      state: '',
       country: '',
       timezone: '',
       error: false,
       errors: {},
-      success: false,
-      timezones: _components_Timezone__WEBPACK_IMPORTED_MODULE_1__["default"]
+      success: false
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    if (!this.timezones.length > 0) {
+      this.$store.dispatch('fetchTimezones');
+    }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['timezones'])),
   components: {
-    Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
+    Location: _components_Location__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
     register: function register() {
@@ -4392,6 +4398,7 @@ __webpack_require__.r(__webpack_exports__);
         type: this.type,
         city: this.city,
         country: this.country,
+        region: this.state,
         timezone: this.timezone
       };
       this.$store.dispatch("register", data).then(function (resp) {
@@ -4403,6 +4410,9 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         return console.log(err);
       });
+    },
+    echoLocation: function echoLocation(location) {
+      this[location.key] = location.value;
     }
   }
 });
@@ -8512,8 +8522,8 @@ var render = function() {
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.refCountry,
-            expression: "refCountry"
+            value: _vm.country,
+            expression: "country"
           }
         ],
         staticClass: "input",
@@ -8529,13 +8539,13 @@ var render = function() {
                   var val = "_value" in o ? o._value : o.value
                   return val
                 })
-              _vm.refCountry = $event.target.multiple
+              _vm.country = $event.target.multiple
                 ? $$selectedVal
                 : $$selectedVal[0]
             },
             function($event) {
               $event.preventDefault()
-              return _vm.fetchLocations("country", "states", "refCountry")
+              return _vm.fetchLocations("country", "states", "country")
             }
           ]
         }
@@ -8552,9 +8562,9 @@ var render = function() {
       2
     ),
     _vm._v(" "),
-    _vm.states.length > 0
+    _vm.country
       ? _c("div", [
-          _c("label", { staticClass: "label", attrs: { for: "province" } }, [
+          _c("label", { staticClass: "label", attrs: { for: "region" } }, [
             _vm._v("Province/Region")
           ]),
           _vm._v(" "),
@@ -8565,12 +8575,12 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.refState,
-                  expression: "refState"
+                  value: _vm.state,
+                  expression: "state"
                 }
               ],
               staticClass: "input",
-              attrs: { name: "province" },
+              attrs: { id: "region", name: "region" },
               on: {
                 change: [
                   function($event) {
@@ -8582,25 +8592,29 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.refState = $event.target.multiple
+                    _vm.state = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
                   function($event) {
                     $event.preventDefault()
                     return _vm.fetchLocations(
-                      "country=" + _vm.refCountry + "&state",
+                      "country=" + _vm.country + "&state",
                       "cities",
-                      "refState"
+                      "state"
                     )
                   }
                 ]
               }
             },
             [
-              _c("option", { attrs: { value: "" } }, [
-                _vm._v("Select Province/Region")
-              ]),
+              _vm.states.length > 0
+                ? _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Select Province/Region")
+                  ])
+                : _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Loading...")
+                  ]),
               _vm._v(" "),
               _vm._l(_vm.states, function(state, index) {
                 return _c(
@@ -8615,7 +8629,7 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _vm.states.length && _vm.cities.length > 0
+    _vm.state
       ? _c("div", [
           _c("label", { staticClass: "label", attrs: { for: "city" } }, [
             _vm._v("City")
@@ -8628,30 +8642,41 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.refCity,
-                  expression: "refCity"
+                  value: _vm.city,
+                  expression: "city"
                 }
               ],
               staticClass: "input",
               attrs: { name: "city" },
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.refCity = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.city = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    return _vm.passToParent("city")
+                  }
+                ]
               }
             },
             [
-              _c("option", { attrs: { value: "" } }, [_vm._v("Select City")]),
+              _vm.cities.length > 0
+                ? _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Select City")
+                  ])
+                : _c("option", { attrs: { value: "" } }, [
+                    _vm._v("Loading...")
+                  ]),
               _vm._v(" "),
               _vm._l(_vm.cities, function(city, index) {
                 return _c("option", { key: index, domProps: { value: city } }, [
@@ -9129,11 +9154,8 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("Location", {
-              attrs: {
-                country: _vm.country,
-                city: _vm.city,
-                province: _vm.province
-              }
+              attrs: { country: _vm.country, city: _vm.city, state: _vm.state },
+              on: { changed: _vm.echoLocation }
             }),
             _vm._v(" "),
             _c("label", { staticClass: "label", attrs: { for: "timezone" } }, [
@@ -9618,8 +9640,7 @@ var render = function() {
                         "li",
                         { key: performer.id, staticClass: "list-item" },
                         [
-                          _vm.user.profile &&
-                          performer.id !== _vm.user.profile.id
+                          _vm.user.id && performer.id !== _vm.user.id
                             ? _c("input", {
                                 directives: [
                                   {
@@ -9668,8 +9689,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm.user.profile &&
-                          performer.id !== _vm.user.profile.id
+                          _vm.user.id && performer.id !== _vm.user.id
                             ? _c("label", {
                                 attrs: { for: performer.name },
                                 domProps: {
@@ -10200,7 +10220,7 @@ var render = function() {
                         "li",
                         { key: eventPerformer.id, staticClass: "list-item" },
                         [
-                          eventPerformer.id !== _vm.user.profile.id
+                          eventPerformer.id !== _vm.user.id
                             ? _c("div", [
                                 _c("p", [_vm._v(_vm._s(eventPerformer.name))]),
                                 _vm._v(" "),
@@ -31323,7 +31343,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     families: [],
     performerTypes: [],
     eventTypes: [],
-    tickets: []
+    tickets: [],
+    timezones: []
   },
   actions: {
     login: function login(_ref, data) {
@@ -31540,10 +31561,23 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         value: []
       });
     },
-    fetchLocation: function fetchLocation(_ref12, payload) {
+    fetchTimezones: function fetchTimezones(_ref12) {
       var _this3 = this;
 
       var state = _ref12.state;
+      return new Promise(function (resolve, reject) {
+        axios.get('https://cors-anywhere.herokuapp.com/http://worldtimeapi.org/api/timezone').then(function (resp) {
+          _this3.commit('set_state', {
+            name: 'timezones',
+            value: resp.data
+          });
+        });
+      });
+    },
+    fetchLocation: function fetchLocation(_ref13, payload) {
+      var _this4 = this;
+
+      var state = _ref13.state;
       return new Promise(function (resolve, reject) {
         axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value)).then(function (resp) {
           var location = [];
@@ -31553,7 +31587,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
               location.push(item.state_name);
             });
 
-            _this3.commit('set_state', {
+            _this4.commit('set_state', {
               name: payload.result,
               value: location
             });
@@ -31569,7 +31603,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
               }
             }
 
-            _this3.commit('set_state', {
+            _this4.commit('set_state', {
               name: payload.result,
               value: location
             });

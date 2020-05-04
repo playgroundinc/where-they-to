@@ -1,21 +1,23 @@
 <template> 
   <div>
     <label class="label" for="country">Country</label>
-    <select class="input" name="country" v-model="refCountry" @change.prevent="fetchLocations('country', 'states', 'refCountry')">
+    <select class="input" name="country" v-model="country" @change.prevent="fetchLocations('country', 'states', 'country')">
       <option value="">Select Country</option>
       <option v-for="(country, index) in countries" :value="country" v-bind:key="index">{{country}}</option>
     </select>
-    <div v-if="states.length > 0">
-      <label class="label" for="province">Province/Region</label>
-      <select class="input" name="province" v-model="refState" @change.prevent="fetchLocations(`country=${refCountry}&state`, 'cities', 'refState')">
-        <option value="">Select Province/Region</option>
+    <div v-if="country">
+      <label class="label" for="region">Province/Region</label>
+      <select class="input" id="region" name="region" v-model="state" @change.prevent="fetchLocations(`country=${country}&state`, 'cities', 'state')">
+        <option v-if="states.length > 0" value="">Select Province/Region</option>
+        <option v-else value="">Loading...</option>
         <option v-for="(state, index) in states" :value="state" v-bind:key="index">{{state}}</option>
       </select>
     </div>
-    <div v-if="states.length && cities.length > 0">
+    <div v-if="state">
       <label class="label" for="city">City</label>
-      <select class="input" name="city" v-model="refCity">
-        <option value="">Select City</option>
+      <select class="input" name="city" v-model="city" @change="passToParent('city')">
+        <option v-if="cities.length > 0" value="">Select City</option>
+        <option v-else value="">Loading...</option>
         <option v-for="(city, index) in cities" :value="city" v-bind:key="index">{{city}}</option>
       </select>
     </div>
@@ -30,26 +32,21 @@ export default {
   data() {
     return {
       countries: countries,
-      refCountry: '',
-      refState: '',
-      refCity: '',
-    }
-  },
-  props: {
-    country: {
-      required: true,
-    },
-    province: {
-      required: true,
-    }, 
-    city: {
-      required: true,
+      country: '',
+      state: '',
+      city: '',
     }
   },
   computed: {
     ...mapState(['states', 'cities'])
   },
   methods: {
+    passToParent: function(ref) {
+      this.$emit('changed', {
+        key: ref,
+        value: this[ref],
+      });
+    },
     fetchLocations: async function(route, result, ref) {
       let data = {
         name: result,
@@ -62,6 +59,7 @@ export default {
           result
         }
         this.$store.dispatch('fetchLocation', data);
+        this.passToParent(ref);
       } catch(e) {
         console.log(e);
       }

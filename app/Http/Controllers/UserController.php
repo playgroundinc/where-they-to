@@ -56,7 +56,11 @@ class UserController extends Controller
         $user = User::create([
           'email' => $request->get('email'),
           'password' => Hash::make($request->get('password')),
-          'type' => $request->get('type')
+          'type' => $request->get('type'),
+          'country' => $request->get('country'),
+          'region' => $request->get('region'),
+          'city' => $request->get('city'),
+          'timezone' => $request->get('timezone')
         ]);
 
         $token = JWTAuth::fromUser($user);
