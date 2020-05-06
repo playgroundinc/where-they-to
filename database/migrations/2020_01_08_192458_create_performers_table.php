@@ -28,7 +28,6 @@ class CreatePerformersTable extends Migration
         $table->string('country')->nullable();
         $table->string('timezone')->nullable();
         $table->rememberToken();
-        $table->tinyInteger('type')->unsigned()->nullable();
       });
 
       Schema::create('venues', function (Blueprint $table) {
