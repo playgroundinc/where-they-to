@@ -71,13 +71,12 @@ export default {
     data() {
         return {
             countries: countries,
+            states: [],
+            cities: [],
             country: "",
             state: "",
             city: ""
         };
-    },
-    computed: {
-        ...mapState(["states", "cities"])
     },
     methods: {
         passToParent: function(ref) {
@@ -86,19 +85,59 @@ export default {
                 value: this[ref]
             });
         },
+        handleCities: function(citiesBlock) {
+            const location = [];
+            for (let city in citiesBlock) {
+                if (citiesBlock[city].city_name) {
+                    location.push(citiesBlock[city].city_name);
+                }
+            }
+            this.cities = location;
+        },
+        handleRegions: function(regionBlocks) {
+            const location = [];
+            regionBlocks.forEach(region => {
+                location.push(region.state_name);
+            });
+            this.states = location;
+        },
+        callLocationsApi: async function(payload) {
+            try {
+                const resp = await axios.get(
+                    `https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?${payload.route}=${payload.value}`
+                );
+                const location = [];
+                if (
+                    resp.data &&
+                    resp.data &&
+                    resp.data.details &&
+                    resp.data.details.regionalBlocs
+                ) {
+                    this.handleRegions(resp.data.details.regionalBlocs);
+                    return;
+                }
+                if (resp.data) {
+                    this.handleCities(resp.data);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
         fetchLocations: async function(route, result, ref) {
+            if (ref === "country") {
+                this.state = "";
+            }
+            this.city = "";
             let data = {
                 name: result
             };
             try {
-                return console.log(data);
-                await this.$store.dispatch("clearState", data);
                 data = {
                     route,
                     value: this[ref],
                     result
                 };
-                this.$store.dispatch("fetchLocation", data);
+                this.callLocationsApi(data);
                 this.passToParent(ref);
             } catch (e) {
                 console.log(e);
@@ -110,7 +149,7 @@ export default {
                 value: event.target.value,
                 result: "cities"
             };
-            this.$store.dispatch("fetchLocation", data);
+            this.callLocationsApi(data);
         }
     }
 };

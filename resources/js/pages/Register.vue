@@ -129,6 +129,12 @@ export default {
                 .catch(err => console.log(err));
         },
         echoLocation: function(location) {
+            if (location.key === "country") {
+                this.state = "";
+            }
+            if (location.key === "country" || location.key === "state") {
+                this.city = "";
+            }
             this[location.key] = location.value;
         }
     }

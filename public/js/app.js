@@ -3253,12 +3253,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -3330,12 +3324,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
+      states: [],
+      cities: [],
       country: "",
       state: "",
       city: ""
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["states", "cities"])),
   methods: {
     passToParent: function passToParent(ref) {
       this.$emit("changed", {
@@ -3343,44 +3338,111 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         value: this[ref]
       });
     },
-    fetchLocations: function () {
-      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(route, result, ref) {
-        var data;
+    handleCities: function handleCities(citiesBlock) {
+      var location = [];
+
+      for (var city in citiesBlock) {
+        if (citiesBlock[city].city_name) {
+          location.push(citiesBlock[city].city_name);
+        }
+      }
+
+      this.cities = location;
+    },
+    handleRegions: function handleRegions(regionBlocks) {
+      var location = [];
+      regionBlocks.forEach(function (region) {
+        location.push(region.state_name);
+      });
+      this.states = location;
+    },
+    callLocationsApi: function () {
+      var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(payload) {
+        var resp, location;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                data = {
-                  name: result
-                };
-                _context.prev = 1;
-                return _context.abrupt("return", console.log(data));
+                _context.prev = 0;
+                _context.next = 3;
+                return axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value));
 
-              case 5:
-                data = {
-                  route: route,
-                  value: this[ref],
-                  result: result
-                };
-                this.$store.dispatch("fetchLocation", data);
-                this.passToParent(ref);
-                _context.next = 13;
+              case 3:
+                resp = _context.sent;
+                location = [];
+
+                if (!(resp.data && resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
+                  _context.next = 8;
+                  break;
+                }
+
+                this.handleRegions(resp.data.details.regionalBlocs);
+                return _context.abrupt("return");
+
+              case 8:
+                if (resp.data) {
+                  this.handleCities(resp.data);
+                }
+
+                _context.next = 14;
                 break;
 
-              case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](1);
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](0);
                 console.log(_context.t0);
 
-              case 13:
+              case 14:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[1, 10]]);
+        }, _callee, this, [[0, 11]]);
       }));
 
-      function fetchLocations(_x, _x2, _x3) {
+      function callLocationsApi(_x) {
+        return _callLocationsApi.apply(this, arguments);
+      }
+
+      return callLocationsApi;
+    }(),
+    fetchLocations: function () {
+      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(route, result, ref) {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (ref === "country") {
+                  this.state = "";
+                }
+
+                this.city = "";
+                data = {
+                  name: result
+                };
+
+                try {
+                  data = {
+                    route: route,
+                    value: this[ref],
+                    result: result
+                  };
+                  this.callLocationsApi(data);
+                  this.passToParent(ref);
+                } catch (e) {
+                  console.log(e);
+                }
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function fetchLocations(_x2, _x3, _x4) {
         return _fetchLocations.apply(this, arguments);
       }
 
@@ -3392,7 +3454,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         value: event.target.value,
         result: "cities"
       };
-      this.$store.dispatch("fetchLocation", data);
+      this.callLocationsApi(data);
     }
   }
 });
@@ -3719,6 +3781,14 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     echoLocation: function echoLocation(location) {
+      if (location.key === "country") {
+        this.state = "";
+      }
+
+      if (location.key === "country" || location.key === "state") {
+        this.city = "";
+      }
+
       this[location.key] = location.value;
     }
   }
@@ -29307,14 +29377,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************!*\
   !*** ./resources/js/components/Location.vue ***!
   \**********************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Location_vue_vue_type_template_id_16b5d2a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Location.vue?vue&type=template&id=16b5d2a0& */ "./resources/js/components/Location.vue?vue&type=template&id=16b5d2a0&");
 /* harmony import */ var _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Location.vue?vue&type=script&lang=js& */ "./resources/js/components/Location.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -29344,7 +29415,7 @@ component.options.__file = "resources/js/components/Location.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/Location.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31341,9 +31412,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
   state: {
     status: "",
     user: 0,
-    cities: [],
-    states: [],
-    countries: [],
     token: localStorage.getItem("token") || "",
     events: [],
     performers: [],
@@ -31558,60 +31626,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         })["catch"](function (error) {
           reject(error);
           return error.message;
-        });
-      });
-    },
-    clearState: function clearState(_ref11, payload) {
-      var state = _ref11.state;
-      this.commit("set_state", {
-        name: payload.name,
-        value: []
-      });
-    },
-    fetchLocation: function fetchLocation(_ref12, payload) {
-      var _this3 = this;
-
-      var state = _ref12.state;
-      return new Promise(function (resolve, reject) {
-        axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value)).then(function (resp) {
-          var location = [];
-
-          if (resp.data && resp.data.details && resp.data.details.regionalBlocs) {
-            resp.data.details.regionalBlocs.forEach(function (item) {
-              location.push(item.state_name);
-            });
-
-            _this3.commit("set_state", {
-              name: payload.result,
-              value: location
-            });
-
-            resolve(resp);
-            return;
-          }
-
-          if (resp.data) {
-            for (var item in resp.data) {
-              if (resp.data[item].city_name) {
-                location.push(resp.data[item].city_name);
-              }
-            }
-
-            _this3.commit("set_state", {
-              name: payload.result,
-              value: location
-            });
-
-            resolve(resp);
-            return;
-          }
-
-          resolve(resp);
-          return;
-        })["catch"](function (error) {
-          console.log(error);
-          reject(error);
-          return;
         });
       });
     }
