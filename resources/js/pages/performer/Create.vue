@@ -47,11 +47,12 @@
         }
         this.$store
           .dispatch('create', { route: 'performers', data})
-          .then(() => {
-            this.$store.dispatch('fetchState', {
-              route: 'performers'
-            });
-            this.$router.push('/dashboard?performer=1');
+          .then(async() => {
+            await this.$store.dispatch('fetchState', {
+              route: 'events',
+            })
+            this.$store.dispatch('findUser');
+            this.$router.push('/dashboard');
           }).catch((err) => {
             console.log(err)
           });

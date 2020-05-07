@@ -3415,9 +3415,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 if (ref === "country") {
                   this.state = "";
+                  this.states = [];
                 }
 
                 this.city = "";
+                this.cities = [];
                 data = {
                   name: result
                 };
@@ -3434,7 +3436,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   console.log(e);
                 }
 
-              case 4:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -3628,6 +3630,8 @@ __webpack_require__.r(__webpack_exports__);
         type: 'login',
         user: user
       }).then(function () {
+        _this.$store.dispatch('findUser');
+
         _this.$router.push("/");
       })["catch"](function (error) {
         console.log(error);
@@ -3873,8 +3877,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_Timezone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Timezone */ "./resources/js/components/Timezone.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _components_Timezone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Timezone */ "./resources/js/components/Timezone.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -3969,10 +3981,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ticketDescription: '',
       ticketUrl: '',
       timezone: '',
-      timezones: _components_Timezone__WEBPACK_IMPORTED_MODULE_1__["default"] || ''
+      timezones: _components_Timezone__WEBPACK_IMPORTED_MODULE_2__["default"] || ''
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets'])),
   methods: {
     addTicket: function addTicket() {
       this.newTicket = true;
@@ -3995,15 +4007,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.dispatch('create', {
         route: 'events',
         data: data
-      }).then(function (resp) {
-        _this.$store.dispatch('fetchState', {
-          route: 'events'
-        });
+      }).then( /*#__PURE__*/function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resp) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _this.$store.dispatch('fetchState', {
+                    route: 'events'
+                  });
 
-        _this.$router.push({
-          path: "/dashboard?events=1"
-        });
-      });
+                case 2:
+                  _this.$store.dispatch('findUser');
+
+                  _this.$router.push({
+                    path: "/dashboard?events=1"
+                  });
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        return function (_x) {
+          return _ref.apply(this, arguments);
+        };
+      }());
     },
     updateTickets: function updateTickets(ticket) {
       var data = {
@@ -4944,13 +4977,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.dispatch('create', {
         route: 'performers',
         data: data
-      }).then(function () {
-        _this.$store.dispatch('fetchState', {
-          route: 'performers'
-        });
+      }).then( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _this.$store.dispatch('fetchState', {
+                  route: 'events'
+                });
 
-        _this.$router.push('/dashboard?performer=1');
-      })["catch"](function (err) {
+              case 2:
+                _this.$store.dispatch('findUser');
+
+                _this.$router.push('/dashboard');
+
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      })))["catch"](function (err) {
         console.log(err);
       });
     }
@@ -4958,10 +5006,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     var _this2 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
               if (_this2.user === 0) {
                 _this2.$store.dispatch('findUser');
@@ -4973,10 +5021,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
             case 2:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee);
+      }, _callee2);
     }))();
   }
 });
@@ -5652,29 +5700,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {//
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['performers', 'events', 'venues', 'families', 'user', 'profile'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["user", "profile"])),
   components: {
     //
     List: _components_Lists__WEBPACK_IMPORTED_MODULE_1__["default"]
-  },
-  mounted: function mounted() {
-    if (this.$route.query.performer) {
-      this.$store.dispatch('fetchState', {
-        route: 'performers'
-      });
-    }
-
-    if (this.$route.query.venue) {
-      this.$store.dispatch('fetchState', {
-        route: 'venues'
-      });
-    }
-
-    if (this.$route.query.events) {
-      this.$store.dispatch('fetchState', {
-        route: 'events'
-      });
-    }
   }
 });
 
@@ -5692,7 +5721,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Location */ "./resources/js/components/Location.vue");
 
+
+var _this = undefined;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -5723,7 +5755,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5736,49 +5768,66 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])),
   methods: {
-    handleSubmit: function handleSubmit() {
-      var _this = this;
+    handleSubmit: function () {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var data, response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                data = {
+                  name: _this.name,
+                  description: _this.description,
+                  address: _this.address,
+                  city: _this.city,
+                  id: _this.user.id
+                };
+                _context.prev = 1;
+                _context.next = 4;
+                return _this.$store.dispatch('create', {
+                  route: 'venues',
+                  data: data
+                });
 
-      var data = {
-        name: this.name,
-        description: this.description,
-        address: this.address,
-        city: this.city,
-        id: this.user.id
-      };
-      this.$store.dispatch('create', {
-        route: 'venues',
-        data: data
-      }).then(function () {
-        _this.$store.dispatch('fetchState', {
-          route: 'venues'
-        });
+              case 4:
+                response = _context.sent;
+                _context.next = 7;
+                return _this.$store.dispatch('fetchState', {
+                  route: 'venues'
+                });
 
-        _this.$router.push('/dashboard?venue=1');
-      })["catch"](function (err) {
-        console.log(err);
-      });
-    }
+              case 7:
+                _this.$store.dispatch('findUser');
+
+                _this.$router.push('/dashboard');
+
+                _context.next = 14;
+                break;
+
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](1);
+                console.log(_context.t0);
+
+              case 14:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[1, 11]]);
+      }));
+
+      function handleSubmit() {
+        return _handleSubmit.apply(this, arguments);
+      }
+
+      return handleSubmit;
+    }()
   },
   mounted: function mounted() {
-    var _this2 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (_this2.user === 0) {
-                _this2.$store.dispatch('findUser');
-              }
-
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
+    if (this.user === 0) {
+      this.$store.dispatch('findUser');
+    }
   }
 });
 
@@ -29377,15 +29426,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************!*\
   !*** ./resources/js/components/Location.vue ***!
   \**********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Location_vue_vue_type_template_id_16b5d2a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Location.vue?vue&type=template&id=16b5d2a0& */ "./resources/js/components/Location.vue?vue&type=template&id=16b5d2a0&");
 /* harmony import */ var _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Location.vue?vue&type=script&lang=js& */ "./resources/js/components/Location.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Location_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -29415,7 +29463,7 @@ component.options.__file = "resources/js/components/Location.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/Location.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

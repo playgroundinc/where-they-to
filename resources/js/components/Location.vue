@@ -126,8 +126,10 @@ export default {
         fetchLocations: async function(route, result, ref) {
             if (ref === "country") {
                 this.state = "";
+                this.states = [];
             }
             this.city = "";
+            this.cities = [];
             let data = {
                 name: result
             };

@@ -38,6 +38,7 @@
           type: 'login', 
           user
         }).then(() => {
+          this.$store.dispatch('findUser');
           this.$router.push("/");
         }).catch((error) => {
           console.log(error);
