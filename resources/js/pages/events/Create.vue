@@ -113,10 +113,11 @@ export default {
       this.$store.dispatch('create', {
         route: 'events',
         data,
-      }).then((resp) => {
-        this.$store.dispatch('fetchState', {
+      }).then(async(resp) => {
+        await this.$store.dispatch('fetchState', {
           route: 'events',
         })
+        this.$store.dispatch('findUser');
         this.$router.push({path: `/dashboard?events=1`})
       });
     },

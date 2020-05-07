@@ -33,7 +33,6 @@ class UserController extends Controller
       if ($user) {
         $user = array(
           'id' => $user['id'],
-          'type' => $user['type'],
           'socialLinks' => $user->socialLinks,
         );
         return response()->json(compact('token', 'user'));
@@ -46,7 +45,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
           'email' => 'required|string|email|max:255|unique:users',
           'password' => 'required|string|min:6|confirmed',
-          'type' => 'required',
         ]);
 
         if($validator->fails()){
@@ -56,7 +54,6 @@ class UserController extends Controller
         $user = User::create([
           'email' => $request->get('email'),
           'password' => Hash::make($request->get('password')),
-          'type' => $request->get('type'),
           'country' => $request->get('country'),
           'region' => $request->get('region'),
           'city' => $request->get('city'),
@@ -66,7 +63,6 @@ class UserController extends Controller
         $token = JWTAuth::fromUser($user);
         $user = array(
           'id' => $user['id'],
-          'type' => $user['type'],
           'socialLinks' => $user->socialLinks
         );
         return response()->json(compact('user','token'),201);
@@ -123,7 +119,7 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view('users.create');
+        return response()->json(array('status' => 'Not found'));
     }
 
     /**
@@ -135,21 +131,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        $attributes = request()->validate([
-          'type' => Rule::in(UserType::$types),
-          'username' => 'required',
-          'password' => 'required',
-          'email' => 'required'
-        ]);
-
-        $user = User::create($attributes);
-        $user_id = $user['id'];
-        $performerTypes = PerformerType::all();
-        if (intval($attributes['type']) === UserType::VENUE) {
-          
-          return view('venues.create', compact('user_id', 'performerTypes'));
-        } 
-        return view('performers/create', compact('user_id', 'performerTypes'));
+        return response()->json(array('status' => 'Not found'));
     }
 
     /**
@@ -161,14 +143,8 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
-        if (intval($user->type) === UserType::VENUE) {
-          $venue = User::find($user->id)->venue;
-          return view('users.show', compact('user', 'venue'));
+        return response()->json(array('status' => 'Not found'));
 
-        } else {
-          $performer = User::find($user->id)->performer;
-          return view('users.show', compact('user', 'performer'));
-        }
     }
 
     /**
@@ -180,7 +156,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         //
-        return view('users.edit', compact('user'));
+        return response()->json(array('status' => 'Not found'));
+
     }
 
     /**
@@ -193,6 +170,7 @@ class UserController extends Controller
     public function update(User $user)
     {
         //
+        return response()->json(array('status' => 'Not found'));
         $user->update(request(['email', 'name']));
         return redirect('/users/'.$user->id);
 
@@ -207,6 +185,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+        return response()->json(array('status' => 'Not found'));
         $user->delete();
         return redirect('/users');
     }
