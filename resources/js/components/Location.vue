@@ -30,9 +30,10 @@
                     )
                 "
             >
-                <option v-if="states.length > 0" value=""
+                <option v-if="states.length > 0 && this.state === '' " value=""
                     >Select Province/Region</option
                 >
+                <option v-else-if="this.state" :value="this.state" selected>{{this.state}}</option>
                 <option v-else value="">Loading...</option>
                 <option
                     v-for="(state, index) in states"
@@ -51,6 +52,7 @@
                 @change="passToParent('city')"
             >
                 <option v-if="cities.length > 0" value="">Select City</option>
+                <option v-else-if="this.city" :value="this.city" selected>{{this.city}}</option>
                 <option v-else value="">Loading...</option>
                 <option
                     v-for="(city, index) in cities"
@@ -73,12 +75,23 @@ export default {
             countries: countries,
             states: [],
             cities: [],
-            country: "",
-            state: "",
-            city: ""
         };
     },
+    props: ['city', 'country', 'state'],
+    beforeUpdate: async function() {
+        try {
+            this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');
+        } catch(err) {
+            console.log(err);
+        }
+    },
     methods: {
+        clearValue: function(ref) {
+            this.$emit("changed", {
+                key: ref,
+                value: "",
+            })
+        },
         passToParent: function(ref) {
             this.$emit("changed", {
                 key: ref,
@@ -125,11 +138,11 @@ export default {
         },
         fetchLocations: async function(route, result, ref) {
             if (ref === "country") {
-                this.state = "";
                 this.states = [];
+                this.clearValue("state");
             }
-            this.city = "";
             this.cities = [];
+            this.clearValue("city");
             let data = {
                 name: result
             };

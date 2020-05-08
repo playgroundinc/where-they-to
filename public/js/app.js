@@ -3318,6 +3318,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3325,13 +3327,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
       states: [],
-      cities: [],
-      country: "",
-      state: "",
-      city: ""
+      cities: []
     };
   },
+  props: ['city', 'country', 'state'],
+  beforeUpdate: function () {
+    var _beforeUpdate = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              try {
+                this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
+              } catch (err) {
+                console.log(err);
+              }
+
+            case 1:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    function beforeUpdate() {
+      return _beforeUpdate.apply(this, arguments);
+    }
+
+    return beforeUpdate;
+  }(),
   methods: {
+    clearValue: function clearValue(ref) {
+      this.$emit("changed", {
+        key: ref,
+        value: ""
+      });
+    },
     passToParent: function passToParent(ref) {
       this.$emit("changed", {
         key: ref,
@@ -3357,47 +3389,47 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.states = location;
     },
     callLocationsApi: function () {
-      var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(payload) {
+      var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(payload) {
         var resp, location;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context.prev = 0;
-                _context.next = 3;
+                _context2.prev = 0;
+                _context2.next = 3;
                 return axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value));
 
               case 3:
-                resp = _context.sent;
+                resp = _context2.sent;
                 location = [];
 
                 if (!(resp.data && resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
-                  _context.next = 8;
+                  _context2.next = 8;
                   break;
                 }
 
                 this.handleRegions(resp.data.details.regionalBlocs);
-                return _context.abrupt("return");
+                return _context2.abrupt("return");
 
               case 8:
                 if (resp.data) {
                   this.handleCities(resp.data);
                 }
 
-                _context.next = 14;
+                _context2.next = 14;
                 break;
 
               case 11:
-                _context.prev = 11;
-                _context.t0 = _context["catch"](0);
-                console.log(_context.t0);
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](0);
+                console.log(_context2.t0);
 
               case 14:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this, [[0, 11]]);
+        }, _callee2, this, [[0, 11]]);
       }));
 
       function callLocationsApi(_x) {
@@ -3407,19 +3439,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return callLocationsApi;
     }(),
     fetchLocations: function () {
-      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(route, result, ref) {
+      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3(route, result, ref) {
         var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 if (ref === "country") {
-                  this.state = "";
                   this.states = [];
+                  this.clearValue("state");
                 }
 
-                this.city = "";
                 this.cities = [];
+                this.clearValue("city");
                 data = {
                   name: result
                 };
@@ -3438,10 +3470,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 5:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
       function fetchLocations(_x2, _x3, _x4) {
@@ -5755,18 +5787,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
-/* harmony default export */ __webpack_exports__["default"] = ({
+/* harmony default export */ __webpack_exports__["default"] = (_defineProperty({
   data: function data() {
     return {
       name: '',
       description: '',
       address: '',
+      country: '',
+      state: '',
       city: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])),
+  components: {
+    Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   methods: {
     handleSubmit: function () {
       var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
@@ -5825,11 +5866,54 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }()
   },
   mounted: function mounted() {
-    if (this.user === 0) {
-      this.$store.dispatch('findUser');
-    }
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!(_this2.user === 0)) {
+                _context2.next = 3;
+                break;
+              }
+
+              _context2.next = 3;
+              return _this2.$store.dispatch('findUser');
+
+            case 3:
+              _this2.setLocation('country', _this2.user);
+
+              _this2.setLocation('state', _this2.user);
+
+              _this2.setLocation('city', _this2.user);
+
+            case 6:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
   }
-});
+}, "methods", {
+  setLocation: function setLocation(key, user) {
+    if (user[key]) {
+      this[key] = user[key];
+    }
+  },
+  echoLocation: function echoLocation() {
+    if (location.key === "country") {
+      this.state = "";
+    }
+
+    if (location.key === "country" || location.key === "state") {
+      this.city = "";
+    }
+
+    this[location.key] = location.value;
+  }
+}));
 
 /***/ }),
 
@@ -8739,10 +8823,19 @@ var render = function() {
               }
             },
             [
-              _vm.states.length > 0
+              _vm.states.length > 0 && this.state === ""
                 ? _c("option", { attrs: { value: "" } }, [
                     _vm._v("Select Province/Region")
                   ])
+                : this.state
+                ? _c(
+                    "option",
+                    {
+                      attrs: { selected: "" },
+                      domProps: { value: this.state }
+                    },
+                    [_vm._v(_vm._s(this.state))]
+                  )
                 : _c("option", { attrs: { value: "" } }, [
                     _vm._v("Loading...")
                   ]),
@@ -8805,6 +8898,12 @@ var render = function() {
                 ? _c("option", { attrs: { value: "" } }, [
                     _vm._v("Select City")
                   ])
+                : this.city
+                ? _c(
+                    "option",
+                    { attrs: { selected: "" }, domProps: { value: this.city } },
+                    [_vm._v(_vm._s(this.city))]
+                  )
                 : _c("option", { attrs: { value: "" } }, [
                     _vm._v("Loading...")
                   ]),
@@ -12571,119 +12670,108 @@ var render = function() {
             }
           },
           [
-            _c("div", [
-              _c("label", { staticClass: "label", attrs: { for: "name" } }, [
-                _vm._v("Name")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.name,
-                    expression: "name"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "name" },
-                domProps: { value: _vm.name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+            _c(
+              "div",
+              [
+                _c("label", { staticClass: "label", attrs: { for: "name" } }, [
+                  _vm._v("Name")
+                ]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.name,
+                      expression: "name"
                     }
-                    _vm.name = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c(
-                "label",
-                { staticClass: "label", attrs: { for: "description" } },
-                [_vm._v("Bio")]
-              ),
-              _vm._v(" "),
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.description,
-                    expression: "description"
-                  }
-                ],
-                staticClass: "input",
-                attrs: {
-                  name: "description",
-                  id: "description",
-                  cols: "30",
-                  rows: "10",
-                  placeholder: "Venue description"
-                },
-                domProps: { value: _vm.description },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                  ],
+                  staticClass: "input",
+                  attrs: { type: "text", name: "name" },
+                  domProps: { value: _vm.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.name = $event.target.value
                     }
-                    _vm.description = $event.target.value
                   }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "address" } }, [
-                _vm._v("Address")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.address,
-                    expression: "address"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "address" },
-                domProps: { value: _vm.address },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  { staticClass: "label", attrs: { for: "description" } },
+                  [_vm._v("Bio")]
+                ),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.description,
+                      expression: "description"
                     }
-                    _vm.address = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "city" } }, [
-                _vm._v("City")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.city,
-                    expression: "city"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "city" },
-                domProps: { value: _vm.city },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    name: "description",
+                    id: "description",
+                    cols: "30",
+                    rows: "10",
+                    placeholder: "Venue description"
+                  },
+                  domProps: { value: _vm.description },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.description = $event.target.value
                     }
-                    _vm.city = $event.target.value
                   }
-                }
-              })
-            ]),
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  { staticClass: "label", attrs: { for: "address" } },
+                  [_vm._v("Address")]
+                ),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.address,
+                      expression: "address"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: { type: "text", name: "address" },
+                  domProps: { value: _vm.address },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.address = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("Location", {
+                  attrs: {
+                    country: _vm.country,
+                    city: _vm.city,
+                    state: _vm.state
+                  },
+                  on: { changed: _vm.echoLocation }
+                })
+              ],
+              1
+            ),
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
@@ -31576,35 +31664,41 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     findUser: function findUser(_ref7) {
       var commit = _ref7.commit;
       var user = localStorage.getItem("token");
-
-      if (user) {
-        return axios({
-          url: "http://127.0.0.1:8000/api/user",
-          headers: {
-            Authorization: "Bearer ".concat(user)
-          },
-          method: "GET"
-        }).then(function (res) {
-          commit("set_state", {
-            name: "user",
-            value: {
-              id: res.data.user.id,
-              type: res.data.user.type,
-              socialLinks: res.data.user.socialLinks,
-              venues: res.data.user.venues,
-              performers: res.data.user.performers,
-              events: res.data.user.events
-            }
+      return new Promise(function (resolve, reject) {
+        if (user) {
+          return axios({
+            url: "http://127.0.0.1:8000/api/user",
+            headers: {
+              Authorization: "Bearer ".concat(user)
+            },
+            method: "GET"
+          }).then(function (res) {
+            commit("set_state", {
+              name: "user",
+              value: {
+                id: res.data.user.id,
+                type: res.data.user.type,
+                socialLinks: res.data.user.socialLinks,
+                venues: res.data.user.venues,
+                performers: res.data.user.performers,
+                events: res.data.user.events,
+                city: res.data.user.city,
+                state: res.data.user.region,
+                country: res.data.user.country
+              }
+            });
+            resolve(res);
+            return res.data.user;
+          })["catch"](function (error) {
+            commit("set_state", {
+              name: "user",
+              value: null
+            });
+            reject(error);
+            return new Error(error);
           });
-          return res.data.user;
-        })["catch"](function (error) {
-          commit("set_state", {
-            name: "user",
-            value: null
-          });
-          return new Error(error);
-        });
-      }
+        }
+      });
     },
     create: function create(_ref8, payload) {
       var commit = _ref8.commit,
