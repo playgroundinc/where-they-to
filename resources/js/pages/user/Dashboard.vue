@@ -22,6 +22,9 @@ export default {
             "profile"
         ])
     },
+    beforeMount() {
+        this.$store.dispatch('findUser');
+    },
     components: {
         //
         List

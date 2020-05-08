@@ -35,8 +35,8 @@ class CreatePerformersTable extends Migration
 			$table->timestamps();
 			$table->string('name');
 			$table->string('address');
-			$table->string('city');
-			$table->string('state');
+			$table->string('city')->nullable();
+			$table->string('state')->nullable();
 			$table->string('country');
 			$table->string('province')->default('Ontario');
 			$table->integer('accessibility')->default('0');

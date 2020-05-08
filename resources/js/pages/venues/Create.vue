@@ -41,7 +41,7 @@ export default {
 	components: {
         Location
     },
-    async mounted() {
+    async beforeMount() {
 		if(this.user === 0) {
 			await this.$store.dispatch('findUser');
 		}
@@ -76,14 +76,15 @@ export default {
 				this[key] = user[key];
 			}
 		},
-		echoLocation: function() {
-			if (location.key === "country") {
+		echoLocation: function(locationObject) {
+			console.log(locationObject);
+			if (locationObject.key === "country") {
                 this.state= "";
             }
-            if (location.key === "country" || location.key === "state") {
+            if (locationObject.key === "country" || locationObject.key === "state") {
                 this.city = "";
             }
-            this[location.key] = location.value;
+            this[locationObject.key] = locationObject.value;
 		}
 	}
 }

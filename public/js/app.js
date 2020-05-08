@@ -3310,16 +3310,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3327,35 +3317,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
       states: [],
-      cities: []
+      cities: [],
+      running: false
     };
   },
   props: ['city', 'country', 'state'],
-  beforeUpdate: function () {
-    var _beforeUpdate = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              try {// this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');
-              } catch (err) {
-                console.log(err);
-              }
-
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    function beforeUpdate() {
-      return _beforeUpdate.apply(this, arguments);
+  computed: {
+    selectedCity: {
+      get: function get() {
+        return this.city;
+      },
+      set: function set(newCity) {
+        this.passToParent('city', newCity);
+        return;
+      }
+    },
+    selectedState: {
+      get: function get() {
+        this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
+        return this.state;
+      },
+      set: function set(newState) {
+        this.clearValue("city");
+        this.passToParent('state', newState);
+        return;
+      }
+    },
+    selectedCountry: {
+      get: function get() {
+        this.fetchLocations('country', 'states', 'country');
+        return this.country;
+      },
+      set: function set(newCountry) {
+        this.passToParent("country", newCountry);
+        this.clearValue("state");
+        this.clearValue("city");
+        return;
+      }
     }
-
-    return beforeUpdate;
-  }(),
+  },
+  created: function created() {
+    if (this.country !== '' && !this.states.length > 0 && this.state !== '' && !this.cities.length > 0 && this.city !== '') {
+      return;
+    }
+  },
   methods: {
     clearValue: function clearValue(ref) {
       this.$emit("changed", {
@@ -3363,10 +3368,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         value: ""
       });
     },
-    passToParent: function passToParent(ref) {
+    passToParent: function passToParent(ref, value) {
       this.$emit("changed", {
         key: ref,
-        value: this[ref]
+        value: value
       });
     },
     handleCities: function handleCities(citiesBlock) {
@@ -3378,7 +3383,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       }
 
-      this.cities = location;
+      return this.cities = location;
     },
     handleRegions: function handleRegions(regionBlocks) {
       var location = [];
@@ -3388,47 +3393,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.states = location;
     },
     callLocationsApi: function () {
-      var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(payload) {
-        var resp, location;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+      var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(payload) {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
-                _context2.prev = 0;
-                _context2.next = 3;
+                _context.prev = 0;
+                _context.next = 3;
                 return axios.get("https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?".concat(payload.route, "=").concat(payload.value));
 
               case 3:
-                resp = _context2.sent;
-                location = [];
+                resp = _context.sent;
 
-                if (!(resp.data && resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
-                  _context2.next = 8;
+                if (!(resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
+                  _context.next = 7;
                   break;
                 }
 
                 this.handleRegions(resp.data.details.regionalBlocs);
-                return _context2.abrupt("return");
+                return _context.abrupt("return");
 
-              case 8:
-                if (resp.data) {
-                  this.handleCities(resp.data);
+              case 7:
+                if (!resp.data) {
+                  _context.next = 9;
+                  break;
                 }
 
-                _context2.next = 14;
+                return _context.abrupt("return", this.handleCities(resp.data));
+
+              case 9:
+                _context.next = 14;
                 break;
 
               case 11:
-                _context2.prev = 11;
-                _context2.t0 = _context2["catch"](0);
-                console.log(_context2.t0);
+                _context.prev = 11;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
 
               case 14:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this, [[0, 11]]);
+        }, _callee, this, [[0, 11]]);
       }));
 
       function callLocationsApi(_x) {
@@ -3437,50 +3445,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return callLocationsApi;
     }(),
-    fetchLocations: function () {
-      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3(route, result, ref) {
-        var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                if (ref === "country") {
-                  this.states = [];
-                  this.clearValue("state");
-                }
-
-                this.cities = [];
-                this.clearValue("city");
-                data = {
-                  name: result
-                };
-
-                try {
-                  data = {
-                    route: route,
-                    value: this[ref],
-                    result: result
-                  };
-                  this.callLocationsApi(data);
-                  this.passToParent(ref);
-                } catch (e) {
-                  console.log(e);
-                }
-
-              case 5:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function fetchLocations(_x2, _x3, _x4) {
-        return _fetchLocations.apply(this, arguments);
+    fetchLocations: function fetchLocations(route, result, ref) {
+      if (ref === "country") {
+        this.states = [];
       }
 
-      return fetchLocations;
-    }(),
+      if (ref === 'state' || ref === 'country') {
+        this.cities = [];
+      }
+
+      try {
+        var data = {
+          route: route,
+          value: this[ref],
+          result: result
+        };
+        this.callLocationsApi(data);
+      } catch (e) {
+        console.log(e);
+      }
+    },
     fetchCities: function fetchCities(event) {
       var data = {
         route: "state",
@@ -5732,6 +5716,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["user", "profile"])),
+  beforeMount: function beforeMount() {
+    this.$store.dispatch('findUser');
+  },
   components: {
     //
     List: _components_Lists__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -5805,7 +5792,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
-  mounted: function mounted() {
+  beforeMount: function beforeMount() {
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
@@ -5897,16 +5884,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this[key] = user[key];
       }
     },
-    echoLocation: function echoLocation() {
-      if (location.key === "country") {
+    echoLocation: function echoLocation(locationObject) {
+      console.log(locationObject);
+
+      if (locationObject.key === "country") {
         this.state = "";
       }
 
-      if (location.key === "country" || location.key === "state") {
+      if (locationObject.key === "country" || locationObject.key === "state") {
         this.city = "";
       }
 
-      this[location.key] = location.value;
+      this[locationObject.key] = locationObject.value;
     }
   }
 });
@@ -8733,32 +8722,26 @@ var render = function() {
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.country,
-            expression: "country"
+            value: _vm.selectedCountry,
+            expression: "selectedCountry"
           }
         ],
         staticClass: "input",
         attrs: { name: "country" },
         on: {
-          change: [
-            function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.country = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            },
-            function($event) {
-              $event.preventDefault()
-              return _vm.fetchLocations("country", "states", "country")
-            }
-          ]
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.selectedCountry = $event.target.multiple
+              ? $$selectedVal
+              : $$selectedVal[0]
+          }
         }
       },
       [
@@ -8786,55 +8769,40 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.state,
-                  expression: "state"
+                  value: _vm.selectedState,
+                  expression: "selectedState"
                 }
               ],
               staticClass: "input",
               attrs: { id: "region", name: "region" },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.state = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    $event.preventDefault()
-                    return _vm.fetchLocations(
-                      "country=" + _vm.country + "&state",
-                      "cities",
-                      "state"
-                    )
-                  }
-                ]
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedState = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
               }
             },
             [
-              _vm.states.length > 0 && this.state === ""
-                ? _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Select Province/Region")
-                  ])
-                : this.state
+              _vm.states.length > 0
                 ? _c(
                     "option",
-                    {
-                      attrs: { selected: "" },
-                      domProps: { value: this.state }
-                    },
-                    [_vm._v(_vm._s(this.state))]
+                    { attrs: { value: "", disabled: "", selected: "" } },
+                    [_vm._v("Select Province/Region")]
                   )
-                : _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Loading...")
-                  ]),
+                : _c(
+                    "option",
+                    { attrs: { value: "", disabled: "", selected: "" } },
+                    [_vm._v("Loading...")]
+                  ),
               _vm._v(" "),
               _vm._l(_vm.states, function(state, index) {
                 return _c(
@@ -8862,47 +8830,40 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.city,
-                  expression: "city"
+                  value: _vm.selectedCity,
+                  expression: "selectedCity"
                 }
               ],
               staticClass: "input",
               attrs: { name: "city" },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.city = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    return _vm.passToParent("city")
-                  }
-                ]
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedCity = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
               }
             },
             [
               _vm.cities.length > 0
-                ? _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Select City")
-                  ])
-                : this.city
                 ? _c(
                     "option",
-                    { attrs: { selected: "" }, domProps: { value: this.city } },
-                    [_vm._v(_vm._s(this.city))]
+                    { attrs: { value: "", disabed: "", selected: "" } },
+                    [_vm._v("Select City")]
                   )
-                : _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Loading...")
-                  ]),
+                : _c(
+                    "option",
+                    { attrs: { value: "", disabed: "", selected: "" } },
+                    [_vm._v("Loading...")]
+                  ),
               _vm._v(" "),
               _vm._l(_vm.cities, function(city, index) {
                 return _c("option", { key: index, domProps: { value: city } }, [
