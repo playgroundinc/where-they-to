@@ -80,7 +80,7 @@ export default {
     props: ['city', 'country', 'state'],
     beforeUpdate: async function() {
         try {
-            this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');
+            // this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');
         } catch(err) {
             console.log(err);
         }

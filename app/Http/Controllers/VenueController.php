@@ -46,7 +46,7 @@ class VenueController extends Controller
             'description' => 'required',
             'address' => 'required',
             'country' => 'required',
-            'region' => 'required',
+            'state' => 'required',
             'city' => 'required',
         ]);
         $venue = Venue::create($attributes);

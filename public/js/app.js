@@ -3337,8 +3337,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              try {
-                this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
+              try {// this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');
               } catch (err) {
                 console.log(err);
               }
@@ -3348,7 +3347,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return _context.stop();
           }
         }
-      }, _callee, this);
+      }, _callee);
     }));
 
     function beforeUpdate() {
@@ -5756,8 +5755,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Location */ "./resources/js/components/Location.vue");
 
 
-var _this = undefined;
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -5793,7 +5790,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 
-/* harmony default export */ __webpack_exports__["default"] = (_defineProperty({
+/* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       name: '',
@@ -5808,54 +5805,85 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
+  mounted: function mounted() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!(_this.user === 0)) {
+                _context.next = 3;
+                break;
+              }
+
+              _context.next = 3;
+              return _this.$store.dispatch('findUser');
+
+            case 3:
+              _this.setLocation('country', _this.user);
+
+              _this.setLocation('state', _this.user);
+
+              _this.setLocation('city', _this.user);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
   methods: {
     handleSubmit: function () {
-      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var data, response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 data = {
-                  name: _this.name,
-                  description: _this.description,
-                  address: _this.address,
-                  city: _this.city,
-                  id: _this.user.id
+                  name: this.name,
+                  description: this.description,
+                  address: this.address,
+                  city: this.city,
+                  state: this.state,
+                  country: this.country,
+                  id: this.user.id
                 };
-                _context.prev = 1;
-                _context.next = 4;
-                return _this.$store.dispatch('create', {
+                _context2.prev = 1;
+                _context2.next = 4;
+                return this.$store.dispatch('create', {
                   route: 'venues',
                   data: data
                 });
 
               case 4:
-                response = _context.sent;
-                _context.next = 7;
-                return _this.$store.dispatch('fetchState', {
+                response = _context2.sent;
+                _context2.next = 7;
+                return this.$store.dispatch('fetchState', {
                   route: 'venues'
                 });
 
               case 7:
-                _this.$store.dispatch('findUser');
-
-                _this.$router.push('/dashboard');
-
-                _context.next = 14;
+                this.$store.dispatch('findUser');
+                this.$router.push('/dashboard');
+                _context2.next = 14;
                 break;
 
               case 11:
-                _context.prev = 11;
-                _context.t0 = _context["catch"](1);
-                console.log(_context.t0);
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](1);
+                console.log(_context2.t0);
 
               case 14:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, null, [[1, 11]]);
+        }, _callee2, this, [[1, 11]]);
       }));
 
       function handleSubmit() {
@@ -5863,57 +5891,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return handleSubmit;
-    }()
-  },
-  mounted: function mounted() {
-    var _this2 = this;
+    }(),
+    setLocation: function setLocation(key, user) {
+      if (user[key]) {
+        this[key] = user[key];
+      }
+    },
+    echoLocation: function echoLocation() {
+      if (location.key === "country") {
+        this.state = "";
+      }
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!(_this2.user === 0)) {
-                _context2.next = 3;
-                break;
-              }
+      if (location.key === "country" || location.key === "state") {
+        this.city = "";
+      }
 
-              _context2.next = 3;
-              return _this2.$store.dispatch('findUser');
-
-            case 3:
-              _this2.setLocation('country', _this2.user);
-
-              _this2.setLocation('state', _this2.user);
-
-              _this2.setLocation('city', _this2.user);
-
-            case 6:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }))();
+      this[location.key] = location.value;
+    }
   }
-}, "methods", {
-  setLocation: function setLocation(key, user) {
-    if (user[key]) {
-      this[key] = user[key];
-    }
-  },
-  echoLocation: function echoLocation() {
-    if (location.key === "country") {
-      this.state = "";
-    }
-
-    if (location.key === "country" || location.key === "state") {
-      this.city = "";
-    }
-
-    this[location.key] = location.value;
-  }
-}));
+});
 
 /***/ }),
 
@@ -12775,7 +12771,7 @@ var render = function() {
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
-              attrs: { type: "submit", value: "Edit Profile" }
+              attrs: { type: "submit", value: "Create Venue" }
             })
           ]
         )

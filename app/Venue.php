@@ -19,7 +19,7 @@ class Venue extends Model
       'name',
       'description',
       'country',
-      'region',
+      'state',
       'city',
       'address',
       'user_id',

@@ -16,7 +16,7 @@
 					@changed="echoLocation"
 				></Location>
 			</div>
-			<input class="btn" type="submit" value="Edit Profile">
+			<input class="btn" type="submit" value="Create Venue">
 		</form>
 	</div>
 </template>
@@ -41,13 +41,23 @@ export default {
 	components: {
         Location
     },
-    methods: {
-		handleSubmit: async() => {
+    async mounted() {
+		if(this.user === 0) {
+			await this.$store.dispatch('findUser');
+		}
+		this.setLocation('country', this.user);
+		this.setLocation('state', this.user);
+		this.setLocation('city', this.user);
+	},
+	methods: {
+		handleSubmit: async function() {
 			let data = {
 				name: this.name,
 				description: this.description,
 				address: this.address,
 				city: this.city,
+				state: this.state,
+				country: this.country,
 				id: this.user.id,
 			}
 			try {
@@ -61,16 +71,6 @@ export default {
 				console.log(err);
 			}
 		},
-    },
-    async mounted() {
-		if(this.user === 0) {
-			await this.$store.dispatch('findUser');
-		}
-		this.setLocation('country', this.user);
-		this.setLocation('state', this.user);
-		this.setLocation('city', this.user);
-	},
-	methods: {
 		setLocation: function (key, user) {
 			if (user[key]) {
 				this[key] = user[key];
