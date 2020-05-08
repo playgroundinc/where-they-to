@@ -42,10 +42,12 @@ class VenueController extends Controller
     {
         //
         $attributes = request()->validate([
-          'name' => 'required',
-          'description' => 'required',
-          'address' => 'required',
-          'city' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'address' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
         ]);
         $venue = Venue::create($attributes);
         $user = User::find($request['user']->id);

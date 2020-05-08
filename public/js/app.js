@@ -3310,14 +3310,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3326,16 +3318,60 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       countries: _components_Countries_json__WEBPACK_IMPORTED_MODULE_2__,
       states: [],
       cities: [],
-      country: "",
-      state: "",
-      city: ""
+      running: false
     };
   },
+  props: ['city', 'country', 'state'],
+  computed: {
+    selectedCity: {
+      get: function get() {
+        return this.city;
+      },
+      set: function set(newCity) {
+        this.passToParent('city', newCity);
+        return;
+      }
+    },
+    selectedState: {
+      get: function get() {
+        this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
+        return this.state;
+      },
+      set: function set(newState) {
+        this.clearValue("city");
+        this.passToParent('state', newState);
+        return;
+      }
+    },
+    selectedCountry: {
+      get: function get() {
+        this.fetchLocations('country', 'states', 'country');
+        return this.country;
+      },
+      set: function set(newCountry) {
+        this.passToParent("country", newCountry);
+        this.clearValue("state");
+        this.clearValue("city");
+        return;
+      }
+    }
+  },
+  created: function created() {
+    if (this.country !== '' && !this.states.length > 0 && this.state !== '' && !this.cities.length > 0 && this.city !== '') {
+      return;
+    }
+  },
   methods: {
-    passToParent: function passToParent(ref) {
+    clearValue: function clearValue(ref) {
       this.$emit("changed", {
         key: ref,
-        value: this[ref]
+        value: ""
+      });
+    },
+    passToParent: function passToParent(ref, value) {
+      this.$emit("changed", {
+        key: ref,
+        value: value
       });
     },
     handleCities: function handleCities(citiesBlock) {
@@ -3347,7 +3383,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       }
 
-      this.cities = location;
+      return this.cities = location;
     },
     handleRegions: function handleRegions(regionBlocks) {
       var location = [];
@@ -3358,7 +3394,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     callLocationsApi: function () {
       var _callLocationsApi = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(payload) {
-        var resp, location;
+        var resp;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -3369,21 +3405,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 resp = _context.sent;
-                location = [];
 
-                if (!(resp.data && resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
-                  _context.next = 8;
+                if (!(resp.data && resp.data.details && resp.data.details.regionalBlocs)) {
+                  _context.next = 7;
                   break;
                 }
 
                 this.handleRegions(resp.data.details.regionalBlocs);
                 return _context.abrupt("return");
 
-              case 8:
-                if (resp.data) {
-                  this.handleCities(resp.data);
+              case 7:
+                if (!resp.data) {
+                  _context.next = 9;
+                  break;
                 }
 
+                return _context.abrupt("return", this.handleCities(resp.data));
+
+              case 9:
                 _context.next = 14;
                 break;
 
@@ -3406,50 +3445,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return callLocationsApi;
     }(),
-    fetchLocations: function () {
-      var _fetchLocations = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(route, result, ref) {
-        var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (ref === "country") {
-                  this.state = "";
-                  this.states = [];
-                }
-
-                this.city = "";
-                this.cities = [];
-                data = {
-                  name: result
-                };
-
-                try {
-                  data = {
-                    route: route,
-                    value: this[ref],
-                    result: result
-                  };
-                  this.callLocationsApi(data);
-                  this.passToParent(ref);
-                } catch (e) {
-                  console.log(e);
-                }
-
-              case 5:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function fetchLocations(_x2, _x3, _x4) {
-        return _fetchLocations.apply(this, arguments);
+    fetchLocations: function fetchLocations(route, result, ref) {
+      if (ref === "country") {
+        this.states = [];
       }
 
-      return fetchLocations;
-    }(),
+      if (ref === 'state' || ref === 'country') {
+        this.cities = [];
+      }
+
+      try {
+        var data = {
+          route: route,
+          value: this[ref],
+          result: result
+        };
+        this.callLocationsApi(data);
+      } catch (e) {
+        console.log(e);
+      }
+    },
     fetchCities: function fetchCities(event) {
       var data = {
         route: "state",
@@ -5701,6 +5716,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["user", "profile"])),
+  beforeMount: function beforeMount() {
+    this.$store.dispatch('findUser');
+  },
   components: {
     //
     List: _components_Lists__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -5723,8 +5741,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Location */ "./resources/js/components/Location.vue");
 
-
-var _this = undefined;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -5755,6 +5771,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5763,58 +5783,94 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       name: '',
       description: '',
       address: '',
+      country: '',
+      state: '',
       city: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])),
+  components: {
+    Location: _components_Location__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
+  beforeMount: function beforeMount() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!(_this.user === 0)) {
+                _context.next = 3;
+                break;
+              }
+
+              _context.next = 3;
+              return _this.$store.dispatch('findUser');
+
+            case 3:
+              _this.setLocation('country', _this.user);
+
+              _this.setLocation('state', _this.user);
+
+              _this.setLocation('city', _this.user);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
   methods: {
     handleSubmit: function () {
-      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var data, response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 data = {
-                  name: _this.name,
-                  description: _this.description,
-                  address: _this.address,
-                  city: _this.city,
-                  id: _this.user.id
+                  name: this.name,
+                  description: this.description,
+                  address: this.address,
+                  city: this.city,
+                  state: this.state,
+                  country: this.country,
+                  id: this.user.id
                 };
-                _context.prev = 1;
-                _context.next = 4;
-                return _this.$store.dispatch('create', {
+                _context2.prev = 1;
+                _context2.next = 4;
+                return this.$store.dispatch('create', {
                   route: 'venues',
                   data: data
                 });
 
               case 4:
-                response = _context.sent;
-                _context.next = 7;
-                return _this.$store.dispatch('fetchState', {
+                response = _context2.sent;
+                _context2.next = 7;
+                return this.$store.dispatch('fetchState', {
                   route: 'venues'
                 });
 
               case 7:
-                _this.$store.dispatch('findUser');
-
-                _this.$router.push('/dashboard');
-
-                _context.next = 14;
+                this.$store.dispatch('findUser');
+                this.$router.push('/dashboard');
+                _context2.next = 14;
                 break;
 
               case 11:
-                _context.prev = 11;
-                _context.t0 = _context["catch"](1);
-                console.log(_context.t0);
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](1);
+                console.log(_context2.t0);
 
               case 14:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, null, [[1, 11]]);
+        }, _callee2, this, [[1, 11]]);
       }));
 
       function handleSubmit() {
@@ -5822,11 +5878,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return handleSubmit;
-    }()
-  },
-  mounted: function mounted() {
-    if (this.user === 0) {
-      this.$store.dispatch('findUser');
+    }(),
+    setLocation: function setLocation(key, user) {
+      if (user[key]) {
+        this[key] = user[key];
+      }
+    },
+    echoLocation: function echoLocation(locationObject) {
+      console.log(locationObject);
+
+      if (locationObject.key === "country") {
+        this.state = "";
+      }
+
+      if (locationObject.key === "country" || locationObject.key === "state") {
+        this.city = "";
+      }
+
+      this[locationObject.key] = locationObject.value;
     }
   }
 });
@@ -8653,32 +8722,26 @@ var render = function() {
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.country,
-            expression: "country"
+            value: _vm.selectedCountry,
+            expression: "selectedCountry"
           }
         ],
         staticClass: "input",
         attrs: { name: "country" },
         on: {
-          change: [
-            function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.country = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            },
-            function($event) {
-              $event.preventDefault()
-              return _vm.fetchLocations("country", "states", "country")
-            }
-          ]
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.selectedCountry = $event.target.multiple
+              ? $$selectedVal
+              : $$selectedVal[0]
+          }
         }
       },
       [
@@ -8706,46 +8769,40 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.state,
-                  expression: "state"
+                  value: _vm.selectedState,
+                  expression: "selectedState"
                 }
               ],
               staticClass: "input",
               attrs: { id: "region", name: "region" },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.state = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    $event.preventDefault()
-                    return _vm.fetchLocations(
-                      "country=" + _vm.country + "&state",
-                      "cities",
-                      "state"
-                    )
-                  }
-                ]
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedState = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
               }
             },
             [
               _vm.states.length > 0
-                ? _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Select Province/Region")
-                  ])
-                : _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Loading...")
-                  ]),
+                ? _c(
+                    "option",
+                    { attrs: { value: "", disabled: "", selected: "" } },
+                    [_vm._v("Select Province/Region")]
+                  )
+                : _c(
+                    "option",
+                    { attrs: { value: "", disabled: "", selected: "" } },
+                    [_vm._v("Loading...")]
+                  ),
               _vm._v(" "),
               _vm._l(_vm.states, function(state, index) {
                 return _c(
@@ -8773,41 +8830,40 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.city,
-                  expression: "city"
+                  value: _vm.selectedCity,
+                  expression: "selectedCity"
                 }
               ],
               staticClass: "input",
               attrs: { name: "city" },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.city = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    return _vm.passToParent("city")
-                  }
-                ]
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedCity = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
               }
             },
             [
               _vm.cities.length > 0
-                ? _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Select City")
-                  ])
-                : _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Loading...")
-                  ]),
+                ? _c(
+                    "option",
+                    { attrs: { value: "", disabed: "", selected: "" } },
+                    [_vm._v("Select City")]
+                  )
+                : _c(
+                    "option",
+                    { attrs: { value: "", disabed: "", selected: "" } },
+                    [_vm._v("Loading...")]
+                  ),
               _vm._v(" "),
               _vm._l(_vm.cities, function(city, index) {
                 return _c("option", { key: index, domProps: { value: city } }, [
@@ -12571,123 +12627,112 @@ var render = function() {
             }
           },
           [
-            _c("div", [
-              _c("label", { staticClass: "label", attrs: { for: "name" } }, [
-                _vm._v("Name")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.name,
-                    expression: "name"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "name" },
-                domProps: { value: _vm.name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+            _c(
+              "div",
+              [
+                _c("label", { staticClass: "label", attrs: { for: "name" } }, [
+                  _vm._v("Name")
+                ]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.name,
+                      expression: "name"
                     }
-                    _vm.name = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c(
-                "label",
-                { staticClass: "label", attrs: { for: "description" } },
-                [_vm._v("Bio")]
-              ),
-              _vm._v(" "),
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.description,
-                    expression: "description"
-                  }
-                ],
-                staticClass: "input",
-                attrs: {
-                  name: "description",
-                  id: "description",
-                  cols: "30",
-                  rows: "10",
-                  placeholder: "Venue description"
-                },
-                domProps: { value: _vm.description },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                  ],
+                  staticClass: "input",
+                  attrs: { type: "text", name: "name" },
+                  domProps: { value: _vm.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.name = $event.target.value
                     }
-                    _vm.description = $event.target.value
                   }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "address" } }, [
-                _vm._v("Address")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.address,
-                    expression: "address"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "address" },
-                domProps: { value: _vm.address },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  { staticClass: "label", attrs: { for: "description" } },
+                  [_vm._v("Bio")]
+                ),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.description,
+                      expression: "description"
                     }
-                    _vm.address = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "city" } }, [
-                _vm._v("City")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.city,
-                    expression: "city"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "city" },
-                domProps: { value: _vm.city },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    name: "description",
+                    id: "description",
+                    cols: "30",
+                    rows: "10",
+                    placeholder: "Venue description"
+                  },
+                  domProps: { value: _vm.description },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.description = $event.target.value
                     }
-                    _vm.city = $event.target.value
                   }
-                }
-              })
-            ]),
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  { staticClass: "label", attrs: { for: "address" } },
+                  [_vm._v("Address")]
+                ),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.address,
+                      expression: "address"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: { type: "text", name: "address" },
+                  domProps: { value: _vm.address },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.address = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("Location", {
+                  attrs: {
+                    country: _vm.country,
+                    city: _vm.city,
+                    state: _vm.state
+                  },
+                  on: { changed: _vm.echoLocation }
+                })
+              ],
+              1
+            ),
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
-              attrs: { type: "submit", value: "Edit Profile" }
+              attrs: { type: "submit", value: "Create Venue" }
             })
           ]
         )
@@ -31576,35 +31621,41 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     findUser: function findUser(_ref7) {
       var commit = _ref7.commit;
       var user = localStorage.getItem("token");
-
-      if (user) {
-        return axios({
-          url: "http://127.0.0.1:8000/api/user",
-          headers: {
-            Authorization: "Bearer ".concat(user)
-          },
-          method: "GET"
-        }).then(function (res) {
-          commit("set_state", {
-            name: "user",
-            value: {
-              id: res.data.user.id,
-              type: res.data.user.type,
-              socialLinks: res.data.user.socialLinks,
-              venues: res.data.user.venues,
-              performers: res.data.user.performers,
-              events: res.data.user.events
-            }
+      return new Promise(function (resolve, reject) {
+        if (user) {
+          return axios({
+            url: "http://127.0.0.1:8000/api/user",
+            headers: {
+              Authorization: "Bearer ".concat(user)
+            },
+            method: "GET"
+          }).then(function (res) {
+            commit("set_state", {
+              name: "user",
+              value: {
+                id: res.data.user.id,
+                type: res.data.user.type,
+                socialLinks: res.data.user.socialLinks,
+                venues: res.data.user.venues,
+                performers: res.data.user.performers,
+                events: res.data.user.events,
+                city: res.data.user.city,
+                state: res.data.user.region,
+                country: res.data.user.country
+              }
+            });
+            resolve(res);
+            return res.data.user;
+          })["catch"](function (error) {
+            commit("set_state", {
+              name: "user",
+              value: null
+            });
+            reject(error);
+            return new Error(error);
           });
-          return res.data.user;
-        })["catch"](function (error) {
-          commit("set_state", {
-            name: "user",
-            value: null
-          });
-          return new Error(error);
-        });
-      }
+        }
+      });
     },
     create: function create(_ref8, payload) {
       var commit = _ref8.commit,

@@ -9,10 +9,14 @@
 				<textarea class="input" name="description" id="description" cols="30" rows="10" placeholder="Venue description" v-model="description"></textarea>
 				<label class="label" for="address">Address</label>
 				<input class="input" type="text" name="address" v-model="address">
-				<label class="label" for="city">City</label>
-				<input class="input" type="text" name="city" v-model="city">
+				<Location
+					:country="country"
+					:city="city" 
+					:state="state"
+					@changed="echoLocation"
+				></Location>
 			</div>
-			<input class="btn" type="submit" value="Edit Profile">
+			<input class="btn" type="submit" value="Create Venue">
 		</form>
 	</div>
 </template>
@@ -26,19 +30,34 @@ export default {
 			name: '',
 			description: '',
 			address: '',
+			country: '',
+			state: '',
 			city: '',
 		}
     },
     computed: {
 		...mapState(['user']),
+	},
+	components: {
+        Location
     },
-    methods: {
-		handleSubmit: async() => {
+    async beforeMount() {
+		if(this.user === 0) {
+			await this.$store.dispatch('findUser');
+		}
+		this.setLocation('country', this.user);
+		this.setLocation('state', this.user);
+		this.setLocation('city', this.user);
+	},
+	methods: {
+		handleSubmit: async function() {
 			let data = {
 				name: this.name,
 				description: this.description,
 				address: this.address,
 				city: this.city,
+				state: this.state,
+				country: this.country,
 				id: this.user.id,
 			}
 			try {
@@ -51,11 +70,21 @@ export default {
 			} catch(err) {
 				console.log(err);
 			}
-		}
-    },
-    mounted() {
-		if(this.user === 0) {
-			this.$store.dispatch('findUser');
+		},
+		setLocation: function (key, user) {
+			if (user[key]) {
+				this[key] = user[key];
+			}
+		},
+		echoLocation: function(locationObject) {
+			console.log(locationObject);
+			if (locationObject.key === "country") {
+                this.state= "";
+            }
+            if (locationObject.key === "country" || locationObject.key === "state") {
+                this.city = "";
+            }
+            this[locationObject.key] = locationObject.value;
 		}
 	}
 }

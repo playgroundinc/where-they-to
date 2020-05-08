@@ -131,14 +131,15 @@ export default new Vuex.Store({
         },
         findUser({ commit }) {
             const user = localStorage.getItem("token");
-            if (user) {
-                return axios({
-                    url: "http://127.0.0.1:8000/api/user",
-                    headers: {
-                        Authorization: `Bearer ${user}`
-                    },
-                    method: "GET"
-                })
+            return new Promise((resolve, reject) => {
+                if (user) {
+                    return axios({
+                        url: "http://127.0.0.1:8000/api/user",
+                        headers: {
+                            Authorization: `Bearer ${user}`
+                        },
+                        method: "GET"
+                    })
                     .then(res => {
                         commit("set_state", {
                             name: "user",
@@ -148,9 +149,13 @@ export default new Vuex.Store({
                                 socialLinks: res.data.user.socialLinks,
                                 venues: res.data.user.venues,
                                 performers: res.data.user.performers,
-                                events: res.data.user.events
+                                events: res.data.user.events,
+                                city: res.data.user.city,
+                                state: res.data.user.region,
+                                country: res.data.user.country
                             }
                         });
+                        resolve(res);
                         return res.data.user;
                     })
                     .catch(error => {
@@ -158,9 +163,11 @@ export default new Vuex.Store({
                             name: "user",
                             value: null
                         });
+                        reject(error);
                         return new Error(error);
                     });
-            }
+                }
+            });
         },
         create({ commit, state }, payload) {
             return new Promise((resolve, reject) => {
