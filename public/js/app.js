@@ -4073,6 +4073,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4086,6 +4089,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   props: ['city', 'country', 'state'],
   computed: {
+    selectedCountry: {
+      get: function get() {
+        if (this.country !== '') {
+          this.fetchLocations('country', 'states', 'country');
+        }
+
+        return this.country;
+      },
+      set: function set(newCountry) {
+        this.passToParent("country", newCountry);
+        return;
+      }
+    },
+    selectedState: {
+      get: function get() {
+        if (this.country !== '') {
+          this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
+        }
+
+        return this.state;
+      },
+      set: function set(newState) {
+        this.passToParent('state', newState);
+        return;
+      }
+    },
     selectedCity: {
       get: function get() {
         return this.city;
@@ -4094,37 +4123,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.passToParent('city', newCity);
         return;
       }
-    },
-    selectedState: {
-      get: function get() {
-        this.fetchLocations("country=".concat(this.country, "&state"), 'cities', 'state');
-        return this.state;
-      },
-      set: function set(newState) {
-        this.clearValue("city");
-        this.passToParent('state', newState);
-        return;
-      }
-    },
-    selectedCountry: {
-      get: function get() {
-        this.fetchLocations('country', 'states', 'country');
-        return this.country;
-      },
-      set: function set(newCountry) {
-        this.passToParent("country", newCountry);
-        this.clearValue("state");
-        this.clearValue("city");
-        return;
-      }
-    }
-  },
-  created: function created() {
-    if (this.country !== '' && !this.states.length > 0 && this.state !== '' && !this.cities.length > 0 && this.city !== '') {
-      return;
     }
   },
   methods: {
+    clearArray: function clearArray() {
+      var country = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      console.log(country);
+
+      if (country) {
+        this.states = [];
+      }
+
+      this.cities = [];
+    },
     clearValue: function clearValue(ref) {
       this.$emit("changed", {
         key: ref,
@@ -4211,14 +4222,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return callLocationsApi;
     }(),
     fetchLocations: function fetchLocations(route, result, ref) {
-      if (ref === "country") {
-        this.states = [];
-      }
-
-      if (ref === 'state' || ref === 'country') {
-        this.cities = [];
-      }
-
       try {
         var data = {
           route: route,
@@ -6684,12 +6687,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     echoLocation: function echoLocation(locationObject) {
-      console.log(locationObject);
-
-      if (locationObject.key === "country") {
-        this.state = "";
-      }
-
       this[locationObject.key] = locationObject.value;
     }
   }
@@ -8790,19 +8787,27 @@ var render = function() {
         staticClass: "input",
         attrs: { name: "country" },
         on: {
-          change: function($event) {
-            var $$selectedVal = Array.prototype.filter
-              .call($event.target.options, function(o) {
-                return o.selected
-              })
-              .map(function(o) {
-                var val = "_value" in o ? o._value : o.value
-                return val
-              })
-            _vm.selectedCountry = $event.target.multiple
-              ? $$selectedVal
-              : $$selectedVal[0]
-          }
+          change: [
+            function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.selectedCountry = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            },
+            function($event) {
+              $event.preventDefault()
+              return (function() {
+                return _vm.clearArray(true)
+              })($event)
+            }
+          ]
         }
       },
       [
@@ -8837,19 +8842,27 @@ var render = function() {
               staticClass: "input",
               attrs: { id: "region", name: "region" },
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.selectedState = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectedState = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    $event.preventDefault()
+                    return (function() {
+                      return _vm.clearArray()
+                    })($event)
+                  }
+                ]
               }
             },
             [

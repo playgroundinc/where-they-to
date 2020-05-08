@@ -77,10 +77,6 @@ export default {
 			}
 		},
 		echoLocation: function(locationObject) {
-			console.log(locationObject);
-			if (locationObject.key === "country") {
-                this.state= "";
-      }
             this[locationObject.key] = locationObject.value;
 		}
 	}

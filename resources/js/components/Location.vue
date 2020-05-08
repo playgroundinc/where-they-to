@@ -5,6 +5,7 @@
             class="input"
             name="country"
             v-model="selectedCountry"
+			@change.prevent="() => clearArray(true)"
         >
             <option value="">Select Country</option>
             <option
@@ -21,6 +22,8 @@
                 id="region"
                 name="region"
                 v-model="selectedState"
+				@change.prevent="() => clearArray()"
+
             >   
                 <option v-if="states.length > 0" value="" disabled selected>Select Province/Region</option> 
                 <option v-else value="" disabled selected>Loading...</option> 
@@ -70,7 +73,31 @@ export default {
     },
     props: ['city', 'country', 'state'],
     computed: {
-        selectedCity: {
+		selectedCountry: {
+            get: function () {
+				if (this.country !== '') {
+					this.fetchLocations('country', 'states', 'country')
+				}
+                return this.country;
+            },
+            set: function(newCountry) {
+                this.passToParent("country", newCountry);
+                return 
+            }
+        },
+        selectedState: {
+            get: function () {
+				if (this.country !== '') {
+					this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');  
+				}
+                return this.state;
+            },
+            set: function(newState) {
+                this.passToParent('state', newState);
+                return;
+            }
+		},
+		selectedCity: {
             get: function () {
                 return this.city;
             },
@@ -79,36 +106,15 @@ export default {
                 return;
             }
         },
-        selectedState: {
-            get: function () {
-                this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');  
-                return this.state;
-            },
-            set: function(newState) {
-                this.clearValue("city");
-                this.passToParent('state', newState);
-                return;
-            }
-        },
-        selectedCountry: {
-            get: function () {
-                this.fetchLocations('country', 'states', 'country')
-                return this.country;
-            },
-            set: function(newCountry) {
-                this.passToParent("country", newCountry);
-                this.clearValue("state");
-                this.clearValue("city");
-                return 
-            }
-        }
-    },
-    created() {
-        if (this.country !== '' && !this.states.length > 0 && this.state !== '' && !this.cities.length > 0 && this.city !== '') {
-            return;
-        } 
     },
     methods: {
+		clearArray: function(country = false) {
+			console.log(country);
+			if (country) {
+				this.states = [];
+			}
+			this.cities = [];
+		},
         clearValue: function(ref) {
             this.$emit("changed", {
                 key: ref,
@@ -158,12 +164,6 @@ export default {
             }
         },
         fetchLocations: function(route, result, ref) {
-            if (ref === "country") {
-                this.states = [];
-            } 
-            if (ref === 'state' || ref === 'country') {
-                this.cities = [];
-            }
             try {
                 const data = {
                     route,
