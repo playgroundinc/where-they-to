@@ -132,9 +132,6 @@ export default {
             if (location.key === "country") {
                 this.state = "";
             }
-            if (location.key === "country" || location.key === "state") {
-                this.city = "";
-            }
             this[location.key] = location.value;
         }
     }

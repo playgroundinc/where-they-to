@@ -68,7 +68,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import timezones from '../../components/Timezone'
+import timezones from '../../Timezones'
 export default {
   data() {
     return {

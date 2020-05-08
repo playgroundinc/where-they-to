@@ -80,10 +80,7 @@ export default {
 			console.log(locationObject);
 			if (locationObject.key === "country") {
                 this.state= "";
-            }
-            if (locationObject.key === "country" || locationObject.key === "state") {
-                this.city = "";
-            }
+      }
             this[locationObject.key] = locationObject.value;
 		}
 	}
