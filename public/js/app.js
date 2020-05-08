@@ -4567,6 +4567,7 @@ __webpack_require__.r(__webpack_exports__);
     echoLocation: function echoLocation(location) {
       if (location.key === "country") {
         this.state = "";
+        this.city = "";
       }
 
       this[location.key] = location.value;

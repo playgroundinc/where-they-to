@@ -131,6 +131,7 @@ export default {
         echoLocation: function(location) {
             if (location.key === "country") {
                 this.state = "";
+                this.city = "";
             }
             this[location.key] = location.value;
         }
