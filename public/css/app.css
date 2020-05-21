@@ -61,9 +61,12 @@ h6 {
 }
 
 .list .list-item--flex {
+  display: -webkit-box;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
 }
 
 .list .list-item--flex .btn {
@@ -79,8 +82,10 @@ h6 {
 
 nav ul {
   padding: 0;
+  display: -webkit-box;
   display: flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+          justify-content: flex-end;
 }
 
 nav ul li {

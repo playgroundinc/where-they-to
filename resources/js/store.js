@@ -80,6 +80,7 @@ export default new Vuex.Store({
             });
         },
         fetchState({ commit }, data) {
+			console.log(data);
             return new Promise((resolve, reject) => {
                 const { route } = data;
                 axios
@@ -145,14 +146,14 @@ export default new Vuex.Store({
                             name: "user",
                             value: {
                                 id: res.data.user.id,
-                                type: res.data.user.type,
                                 socialLinks: res.data.user.socialLinks,
                                 venues: res.data.user.venues,
                                 performers: res.data.user.performers,
                                 events: res.data.user.events,
                                 city: res.data.user.city,
                                 state: res.data.user.region,
-                                country: res.data.user.country
+								country: res.data.user.country,
+								timezone: res.data.user.timezone,
                             }
                         });
                         resolve(res);
