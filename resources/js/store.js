@@ -141,6 +141,7 @@ export default new Vuex.Store({
                         method: "GET"
                     })
                     .then(res => {
+						console.log(res);
                         commit("set_state", {
                             name: "user",
                             value: {

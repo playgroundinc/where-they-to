@@ -42,19 +42,6 @@ export default {
         }
     },
     async mounted() {
-        this.$store.dispatch("fetchState", {
-            route: "performers"
-        });
-        this.$store.dispatch("fetchState", {
-            route: "events"
-        });
-        this.$store.dispatch("fetchState", {
-            route: "venues"
-        });
-        this.$store.dispatch("fetchState", {
-            route: "families"
-        });
-        this.$store.dispatch("findUser");
     },
     components: {
         //
