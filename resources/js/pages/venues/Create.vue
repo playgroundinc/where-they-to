@@ -77,6 +77,10 @@ export default {
 			}
 		},
 		echoLocation: function(locationObject) {
+			if (locationObject.key === "country") {
+                this.state = "";
+                this.city = "";
+            }
             this[locationObject.key] = locationObject.value;
 		}
 	}
