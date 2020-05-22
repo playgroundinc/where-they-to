@@ -5059,6 +5059,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _components_Autocomplete__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Autocomplete */ "./resources/js/components/Autocomplete.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -5151,8 +5152,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5165,6 +5165,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ticketDescription: '',
       ticketUrl: ''
     };
+  },
+  components: {
+    Autocomplete: _components_Autocomplete__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']), {
     event: function event() {
@@ -10642,41 +10645,23 @@ var render = function() {
               : _vm._e(),
             _vm._v(" "),
             _vm.performers
-              ? _c("fieldset", [
-                  _c(
-                    "legend",
-                    { staticClass: "label", attrs: { for: "newPerformers" } },
-                    [_vm._v("Performers")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "list" },
-                    _vm._l(_vm.filteredPerformers, function(performer) {
-                      return _c(
-                        "li",
-                        { key: performer.id, staticClass: "list-item" },
-                        [
-                          _c("p", [_vm._v(_vm._s(performer.name))]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.addPerformer(performer.id)
-                                }
-                              }
-                            },
-                            [_vm._v("Add Performer")]
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  )
-                ])
+              ? _c(
+                  "fieldset",
+                  [
+                    _c("Autocomplete", {
+                      attrs: {
+                        label: "Performers",
+                        values: _vm.filteredPerformers
+                      },
+                      on: {
+                        selection: function(performer) {
+                          _vm.addPerformer(performer.id)
+                        }
+                      }
+                    })
+                  ],
+                  1
+                )
               : _vm._e(),
             _vm._v(" "),
             _c("h2", [_vm._v("Current Tickets")]),
