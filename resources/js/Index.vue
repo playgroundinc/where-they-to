@@ -40,9 +40,21 @@ export default {
         logout: function() {
             this.$store.dispatch("logout");
         }
-    },
-    async mounted() {
-    },
+	},
+	async mounted() {
+		if (!this.performers.length > 0) {
+			await this.$store.dispatch('fetchState', { route: 'performers' });
+		}
+		if (!this.venues.length > 0) {
+			await this.$store.dispatch('fetchState', { route: 'venues' });
+		}
+		if (!this.events.length > 0) {
+			await this.$store.dispatch('fetchState', { route: 'events' });
+		}
+		if (!this.user) {
+			this.$store.dispatch('findUser');
+		}
+	},
     components: {
         //
         List

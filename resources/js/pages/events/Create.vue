@@ -1,5 +1,5 @@
 <template>
-	<div class="main" v-if="user">	
+	<div class="main">	
 		<h1>Create Event</h1>
 		<form action="/events" v-on:submit.prevent="handleSubmit">
 			<!-- NAME -->
@@ -14,6 +14,7 @@
 			<!-- TIME -->
 			<label for="date" class="label">Time</label>
 			<input class="input" type="text" id="time" name="time" v-model="time">
+			<!-- TIMEZONE -->
 			<label for="timezone" class="label">Timezone</label>
 			<select name="timezone" id="timezone" class="input" v-model="timezone">
 				<option v-for="timezone in timezones" v-bind:key="timezone" :value="timezone">{{ timezone }}</option>
@@ -42,13 +43,23 @@
 			</div>
 			<!-- PERFORMERS -->
 			<fieldset v-if="performers">
-				<legend for="newPerformers" class="label">Performers</legend>
-				<ul class="list">
-					<li class="list-item" v-for="performer in performers" v-bind:key="performer.id" >
-						<input v-if="user.id && performer.id !== user.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
-						<label v-if="user.id && performer.id !== user.id" :for="performer.name" v-text="performer.name"></label>
-					</li>
-				</ul> 
+				<Autocomplete
+                    label="Performers"
+                    :values="performers"
+                    @selection="function(performer) { addPerformer(performer) }"
+                ></Autocomplete>
+                <div v-if="newPerformers.length > 0">
+                    <h2>Current Performers</h2>
+                    <ul>
+                        <li v-for="(performer, index) in newPerformers" v-bind:key="performer.id">
+                            {{ performer.name }}
+                            <a
+                                href="#"
+                                @click.prevent="() => removePerformer(index)"
+                            >Remove</a>
+                        </li>
+                    </ul>
+                </div>
 			</fieldset>
 			<!-- TICKETS -->
 			<fieldset v-if="tickets">
@@ -76,8 +87,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import timezones from '../../Timezones'
+import { mapState } from "vuex";
+import timezones from "../../Timezones";
+import Autocomplete from "../../components/Autocomplete";
+
 export default {
 	data() {
 		return {
@@ -87,7 +100,7 @@ export default {
 			date: '',
 			time: '',
 			venue: '',
-			newPerformers: [],=
+			newPerformers: [],
 			newTickets: [],
 			family: '',
 			type: '',
@@ -95,109 +108,116 @@ export default {
 			ticketPrice: 0,
 			ticketDescription: '',
 			ticketUrl: '',
-			timezone: '',
 			timezones: timezones || '',
+			errors: [],
 		}
 	},
 	computed: {
 		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']),
+		timezone: {
+			get: function() {
+				if (this.user.timezone) {
+					return this.user.timezone;
+				}
+				return '';
+			},
+			set: function(newValue) {
+				this.user.timezone = newValue
+			}
+		}
 	},
+	components: {
+        Autocomplete
+    },
 	methods: {
 		addTicket: function() {
 			this.newTicket = true;
 		},
 		handleSubmit: function() {
 			let data = {
-			name: this.name,
-			description: this.description,
-			date: this.date,
-			time: this.time,
-			venue: this.venue,
-			family: this.family,
-			eventType: this.type,
-			performers: this.newPerformers,
-			tickets: this.newTickets,
-			timezone: this.timezone,
-		}
-		this.$store.dispatch('create', {
-			route: 'events',
-			data,
-		}).then(async(resp) => {
-			await this.$store.dispatch('fetchState', {
+				name: this.name,
+				description: this.description,
+				date: this.date,
+				time: this.time,
+				venue: this.venue,
+				family: this.family,
+				eventType: this.type,
+				performers: this.newPerformers,
+				tickets: this.newTickets,
+				timezone: this.timezone,
+			}
+			this.$store.dispatch('create', {
 				route: 'events',
-			})
-			this.$store.dispatch('findUser');
-			this.$router.push({path: `/dashboard?events=1`})
-		});
-    },
-    updateTickets: function(ticket) {
-		let data = {
-			ticket,
-		}
-		this.$store.dispatch('edit', {
-			route: 'events',
-			id: `${this.id}/tickets`,
-			data
-		})
-    },
-    createTicket: function() {
-		let data = {
-			price: this.ticketPrice,
-			description: this.ticketDescription,
-			url: this.ticketUrl,
-		}
-		this.$store.dispatch('create', {
-			route: 'tickets',
-			data,
-		}).then((resp) => {
-			this.$store.dispatch('fetchState', {
-				route: 'tickets',
-			})
-			this.ticketPrice = 0;
-			this.ticketDescription = '';
-			this.ticketUrl = '';
-			this.newTicket = false;
-		})
-	},
-	deleteTicket: function(ticket) {
-		let data = {
-			ticket
-		}
-		this.$store.dispatch('destroy', {
-			route: 'events',
-			id: `${this.id}/tickets`,
-			data,
-		})
-	},
-
-    addPerformer: function(performer) {
-		let data = {
-			performer,
-		}
-		this.$store.dispatch('edit', {
-			route: 'events',
-			id: `${this.id}/performers`,
-			data
-		})
-    },
-    removePerformer: function(performer) {
-		let data = {
-			performer
-		}
-		this.$store.dispatch('destroy', {
-			route: 'events',
-			id: `${this.id}/performers`,
-			data,
+				data,
+			}).then(async(resp) => {
+				await this.$store.dispatch('fetchState', {
+					route: 'events',
+				})
+				this.$store.dispatch('findUser');
+				this.$router.push({path: `/dashboard?events=1`})
+			});
+		},
+		updateTickets: function(ticket) {
+			let data = {
+				ticket,
+			}
+			this.$store.dispatch('edit', {
+				route: 'events',
+				id: `${this.id}/tickets`,
+				data
 			})
 		},
+		createTicket: function() {
+			let data = {
+				price: this.ticketPrice,
+				description: this.ticketDescription,
+				url: this.ticketUrl,
+			}
+			this.$store.dispatch('create', {
+				route: 'tickets',
+				data,
+			}).then((resp) => {
+				this.$store.dispatch('fetchState', {
+					route: 'tickets',
+				})
+				this.ticketPrice = 0;
+				this.ticketDescription = '';
+				this.ticketUrl = '';
+				this.newTicket = false;
+			})
+		},
+		deleteTicket: function(ticket) {
+			let data = {
+				ticket
+			}
+			this.$store.dispatch('destroy', {
+				route: 'events',
+				id: `${this.id}/tickets`,
+				data,
+			})
+		},
+		addPerformer: function(performer) {
+			if (this.newPerformers.indexOf(performer) === -1) {
+				this.newPerformers.push(performer);
+			}
+		},
+		removePerformer: function(index) {
+			this.newPerformers.splice(index, 1);
+		},
 	},
-	mounted: function() {
-		this.$store.dispatch('fetchState', { 
-			route: 'eventTypes',
-		});
-		this.$store.dispatch('fetchState', { 
-			route: 'tickets',
-		})
+	async mounted() {
+		try {
+			this.$store.dispatch('fetchState', { 
+				route: 'eventTypes',
+			});
+			this.$store.dispatch('fetchState', { 
+				route: 'tickets',
+			})
+
+		} catch(error) {
+			this.errors.push(error);
+		}
+		
 	}
 }
 </script>
