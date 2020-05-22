@@ -14,7 +14,6 @@ export default new Vuex.Store({
         families: [],
         performerTypes: [],
         eventTypes: [],
-        tickets: []
     },
     actions: {
         login({ commit }, data) {

@@ -47,35 +47,10 @@
                     @selection="function(performer) { addPerformer(performer.id) }"
                 ></Autocomplete>
 			</fieldset>
-			<h2>Current Tickets</h2>
-			<fieldset v-if="event.tickets">
-				<legend for="eventTickets" class="label">Current Tickets</legend>
-				<ul class="list">
-					<li class="list-item" v-for="eventTicket in event.tickets" v-bind:key="eventTicket.id" >
-						<p>${{eventTicket.price}} {{eventTicket.description }}</p>
-						<button @click.prevent="deleteTicket(eventTicket.id)">Remove Ticket</button>
-					</li>
-				</ul> 
-			</fieldset>
-			<fieldset v-if="tickets">
-				<legend for="tickets" class="label">Tickets</legend>
-				<ul class="list">
-					<li class="list-item" v-for="ticket in filteredTickets" v-bind:key="ticket.id" >
-						<p>${{ ticket.price }} {{ ticket.description}}</p>
-						<button @click.prevent="updateTickets(ticket.id)">Add Ticket to Event</button>
-					</li>
-				</ul> 
-				<div v-if="newTicket">
-					<label for="ticketDescription" class="label">Description</label>
-					<input class="input" type="text" name="ticketDescription" id="ticketDescription" v-model="ticketDescription">
-					<label class="label" for="ticketPrice">Ticket Price</label>  
-					<input class="input" type="number" name="ticketPrice" v-model="ticketPrice">
-					<label class="label" for="ticketUrl">Ticket URL</label>
-					<input class="input" type="url" name="ticketUrl" v-model="ticketUrl">
-					<button class="btn" v-on:click.prevent="createTicket">Add Ticket</button>
-				</div>
-				<button v-if="!newTicket" class="btn" @click.prevent="addTicket">Create New Ticket</button>
-			</fieldset>
+			<label class="label" for="tickets">Ticket Information</label>
+			<textarea class="input" name="tickets" id="tickets" cols="30" rows="10" v-model="event.tickets"></textarea>
+			<label class="label" for="tickets_url">Ticket Url</label>
+			<input class="input" type="url" name="tickets_url" id="tickets_url" v-model="event.tickets_url">
 			<input class="btn" type="submit" value="Update Event">
 		</form>
 		<a v-if="this.event.social_links" :href="'/events/' + this.id + '/social-links/' + this.event.social_links.id">Update Social Links</a>
@@ -92,18 +67,13 @@ export default {
 		return {
 			id: this.$route.params.id || '',
 			newPerformers: [],
-			newTickets: [],
-			newTicket: false,
-			ticketPrice: 0,
-			ticketDescription: '',
-			ticketUrl: '',
 		}
 	},
 	components: {
 		Autocomplete,
 	},
 	computed: {
-		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']),
+		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes']),
 		event: function() {
 			return this.events.find(entry => Number(entry.id) === Number(this.id))
 		},
@@ -112,9 +82,6 @@ export default {
 		},
 		venue: function() {
 			return this.venues.find((entry) => Number(entry.id) === Number(this.event.venue_id))
-		},
-		filteredTickets: function() {
-			return this.tickets.filter(entry => !this.event.tickets.find((item) => Number(item.id) === Number(entry.id)));
 		},
 		filteredPerformers: function() {
 			return this.performers.filter(entry => !this.event.performers.find((item) => Number(item.id) === Number(entry.id)));
@@ -129,9 +96,6 @@ export default {
 		}
 	},
 	methods: {
-		addTicket: function() {
-			this.newTicket = true;
-		},
 		handleSubmit: function() {
 			let data = {
 				name: this.event.name,
@@ -139,7 +103,10 @@ export default {
 				date: this.event.date,
 				time: this.event.time,
 				eventType: this.type,
+				tickets: this.event.tickets,
+				tickets_url: this.event.tickets_url,
 			}
+
 			if (this.venue) {
 				data['venue'] = this.venue['id']
 			}
@@ -164,44 +131,6 @@ export default {
 				this.$router.push('/events');
 			}).catch((err) => {
 				console.log(err)
-			})
-		},
-		updateTickets: function(ticket) {
-			let data = {
-				ticket,
-			}
-			this.$store.dispatch('edit', {
-				route: 'events',
-				id: `${this.id}/tickets`,
-				data
-			})
-		},
-		createTicket: function() {
-			let data = {
-				price: this.ticketPrice,
-				description: this.ticketDescription,
-				url: this.ticketUrl,
-			}
-			this.$store.dispatch('create', {
-				route: 'tickets',
-				data,
-			}).then((resp) => {
-				const ticket = resp.data[0].id;
-				this.updateTickets(ticket);
-				this.ticketPrice = 0;
-				this.ticketDescription = '';
-				this.ticketUrl = '';
-				this.newTicket = false;
-			})
-		},
-		deleteTicket: function(ticket) {
-			let data = {
-				ticket
-			}
-			this.$store.dispatch('destroy', {
-				route: 'events',
-				id: `${this.id}/tickets`,
-				data,
 			})
 		},
 
@@ -230,9 +159,6 @@ export default {
 		this.$store.dispatch('fetchState', { 
 			route: 'eventTypes',
 		});
-		this.$store.dispatch('fetchState', { 
-			route: 'tickets',
-		})
 	}
 }
 </script>

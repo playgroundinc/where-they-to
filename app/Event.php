@@ -34,18 +34,15 @@ class Event extends Model
       return $this->belongsTo(EventType::class);
     }
 
-    public function tickets()
-    {
-      return $this->belongsToMany(Ticket::class);
-    }
-
     protected $fillable = [
       'name',
       'description',
       'date',
       'time',
       'type',
-      'timezone'
+      'timezone',
+      'tickets',
+      'tickets_url'
     ];
   
 

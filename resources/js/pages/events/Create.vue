@@ -62,25 +62,10 @@
                 </div>
 			</fieldset>
 			<!-- TICKETS -->
-			<fieldset v-if="tickets">
-				<legend for="tickets" class="label">Tickets</legend>
-				<ul class="list">
-					<li class="list-item" v-for="ticket in tickets" v-bind:key="ticket.id" >
-						<input type="checkbox" :name="ticket.id" :value="ticket.id" :id="ticket.id" v-model="newTickets">
-						<label :for="ticket.id">${{ ticket.price}} {{ ticket.description }}</label>
-					</li>
-				</ul> 
-				<div v-if="newTicket">
-					<label class="label" for="ticketPrice">Ticket Price</label>  
-					<input class="input" type="number" name="ticketPrice" v-model="ticketPrice">
-					<label for="ticketDescription" class="label">Description</label>
-					<input class="input" type="text" name="ticketDescription" id="ticketDescription" v-model="ticketDescription">
-					<label class="label" for="ticketUrl">Ticket URL</label>
-					<input class="input" type="url" name="ticketUrl" v-model="ticketUrl">
-					<button class="btn" v-on:click.prevent="createTicket">Add Ticket</button>
-				</div>
-				<button v-if="!newTicket" class="btn" @click.prevent="addTicket">Create New Ticket</button>
-			</fieldset>
+			<label class="label" for="tickets">Ticket Information</label>
+			<textarea class="input" name="tickets" id="tickets" cols="30" rows="10" v-model="tickets"></textarea>
+			<label class="label" for="tickets_url">Ticket Url</label>
+			<input class="input" type="url" name="tickets_url" id="tickets_url" v-model="tickets_url">
 			<input class="btn" type="submit" value="Create Event">
 		</form>
 	</div>
@@ -101,19 +86,16 @@ export default {
 			time: '',
 			venue: '',
 			newPerformers: [],
-			newTickets: [],
 			family: '',
 			type: '',
-			newTicket: false,
-			ticketPrice: 0,
-			ticketDescription: '',
-			ticketUrl: '',
 			timezones: timezones || '',
 			errors: [],
+			tickets: '',
+			tickets_url: '',
 		}
 	},
 	computed: {
-		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']),
+		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes']),
 		timezone: {
 			get: function() {
 				if (this.user.timezone) {
@@ -130,9 +112,6 @@ export default {
         Autocomplete
     },
 	methods: {
-		addTicket: function() {
-			this.newTicket = true;
-		},
 		handleSubmit: function() {
 			let data = {
 				name: this.name,
@@ -143,8 +122,9 @@ export default {
 				family: this.family,
 				eventType: this.type,
 				performers: this.newPerformers,
-				tickets: this.newTickets,
 				timezone: this.timezone,
+				tickets: this.tickets,
+				tickets_url: this.tickets_url
 			}
 			this.$store.dispatch('create', {
 				route: 'events',
@@ -156,45 +136,6 @@ export default {
 				this.$store.dispatch('findUser');
 				this.$router.push({path: `/dashboard?events=1`})
 			});
-		},
-		updateTickets: function(ticket) {
-			let data = {
-				ticket,
-			}
-			this.$store.dispatch('edit', {
-				route: 'events',
-				id: `${this.id}/tickets`,
-				data
-			})
-		},
-		createTicket: function() {
-			let data = {
-				price: this.ticketPrice,
-				description: this.ticketDescription,
-				url: this.ticketUrl,
-			}
-			this.$store.dispatch('create', {
-				route: 'tickets',
-				data,
-			}).then((resp) => {
-				this.$store.dispatch('fetchState', {
-					route: 'tickets',
-				})
-				this.ticketPrice = 0;
-				this.ticketDescription = '';
-				this.ticketUrl = '';
-				this.newTicket = false;
-			})
-		},
-		deleteTicket: function(ticket) {
-			let data = {
-				ticket
-			}
-			this.$store.dispatch('destroy', {
-				route: 'events',
-				id: `${this.id}/tickets`,
-				data,
-			})
 		},
 		addPerformer: function(performer) {
 			if (this.newPerformers.indexOf(performer) === -1) {
@@ -210,9 +151,6 @@ export default {
 			this.$store.dispatch('fetchState', { 
 				route: 'eventTypes',
 			});
-			this.$store.dispatch('fetchState', { 
-				route: 'tickets',
-			})
 
 		} catch(error) {
 			this.errors.push(error);

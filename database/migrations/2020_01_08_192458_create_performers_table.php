@@ -72,7 +72,9 @@ class CreatePerformersTable extends Migration
 			$table->date('date')->nullable();
 			$table->string('time')->nullable();
 			$table->string('timezone')->nullable();
-			$table->text('description');
+      $table->text('description');
+      $table->text('tickets')->nullable();
+      $table->string('tickets_url')->nullable();
 			$table->bigInteger('venue_id')->unsigned()->nullable();
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
 			$table->bigInteger('family_id')->unsigned()->nullable();

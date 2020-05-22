@@ -2,6 +2,7 @@
 <template>
   <div class="main" v-if="event">
     <h1>{{ event.name }}</h1>
+    {{ event }}
     <div>
       <p>
         <span v-if="event.date">{{ event.date }}</span>
@@ -37,15 +38,8 @@
     </div>
     <div>
       <h2>Tickets</h2>
-      <ul v-if="event.tickets.length > 0">
-        <li v-for="ticket in event.tickets" v-bind:key="ticket.id">
-          <p>
-            <span>${{ ticket.price }}</span>
-            <span> {{ticket.description }}</span>
-          </p>
-        </li>
-      </ul>
-      <p v-else>No tickets currently listed</p>
+      <p>{{event.tickets}}</p>
+      <a :href="event.tickets_url">Buy Tickets</a>
     </div>
     <div>
       <h2>Social Links</h2>
