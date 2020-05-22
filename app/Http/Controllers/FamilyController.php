@@ -46,16 +46,16 @@ class FamilyController extends Controller
     {
         //
         $attributes = request()->validate([
-          'name' => 'required',
-          'description' => 'required',
+			'name' => 'required',
+			'description' => 'required',
         ]);
         $family = Family::create($attributes);
-        $user = Performer::find(request('user')->performer['id']);
-        $family->performers()->save($user);
+        $user = User::find(request('user'));
+        $family->user()->save($user);
         $performers = request('performers');
         foreach ($performers as $performer):
-          $newPerformer = Performer::find($performer);
-          $family->performers()->save($newPerformer);
+			$newPerformer = Performer::find($performer);
+			$family->performers()->save($newPerformer);
         endforeach;
         return response()->json(['status' => 'success'], 200);
     }

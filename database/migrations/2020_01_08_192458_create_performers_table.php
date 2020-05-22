@@ -50,7 +50,9 @@ class CreatePerformersTable extends Migration
 			$table->bigIncrements('id');
 			$table->timestamps();
 			$table->string('name');
-			$table->text('description');
+      $table->text('description');
+      $table->bigInteger('user_id')->unsigned()->nullable();
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 
 		Schema::create('event_types', function (Blueprint $table) {

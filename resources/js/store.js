@@ -146,7 +146,8 @@ export default new Vuex.Store({
                             value: {
                                 id: res.data.user.id,
                                 socialLinks: res.data.user.socialLinks,
-                                venues: res.data.user.venues,
+								venues: res.data.user.venues,
+								families: res.data.user.families,
                                 performers: res.data.user.performers,
                                 events: res.data.user.events,
                                 city: res.data.user.city,

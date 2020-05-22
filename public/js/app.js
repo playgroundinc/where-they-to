@@ -5381,10 +5381,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 
+ßß;
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      id: this.$route.params.id,
       name: '',
       description: '',
       newPerformers: []
@@ -5403,7 +5403,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var route = "families";
       this.$store.dispatch('create', {
         route: route,
-        id: this.id,
         data: data
       }).then(function () {
         _this.$store.dispatch('fetchState', {
@@ -6492,6 +6491,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
 //
 //
 //
@@ -10790,7 +10790,7 @@ var render = function() {
                       "li",
                       { key: performer.id, staticClass: "list-item" },
                       [
-                        performer.id !== _vm.user.profile.id
+                        performer.id !== _vm.user.id
                           ? _c("input", {
                               directives: [
                                 {
@@ -10836,7 +10836,7 @@ var render = function() {
                             })
                           : _vm._e(),
                         _vm._v(" "),
-                        performer.id !== _vm.user.profile.id
+                        performer.id !== _vm.user.id
                           ? _c("label", {
                               attrs: { for: performer.name },
                               domProps: { textContent: _vm._s(performer.name) }
@@ -12351,6 +12351,14 @@ var render = function() {
       _vm._v(" "),
       _c("list", {
         attrs: { listitems: _vm.user.events, title: "Event", slug: "events" }
+      }),
+      _vm._v(" "),
+      _c("list", {
+        attrs: {
+          listitems: _vm.user.families,
+          title: "Family",
+          slug: "families"
+        }
       })
     ],
     1
@@ -31417,6 +31425,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
                 id: res.data.user.id,
                 socialLinks: res.data.user.socialLinks,
                 venues: res.data.user.venues,
+                families: res.data.user.families,
                 performers: res.data.user.performers,
                 events: res.data.user.events,
                 city: res.data.user.city,
