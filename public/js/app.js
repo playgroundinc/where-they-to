@@ -5264,9 +5264,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -10482,7 +10479,7 @@ var render = function() {
   return _vm.event
     ? _c("div", { staticClass: "main" }, [
         _c("h1", [_vm._v(_vm._s(_vm.event.name))]),
-        _vm._v("\n  " + _vm._s(_vm.event) + "\n  "),
+        _vm._v(" "),
         _c("div", [
           _c("p", [
             _vm.event.date
@@ -10561,11 +10558,15 @@ var render = function() {
         _c("div", [
           _c("h2", [_vm._v("Tickets")]),
           _vm._v(" "),
-          _c("p", [_vm._v(_vm._s(_vm.event.tickets))]),
+          _vm.event.tickets
+            ? _c("p", [_vm._v(_vm._s(_vm.event.tickets))])
+            : _c("p", [_vm._v("No tickets listed")]),
           _vm._v(" "),
-          _c("a", { attrs: { href: _vm.event.tickets_url } }, [
-            _vm._v("Buy Tickets")
-          ])
+          _vm.event.tickets_url
+            ? _c("a", { attrs: { href: _vm.event.tickets_url } }, [
+                _vm._v("Buy Tickets")
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("div", [
@@ -10615,8 +10616,6 @@ var render = function() {
               ])
             : _vm._e()
         ]),
-        _vm._v(" "),
-        _c("div"),
         _vm._v(" "),
         _vm.user && _vm.user.id === _vm.event.user_id
           ? _c(
