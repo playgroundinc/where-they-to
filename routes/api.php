@@ -20,9 +20,6 @@ Route::get('user/{id}/profile', 'UserController@profile');
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
 
-    Route::put('events/{id}/tickets', 'EventController@addTicket');
-    Route::delete('events/{id}/tickets', 'EventController@deleteTicket');
-
     Route::put('events/{id}/performers', 'EventController@addPerformer');
     Route::delete('events/{id}/performers', 'EventController@deletePerformer');
 
@@ -46,8 +43,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('social-links', 'SocialLinksController@store');
     Route::put('social-links/{id}', 'SocialLinksController@update');
     Route::delete('social-links/{id}', 'SocialLinksController@destroy');
-
-    Route::post('tickets', 'TicketController@store');
     
     Route::put('venues/{id}', 'VenueController@update');
     Route::post('venues', 'VenueController@store');
@@ -63,8 +58,6 @@ Route::get('venues/{id}', 'VenueController@show');
 
 Route::get('social-links', 'SocialLinksController@index');
 Route::get('social-links/{id}', 'SocialLinksController@show');
-
-Route::get('tickets', 'TicketController@index');
 
 Route::get('families', 'FamilyController@index');
 

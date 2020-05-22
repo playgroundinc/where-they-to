@@ -9,7 +9,6 @@ use App\Performer;
 use App\Venue;
 use App\Family;
 use App\EventType;
-use App\Ticket;
 
 use Illuminate\Http\Request;
 
@@ -48,13 +47,6 @@ class EventController extends Controller
           endforeach;
         endif;
         
-        if ($request['tickets']):
-          $tickets = Ticket::find(request('tickets'));
-          $event->tickets()->detach();
-          foreach($tickets as $ticket):
-            $event->tickets()->attach($ticket);
-          endforeach;
-        endif;
     }
 
     private function updateFields($request, $event) {
@@ -66,7 +58,6 @@ class EventController extends Controller
         $events = Event::all();
         foreach($events as $index=>$event):
           $events[$index]['performers'] = $event->performers;
-          $events[$index]['tickets'] = $event->tickets;
           $events[$index]['social_links'] = $event->socialLinks;
         endforeach;
         return $events;
@@ -101,6 +92,8 @@ class EventController extends Controller
           'name' => 'required',
           'description' => 'required',
           'timezone' => 'nullable',
+          'tickets' => 'nullable',
+          'tickets_url' => 'nullable'
         ]);
         $date = Carbon::parse(request('date'));
 
@@ -141,8 +134,7 @@ class EventController extends Controller
         $performers = Performer::all();
         $families = Family::all();
         $eventTypes = EventType::all();
-        $eventTickets = Ticket::all();
-        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes', 'eventTickets'));
+        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes'));
     }
 
     /**
@@ -163,7 +155,9 @@ class EventController extends Controller
             'name',
             'description',
             'date',
-            'type'
+            'type',
+            'tickets', 
+            'tickets_url'
           ]));
           $this->saveFields(request(), $event);
           return response()->json(['status' => 'success'], 200);
@@ -191,22 +185,6 @@ class EventController extends Controller
         return response()->json(['status' => 'unauthorized'], 401);
     }
 
-    public function addTicket($id) 
-    {
-      $ticket = Ticket::find(request('ticket'));
-      $event = Event::find($id);
-      $ticket->events()->attach($event);
-      return response()->json(['status' => 'success'], 200);
-    }
-
-    public function deleteTicket($id) 
-    {
-      $ticket = Ticket::find(request('ticket'));
-      $event = Event::find($id);
-      $event->tickets()->detach($ticket);
-      return response()->json(['status' => 'success'], 200);
-    }
-
     public function addPerformer($id) 
     {
       $performer = Performer::find(request('performer'));
@@ -221,30 +199,6 @@ class EventController extends Controller
       $event = Event::find($id);
       $event->performers()->detach($performer);
       return response()->json(['status' => 'success'], 200);
-    }
-
-    public function createTickets($id) 
-    {
-      $attributes = request()->validate([
-        'price' => 'required',
-        'description' => 'required',
-        'url' => 'nullable'
-      ]);
-      $ticket = Ticket::create($attributes);
-
-      $event = Event::find($id);
-      $ticket->events()->attach($event);
-      return redirect('/events');
-    }
-    public function updateTickets($id) {
-      $event = Event::find($id);
-      $event->tickets()->detach();
-      $tickets = request('tickets');
-      foreach($tickets as $ticket):
-        $ticket = Ticket::find($ticket);
-        $event->tickets()->attach($ticket);
-      endforeach;
-      return redirect('/events');
     }
 
     public function date($date) {

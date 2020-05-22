@@ -4848,21 +4848,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -4876,18 +4861,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       time: '',
       venue: '',
       newPerformers: [],
-      newTickets: [],
       family: '',
       type: '',
-      newTicket: false,
-      ticketPrice: 0,
-      ticketDescription: '',
-      ticketUrl: '',
       timezones: _Timezones__WEBPACK_IMPORTED_MODULE_2__["default"] || '',
-      errors: []
+      errors: [],
+      tickets: '',
+      tickets_url: ''
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']), {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes']), {
     timezone: {
       get: function get() {
         if (this.user.timezone) {
@@ -4905,9 +4887,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Autocomplete: _components_Autocomplete__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   methods: {
-    addTicket: function addTicket() {
-      this.newTicket = true;
-    },
     handleSubmit: function handleSubmit() {
       var _this = this;
 
@@ -4920,8 +4899,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         family: this.family,
         eventType: this.type,
         performers: this.newPerformers,
-        tickets: this.newTickets,
-        timezone: this.timezone
+        timezone: this.timezone,
+        tickets: this.tickets,
+        tickets_url: this.tickets_url
       };
       this.$store.dispatch('create', {
         route: 'events',
@@ -4961,48 +4941,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         };
       }());
     },
-    updateTickets: function updateTickets(ticket) {
-      var data = {
-        ticket: ticket
-      };
-      this.$store.dispatch('edit', {
-        route: 'events',
-        id: "".concat(this.id, "/tickets"),
-        data: data
-      });
-    },
-    createTicket: function createTicket() {
-      var _this2 = this;
-
-      var data = {
-        price: this.ticketPrice,
-        description: this.ticketDescription,
-        url: this.ticketUrl
-      };
-      this.$store.dispatch('create', {
-        route: 'tickets',
-        data: data
-      }).then(function (resp) {
-        _this2.$store.dispatch('fetchState', {
-          route: 'tickets'
-        });
-
-        _this2.ticketPrice = 0;
-        _this2.ticketDescription = '';
-        _this2.ticketUrl = '';
-        _this2.newTicket = false;
-      });
-    },
-    deleteTicket: function deleteTicket(ticket) {
-      var data = {
-        ticket: ticket
-      };
-      this.$store.dispatch('destroy', {
-        route: 'events',
-        id: "".concat(this.id, "/tickets"),
-        data: data
-      });
-    },
     addPerformer: function addPerformer(performer) {
       if (this.newPerformers.indexOf(performer) === -1) {
         this.newPerformers.push(performer);
@@ -5023,9 +4961,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               try {
                 this.$store.dispatch('fetchState', {
                   route: 'eventTypes'
-                });
-                this.$store.dispatch('fetchState', {
-                  route: 'tickets'
                 });
               } catch (error) {
                 this.errors.push(error);
@@ -5127,49 +5062,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       id: this.$route.params.id || '',
-      newPerformers: [],
-      newTickets: [],
-      newTicket: false,
-      ticketPrice: 0,
-      ticketDescription: '',
-      ticketUrl: ''
+      newPerformers: []
     };
   },
   components: {
     Autocomplete: _components_Autocomplete__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']), {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes']), {
     event: function event() {
       var _this = this;
 
@@ -5191,20 +5096,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return Number(entry.id) === Number(_this3.event.venue_id);
       });
     },
-    filteredTickets: function filteredTickets() {
+    filteredPerformers: function filteredPerformers() {
       var _this4 = this;
 
-      return this.tickets.filter(function (entry) {
-        return !_this4.event.tickets.find(function (item) {
-          return Number(item.id) === Number(entry.id);
-        });
-      });
-    },
-    filteredPerformers: function filteredPerformers() {
-      var _this5 = this;
-
       return this.performers.filter(function (entry) {
-        return !_this5.event.performers.find(function (item) {
+        return !_this4.event.performers.find(function (item) {
           return Number(item.id) === Number(entry.id);
         });
       });
@@ -5219,18 +5115,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
-    addTicket: function addTicket() {
-      this.newTicket = true;
-    },
     handleSubmit: function handleSubmit() {
-      var _this6 = this;
+      var _this5 = this;
 
       var data = {
         name: this.event.name,
         description: this.event.description,
         date: this.event.date,
         time: this.event.time,
-        eventType: this.type
+        eventType: this.type,
+        tickets: this.event.tickets,
+        tickets_url: this.event.tickets_url
       };
 
       if (this.venue) {
@@ -5246,13 +5141,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function (resp) {
-        _this6.$router.push({
-          path: "/events/".concat(_this6.id)
+        _this5.$router.push({
+          path: "/events/".concat(_this5.id)
         });
       });
     },
     handleDelete: function handleDelete() {
-      var _this7 = this;
+      var _this6 = this;
 
       var data = {};
       this.$store.dispatch('destroy', {
@@ -5260,51 +5155,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function () {
-        _this7.$router.push('/events');
+        _this6.$router.push('/events');
       })["catch"](function (err) {
         console.log(err);
-      });
-    },
-    updateTickets: function updateTickets(ticket) {
-      var data = {
-        ticket: ticket
-      };
-      this.$store.dispatch('edit', {
-        route: 'events',
-        id: "".concat(this.id, "/tickets"),
-        data: data
-      });
-    },
-    createTicket: function createTicket() {
-      var _this8 = this;
-
-      var data = {
-        price: this.ticketPrice,
-        description: this.ticketDescription,
-        url: this.ticketUrl
-      };
-      this.$store.dispatch('create', {
-        route: 'tickets',
-        data: data
-      }).then(function (resp) {
-        var ticket = resp.data[0].id;
-
-        _this8.updateTickets(ticket);
-
-        _this8.ticketPrice = 0;
-        _this8.ticketDescription = '';
-        _this8.ticketUrl = '';
-        _this8.newTicket = false;
-      });
-    },
-    deleteTicket: function deleteTicket(ticket) {
-      var data = {
-        ticket: ticket
-      };
-      this.$store.dispatch('destroy', {
-        route: 'events',
-        id: "".concat(this.id, "/tickets"),
-        data: data
       });
     },
     addPerformer: function addPerformer(performer) {
@@ -5332,9 +5185,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.$store.dispatch('fetchState', {
       route: 'eventTypes'
     });
-    this.$store.dispatch('fetchState', {
-      route: 'tickets'
-    });
   }
 });
 
@@ -5356,15 +5206,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -10106,205 +9947,57 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.tickets
-          ? _c("fieldset", [
-              _c(
-                "legend",
-                { staticClass: "label", attrs: { for: "tickets" } },
-                [_vm._v("Tickets")]
-              ),
-              _vm._v(" "),
-              _c(
-                "ul",
-                { staticClass: "list" },
-                _vm._l(_vm.tickets, function(ticket) {
-                  return _c(
-                    "li",
-                    { key: ticket.id, staticClass: "list-item" },
-                    [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.newTickets,
-                            expression: "newTickets"
-                          }
-                        ],
-                        attrs: {
-                          type: "checkbox",
-                          name: ticket.id,
-                          id: ticket.id
-                        },
-                        domProps: {
-                          value: ticket.id,
-                          checked: Array.isArray(_vm.newTickets)
-                            ? _vm._i(_vm.newTickets, ticket.id) > -1
-                            : _vm.newTickets
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$a = _vm.newTickets,
-                              $$el = $event.target,
-                              $$c = $$el.checked ? true : false
-                            if (Array.isArray($$a)) {
-                              var $$v = ticket.id,
-                                $$i = _vm._i($$a, $$v)
-                              if ($$el.checked) {
-                                $$i < 0 && (_vm.newTickets = $$a.concat([$$v]))
-                              } else {
-                                $$i > -1 &&
-                                  (_vm.newTickets = $$a
-                                    .slice(0, $$i)
-                                    .concat($$a.slice($$i + 1)))
-                              }
-                            } else {
-                              _vm.newTickets = $$c
-                            }
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: ticket.id } }, [
-                        _vm._v(
-                          "$" +
-                            _vm._s(ticket.price) +
-                            " " +
-                            _vm._s(ticket.description)
-                        )
-                      ])
-                    ]
-                  )
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _vm.newTicket
-                ? _c("div", [
-                    _c(
-                      "label",
-                      { staticClass: "label", attrs: { for: "ticketPrice" } },
-                      [_vm._v("Ticket Price")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.ticketPrice,
-                          expression: "ticketPrice"
-                        }
-                      ],
-                      staticClass: "input",
-                      attrs: { type: "number", name: "ticketPrice" },
-                      domProps: { value: _vm.ticketPrice },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.ticketPrice = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "label",
-                      {
-                        staticClass: "label",
-                        attrs: { for: "ticketDescription" }
-                      },
-                      [_vm._v("Description")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.ticketDescription,
-                          expression: "ticketDescription"
-                        }
-                      ],
-                      staticClass: "input",
-                      attrs: {
-                        type: "text",
-                        name: "ticketDescription",
-                        id: "ticketDescription"
-                      },
-                      domProps: { value: _vm.ticketDescription },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.ticketDescription = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "label",
-                      { staticClass: "label", attrs: { for: "ticketUrl" } },
-                      [_vm._v("Ticket URL")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.ticketUrl,
-                          expression: "ticketUrl"
-                        }
-                      ],
-                      staticClass: "input",
-                      attrs: { type: "url", name: "ticketUrl" },
-                      domProps: { value: _vm.ticketUrl },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.ticketUrl = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn",
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.createTicket($event)
-                          }
-                        }
-                      },
-                      [_vm._v("Add Ticket")]
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              !_vm.newTicket
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.addTicket($event)
-                        }
-                      }
-                    },
-                    [_vm._v("Create New Ticket")]
-                  )
-                : _vm._e()
-            ])
-          : _vm._e(),
+        _c("label", { staticClass: "label", attrs: { for: "tickets" } }, [
+          _vm._v("Ticket Information")
+        ]),
+        _vm._v(" "),
+        _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.tickets,
+              expression: "tickets"
+            }
+          ],
+          staticClass: "input",
+          attrs: { name: "tickets", id: "tickets", cols: "30", rows: "10" },
+          domProps: { value: _vm.tickets },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.tickets = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "tickets_url" } }, [
+          _vm._v("Ticket Url")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.tickets_url,
+              expression: "tickets_url"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "url", name: "tickets_url", id: "tickets_url" },
+          domProps: { value: _vm.tickets_url },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.tickets_url = $event.target.value
+            }
+          }
+        }),
         _vm._v(" "),
         _c("input", {
           staticClass: "btn",
@@ -10664,225 +10357,59 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            _c("h2", [_vm._v("Current Tickets")]),
+            _c("label", { staticClass: "label", attrs: { for: "tickets" } }, [
+              _vm._v("Ticket Information")
+            ]),
             _vm._v(" "),
-            _vm.event.tickets
-              ? _c("fieldset", [
-                  _c(
-                    "legend",
-                    { staticClass: "label", attrs: { for: "eventTickets" } },
-                    [_vm._v("Current Tickets")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "list" },
-                    _vm._l(_vm.event.tickets, function(eventTicket) {
-                      return _c(
-                        "li",
-                        { key: eventTicket.id, staticClass: "list-item" },
-                        [
-                          _c("p", [
-                            _vm._v(
-                              "$" +
-                                _vm._s(eventTicket.price) +
-                                " " +
-                                _vm._s(eventTicket.description)
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.deleteTicket(eventTicket.id)
-                                }
-                              }
-                            },
-                            [_vm._v("Remove Ticket")]
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  )
-                ])
-              : _vm._e(),
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.tickets,
+                  expression: "event.tickets"
+                }
+              ],
+              staticClass: "input",
+              attrs: { name: "tickets", id: "tickets", cols: "30", rows: "10" },
+              domProps: { value: _vm.event.tickets },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "tickets", $event.target.value)
+                }
+              }
+            }),
             _vm._v(" "),
-            _vm.tickets
-              ? _c("fieldset", [
-                  _c(
-                    "legend",
-                    { staticClass: "label", attrs: { for: "tickets" } },
-                    [_vm._v("Tickets")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "list" },
-                    _vm._l(_vm.filteredTickets, function(ticket) {
-                      return _c(
-                        "li",
-                        { key: ticket.id, staticClass: "list-item" },
-                        [
-                          _c("p", [
-                            _vm._v(
-                              "$" +
-                                _vm._s(ticket.price) +
-                                " " +
-                                _vm._s(ticket.description)
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.updateTickets(ticket.id)
-                                }
-                              }
-                            },
-                            [_vm._v("Add Ticket to Event")]
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  ),
-                  _vm._v(" "),
-                  _vm.newTicket
-                    ? _c("div", [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "label",
-                            attrs: { for: "ticketDescription" }
-                          },
-                          [_vm._v("Description")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ticketDescription,
-                              expression: "ticketDescription"
-                            }
-                          ],
-                          staticClass: "input",
-                          attrs: {
-                            type: "text",
-                            name: "ticketDescription",
-                            id: "ticketDescription"
-                          },
-                          domProps: { value: _vm.ticketDescription },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.ticketDescription = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "label",
-                          {
-                            staticClass: "label",
-                            attrs: { for: "ticketPrice" }
-                          },
-                          [_vm._v("Ticket Price")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ticketPrice,
-                              expression: "ticketPrice"
-                            }
-                          ],
-                          staticClass: "input",
-                          attrs: { type: "number", name: "ticketPrice" },
-                          domProps: { value: _vm.ticketPrice },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.ticketPrice = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "label",
-                          { staticClass: "label", attrs: { for: "ticketUrl" } },
-                          [_vm._v("Ticket URL")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ticketUrl,
-                              expression: "ticketUrl"
-                            }
-                          ],
-                          staticClass: "input",
-                          attrs: { type: "url", name: "ticketUrl" },
-                          domProps: { value: _vm.ticketUrl },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.ticketUrl = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn",
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.createTicket($event)
-                              }
-                            }
-                          },
-                          [_vm._v("Add Ticket")]
-                        )
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  !_vm.newTicket
-                    ? _c(
-                        "button",
-                        {
-                          staticClass: "btn",
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.addTicket($event)
-                            }
-                          }
-                        },
-                        [_vm._v("Create New Ticket")]
-                      )
-                    : _vm._e()
-                ])
-              : _vm._e(),
+            _c(
+              "label",
+              { staticClass: "label", attrs: { for: "tickets_url" } },
+              [_vm._v("Ticket Url")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.tickets_url,
+                  expression: "event.tickets_url"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "url", name: "tickets_url", id: "tickets_url" },
+              domProps: { value: _vm.event.tickets_url },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "tickets_url", $event.target.value)
+                }
+              }
+            }),
             _vm._v(" "),
             _c("input", {
               staticClass: "btn",
@@ -11031,21 +10558,15 @@ var render = function() {
         _c("div", [
           _c("h2", [_vm._v("Tickets")]),
           _vm._v(" "),
-          _vm.event.tickets.length > 0
-            ? _c(
-                "ul",
-                _vm._l(_vm.event.tickets, function(ticket) {
-                  return _c("li", { key: ticket.id }, [
-                    _c("p", [
-                      _c("span", [_vm._v("$" + _vm._s(ticket.price))]),
-                      _vm._v(" "),
-                      _c("span", [_vm._v(" " + _vm._s(ticket.description))])
-                    ])
-                  ])
-                }),
-                0
-              )
-            : _c("p", [_vm._v("No tickets currently listed")])
+          _vm.event.tickets
+            ? _c("p", [_vm._v(_vm._s(_vm.event.tickets))])
+            : _c("p", [_vm._v("No tickets listed")]),
+          _vm._v(" "),
+          _vm.event.tickets_url
+            ? _c("a", { attrs: { href: _vm.event.tickets_url } }, [
+                _vm._v("Buy Tickets")
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("div", [
@@ -11095,8 +10616,6 @@ var render = function() {
               ])
             : _vm._e()
         ]),
-        _vm._v(" "),
-        _c("div"),
         _vm._v(" "),
         _vm.user && _vm.user.id === _vm.event.user_id
           ? _c(
@@ -31773,8 +31292,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     venues: [],
     families: [],
     performerTypes: [],
-    eventTypes: [],
-    tickets: []
+    eventTypes: []
   },
   actions: {
     login: function login(_ref, data) {
