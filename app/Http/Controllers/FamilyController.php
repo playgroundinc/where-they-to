@@ -151,15 +151,15 @@ class FamilyController extends Controller
     }
 
     public function performerDestroy($id) {
-      $performer = Performer::find($id);
-      $family = $performer->family;
-      $userPerformer = request('user')->performer;
-      if (intval($family['id']) === intval($userPerformer['family_id'])):
-        $performer->family()->dissociate();
-        $performer->save();
-        return response()->json(['status' => 'success'], 200);
-      endif;
-      return response()->json(['message' => 'unauthorized user'], 401);
+		$performer = Performer::find($id);
+		$family = $performer->family;
+		$user = request('user');
+		if (intval($family['user_id']) === intval($user['id'])):
+			$performer->family()->dissociate();
+			$performer->save();
+			return response()->json(['status' => 'success'], 200);
+		endif;
+	return response()->json(['message' => 'unauthorized user'], 401);
 
     }
 }
