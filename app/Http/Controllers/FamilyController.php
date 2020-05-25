@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Family;
 use App\Performer;
+use App\User;
 use Illuminate\Http\Request;
 
 class FamilyController extends Controller
@@ -17,9 +18,9 @@ class FamilyController extends Controller
     {
         //
         $families = Family::all();
-        foreach ($families as $index=>$family):
-          $families[$index]['socialLinks'] = $family->socialLinks;
-          $families[$index]['performers'] = $family->performers;
+		foreach ($families as $index=>$family):
+			$families[$index]['socialLinks'] = $family->socialLinks;
+			$families[$index]['performers'] = $family->performers;
         endforeach;
         return response()->json($families, 200);
     }
@@ -44,17 +45,19 @@ class FamilyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		//
         $attributes = request()->validate([
 			'name' => 'required',
 			'description' => 'required',
         ]);
         $family = Family::create($attributes);
-        $user = User::find(request('user'));
-        $family->user()->save($user);
+		$user = User::find($request['user']->id);
+		if ($user) {
+			$user->families()->save($family);
+		}
         $performers = request('performers');
         foreach ($performers as $performer):
-			$newPerformer = Performer::find($performer);
+			$newPerformer = Performer::find($performer['id']);
 			$family->performers()->save($newPerformer);
         endforeach;
         return response()->json(['status' => 'success'], 200);
@@ -104,10 +107,9 @@ class FamilyController extends Controller
         //
         $family = Family::find($id);
         $user = request('user');
-        $userPerformer = $user->performer;
-        if ($userPerformer['family_id'] === $family['id']):
-          $family->update(request(['name', 'description']));
-          return response()->json(['status' => 'success'], 200);
+        if ($user['id'] === $family['id']):
+			$family->update(request(['name', 'description']));
+			return response()->json(['status' => 'success'], 200);
         endif;
         return response()->json(['message' => 'unauthorized'], 405);
     }
@@ -125,28 +127,27 @@ class FamilyController extends Controller
         $user = request('user');
         $userPerformer = $user->performer;
         if ($userPerformer['family_id'] === $family['id']):
-          $performers = $family->performers;
-          foreach($performers as $performer) {
-            $performer->family_id = null;
-            $performer->save();
-          }
-          $family->delete();
-          return response()->json(['status' => 'success'], 200);
+			$performers = $family->performers;
+			foreach($performers as $performer) {
+				$performer->family_id = null;
+				$performer->save();
+			}
+			$family->delete();
+			return response()->json(['status' => 'success'], 200);
         endif;
         return response()->json(['status' => 'unauthorized'], 401);
     }
 
     public function performer($id) {
-      $family = Family::find($id);
-      $performer = Performer::find(request('performer'));
-      $userPerformer = request('user')->performer;
-      if (intval($id) === intval($userPerformer['family_id'])):
-        $family->performers()->save($performer);
-        $allPerformers = Performer::all();
-        $familyPerformers = Family::find($id)->performers;
-        return response()->json(['status' => 'success'], 200);
-      endif;
-      return response()->json(['message' => 'unauthorized user'], 401);
+		$family = Family::find($id);
+		$request_performer = request('performer');
+		$performer = Performer::find($request_performer['id']);
+		$user = request('user');
+		if (intval($family['user_id']) === intval($user['id'])):
+			$family->performers()->save($performer);
+			return response()->json(['status' => 'success'], 200);
+		endif;
+		return response()->json(['message' => 'unauthorized user'], 401);
     }
 
     public function performerDestroy($id) {

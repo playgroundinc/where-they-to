@@ -79,7 +79,6 @@ export default new Vuex.Store({
             });
         },
         fetchState({ commit }, data) {
-			console.log(data);
             return new Promise((resolve, reject) => {
                 const { route } = data;
                 axios
@@ -141,23 +140,30 @@ export default new Vuex.Store({
                         method: "GET"
                     })
                     .then(res => {
-                        commit("set_state", {
-                            name: "user",
-                            value: {
-                                id: res.data.user.id,
-                                socialLinks: res.data.user.socialLinks,
-								venues: res.data.user.venues,
-								families: res.data.user.families,
-                                performers: res.data.user.performers,
-                                events: res.data.user.events,
-                                city: res.data.user.city,
-                                state: res.data.user.region,
-								country: res.data.user.country,
-								timezone: res.data.user.timezone,
-                            }
-                        });
-                        resolve(res);
-                        return res.data.user;
+						if (res.data.user) {
+							commit("set_state", {
+								name: "user",
+								value: {
+									id: res.data.user.id,
+									socialLinks: res.data.user.socialLinks,
+									venues: res.data.user.venues,
+									families: res.data.user.families,
+									performers: res.data.user.performers,
+									events: res.data.user.events,
+									city: res.data.user.city,
+									state: res.data.user.region,
+									country: res.data.user.country,
+									timezone: res.data.user.timezone,
+								}
+							});
+							resolve(res);
+							return res.data.user;
+						}
+						commit("set_state", {
+							name: "user",
+							value: false,
+						})
+
                     })
                     .catch(error => {
                         commit("set_state", {

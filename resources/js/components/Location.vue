@@ -109,7 +109,6 @@ export default {
     },
     methods: {
 		clearArray: function(country = false) {
-			console.log(country);
 			if (country) {
 				this.states = [];
 			}
