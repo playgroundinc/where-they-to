@@ -5752,13 +5752,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       name: '',
       bio: '',
-      newPerformerTypes: []
+      newPerformerTypes: [],
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      youtube: '',
+      website: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes'])),
@@ -5770,7 +5786,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: this.name,
         bio: this.bio,
         performerType: this.newPerformerTypes,
-        user_id: this.user.id
+        user_id: this.user.id,
+        facebook: this.facebook,
+        instagram: this.instagram,
+        twitter: this.twitter,
+        youtube: this.youtube,
+        website: this.website
       };
       this.$store.dispatch('create', {
         route: 'performers',
@@ -5903,7 +5924,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       id: this.$route.params.id,
       name: '',
-      bio: ''
+      bio: '',
+      facebook: this.facebook,
+      instagram: this.instagram,
+      twitter: this.twitter,
+      website: this.website,
+      youtube: this.youtube,
+      socialLinksId: this.venue.social_links.id
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes']), {
@@ -6066,7 +6093,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
 //
 //
 //
@@ -11418,6 +11444,138 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
+            _c("h2", [_vm._v("Create Social Links")]),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "facebook" } }, [
+              _vm._v("Facebook")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.facebook,
+                  expression: "facebook"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "facebook", name: "facebook" },
+              domProps: { value: _vm.facebook },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.facebook = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "instagram" } }, [
+              _vm._v("Instagram")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.instagram,
+                  expression: "instagram"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "instagram", name: "instagram" },
+              domProps: { value: _vm.instagram },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.instagram = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
+              _vm._v("Twitter")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.twitter,
+                  expression: "twitter"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "twitter", name: "twitter" },
+              domProps: { value: _vm.twitter },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.twitter = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
+              _vm._v("Youtube")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.youtube,
+                  expression: "youtube"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "youtube", name: "youtube" },
+              domProps: { value: _vm.youtube },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.youtube = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "website" } }, [
+              _vm._v("Website")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.website,
+                  expression: "website"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "website", name: "website" },
+              domProps: { value: _vm.website },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.website = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
             _c("input", {
               directives: [
                 {
@@ -11702,27 +11860,7 @@ var render = function() {
                     "Website: " + _vm._s(_vm.performer.socialLinks.website)
                   )
                 ])
-              ]),
-              _vm._v(" "),
-              _vm.performer.user_id &&
-              _vm.user &&
-              _vm.performer.user_id === _vm.user.id
-                ? _c(
-                    "a",
-                    {
-                      staticClass: "btn",
-                      attrs: {
-                        href:
-                          "/users/" +
-                          _vm.user.id +
-                          "/social-links/" +
-                          _vm.performer.socialLinks.id +
-                          "/edit"
-                      }
-                    },
-                    [_vm._v("Edit Social Links")]
-                  )
-                : _vm._e()
+              ])
             ])
           : _vm._e(),
         _vm._v(" "),
@@ -11733,6 +11871,7 @@ var render = function() {
               _c(
                 "a",
                 {
+                  staticClass: "btn",
                   attrs: { href: "/performers/" + _vm.performer.id + "/edit" }
                 },
                 [_vm._v("Edit Profile")]

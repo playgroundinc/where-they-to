@@ -9,6 +9,7 @@ use App\User;
 use App\Family;
 use App\Event;
 use App\PerformerType;
+use App\SocialLinks;
 
 class PerformerController extends Controller
 {
@@ -22,13 +23,25 @@ class PerformerController extends Controller
         //
         $performers = Performer::all();
         foreach ($performers as $index=>$performer) {
-          $user = User::find($performer['user_id']);
-          if (isset($user)) {
-            $performers[$index]['socialLinks'] = $performer->socialLinks;
-          }
-          $performers[$index]['type'] = $performer->performerTypes;
+			$user = User::find($performer['user_id']);
+			if (isset($user)) {
+				$performers[$index]['socialLinks'] = $performer->socialLinks;
+			}
+			$performers[$index]['type'] = $performer->performerTypes;
         }
         return response()->json($performers, 200);
+    }
+
+    public function createSocialLinks($request) {
+		$attributes = $request->validate([
+			'facebook' => 'nullable',
+			'twitter' => 'nullable',
+			'instagram' => 'nullable',
+			'website' => 'nullable',
+			'youtube' => 'nullable',
+		]);
+		$socialLinks = SocialLinks::create($attributes);
+		return $socialLinks;
     }
 
     /**
@@ -50,28 +63,28 @@ class PerformerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		//
+		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
-          'name' => 'required',
-          'bio' => 'required',
+			'name' => 'required',
+			'bio' => 'required',
         ]);
         $performer = Performer::create($attributes);
         if ($request['performerType']) {
-          $types = PerformerType::find($request['performerType']);
-          if ($types) {
-            $performer->performerTypes()->detach();
-            foreach ($types as $type) {
-              $performer->performerTypes()->attach($type);
-            }
-          }
+			$types = PerformerType::find($request['performerType']);
+			if ($types) {
+				$performer->performerTypes()->detach();
+				foreach ($types as $type) {
+					$performer->performerTypes()->attach($type);
+				}
+			}
         }
-
+		$performer->socialLinks()->save($socialLinks);
         $user = User::find($request['user']->id);
 
         if ($user) {
-          $user->performers()->save($performer);
+			$user->performers()->save($performer);
         }
-
 
         return response()->json(['status' => 'success'], 201);
     }

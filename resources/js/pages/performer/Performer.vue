@@ -18,10 +18,9 @@
         <li>YouTube: {{ performer.socialLinks.youtube }}</li>
         <li>Website: {{ performer.socialLinks.website }}</li>
       </ul>
-      <a v-if="performer.user_id && user && performer.user_id === user.id" :href="'/users/' + user.id + '/social-links/' + performer.socialLinks.id + '/edit'" class="btn">Edit Social Links</a>
     </div>
     <div v-if="performer.user_id && user && performer.user_id === user.id">
-      <a :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
+      <a class="btn" :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
     </div>
   </div>
 </template>
