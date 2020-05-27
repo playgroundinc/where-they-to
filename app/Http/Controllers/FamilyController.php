@@ -107,7 +107,7 @@ class FamilyController extends Controller
         //
         $family = Family::find($id);
         $user = request('user');
-        if ($user['id'] === $family['id']):
+        if ($user['id'] === $family['user_id']):
 			$family->update(request(['name', 'description']));
 			return response()->json(['status' => 'success'], 200);
         endif;
