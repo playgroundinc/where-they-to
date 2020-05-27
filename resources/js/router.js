@@ -12,7 +12,6 @@ import Event from './pages/events/Event';
 import EditEvent from './pages/events/Edit';
 import CreateEvent from './pages/events/Create';
 
-import Families from './pages/family/Families';
 import Family from './pages/family/Family';
 import EditFamily from './pages/family/Edit';
 import CreateFamily from './pages/family/Create';
@@ -218,14 +217,6 @@ const routes = [
     }
   },
   // FAMILIES ROUTES
-  {
-    path: '/families',
-    name: 'families',
-    component: Families,
-    meta: {
-      auth: false,
-    }
-  },
   {
     path: '/families/create',
     name: 'createFamily',

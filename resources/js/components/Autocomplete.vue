@@ -1,3 +1,7 @@
+// This is a template for an autocomplete input
+// When a selection is made it emits a "selection" action
+// Takes in an array as "values"
+
 <template>
     <div class="autocomplete">
         <label :for="this.labelId">{{this.label}}</label>

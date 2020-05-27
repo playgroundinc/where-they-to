@@ -51,6 +51,9 @@ export default {
 		if (!this.events.length > 0) {
 			await this.$store.dispatch('fetchState', { route: 'events' });
 		}
+		if (!this.families.length > 0) {
+			await this.$store.dispatch('fetchState', { route: 'families' });
+		}
 		if (!this.user) {
 			this.$store.dispatch('findUser');
 		}
