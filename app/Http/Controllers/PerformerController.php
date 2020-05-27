@@ -24,7 +24,7 @@ class PerformerController extends Controller
         foreach ($performers as $index=>$performer) {
           $user = User::find($performer['user_id']);
           if (isset($user)) {
-            $performers[$index]['socialLinks'] = $user->socialLinks;
+            $performers[$index]['socialLinks'] = $performer->socialLinks;
           }
           $performers[$index]['type'] = $performer->performerTypes;
         }

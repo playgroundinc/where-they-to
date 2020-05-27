@@ -108,8 +108,10 @@ class CreatePerformersTable extends Migration
 			$table->string('youtube')->nullable()->default('');
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families')->onDelete('cascade');
-			$table->bigInteger('user_id')->unsigned()->nullable();
-			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			$table->bigInteger('venue_id')->unsigned()->nullable();
+      $table->foreign('venue_id')->references('id')->on('venues')->onDelete('cascade');
+      $table->bigInteger('performer_id')->unsigned()->nullable();
+			$table->foreign('performer_id')->references('id')->on('performers')->onDelete('cascade');
 			$table->bigInteger('event_id')->unsigned()->nullable();
 			$table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
 		});

@@ -12,6 +12,11 @@ class Venue extends Model
       return $this->belongsTo(User::class);
     }
 
+    public function socialLinks()
+    {
+      return $this->hasOne(socialLinks::class);
+    }
+
     public function events() {
       return $this->hasMany(Event::class);
     }

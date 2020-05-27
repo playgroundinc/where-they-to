@@ -6586,6 +6586,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6596,7 +6607,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       address: '',
       country: '',
       state: '',
-      city: ''
+      city: '',
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      youtube: '',
+      website: ''
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])),
@@ -6655,7 +6671,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   city: this.city,
                   state: this.state,
                   country: this.country,
-                  id: this.user.id
+                  id: this.user.id,
+                  facebook: this.facebook,
+                  instagram: this.instagram,
+                  twitter: this.twitter,
+                  youtube: this.youtube,
+                  website: this.website
                 };
                 _context2.prev = 1;
                 _context2.next = 4;
@@ -6759,6 +6780,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -6767,19 +6801,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       name: '',
       description: '',
       address: '',
-      city: ''
+      city: '',
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      website: '',
+      youtube: ''
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['venues', 'user'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['venues', 'user']), {
+    venue: {
+      get: function get() {
+        var _this = this;
+
+        var venue = this.venues.find(function (entry) {
+          return Number(entry.id) === Number(_this.id);
+        });
+        this.name = venue.name;
+        this.description = venue.description;
+        this.address = venue.address;
+        this.city = venue.city;
+        this.facebook = venue.social_links.facebook;
+        this.instagram = venue.social_links.instagram;
+        this.twitter = venue.social_links.twitter;
+        this.website = venue.social_links.website;
+        this.youtube = venue.social_links.youtube;
+        return venue;
+      }
+    }
+  }),
   methods: {
     handleSubmit: function handleSubmit() {
-      var _this = this;
+      var _this2 = this;
 
       var data = {
         name: this.name,
         description: this.description,
         address: this.address,
-        city: this.city
+        city: this.city,
+        facebook: this.facebook,
+        instagram: this.instagram,
+        twitter: this.twitter,
+        website: this.website,
+        youtube: this.youtube,
+        socialLinksId: this.venue.social_links.id
       };
       var route = "venues";
       this.$store.dispatch('edit', {
@@ -6787,19 +6852,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         id: this.id,
         data: data
       }).then(function () {
-        _this.$router.push("/venues/".concat(_this.id));
+        _this2.$router.push("/venues/".concat(_this2.id));
       })["catch"](function (err) {
         console.log(err);
       });
     },
     handleDelete: function handleDelete() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.$store.dispatch('destroy', {
         route: 'venues',
         id: this.id
       }).then(function () {
-        _this2.$router.push('/venues');
+        _this3.$router.push('/venues');
       });
     }
   },
@@ -6807,30 +6872,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var _mounted = _asyncToGenerator(
     /*#__PURE__*/
     _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
-              return this.$store.dispatch('fetchSingle', {
-                route: 'venues',
-                id: this.id
-              });
-
-            case 2:
-              response = _context.sent;
-
               if (this.user === 0) {
                 this.$store.dispatch('findUser');
               }
 
-              this.name = response.data.venue.name;
-              this.description = response.data.venue.description;
-              this.address = response.data.venue.address;
-              this.city = response.data.venue.city;
-
-            case 8:
+            case 1:
             case "end":
               return _context.stop();
           }
@@ -6864,8 +6914,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
-//
 //
 //
 //
@@ -12476,6 +12524,138 @@ var render = function() {
               1
             ),
             _vm._v(" "),
+            _c("h2", [_vm._v("Create Social Links")]),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "facebook" } }, [
+              _vm._v("Facebook")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.facebook,
+                  expression: "facebook"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "facebook", name: "facebook" },
+              domProps: { value: _vm.facebook },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.facebook = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "instagram" } }, [
+              _vm._v("Instagram")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.instagram,
+                  expression: "instagram"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "instagram", name: "instagram" },
+              domProps: { value: _vm.instagram },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.instagram = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
+              _vm._v("Twitter")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.twitter,
+                  expression: "twitter"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "twitter", name: "twitter" },
+              domProps: { value: _vm.twitter },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.twitter = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
+              _vm._v("Youtube")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.youtube,
+                  expression: "youtube"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "youtube", name: "youtube" },
+              domProps: { value: _vm.youtube },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.youtube = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { staticClass: "label", attrs: { for: "website" } }, [
+              _vm._v("Website")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.website,
+                  expression: "website"
+                }
+              ],
+              staticClass: "input",
+              attrs: { type: "text", id: "website", name: "website" },
+              domProps: { value: _vm.website },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.website = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
             _c("input", {
               staticClass: "btn",
               attrs: { type: "submit", value: "Create Venue" }
@@ -12637,6 +12817,144 @@ var render = function() {
               })
             ]),
             _vm._v(" "),
+            _c("div", [
+              _c("h2", [_vm._v("Edit Social Links")]),
+              _vm._v(" "),
+              _c(
+                "label",
+                { staticClass: "label", attrs: { for: "facebook" } },
+                [_vm._v("Facebook")]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.facebook,
+                    expression: "facebook"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "facebook", name: "facebook" },
+                domProps: { value: _vm.facebook },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.facebook = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "label",
+                { staticClass: "label", attrs: { for: "instagram" } },
+                [_vm._v("Instagram")]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.instagram,
+                    expression: "instagram"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "instagram", name: "instagram" },
+                domProps: { value: _vm.instagram },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.instagram = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
+                _vm._v("Twitter")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.twitter,
+                    expression: "twitter"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "twitter", name: "twitter" },
+                domProps: { value: _vm.twitter },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.twitter = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
+                _vm._v("Youtube")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.youtube,
+                    expression: "youtube"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "youtube", name: "youtube" },
+                domProps: { value: _vm.youtube },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.youtube = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "website" } }, [
+                _vm._v("Website")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.website,
+                    expression: "website"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "website", name: "website" },
+                domProps: { value: _vm.website },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.website = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
             _c("input", {
               staticClass: "btn",
               attrs: { type: "submit", value: "Edit Profile" }
@@ -12695,51 +13013,33 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _vm.venue.socialLinks
+        _vm.venue.social_links
           ? _c("div", [
               _c("h2", [_vm._v("Social Links")]),
               _vm._v(" "),
               _c("ul", [
                 _c("li", [
-                  _vm._v("Facebook: " + _vm._s(_vm.venue.socialLinks.facebook))
+                  _vm._v("Facebook: " + _vm._s(_vm.venue.social_links.facebook))
                 ]),
                 _vm._v(" "),
                 _c("li", [
-                  _vm._v("Twitter: " + _vm._s(_vm.venue.socialLinks.twitter))
+                  _vm._v("Twitter: " + _vm._s(_vm.venue.social_links.twitter))
                 ]),
                 _vm._v(" "),
                 _c("li", [
                   _vm._v(
-                    "Instagram: " + _vm._s(_vm.venue.socialLinks.instagram)
+                    "Instagram: " + _vm._s(_vm.venue.social_links.instagram)
                   )
                 ]),
                 _vm._v(" "),
                 _c("li", [
-                  _vm._v("YouTube: " + _vm._s(_vm.venue.socialLinks.youtube))
+                  _vm._v("YouTube: " + _vm._s(_vm.venue.social_links.youtube))
                 ]),
                 _vm._v(" "),
                 _c("li", [
-                  _vm._v("Website: " + _vm._s(_vm.venue.socialLinks.website))
+                  _vm._v("Website: " + _vm._s(_vm.venue.social_links.website))
                 ])
-              ]),
-              _vm._v(" "),
-              _vm.venue.user_id && _vm.user && _vm.venue.user_id === _vm.user.id
-                ? _c(
-                    "a",
-                    {
-                      staticClass: "btn",
-                      attrs: {
-                        href:
-                          "/users/" +
-                          _vm.user.id +
-                          "/social-links/" +
-                          _vm.venue.socialLinks.id +
-                          "/edit"
-                      }
-                    },
-                    [_vm._v("Edit Social Links")]
-                  )
-                : _vm._e()
+              ])
             ])
           : _vm._e(),
         _vm._v(" "),
@@ -12747,7 +13047,10 @@ var render = function() {
           ? _c("div", [
               _c(
                 "a",
-                { attrs: { href: "/venues/" + _vm.venue.id + "/edit" } },
+                {
+                  staticClass: "btn",
+                  attrs: { href: "/venues/" + _vm.venue.id + "/edit" }
+                },
                 [_vm._v("Edit Profile")]
               )
             ])
