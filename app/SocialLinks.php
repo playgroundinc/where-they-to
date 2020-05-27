@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class SocialLinks extends Model
 {
     //
-    public function user()
+    public function venue()
     {
-      return $this->belongsTo(User::class);
+      return $this->belongsTo(Venue::class);
+    }
+    public function performer()
+    {
+      return $this->belongsTo(Performer::class);
     }
     public function family() 
     {

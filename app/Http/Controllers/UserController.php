@@ -33,7 +33,6 @@ class UserController extends Controller
 		if ($user) {
 			$user = array(
 				'id' => $user['id'],
-				'socialLinks' => $user->socialLinks,
 			);
 			return response()->json(compact('token', 'user'));
 		}
@@ -63,7 +62,6 @@ class UserController extends Controller
         $token = JWTAuth::fromUser($user);
         $user = array(
 			'id' => $user['id'],
-			'socialLinks' => $user->socialLinks
         );
         return response()->json(compact('user','token'),201);
     }
@@ -81,7 +79,6 @@ class UserController extends Controller
 		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 			return response()->json(['token_absent'], $e->getStatusCode());
 		}	
-		$user['socialLinks'] = $user->socialLinks;
 		$user['performers'] = $user->performers;
 		$user['venues'] = $user->venues;
 		$user['events'] = $user->events;
