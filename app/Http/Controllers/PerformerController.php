@@ -127,6 +127,11 @@ class PerformerController extends Controller
         
     }
 
+	public function updateSocialLinks($request) {
+		$socialLinks = SocialLinks::find(request('socialLinksId'));
+		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+	}
+
     /**
      * Update the specified resource in storage.
      *
@@ -136,33 +141,34 @@ class PerformerController extends Controller
      */
     public function update($id)
     {
-        //
-        $performer = Performer::find($id);
+		//
+		$this->updateSocialLinks(request());
+		$performer = Performer::find($id);
         $user = $performer->user;
         if ($user->id !== request('user')->id):
-          return response()->json(['status' => 'unauthorized'], 401);
+			return response()->json(['status' => 'unauthorized'], 401);
         endif;
         $performer->update(request(['name', 'bio']));
         $performer->performerTypes()->detach();
         foreach (request('performerType') as $performerTypeId):
-          $performerType = PerformerType::find($performerTypeId);
-          $performer->performerTypes()->attach($performerType);
+			$performerType = PerformerType::find($performerTypeId);
+			$performer->performerTypes()->attach($performerType);
         endforeach;
         return response()->json(['status'=>'success'], 200);
-    }
+	}
 
     public function addType($id) {
-      $performer = Performer::find($id);
-      $performerType = PerformerType::find(request('performerType_id'));
-      $performer->performerTypes()->attach($performerType);
-      return response()->json(['status'=>'success'], 200);
+		$performer = Performer::find($id);
+		$performerType = PerformerType::find(request('performerType_id'));
+		$performer->performerTypes()->attach($performerType);
+		return response()->json(['status'=>'success'], 200);
     }
 
     public function removeType($id) {
-      $performer = Performer::find($id);
-      $performerType = PerformerType::find(request('performerType_id'));
-      $performer->performerTypes()->detach($performerType);
-      return response()->json(['status'=>'success'], 200);
+		$performer = Performer::find($id);
+		$performerType = PerformerType::find(request('performerType_id'));
+		$performer->performerTypes()->detach($performerType);
+		return response()->json(['status'=>'success'], 200);
     }
 
     /**
@@ -177,7 +183,7 @@ class PerformerController extends Controller
         $performer = Performer::find($id);
         $user = $performer->user;
         if ($user->id !== request('user')->id):
-          return response()->json(['status' => 'unauthorized'], 401);
+			return response()->json(['status' => 'unauthorized'], 401);
         endif;
         $performer->performerTypes()->detach();
         $performer->events()->detach();
