@@ -5097,6 +5097,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5160,7 +5173,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         time: this.event.time,
         eventType: this.type,
         tickets: this.event.tickets,
-        tickets_url: this.event.tickets_url
+        tickets_url: this.event.tickets_url,
+        facebook: this.event.social_links.facebook,
+        instagram: this.event.social_links.instagram,
+        twitter: this.event.social_links.twitter,
+        website: this.event.social_links.website,
+        youtube: this.event.social_links.youtube,
+        socialLinksId: this.event.social_links.id
       };
 
       if (this.venue) {
@@ -10622,6 +10641,164 @@ var render = function() {
                   1
                 )
               : _vm._e(),
+            _vm._v(" "),
+            _c("div", [
+              _c("h2", [_vm._v("Edit Social Links")]),
+              _vm._v(" "),
+              _c(
+                "label",
+                { staticClass: "label", attrs: { for: "facebook" } },
+                [_vm._v("Facebook")]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.social_links.facebook,
+                    expression: "event.social_links.facebook"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "facebook", name: "facebook" },
+                domProps: { value: _vm.event.social_links.facebook },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.event.social_links,
+                      "facebook",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "label",
+                { staticClass: "label", attrs: { for: "instagram" } },
+                [_vm._v("Instagram")]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.social_links.instagram,
+                    expression: "event.social_links.instagram"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "instagram", name: "instagram" },
+                domProps: { value: _vm.event.social_links.instagram },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.event.social_links,
+                      "instagram",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
+                _vm._v("Twitter")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.social_links.twitter,
+                    expression: "event.social_links.twitter"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "twitter", name: "twitter" },
+                domProps: { value: _vm.event.social_links.twitter },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.event.social_links,
+                      "twitter",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
+                _vm._v("Youtube")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.social_links.youtube,
+                    expression: "event.social_links.youtube"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "youtube", name: "youtube" },
+                domProps: { value: _vm.event.social_links.youtube },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.event.social_links,
+                      "youtube",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { staticClass: "label", attrs: { for: "website" } }, [
+                _vm._v("Website")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.social_links.website,
+                    expression: "event.social_links.website"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", id: "website", name: "website" },
+                domProps: { value: _vm.event.social_links.website },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.event.social_links,
+                      "website",
+                      $event.target.value
+                    )
+                  }
+                }
+              })
+            ]),
             _vm._v(" "),
             _c("label", { staticClass: "label", attrs: { for: "tickets" } }, [
               _vm._v("Ticket Information")

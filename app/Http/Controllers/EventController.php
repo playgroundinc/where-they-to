@@ -91,6 +91,11 @@ class EventController extends Controller
 		return $socialLinks;
 	}
 
+	public function updateSocialLinks($request) {
+		$socialLinks = SocialLinks::find(request('socialLinksId'));
+		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+	}
+
     /**
      * Store a newly created resource in storage.
      *
@@ -161,23 +166,24 @@ class EventController extends Controller
      */
     public function update($id)
     {
-        //
+		//
+		$this->updateSocialLinks(request());
         $event = Event::find($id);
         $user = $event->user;
         $validatedUser = request('user');
         if ($user['id'] === $validatedUser['id']):
-          $event->update(request([
-            'name',
-            'description',
-            'date',
-            'type',
-            'tickets', 
-            'tickets_url'
-          ]));
-          $this->saveFields(request(), $event);
-          return response()->json(['status' => 'success'], 200);
-        endif;
-        return response()->json(['status' => 'unauthorized'], 401);
+			$event->update(request([
+				'name',
+				'description',
+				'date',
+				'type',
+				'tickets', 
+				'tickets_url'
+			]));
+			$this->saveFields(request(), $event);
+			return response()->json(['status' => 'success'], 200);
+		endif;
+		return response()->json(['status' => 'unauthorized'], 401);
     }
 
     /**
