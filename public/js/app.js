@@ -4862,6 +4862,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4879,6 +4890,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       type: '',
       timezones: _Timezones__WEBPACK_IMPORTED_MODULE_2__["default"] || '',
       errors: [],
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      youtube: '',
+      website: '',
       tickets: '',
       tickets_url: ''
     };
@@ -4915,7 +4931,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         performers: this.newPerformers,
         timezone: this.timezone,
         tickets: this.tickets,
-        tickets_url: this.tickets_url
+        tickets_url: this.tickets_url,
+        facebook: this.facebook,
+        instagram: this.instagram,
+        twitter: this.twitter,
+        youtube: this.youtube,
+        website: this.website
       };
       this.$store.dispatch('create', {
         route: 'events',
@@ -10108,6 +10129,138 @@ var render = function() {
                 return
               }
               _vm.tickets_url = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("h2", [_vm._v("Create Social Links")]),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "facebook" } }, [
+          _vm._v("Facebook")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.facebook,
+              expression: "facebook"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "text", id: "facebook", name: "facebook" },
+          domProps: { value: _vm.facebook },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.facebook = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "instagram" } }, [
+          _vm._v("Instagram")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.instagram,
+              expression: "instagram"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "text", id: "instagram", name: "instagram" },
+          domProps: { value: _vm.instagram },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.instagram = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
+          _vm._v("Twitter")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.twitter,
+              expression: "twitter"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "text", id: "twitter", name: "twitter" },
+          domProps: { value: _vm.twitter },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.twitter = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
+          _vm._v("Youtube")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.youtube,
+              expression: "youtube"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "text", id: "youtube", name: "youtube" },
+          domProps: { value: _vm.youtube },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.youtube = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "label", attrs: { for: "website" } }, [
+          _vm._v("Website")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.website,
+              expression: "website"
+            }
+          ],
+          staticClass: "input",
+          attrs: { type: "text", id: "website", name: "website" },
+          domProps: { value: _vm.website },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.website = $event.target.value
             }
           }
         }),

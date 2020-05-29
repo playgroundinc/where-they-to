@@ -9,6 +9,7 @@ use App\Performer;
 use App\Venue;
 use App\Family;
 use App\EventType;
+use App\SocialLinks;
 
 use Illuminate\Http\Request;
 
@@ -22,29 +23,29 @@ class EventController extends Controller
 
     private function saveFields($request, $event) {
         if ($request['venue']):
-          $venue = Venue::find($request['venue']);
-          if ($venue) {
-            $venue->events()->save($event);
-          }
+			$venue = Venue::find($request['venue']);
+			if ($venue) {
+				$venue->events()->save($event);
+			}
         endif;
         if ($request['family']):
-          $family = Family::find($request['family']);
-          if ($family) {
-            $family->events()->save($event);
-          }
+			$family = Family::find($request['family']);
+			if ($family) {
+				$family->events()->save($event);
+			}
         endif;
         if ($request['eventType']):
-          $eventType = EventType::find($request['eventType']);
-          if ($eventType) {
-            $eventType->events()->save($event);
-          }
+			$eventType = EventType::find($request['eventType']);
+			if ($eventType) {
+				$eventType->events()->save($event);
+			}
         endif;
         if ($request['performers']):
-          $performers = Performer::find(request('performers'));
-          $event->performers()->detach();
-          foreach($performers as $performer):
-            $event->performers()->attach($performer);
-          endforeach;
+			$performers = Performer::find(request('performers'));
+			$event->performers()->detach();
+			foreach($performers as $performer):
+				$event->performers()->attach($performer);
+			endforeach;
         endif;
         
     }
@@ -57,8 +58,8 @@ class EventController extends Controller
         //
         $events = Event::all();
         foreach($events as $index=>$event):
-          $events[$index]['performers'] = $event->performers;
-          $events[$index]['social_links'] = $event->socialLinks;
+			$events[$index]['performers'] = $event->performers;
+			$events[$index]['social_links'] = $event->socialLinks;
         endforeach;
         return $events;
     }
@@ -76,7 +77,19 @@ class EventController extends Controller
         $venues = Venue::all();
         $eventTypes = EventType::all();
         return view('events.create', compact('performers', 'families', 'venues', 'eventTypes'));
-    }
+	}
+	
+	public function createSocialLinks($request) {
+		$attributes = $request->validate([
+			'facebook' => 'nullable',
+			'twitter' => 'nullable',
+			'instagram' => 'nullable',
+			'website' => 'nullable',
+			'youtube' => 'nullable',
+		]);
+		$socialLinks = SocialLinks::create($attributes);
+		return $socialLinks;
+	}
 
     /**
      * Store a newly created resource in storage.
@@ -84,16 +97,17 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        //
+		//
+		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
-          'time' => 'nullable',
-          'name' => 'required',
-          'description' => 'required',
-          'timezone' => 'nullable',
-          'tickets' => 'nullable',
-          'tickets_url' => 'nullable'
+			'time' => 'nullable',
+			'name' => 'required',
+			'description' => 'required',
+			'timezone' => 'nullable',
+			'tickets' => 'nullable',
+			'tickets_url' => 'nullable'
         ]);
         $date = Carbon::parse(request('date'));
 
@@ -103,7 +117,8 @@ class EventController extends Controller
         $user = request('user');
         // return response()->json($user);
         $user->events()->save($event);
-        $this->saveFields(request(), $event);
+		$this->saveFields(request(), $event);
+		$event->socialLinks()->save($socialLinks);
         return response()->json(['status'=> 'success'], 200);
     }
 
