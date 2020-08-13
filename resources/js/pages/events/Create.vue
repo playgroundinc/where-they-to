@@ -66,6 +66,17 @@
 			<textarea class="input" name="tickets" id="tickets" cols="30" rows="10" v-model="tickets"></textarea>
 			<label class="label" for="tickets_url">Ticket Url</label>
 			<input class="input" type="url" name="tickets_url" id="tickets_url" v-model="tickets_url">
+			<h2>Create Social Links</h2>
+			<label class="label" for="facebook">Facebook</label>
+			<input type="text" class="input" id="facebook" name="facebook" v-model="facebook">
+			<label for="instagram" class="label">Instagram</label>
+			<input type="text" class="input" id="instagram" name="instagram" v-model="instagram">
+			<label for="twitter" class="label">Twitter</label>
+			<input type="text" class="input" id="twitter" name="twitter" v-model="twitter">
+			<label for="youtube" class="label">Youtube</label>
+			<input type="text" class="input" id="youtube" name="youtube" v-model="youtube">
+			<label for="website" class="label">Website</label>
+			<input type="text" class="input" id="website" name="website" v-model="website">
 			<input class="btn" type="submit" value="Create Event">
 		</form>
 	</div>
@@ -89,7 +100,12 @@ export default {
 			family: '',
 			type: '',
 			timezones: timezones || '',
-			errors: [],
+      errors: [],
+      facebook: '',
+			instagram: '',
+			twitter: '',
+			youtube: '',
+			website: '',
 			tickets: '',
 			tickets_url: '',
 		}
@@ -124,7 +140,12 @@ export default {
 				performers: this.newPerformers,
 				timezone: this.timezone,
 				tickets: this.tickets,
-				tickets_url: this.tickets_url
+        tickets_url: this.tickets_url,
+        facebook: this.facebook,
+				instagram: this.instagram,
+				twitter: this.twitter,
+				youtube: this.youtube,
+				website: this.website,
 			}
 			this.$store.dispatch('create', {
 				route: 'events',

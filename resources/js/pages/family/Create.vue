@@ -63,7 +63,7 @@
 					this.$store.dispatch('fetchState', {
 						route: 'families',
 					})
-					this.$router.push(`/families`)
+					this.$router.push(`/dashboard`)
 				}).catch((err)=>{
 					console.log(err);
 				});

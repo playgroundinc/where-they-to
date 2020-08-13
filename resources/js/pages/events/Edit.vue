@@ -47,6 +47,19 @@
                     @selection="function(performer) { addPerformer(performer.id) }"
                 ></Autocomplete>
 			</fieldset>
+			<div>
+				<h2>Edit Social Links</h2>
+				<label class="label" for="facebook">Facebook</label>
+				<input type="text" class="input" id="facebook" name="facebook" v-model="event.social_links.facebook">
+				<label for="instagram" class="label">Instagram</label>
+				<input type="text" class="input" id="instagram" name="instagram" v-model="event.social_links.instagram">
+				<label for="twitter" class="label">Twitter</label>
+				<input type="text" class="input" id="twitter" name="twitter" v-model="event.social_links.twitter">
+				<label for="youtube" class="label">Youtube</label>
+				<input type="text" class="input" id="youtube" name="youtube" v-model="event.social_links.youtube">
+				<label for="website" class="label">Website</label>
+				<input type="text" class="input" id="website" name="website" v-model="event.social_links.website">
+			</div>
 			<label class="label" for="tickets">Ticket Information</label>
 			<textarea class="input" name="tickets" id="tickets" cols="30" rows="10" v-model="event.tickets"></textarea>
 			<label class="label" for="tickets_url">Ticket Url</label>
@@ -105,6 +118,12 @@ export default {
 				eventType: this.type,
 				tickets: this.event.tickets,
 				tickets_url: this.event.tickets_url,
+				facebook: this.event.social_links.facebook,
+				instagram: this.event.social_links.instagram,
+				twitter: this.event.social_links.twitter,
+				website: this.event.social_links.website,
+				youtube: this.event.social_links.youtube,
+				socialLinksId: this.event.social_links.id,
 			}
 
 			if (this.venue) {

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 use App\Performer;
 use App\User;
 use App\Family;
 use App\Event;
+use App\Venue;
 use App\PerformerType;
 use App\SocialLinks;
 
@@ -102,7 +105,7 @@ class PerformerController extends Controller
         $user = User::find($performer->user['id']);
         $socialLinks = array();
         if (isset($user)) {
-          $socialLinks = $user->socialLinks;
+			$socialLinks = $user->socialLinks;
         }
         $platforms = config('enums.platforms');
         $family = Family::find($performer->family_id);
@@ -189,5 +192,18 @@ class PerformerController extends Controller
         $performer->events()->detach();
         $performer->delete();
         return response()->json(['status' => 'success'], 200);
+	}
+
+	public function events($id) {
+		$performer = Performer::find($id);
+		$events = $performer->events;
+		$events = array_map(function($event) {
+			$date = Carbon::parse($event['date']);
+			$event['date'] = $date->format('F d Y');
+			$venue = Venue::find($event['venue_id']);
+			$event['venue'] = $venue;
+			return $event;
+		}, $events->toArray());
+		return response()->json(['events' => $events]);
     }
 }
