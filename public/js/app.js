@@ -5477,7 +5477,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route: 'families'
         });
 
-        _this.$router.push("/families");
+        _this.$router.push("/dashboard");
       })["catch"](function (err) {
         console.log(err);
       });
@@ -6146,7 +6146,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -6180,15 +6188,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       id: this.$route.params.id,
-      platforms: []
+      platforms: [],
+      events: []
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'performers', 'families']), {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user', 'performers', 'families']), {
     performer: function performer() {
       var _this = this;
 
@@ -6204,6 +6227,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     }
   }),
+  mounted: function () {
+    var _mounted = _asyncToGenerator(
+    /*#__PURE__*/
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var date, resp;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              date = new Date();
+              _context.next = 3;
+              return axios.get("http://127.0.0.1:8000/api/performers/".concat(this.id, "/events"));
+
+            case 3:
+              resp = _context.sent;
+              this.events = resp.data.events;
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    function mounted() {
+      return _mounted.apply(this, arguments);
+    }
+
+    return mounted;
+  }(),
   created: function created() {
     if (!this.user) {
       this.$store.dispatch('findUser');
@@ -9225,7 +9279,7 @@ var render = function() {
             _c(
               "a",
               {
-                attrs: { href: "/venues" + _vm.venue(today.venue_id, "link") }
+                attrs: { href: "/venues/" + _vm.venue(today.venue_id, "link") }
               },
               [_vm._v(_vm._s(_vm.venue(today.venue_id)))]
             )
@@ -9273,7 +9327,7 @@ var render = function() {
                         "a",
                         {
                           attrs: {
-                            href: "/venues" + _vm.venue(day.venue_id, "link")
+                            href: "/venues/" + _vm.venue(day.venue_id, "link")
                           }
                         },
                         [_vm._v(_vm._s(_vm.venue(day.venue_id)))]
@@ -12318,6 +12372,30 @@ var render = function() {
               _c("a", { attrs: { href: "/families/" + _vm.family.id } }, [
                 _vm._v(_vm._s(_vm.family.name))
               ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.events.length > 0
+          ? _c("div", [
+              _c("h2", [_vm._v("Events")]),
+              _vm._v(" "),
+              _c(
+                "ul",
+                _vm._l(_vm.events, function(event) {
+                  return _c("li", { key: event.id }, [
+                    _c("a", { attrs: { href: "/events/" + event.id } }, [
+                      _c("p", [_vm._v(_vm._s(event.name))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(event.date))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(event.time))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(event.venue.name))])
+                    ])
+                  ])
+                }),
+                0
+              )
             ])
           : _vm._e(),
         _vm._v(" "),

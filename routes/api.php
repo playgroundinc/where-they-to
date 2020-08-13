@@ -52,6 +52,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
 Route::get('performers', 'PerformerController@index');
 Route::get('performers/{id}', 'PerformerController@show');
+Route::get('performers/{id}/events', 'PerformerController@events');
 
 Route::get('venues', 'VenueController@index');
 Route::get('venues/{id}', 'VenueController@show');

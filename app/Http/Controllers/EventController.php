@@ -199,45 +199,45 @@ class EventController extends Controller
         $user = $event->user;
         $validatedUser = request('user');
         if ($user['id'] === $validatedUser['id']):
-          $event->performers()->detach();
-          $event->delete();
-          return response()->json(['status' => 'success'], 200);
+			$event->performers()->detach();
+			$event->delete();
+			return response()->json(['status' => 'success'], 200);
         endif; 
         return response()->json(['status' => 'unauthorized'], 401);
     }
 
     public function addPerformer($id) 
     {
-      $performer = Performer::find(request('performer'));
-      $event = Event::find($id);
-      $performer->events()->attach($event);
-      return response()->json(['status' => 'success'], 200);
+		$performer = Performer::find(request('performer'));
+		$event = Event::find($id);
+		$performer->events()->attach($event);
+		return response()->json(['status' => 'success'], 200);
     }
 
     public function deletePerformer($id) 
     {
-      $performer = Performer::find(request('performer'));
-      $event = Event::find($id);
-      $event->performers()->detach($performer);
-      return response()->json(['status' => 'success'], 200);
+		$performer = Performer::find(request('performer'));
+		$event = Event::find($id);
+		$event->performers()->detach($performer);
+		return response()->json(['status' => 'success'], 200);
     }
 
     public function date($date) {
-      $today = Carbon::parse($date);
-      $events = Event::where('date', '=', $date)
+		$today = Carbon::parse($date);
+		$events = Event::where('date', '=', $date)
         ->get()
         ->toJSON();
-      $date = Carbon::parse($date)->format('F j');
-      return response()->json(['events' => $events, 'date' => $date]);
+		$date = Carbon::parse($date)->format('F j');
+		return response()->json(['events' => $events, 'date' => $date]);
     }
 
     public function week($date) {
-      $today = Carbon::parse($date);
-      $thisWeek = $today->addDays(6);
-      $events = Event::where('date', '>=', $date)
+		$today = Carbon::parse($date);
+		$thisWeek = $today->addDays(6);
+		$events = Event::where('date', '>=', $date)
         ->where('date', '<=', $thisWeek)
         ->get()
         ->toJSON();
-      return response($events);
+		return response()->json(['events' => $events]);
     }
 }
