@@ -19,9 +19,9 @@ class VenueController extends Controller
     {
         //
 		$venues = Venue::all();
-		foreach ($venues as $index=>$venue) {
-			$venues[$index]['social_links'] = $venue->socialLinks;
-		}
+		// foreach ($venues as $index=>$venue) {
+		// 	$venues[$index]['social_links'] = $venue->socialLinks;
+		// }
         return $venues;
     }
 
