@@ -59,12 +59,13 @@ export default {
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);
-            const updatedErrors = this.errors.splice(index, 1);
-            console.log(updatedErrors);
-            this.$emit("update", {
-                name: "errors",
-                value: updatedErrors
-            });
+            if (-1 !== index) {
+                this.errors.splice(index, 1);
+                this.$emit("update", {
+                    name: "errors",
+                    value: this.errors
+                });
+            }
         },
         onChange: function(event) {
             this.removeError();

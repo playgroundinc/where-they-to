@@ -3370,7 +3370,19 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    removeError: function removeError() {
+      var index = this.errors.indexOf(this.name);
+
+      if (-1 !== index) {
+        this.errors.splice(index, 1);
+        this.$emit("update", {
+          name: "errors",
+          value: this.errors
+        });
+      }
+    },
     onChange: function onChange(event) {
+      this.removeError();
       this.$emit("update", {
         name: this.name,
         value: event.target.value
