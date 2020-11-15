@@ -25,13 +25,13 @@ class PerformerController extends Controller
     {
         //
         $performers = Performer::all();
-        foreach ($performers as $index=>$performer) {
-			$user = User::find($performer['user_id']);
-			if (isset($user)) {
-				$performers[$index]['socialLinks'] = $performer->socialLinks;
-			}
-			$performers[$index]['type'] = $performer->performerTypes;
-        }
+        // foreach ($performers as $index=>$performer) {
+		// 	$user = User::find($performer['user_id']);
+		// 	if (isset($user)) {
+		// 		$performers[$index]['socialLinks'] = $performer->socialLinks;
+		// 	}
+		// 	$performers[$index]['type'] = $performer->performerTypes;
+        // }
         return response()->json($performers, 200);
     }
 
