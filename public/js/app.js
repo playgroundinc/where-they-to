@@ -3147,63 +3147,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.dispatch("logout");
     }
   },
-  mounted: function mounted() {
-    var _this = this;
+  mounted: function mounted() {// if (!this.performers.length > 0) {
+    // 	await this.$store.dispatch('fetchState', { route: 'performers' });
+    // }
+    // if (!this.venues.length > 0) {
+    // 	await this.$store.dispatch('fetchState', { route: 'venues' });
+    // }
+    // if (!this.events.length > 0) {
+    // 	await this.$store.dispatch('fetchState', { route: 'events' });
+    // }
+    // if (!this.families.length > 0) {
+    // 	await this.$store.dispatch('fetchState', { route: 'families' });
+    // }
+    // if (!this.user) {
+    // 	this.$store.dispatch('findUser');
+    // }
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!(!_this.performers.length > 0)) {
-                _context.next = 3;
-                break;
-              }
-
-              _context.next = 3;
-              return _this.$store.dispatch('fetchState', {
-                route: 'performers'
-              });
-
-            case 3:
-              if (!(!_this.venues.length > 0)) {
-                _context.next = 6;
-                break;
-              }
-
-              _context.next = 6;
-              return _this.$store.dispatch('fetchState', {
-                route: 'venues'
-              });
-
-            case 6:
-              if (!(!_this.events.length > 0)) {
-                _context.next = 9;
-                break;
-              }
-
-              _context.next = 9;
-              return _this.$store.dispatch('fetchState', {
-                route: 'events'
-              });
-
-            case 9:
-              if (!(!_this.families.length > 0)) {
-                _context.next = 12;
-                break;
-              }
-
-              _context.next = 12;
-              return _this.$store.dispatch('fetchState', {
-                route: 'families'
-              });
-
-            case 12:
-              if (!_this.user) {
-                _this.$store.dispatch('findUser');
-              }
-
-            case 13:
             case "end":
               return _context.stop();
           }
@@ -3301,6 +3265,36 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    errors: {
+      type: Array,
+      required: true
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Input.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Input.vue?vue&type=script&lang=js& ***!
@@ -3310,6 +3304,31 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3359,7 +3378,11 @@ __webpack_require__.r(__webpack_exports__);
     errorMsg: {
       type: String,
       required: false,
-      "default": "Something is wrong with this field"
+      "default": "This field is required"
+    },
+    helperText: {
+      type: String,
+      required: false
     },
     errors: {
       type: Array,
@@ -3367,6 +3390,11 @@ __webpack_require__.r(__webpack_exports__);
       "default": function _default() {
         return [];
       }
+    },
+    options: {
+      type: Object,
+      required: false,
+      "default": function _default() {}
     }
   },
   methods: {
@@ -3391,7 +3419,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     label: function label() {
-      return this.name.toUpperCase();
+      var labelText = this.name.replace("_", " ");
+      return labelText;
     },
     invalid: function invalid() {
       if (this.errors.length) {
@@ -3883,8 +3912,10 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_Location__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Location */ "./resources/js/components/Location.vue");
-/* harmony import */ var _Timezones__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Timezones */ "./resources/js/Timezones.js");
+/* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Input */ "./resources/js/components/Input.vue");
+/* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
+/* harmony import */ var _core_errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/errors */ "./resources/js/core/errors.js");
+/* harmony import */ var _Location__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Location */ "./resources/js/Location.js");
 //
 //
 //
@@ -3963,17 +3994,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 
 
@@ -3984,44 +4006,73 @@ __webpack_require__.r(__webpack_exports__);
       password: "",
       password_confirmation: "",
       city: "",
-      state: "",
-      country: "",
-      timezones: _Timezones__WEBPACK_IMPORTED_MODULE_2__["default"],
+      province: "",
+      country: "CA",
       timezone: "",
-      error: false,
-      errors: {},
+      errors: [],
       success: false
     };
   },
+  computed: {
+    location: function location() {
+      return new _Location__WEBPACK_IMPORTED_MODULE_4__["default"]();
+    },
+    timezones: function timezones() {
+      return this.location.getTimezones();
+    },
+    provinces: function provinces() {
+      return this.location.getProvinces();
+    }
+  },
   components: {
-    Location: _components_Location__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Input: _components_Input__WEBPACK_IMPORTED_MODULE_1__["default"],
+    ErrorsContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   methods: {
-    register: function register() {
+    updateValue: function updateValue(updateObject) {
+      this[updateObject.name] = updateObject.value;
+    },
+    registerUser: function registerUser(data) {
       var _this = this;
 
-      var data = {
-        email: this.email,
-        password: this.password,
-        password_confirmation: this.password_confirmation,
-        city: this.city,
-        country: this.country,
-        region: this.state,
-        timezone: this.timezone
-      };
       this.$store.dispatch("register", data).then(function (resp) {
         _this.$router.push("/dashboard");
       })["catch"](function (err) {
         return console.log(err);
       });
     },
-    echoLocation: function echoLocation(locationObject) {
-      if (locationObject.key === "country") {
-        this.state = "";
-        this.city = "";
+    register: function register() {
+      var data = {
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.password_confirmation,
+        city: this.city,
+        country: this.country,
+        province: this.province,
+        timezone: this.timezone
+      };
+      var match = this.verifyPasswords();
+
+      if (match) {
+        var valid = this.checkRequiredFields(data);
+        this.registerUser(data);
+        return;
       }
 
-      this[locationObject.key] = locationObject.value;
+      this.errors.push("password_confirmation");
+    },
+    verifyPasswords: function verifyPasswords() {
+      return this.password === this.password_confirmation;
+    },
+    checkRequiredFields: function checkRequiredFields(data) {
+      var errors = new _core_errors__WEBPACK_IMPORTED_MODULE_3__["default"](data);
+      this.errors = errors.checkFields();
+
+      if (this.errors.length) {
+        return false;
+      }
+
+      return true;
     }
   }
 });
@@ -4108,7 +4159,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _Timezones__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Timezones */ "./resources/js/Timezones.js");
+/* harmony import */ var _Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Location */ "./resources/js/Location.js");
 /* harmony import */ var _components_Autocomplete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Autocomplete */ "./resources/js/components/Autocomplete.vue");
 
 
@@ -4206,40 +4257,154 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      id: this.$route.params.id || '',
-      name: '',
-      description: '',
-      date: '',
-      time: '',
-      venue: '',
+      id: this.$route.params.id || "",
+      name: "",
+      description: "",
+      date: "",
+      time: "",
+      venue: "",
       newPerformers: [],
-      family: '',
-      type: '',
-      timezones: _Timezones__WEBPACK_IMPORTED_MODULE_2__["default"] || '',
+      family: "",
+      type: "",
+      timezones: timezones || "",
       errors: [],
-      facebook: '',
-      instagram: '',
-      twitter: '',
-      youtube: '',
-      website: '',
-      tickets: '',
-      tickets_url: ''
+      facebook: "",
+      instagram: "",
+      twitter: "",
+      youtube: "",
+      website: "",
+      tickets: "",
+      tickets_url: ""
     };
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user', 'events', 'venues', 'performers', 'families', 'eventTypes'])), {}, {
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["user", "events", "venues", "performers", "families", "eventTypes"])), {}, {
     timezone: {
       get: function get() {
         if (this.user.timezone) {
           return this.user.timezone;
         }
 
-        return '';
+        return "";
       },
       set: function set(newValue) {
         this.user.timezone = newValue;
@@ -4271,8 +4436,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         youtube: this.youtube,
         website: this.website
       };
-      this.$store.dispatch('create', {
-        route: 'events',
+      this.$store.dispatch("create", {
+        route: "events",
         data: data
       }).then( /*#__PURE__*/function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resp) {
@@ -4281,12 +4446,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return _this.$store.dispatch('fetchState', {
-                    route: 'events'
+                  return _this.$store.dispatch("fetchState", {
+                    route: "events"
                   });
 
                 case 2:
-                  _this.$store.dispatch('findUser');
+                  _this.$store.dispatch("findUser");
 
                   _this.$router.push({
                     path: "/dashboard?events=1"
@@ -4323,8 +4488,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               try {
-                _this2.$store.dispatch('fetchState', {
-                  route: 'eventTypes'
+                _this2.$store.dispatch("fetchState", {
+                  route: "eventTypes"
                 });
               } catch (error) {
                 _this2.errors.push(error);
@@ -5081,6 +5246,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_social_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/social-media */ "./resources/js/core/social-media.js");
 /* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Input */ "./resources/js/components/Input.vue");
 /* harmony import */ var _core_errors__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../core/errors */ "./resources/js/core/errors.js");
+/* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5132,13 +5298,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
+
 
 
 
@@ -5154,7 +5314,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["performers", "user", "performerTypes"])),
   components: {
-    Input: _components_Input__WEBPACK_IMPORTED_MODULE_3__["default"]
+    Input: _components_Input__WEBPACK_IMPORTED_MODULE_3__["default"],
+    ErrorContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   methods: {
     updateValue: function updateValue(updateObject) {
@@ -5985,6 +6146,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5993,8 +6158,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["user", "profile"])),
-  beforeMount: function beforeMount() {
-    this.$store.dispatch('findUser');
+  mounted: function mounted() {
+    this.$store.dispatch("findUser");
   },
   components: {
     //
@@ -9030,6 +9195,48 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.errors.length > 0
+    ? _c("div", [
+        _c("p", [
+          _vm._v("There are " + _vm._s(_vm.errors.length) + " errors.")
+        ]),
+        _vm._v(" "),
+        _c(
+          "ul",
+          _vm._l(_vm.errors, function(error) {
+            return _c("li", { key: error }, [
+              _c("a", { attrs: { href: "#" + error } }, [
+                _vm._v(_vm._s(error.replace("_", " ")))
+              ])
+            ])
+          }),
+          0
+        )
+      ])
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Input.vue?vue&type=template&id=3814db6f&":
 /*!********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Input.vue?vue&type=template&id=3814db6f& ***!
@@ -9047,11 +9254,14 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _vm.type !== "submit"
-      ? _c("label", { attrs: { for: _vm.name } }, [_vm._v(_vm._s(_vm.label))])
+      ? _c("label", { staticClass: "label", attrs: { for: _vm.name } }, [
+          _vm._v(_vm._s(_vm.label))
+        ])
       : _vm._e(),
     _vm._v(" "),
     _vm.type === "textarea"
       ? _c("textarea", {
+          staticClass: "input",
           attrs: {
             name: _vm.name,
             id: _vm.name,
@@ -9063,21 +9273,60 @@ var render = function() {
           domProps: { value: _vm.value },
           on: { keyup: _vm.onChange }
         })
+      : _vm.type === "select"
+      ? _c(
+          "select",
+          {
+            staticClass: "input",
+            attrs: {
+              name: _vm.name,
+              id: _vm.name,
+              required: _vm.required,
+              "aria-invalid": _vm.invalid
+            },
+            domProps: { value: _vm.value },
+            on: { change: _vm.onChange }
+          },
+          [
+            _c(
+              "option",
+              { attrs: { default: "true", value: "", disabled: "" } },
+              [_vm._v("Select " + _vm._s(_vm.name))]
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.options, function(option, index) {
+              return _c("option", { key: index, domProps: { value: index } }, [
+                _vm._v("\n            " + _vm._s(option) + "\n        ")
+              ])
+            })
+          ],
+          2
+        )
       : _c("input", {
+          staticClass: "input",
           attrs: {
             id: _vm.name,
             type: _vm.type,
             name: _vm.name,
             required: _vm.required,
-            "aria-invalid": _vm.invalid
+            "aria-invalid": _vm.invalid,
+            "aria-describedby": _vm.helperText ? "helper-text" : null
           },
           domProps: { value: _vm.value },
           on: { keyup: _vm.onChange }
         }),
     _vm._v(" "),
-    _vm.type !== "submit"
-      ? _c("p", { staticClass: "error" }, [_vm._v(_vm._s(_vm.errorMsg))])
-      : _vm._e()
+    _vm.errorMsg
+      ? _c("p", { staticClass: "input__error-msg" }, [
+          _vm._v(_vm._s(_vm.errorMsg))
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "p",
+      { staticClass: "input__helper-text", attrs: { id: "helper-text" } },
+      [_vm._v(_vm._s(_vm.helperText))]
+    )
   ])
 }
 var staticRenderFns = []
@@ -9594,219 +9843,130 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    !_vm.success
-      ? _c(
-          "form",
-          {
-            attrs: { autocomplete: "off", method: "post" },
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.register($event)
-              }
-            }
-          },
-          [
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.email }
-              },
-              [
-                _c("label", { staticClass: "label", attrs: { for: "email" } }, [
-                  _vm._v("E-mail")
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.email,
-                      expression: "email"
-                    }
-                  ],
-                  staticClass: "input form-control",
-                  attrs: {
-                    type: "email",
-                    id: "email",
-                    placeholder: "user@example.com",
-                    required: ""
-                  },
-                  domProps: { value: _vm.email },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.email = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.email
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.email))
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.password }
-              },
-              [
-                _c(
-                  "label",
-                  { staticClass: "label", attrs: { for: "password" } },
-                  [_vm._v("Password")]
-                ),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.password,
-                      expression: "password"
-                    }
-                  ],
-                  staticClass: "input form-control",
-                  attrs: { type: "password", id: "password", required: "" },
-                  domProps: { value: _vm.password },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.password = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.password
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.password))
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.password }
-              },
-              [
-                _c(
-                  "label",
-                  {
-                    staticClass: "label",
-                    attrs: { for: "password_confirmation" }
-                  },
-                  [_vm._v("Confirm Password")]
-                ),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.password_confirmation,
-                      expression: "password_confirmation"
-                    }
-                  ],
-                  staticClass: "input form-control",
-                  attrs: {
-                    type: "password",
-                    id: "password_confirmation",
-                    required: ""
-                  },
-                  domProps: { value: _vm.password_confirmation },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.password_confirmation = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.password
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.password))
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            _c("Location", {
-              attrs: { country: _vm.country, city: _vm.city, state: _vm.state },
-              on: { changed: _vm.echoLocation }
-            }),
-            _vm._v(" "),
-            _c("label", { staticClass: "label", attrs: { for: "timezone" } }, [
-              _vm._v("Timezone")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.timezone,
-                    expression: "timezone"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { name: "timezone", id: "timezone" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.timezone = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
+      _vm._v(" "),
+      !_vm.success
+        ? _c(
+            "form",
+            {
+              attrs: { autocomplete: "off", novalidate: "", method: "post" },
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.register($event)
                 }
-              },
-              _vm._l(_vm.timezones, function(timezone) {
-                return _c(
-                  "option",
-                  { key: timezone, domProps: { value: timezone } },
-                  [_vm._v(_vm._s(timezone))]
-                )
+              }
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("Input", {
+                    attrs: {
+                      name: "email",
+                      value: _vm.email,
+                      type: "email",
+                      required: true,
+                      errors: _vm.errors
+                    },
+                    on: { update: _vm.updateValue }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("Input", {
+                    attrs: {
+                      name: "password",
+                      value: _vm.password,
+                      type: "password",
+                      required: true,
+                      errors: _vm.errors,
+                      helperText:
+                        "Passwords must be at least 6 characters long."
+                    },
+                    on: { update: _vm.updateValue }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("Input", {
+                    attrs: {
+                      name: "password_confirmation",
+                      value: _vm.password_confirmation,
+                      type: "password",
+                      required: true,
+                      errors: _vm.errors,
+                      errorMsg: "Passwords must match"
+                    },
+                    on: { update: _vm.updateValue }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("Input", {
+                attrs: {
+                  name: "province",
+                  value: _vm.province,
+                  type: "select",
+                  options: _vm.provinces,
+                  required: true,
+                  errors: _vm.errors
+                },
+                on: { update: _vm.updateValue }
               }),
-              0
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-default", attrs: { type: "submit" } },
-              [_vm._v("Submit")]
-            )
-          ],
-          1
-        )
-      : _vm._e()
-  ])
+              _vm._v(" "),
+              _c("Input", {
+                attrs: {
+                  name: "city",
+                  value: _vm.city,
+                  type: "text",
+                  required: true,
+                  errors: _vm.errors
+                },
+                on: { update: _vm.updateValue }
+              }),
+              _vm._v(" "),
+              _c("Input", {
+                attrs: {
+                  name: "timezone",
+                  value: _vm.timezone,
+                  type: "select",
+                  required: true,
+                  errors: _vm.errors,
+                  options: _vm.timezones
+                },
+                on: { update: _vm.updateValue }
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                { staticClass: "btn btn-default", attrs: { type: "submit" } },
+                [_vm._v("Submit")]
+              )
+            ],
+            1
+          )
+        : _vm._e()
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -10235,9 +10395,9 @@ var render = function() {
                         _vm._l(_vm.newPerformers, function(performer, index) {
                           return _c("li", { key: performer.id }, [
                             _vm._v(
-                              "\n                            " +
+                              "\n                        " +
                                 _vm._s(performer.name) +
-                                "\n                            "
+                                "\n                        "
                             ),
                             _c(
                               "a",
@@ -11803,82 +11963,69 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "main" }, [
-    _c("h1", [_vm._v("Create Performer profile")]),
-    _vm._v(" "),
-    _vm.errors.length > 0
-      ? _c("div", [
-          _c("p", [
-            _vm._v("There are " + _vm._s(_vm.errors.length) + " errors.")
-          ]),
-          _vm._v(" "),
-          _c(
-            "ul",
-            _vm._l(_vm.errors, function(error) {
-              return _c("li", { key: error }, [
-                _c("a", { attrs: { href: "#" + error } }, [
-                  _vm._v(_vm._s(error))
-                ])
-              ])
-            }),
-            0
-          )
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        attrs: { novalidate: "", method: "POST", action: "/performers" },
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.handleSubmit($event)
-          }
-        }
-      },
-      [
-        _c("Input", {
-          attrs: {
-            name: "name",
-            value: _vm.name,
-            type: "text",
-            required: true,
-            errors: _vm.errors
-          },
-          on: { update: _vm.updateValue }
-        }),
-        _vm._v(" "),
-        _c("Input", {
-          attrs: {
-            name: "bio",
-            value: _vm.bio,
-            type: "textarea",
-            required: true,
-            errors: _vm.errors
-          },
-          on: { update: _vm.updateValue }
-        }),
-        _vm._v(" "),
-        _c("Input", {
-          attrs: { name: "submit", value: "Create Performer", type: "submit" }
-        }),
-        _vm._v(" "),
-        _vm._l(_vm.socialMedia, function(social, index) {
-          return _c("Input", {
-            key: index,
-            attrs: {
-              value: social,
-              name: index,
-              type: "text",
-              errors: _vm.errors
+  return _c(
+    "div",
+    { staticClass: "main" },
+    [
+      _c("h1", [_vm._v("Create Performer profile")]),
+      _vm._v(" "),
+      _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          attrs: { novalidate: "", method: "POST", action: "/performers" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.handleSubmit($event)
             }
+          }
+        },
+        [
+          _c("Input", {
+            attrs: {
+              name: "name",
+              value: _vm.name,
+              type: "text",
+              required: true,
+              errors: _vm.errors
+            },
+            on: { update: _vm.updateValue }
+          }),
+          _vm._v(" "),
+          _c("Input", {
+            attrs: {
+              name: "bio",
+              value: _vm.bio,
+              type: "textarea",
+              required: true,
+              errors: _vm.errors
+            },
+            on: { update: _vm.updateValue }
+          }),
+          _vm._v(" "),
+          _c("Input", {
+            attrs: { name: "submit", value: "Create Performer", type: "submit" }
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.socialMedia, function(social, index) {
+            return _c("Input", {
+              key: index,
+              attrs: {
+                value: social,
+                name: index,
+                type: "text",
+                errors: _vm.errors
+              }
+            })
           })
-        })
-      ],
-      2
-    )
-  ])
+        ],
+        2
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -12941,7 +13088,7 @@ var render = function() {
     [
       _c("h1", [_vm._v("Dashboard")]),
       _vm._v(" "),
-      _c("list", {
+      _c("List", {
         attrs: {
           listitems: _vm.user.performers,
           title: "Performer",
@@ -12949,15 +13096,15 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("list", {
+      _c("List", {
         attrs: { listitems: _vm.user.venues, title: "Venue", slug: "venues" }
       }),
       _vm._v(" "),
-      _c("list", {
+      _c("List", {
         attrs: { listitems: _vm.user.events, title: "Event", slug: "events" }
       }),
       _vm._v(" "),
-      _c("list", {
+      _c("List", {
         attrs: {
           listitems: _vm.user.families,
           title: "Family",
@@ -29916,17 +30063,66 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/Timezones.js":
-/*!***********************************!*\
-  !*** ./resources/js/Timezones.js ***!
-  \***********************************/
+/***/ "./resources/js/Location.js":
+/*!**********************************!*\
+  !*** ./resources/js/Location.js ***!
+  \**********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var timezones = ["Africa/Abidjan", "Africa/Accra", "Africa/Algiers", "Africa/Bissau", "Africa/Cairo", "Africa/Casablanca", "Africa/Ceuta", "Africa/El_Aaiun", "Africa/Johannesburg", "Africa/Juba", "Africa/Khartoum", "Africa/Lagos", "Africa/Maputo", "Africa/Monrovia", "Africa/Nairobi", "Africa/Ndjamena", "Africa/Sao_Tome", "Africa/Tripoli", "Africa/Tunis", "Africa/Windhoek", "America/Adak", "America/Anchorage", "America/Araguaina", "America/Argentina/Buenos_Aires", "America/Argentina/Catamarca", "America/Argentina/Cordoba", "America/Argentina/Jujuy", "America/Argentina/La_Rioja", "America/Argentina/Mendoza", "America/Argentina/Rio_Gallegos", "America/Argentina/Salta", "America/Argentina/San_Juan", "America/Argentina/San_Luis", "America/Argentina/Tucuman", "America/Argentina/Ushuaia", "America/Asuncion", "America/Atikokan", "America/Bahia", "America/Bahia_Banderas", "America/Barbados", "America/Belem", "America/Belize", "America/Blanc-Sablon", "America/Boa_Vista", "America/Bogota", "America/Boise", "America/Cambridge_Bay", "America/Campo_Grande", "America/Cancun", "America/Caracas", "America/Cayenne", "America/Chicago", "America/Chihuahua", "America/Costa_Rica", "America/Creston", "America/Cuiaba", "America/Curacao", "America/Danmarkshavn", "America/Dawson", "America/Dawson_Creek", "America/Denver", "America/Detroit", "America/Edmonton", "America/Eirunepe", "America/El_Salvador", "America/Fort_Nelson", "America/Fortaleza", "America/Glace_Bay", "America/Goose_Bay", "America/Grand_Turk", "America/Guatemala", "America/Guayaquil", "America/Guyana", "America/Halifax", "America/Havana", "America/Hermosillo", "America/Indiana/Indianapolis", "America/Indiana/Knox", "America/Indiana/Marengo", "America/Indiana/Petersburg", "America/Indiana/Tell_City", "America/Indiana/Vevay", "America/Indiana/Vincennes", "America/Indiana/Winamac", "America/Inuvik", "America/Iqaluit", "America/Jamaica", "America/Juneau", "America/Kentucky/Louisville", "America/Kentucky/Monticello", "America/La_Paz", "America/Lima", "America/Los_Angeles", "America/Maceio", "America/Managua", "America/Manaus", "America/Martinique", "America/Matamoros", "America/Mazatlan", "America/Menominee", "America/Merida", "America/Metlakatla", "America/Mexico_City", "America/Miquelon", "America/Moncton", "America/Monterrey", "America/Montevideo", "America/Nassau", "America/New_York", "America/Nipigon", "America/Nome", "America/Noronha", "America/North_Dakota/Beulah", "America/North_Dakota/Center", "America/North_Dakota/New_Salem", "America/Nuuk", "America/Ojinaga", "America/Panama", "America/Pangnirtung", "America/Paramaribo", "America/Phoenix", "America/Port-au-Prince", "America/Port_of_Spain", "America/Porto_Velho", "America/Puerto_Rico", "America/Punta_Arenas", "America/Rainy_River", "America/Rankin_Inlet", "America/Recife", "America/Regina", "America/Resolute", "America/Rio_Branco", "America/Santarem", "America/Santiago", "America/Santo_Domingo", "America/Sao_Paulo", "America/Scoresbysund", "America/Sitka", "America/St_Johns", "America/Swift_Current", "America/Tegucigalpa", "America/Thule", "America/Thunder_Bay", "America/Tijuana", "America/Toronto", "America/Vancouver", "America/Whitehorse", "America/Winnipeg", "America/Yakutat", "America/Yellowknife", "Antarctica/Casey", "Antarctica/Davis", "Antarctica/DumontDUrville", "Antarctica/Macquarie", "Antarctica/Mawson", "Antarctica/Palmer", "Antarctica/Rothera", "Antarctica/Syowa", "Antarctica/Troll", "Antarctica/Vostok", "Asia/Almaty", "Asia/Amman", "Asia/Anadyr", "Asia/Aqtau", "Asia/Aqtobe", "Asia/Ashgabat", "Asia/Atyrau", "Asia/Baghdad", "Asia/Baku", "Asia/Bangkok", "Asia/Barnaul", "Asia/Beirut", "Asia/Bishkek", "Asia/Brunei", "Asia/Chita", "Asia/Choibalsan", "Asia/Colombo", "Asia/Damascus", "Asia/Dhaka", "Asia/Dili", "Asia/Dubai", "Asia/Dushanbe", "Asia/Famagusta", "Asia/Gaza", "Asia/Hebron", "Asia/Ho_Chi_Minh", "Asia/Hong_Kong", "Asia/Hovd", "Asia/Irkutsk", "Asia/Jakarta", "Asia/Jayapura", "Asia/Jerusalem", "Asia/Kabul", "Asia/Kamchatka", "Asia/Karachi", "Asia/Kathmandu", "Asia/Khandyga", "Asia/Kolkata", "Asia/Krasnoyarsk", "Asia/Kuala_Lumpur", "Asia/Kuching", "Asia/Macau", "Asia/Magadan", "Asia/Makassar", "Asia/Manila", "Asia/Nicosia", "Asia/Novokuznetsk", "Asia/Novosibirsk", "Asia/Omsk", "Asia/Oral", "Asia/Pontianak", "Asia/Pyongyang", "Asia/Qatar", "Asia/Qostanay", "Asia/Qyzylorda", "Asia/Riyadh", "Asia/Sakhalin", "Asia/Samarkand", "Asia/Seoul", "Asia/Shanghai", "Asia/Singapore", "Asia/Srednekolymsk", "Asia/Taipei", "Asia/Tashkent", "Asia/Tbilisi", "Asia/Tehran", "Asia/Thimphu", "Asia/Tokyo", "Asia/Tomsk", "Asia/Ulaanbaatar", "Asia/Urumqi", "Asia/Ust-Nera", "Asia/Vladivostok", "Asia/Yakutsk", "Asia/Yangon", "Asia/Yekaterinburg", "Asia/Yerevan", "Atlantic/Azores", "Atlantic/Bermuda", "Atlantic/Canary", "Atlantic/Cape_Verde", "Atlantic/Faroe", "Atlantic/Madeira", "Atlantic/Reykjavik", "Atlantic/South_Georgia", "Atlantic/Stanley", "Australia/Adelaide", "Australia/Brisbane", "Australia/Broken_Hill", "Australia/Currie", "Australia/Darwin", "Australia/Eucla", "Australia/Hobart", "Australia/Lindeman", "Australia/Lord_Howe", "Australia/Melbourne", "Australia/Perth", "Australia/Sydney", "CET", "CST6CDT", "EET", "EST", "EST5EDT", "Etc/GMT", "Etc/GMT+1", "Etc/GMT+10", "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4", "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9", "Etc/GMT-1", "Etc/GMT-10", "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2", "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7", "Etc/GMT-8", "Etc/GMT-9", "Etc/UTC", "Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan", "Europe/Athens", "Europe/Belgrade", "Europe/Berlin", "Europe/Brussels", "Europe/Bucharest", "Europe/Budapest", "Europe/Chisinau", "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar", "Europe/Helsinki", "Europe/Istanbul", "Europe/Kaliningrad", "Europe/Kiev", "Europe/Kirov", "Europe/Lisbon", "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow", "Europe/Oslo", "Europe/Paris", "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara", "Europe/Saratov", "Europe/Simferopol", "Europe/Sofia", "Europe/Stockholm", "Europe/Tallinn", "Europe/Tirane", "Europe/Ulyanovsk", "Europe/Uzhgorod", "Europe/Vienna", "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zaporozhye", "Europe/Zurich", "HST", "Indian/Chagos", "Indian/Christmas", "Indian/Cocos", "Indian/Kerguelen", "Indian/Mahe", "Indian/Maldives", "Indian/Mauritius", "Indian/Reunion", "MET", "MST", "MST7MDT", "PST8PDT", "Pacific/Apia", "Pacific/Auckland", "Pacific/Bougainville", "Pacific/Chatham", "Pacific/Chuuk", "Pacific/Easter", "Pacific/Efate", "Pacific/Enderbury", "Pacific/Fakaofo", "Pacific/Fiji", "Pacific/Funafuti", "Pacific/Galapagos", "Pacific/Gambier", "Pacific/Guadalcanal", "Pacific/Guam", "Pacific/Honolulu", "Pacific/Kiritimati", "Pacific/Kosrae", "Pacific/Kwajalein", "Pacific/Majuro", "Pacific/Marquesas", "Pacific/Nauru", "Pacific/Niue", "Pacific/Norfolk", "Pacific/Noumea", "Pacific/Pago_Pago", "Pacific/Palau", "Pacific/Pitcairn", "Pacific/Pohnpei", "Pacific/Port_Moresby", "Pacific/Rarotonga", "Pacific/Tahiti", "Pacific/Tarawa", "Pacific/Tongatapu", "Pacific/Wake", "Pacific/Wallis", "WET"];
-/* harmony default export */ __webpack_exports__["default"] = (timezones);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Location = /*#__PURE__*/function () {
+  function Location() {
+    _classCallCheck(this, Location);
+
+    this.provinces = {
+      AB: "Alberta",
+      BC: "British Columbia",
+      NL: "Newfoundland and Labrador",
+      PE: "Prince Edward Island",
+      NS: "Nova Scotia",
+      NB: "New Bruinswick",
+      QC: "Québec",
+      ON: "Ontario",
+      MB: "Manitoba",
+      SK: "Saskatchewan",
+      YT: "Yukon",
+      NT: "Northwest Territories",
+      NU: "Nunavut"
+    };
+    this.timezones = {
+      AST: "Atlantic Standard Time",
+      CST: "Central Standard Time",
+      EST: "Eastern Standard Time",
+      MST: "Manitoba Standard Time",
+      NST: "Newfoundland Standard Time",
+      PST: "Pacific Standard Time"
+    };
+  }
+
+  _createClass(Location, [{
+    key: "getProvinces",
+    value: function getProvinces() {
+      return this.provinces;
+    }
+  }, {
+    key: "getTimezones",
+    value: function getTimezones() {
+      return this.timezones;
+    }
+  }]);
+
+  return Location;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Location);
 
 /***/ }),
 
@@ -30098,6 +30294,75 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module) {
 
 module.exports = JSON.parse("{\"AF\":\"Afghanistan\",\"AL\":\"Albania\",\"DZ\":\"Algeria\",\"DS\":\"American Samoa\",\"AD\":\"Andorra\",\"AO\":\"Angola\",\"AI\":\"Anguilla\",\"AQ\":\"Antarctica\",\"AG\":\"Antigua and Barbuda\",\"AR\":\"Argentina\",\"AM\":\"Armenia\",\"AW\":\"Aruba\",\"AU\":\"Australia\",\"AT\":\"Austria\",\"AZ\":\"Azerbaijan\",\"BS\":\"Bahamas\",\"BH\":\"Bahrain\",\"BD\":\"Bangladesh\",\"BB\":\"Barbados\",\"BY\":\"Belarus\",\"BE\":\"Belgium\",\"BZ\":\"Belize\",\"BJ\":\"Benin\",\"BM\":\"Bermuda\",\"BT\":\"Bhutan\",\"BO\":\"Bolivia\",\"BA\":\"Bosnia and Herzegovina\",\"BW\":\"Botswana\",\"BV\":\"Bouvet Island\",\"BR\":\"Brazil\",\"IO\":\"British Indian Ocean Territory\",\"BN\":\"Brunei Darussalam\",\"BG\":\"Bulgaria\",\"BF\":\"Burkina Faso\",\"BI\":\"Burundi\",\"KH\":\"Cambodia\",\"CM\":\"Cameroon\",\"CA\":\"Canada\",\"CV\":\"Cape Verde\",\"KY\":\"Cayman Islands\",\"CF\":\"Central African Republic\",\"TD\":\"Chad\",\"CL\":\"Chile\",\"CN\":\"China\",\"CX\":\"Christmas Island\",\"CC\":\"Cocos (Keeling) Islands\",\"CO\":\"Colombia\",\"KM\":\"Comoros\",\"CG\":\"Congo\",\"CK\":\"Cook Islands\",\"CR\":\"Costa Rica\",\"HR\":\"Croatia (Hrvatska)\",\"CU\":\"Cuba\",\"CY\":\"Cyprus\",\"CZ\":\"Czech Republic\",\"DK\":\"Denmark\",\"DJ\":\"Djibouti\",\"DM\":\"Dominica\",\"DO\":\"Dominican Republic\",\"TP\":\"East Timor\",\"EC\":\"Ecuador\",\"EG\":\"Egypt\",\"SV\":\"El Salvador\",\"GQ\":\"Equatorial Guinea\",\"ER\":\"Eritrea\",\"EE\":\"Estonia\",\"ET\":\"Ethiopia\",\"FK\":\"Falkland Islands (Malvinas)\",\"FO\":\"Faroe Islands\",\"FJ\":\"Fiji\",\"FI\":\"Finland\",\"FR\":\"France\",\"FX\":\"France, Metropolitan\",\"GF\":\"French Guiana\",\"PF\":\"French Polynesia\",\"TF\":\"French Southern Territories\",\"GA\":\"Gabon\",\"GM\":\"Gambia\",\"GE\":\"Georgia\",\"DE\":\"Germany\",\"GH\":\"Ghana\",\"GI\":\"Gibraltar\",\"GK\":\"Guernsey\",\"GR\":\"Greece\",\"GL\":\"Greenland\",\"GD\":\"Grenada\",\"GP\":\"Guadeloupe\",\"GU\":\"Guam\",\"GT\":\"Guatemala\",\"GN\":\"Guinea\",\"GW\":\"Guinea-Bissau\",\"GY\":\"Guyana\",\"HT\":\"Haiti\",\"HM\":\"Heard and Mc Donald Islands\",\"HN\":\"Honduras\",\"HK\":\"Hong Kong\",\"HU\":\"Hungary\",\"IS\":\"Iceland\",\"IN\":\"India\",\"IM\":\"Isle of Man\",\"ID\":\"Indonesia\",\"IR\":\"Iran\",\"IQ\":\"Iraq\",\"IE\":\"Ireland\",\"IL\":\"Israel\",\"IT\":\"Italy\",\"CI\":\"Ivory Coast\",\"JE\":\"Jersey\",\"JM\":\"Jamaica\",\"JP\":\"Japan\",\"JO\":\"Jordan\",\"KZ\":\"Kazakhstan\",\"KE\":\"Kenya\",\"KI\":\"Kiribati\",\"KP\":\"North Korea\",\"KR\":\"South Korea\",\"XK\":\"Kosovo\",\"KW\":\"Kuwait\",\"KG\":\"Kyrgyzstan\",\"LA\":\"Lao\",\"LV\":\"Latvia\",\"LB\":\"Lebanon\",\"LS\":\"Lesotho\",\"LR\":\"Liberia\",\"LY\":\"Libyan Arab Jamahiriya\",\"LI\":\"Liechtenstein\",\"LT\":\"Lithuania\",\"LU\":\"Luxembourg\",\"MO\":\"Macau\",\"MK\":\"Macedonia\",\"MG\":\"Madagascar\",\"MW\":\"Malawi\",\"MY\":\"Malaysia\",\"MV\":\"Maldives\",\"ML\":\"Mali\",\"MT\":\"Malta\",\"MH\":\"Marshall Islands\",\"MQ\":\"Martinique\",\"MR\":\"Mauritania\",\"MU\":\"Mauritius\",\"TY\":\"Mayotte\",\"MX\":\"Mexico\",\"FM\":\"Micronesia, Federated States of\",\"MD\":\"Moldova, Republic of\",\"MC\":\"Monaco\",\"MN\":\"Mongolia\",\"ME\":\"Montenegro\",\"MS\":\"Montserrat\",\"MA\":\"Morocco\",\"MZ\":\"Mozambique\",\"MM\":\"Myanmar\",\"NA\":\"Namibia\",\"NR\":\"Nauru\",\"NP\":\"Nepal\",\"NL\":\"Netherlands\",\"AN\":\"Netherlands Antilles\",\"NC\":\"New Caledonia\",\"NZ\":\"New Zealand\",\"NI\":\"Nicaragua\",\"NE\":\"Niger\",\"NG\":\"Nigeria\",\"NU\":\"Niue\",\"NF\":\"Norfolk Island\",\"MP\":\"Northern Mariana Islands\",\"NO\":\"Norway\",\"OM\":\"Oman\",\"PK\":\"Pakistan\",\"PW\":\"Palau\",\"PS\":\"Palestine\",\"PA\":\"Panama\",\"PG\":\"Papua New Guinea\",\"PY\":\"Paraguay\",\"PE\":\"Peru\",\"PH\":\"Philippines\",\"PN\":\"Pitcairn\",\"PL\":\"Poland\",\"PT\":\"Portugal\",\"PR\":\"Puerto Rico\",\"QA\":\"Qatar\",\"RE\":\"Reunion\",\"RO\":\"Romania\",\"RU\":\"Russian Federation\",\"RW\":\"Rwanda\",\"KN\":\"Saint Kitts and Nevis\",\"LC\":\"Saint Lucia\",\"VC\":\"Saint Vincent and the Grenadines\",\"WS\":\"Samoa\",\"SM\":\"San Marino\",\"ST\":\"Sao Tome and Principe\",\"SA\":\"Saudi Arabia\",\"SN\":\"Senegal\",\"RS\":\"Serbia\",\"SC\":\"Seychelles\",\"SL\":\"Sierra Leone\",\"SG\":\"Singapore\",\"SK\":\"Slovakia\",\"SI\":\"Slovenia\",\"SB\":\"Solomon Islands\",\"SO\":\"Somalia\",\"ZA\":\"South Africa\",\"GS\":\"South Georgia South Sandwich Islands\",\"ES\":\"Spain\",\"LK\":\"Sri Lanka\",\"SH\":\"St. Helena\",\"PM\":\"St. Pierre and Miquelon\",\"SD\":\"Sudan\",\"SR\":\"Suriname\",\"SJ\":\"Svalbard and Jan Mayen Islands\",\"SZ\":\"Swaziland\",\"SE\":\"Sweden\",\"CH\":\"Switzerland\",\"SY\":\"Syrian Arab Republic\",\"TW\":\"Taiwan\",\"TJ\":\"Tajikistan\",\"TZ\":\"Tanzania\",\"TH\":\"Thailand\",\"TG\":\"Togo\",\"TK\":\"Tokelau\",\"TO\":\"Tonga\",\"TT\":\"Trinidad and Tobago\",\"TN\":\"Tunisia\",\"TR\":\"Turkey\",\"TM\":\"Turkmenistan\",\"TC\":\"Turks and Caicos Islands\",\"TV\":\"Tuvalu\",\"UG\":\"Uganda\",\"UA\":\"Ukraine\",\"AE\":\"United Arab Emirates\",\"GB\":\"United Kingdom\",\"US\":\"United States\",\"UM\":\"United States minor outlying islands\",\"UY\":\"Uruguay\",\"UZ\":\"Uzbekistan\",\"VU\":\"Vanuatu\",\"VA\":\"Vatican City State\",\"VE\":\"Venezuela\",\"VN\":\"Vietnam\",\"VG\":\"Virgin Islands (British)\",\"VI\":\"Virgin Islands (U.S.)\",\"WF\":\"Wallis and Futuna Islands\",\"EH\":\"Western Sahara\",\"YE\":\"Yemen\",\"ZR\":\"Zaire\",\"ZM\":\"Zambia\",\"ZW\":\"Zimbabwe\"}");
+
+/***/ }),
+
+/***/ "./resources/js/components/ErrorsContainer.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/ErrorsContainer.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ErrorsContainer.vue?vue&type=template&id=35ba96bb& */ "./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb&");
+/* harmony import */ var _ErrorsContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ErrorsContainer.vue?vue&type=script&lang=js& */ "./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ErrorsContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ErrorsContainer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ErrorsContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ErrorsContainer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ErrorsContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ErrorsContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ErrorsContainer.vue?vue&type=template&id=35ba96bb& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ErrorsContainer.vue?vue&type=template&id=35ba96bb&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ErrorsContainer_vue_vue_type_template_id_35ba96bb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -30340,7 +30605,6 @@ var Errors = /*#__PURE__*/function () {
         }
       }
 
-      console.log(this.errors);
       return this.errors;
     }
   }]);
@@ -32375,15 +32639,14 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
                 name: "user",
                 value: {
                   id: res.data.user.id,
-                  socialLinks: res.data.user.socialLinks,
-                  venues: res.data.user.venues,
-                  families: res.data.user.families,
-                  performers: res.data.user.performers,
-                  events: res.data.user.events,
                   city: res.data.user.city,
-                  state: res.data.user.region,
+                  province: res.data.user.province,
                   country: res.data.user.country,
-                  timezone: res.data.user.timezone
+                  timezone: res.data.user.timezone,
+                  events: res.data.user.events || [],
+                  venues: res.data.user.events || [],
+                  performers: res.data.user.events || [],
+                  families: res.data.user.events || []
                 }
               });
               resolve(res);
@@ -32446,7 +32709,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
           resolve(resp);
           return resp.data;
         })["catch"](function (error) {
-          console.log(error);
           reject(error);
         });
       });

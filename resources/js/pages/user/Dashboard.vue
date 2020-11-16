@@ -1,10 +1,14 @@
 <template>
-	<div class="container">
-		<h1>Dashboard</h1>
-        <list :listitems="user.performers" title="Performer" slug="performers"></list>
-        <list :listitems="user.venues" title="Venue" slug="venues"></list>
-        <list :listitems="user.events" title="Event" slug="events"></list>
-		<list :listitems="user.families" title="Family" slug="families"></list>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <List
+            :listitems="user.performers"
+            title="Performer"
+            slug="performers"
+        ></List>
+        <List :listitems="user.venues" title="Venue" slug="venues"></List>
+        <List :listitems="user.events" title="Event" slug="events"></List>
+        <List :listitems="user.families" title="Family" slug="families"></List>
     </div>
 </template>
 <script>
@@ -18,17 +22,14 @@ export default {
         };
     },
     computed: {
-        ...mapState([
-            "user",
-            "profile"
-        ])
+        ...mapState(["user", "profile"])
     },
-    beforeMount() {
-		this.$store.dispatch('findUser');
+    mounted() {
+        this.$store.dispatch("findUser");
     },
     components: {
         //
         List
-	},
+    }
 };
 </script>

@@ -54,7 +54,7 @@ class UserController extends Controller
 			'email' => $request->get('email'),
 			'password' => Hash::make($request->get('password')),
 			'country' => $request->get('country'),
-			'region' => $request->get('region'),
+			'province' => $request->get('province'),
 			'city' => $request->get('city'),
 			'timezone' => $request->get('timezone')
         ]);
@@ -78,7 +78,8 @@ class UserController extends Controller
 			return response()->json(['token_invalid'], $e->getStatusCode());
 		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 			return response()->json(['token_absent'], $e->getStatusCode());
-		}	
+        }
+        
 		$user['performers'] = $user->performers;
 		$user['venues'] = $user->venues;
 		$user['events'] = $user->events;

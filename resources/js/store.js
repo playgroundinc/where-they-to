@@ -13,7 +13,7 @@ export default new Vuex.Store({
         venues: [],
         families: [],
         performerTypes: [],
-        eventTypes: [],
+        eventTypes: []
     },
     actions: {
         login({ commit }, data) {
@@ -139,40 +139,38 @@ export default new Vuex.Store({
                         },
                         method: "GET"
                     })
-                    .then(res => {
-						if (res.data.user) {
-							commit("set_state", {
-								name: "user",
-								value: {
-									id: res.data.user.id,
-									socialLinks: res.data.user.socialLinks,
-									venues: res.data.user.venues,
-									families: res.data.user.families,
-									performers: res.data.user.performers,
-									events: res.data.user.events,
-									city: res.data.user.city,
-									state: res.data.user.region,
-									country: res.data.user.country,
-									timezone: res.data.user.timezone,
-								}
-							});
-							resolve(res);
-							return res.data.user;
-						}
-						commit("set_state", {
-							name: "user",
-							value: false,
-						})
-
-                    })
-                    .catch(error => {
-                        commit("set_state", {
-                            name: "user",
-                            value: null
+                        .then(res => {
+                            if (res.data.user) {
+                                commit("set_state", {
+                                    name: "user",
+                                    value: {
+                                        id: res.data.user.id,
+                                        city: res.data.user.city,
+                                        province: res.data.user.province,
+                                        country: res.data.user.country,
+                                        timezone: res.data.user.timezone,
+                                        events: res.data.user.events || [],
+                                        venues: res.data.user.events || [],
+                                        performers: res.data.user.events || [],
+                                        families: res.data.user.events || []
+                                    }
+                                });
+                                resolve(res);
+                                return res.data.user;
+                            }
+                            commit("set_state", {
+                                name: "user",
+                                value: false
+                            });
+                        })
+                        .catch(error => {
+                            commit("set_state", {
+                                name: "user",
+                                value: null
+                            });
+                            reject(error);
+                            return new Error(error);
                         });
-                        reject(error);
-                        return new Error(error);
-                    });
                 }
             });
         },
@@ -212,7 +210,6 @@ export default new Vuex.Store({
                         return resp.data;
                     })
                     .catch(error => {
-                        console.log(error);
                         reject(error);
                     });
             });

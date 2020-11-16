@@ -24,8 +24,8 @@ class CreatePerformersTable extends Migration
 			$table->timestamp('email_verified_at')->nullable();
 			$table->integer('role')->default(1);
 			$table->string('city')->nullable();
-			$table->string('region')->nullable();
-			$table->string('country')->nullable();
+			$table->string('province')->nullable();
+			$table->string('country')->nullable()->default('CA');
 			$table->string('timezone')->nullable();
 			$table->rememberToken();
 		});
@@ -50,8 +50,8 @@ class CreatePerformersTable extends Migration
 			$table->bigIncrements('id');
 			$table->timestamps();
 			$table->string('name');
-      $table->text('description');
-      $table->bigInteger('user_id')->unsigned()->nullable();
+			$table->text('description');
+			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 
@@ -74,9 +74,9 @@ class CreatePerformersTable extends Migration
 			$table->date('date')->nullable();
 			$table->string('time')->nullable();
 			$table->string('timezone')->nullable();
-      $table->text('description');
-      $table->text('tickets')->nullable();
-      $table->string('tickets_url')->nullable();
+			$table->text('description');
+			$table->text('tickets')->nullable();
+			$table->string('tickets_url')->nullable();
 			$table->bigInteger('venue_id')->unsigned()->nullable();
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
 			$table->bigInteger('family_id')->unsigned()->nullable();
@@ -109,8 +109,8 @@ class CreatePerformersTable extends Migration
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families')->onDelete('cascade');
 			$table->bigInteger('venue_id')->unsigned()->nullable();
-      $table->foreign('venue_id')->references('id')->on('venues')->onDelete('cascade');
-      $table->bigInteger('performer_id')->unsigned()->nullable();
+			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('cascade');
+			$table->bigInteger('performer_id')->unsigned()->nullable();
 			$table->foreign('performer_id')->references('id')->on('performers')->onDelete('cascade');
 			$table->bigInteger('event_id')->unsigned()->nullable();
 			$table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');

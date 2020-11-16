@@ -25,13 +25,6 @@ class PerformerController extends Controller
     {
         //
         $performers = Performer::all();
-        // foreach ($performers as $index=>$performer) {
-		// 	$user = User::find($performer['user_id']);
-		// 	if (isset($user)) {
-		// 		$performers[$index]['socialLinks'] = $performer->socialLinks;
-		// 	}
-		// 	$performers[$index]['type'] = $performer->performerTypes;
-        // }
         return response()->json($performers, 200);
     }
 
@@ -45,18 +38,6 @@ class PerformerController extends Controller
 		]);
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $performerTypes = PerformerType::all();
-        return view('performers.create', compact('performerTypes'));
     }
     /**
      * Store a newly created resource in storage.
@@ -113,23 +94,6 @@ class PerformerController extends Controller
         return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-        $performer = Performer::find($id);
-        $socialLinks = User::find($performer->user['id'])->socialLinks;
-        $performerTypes = PerformerType::all(); 
-        $platforms = config('enums.platforms');
-        return view('performers.edit', compact('performer', 'socialLinks', 'platforms', 'performerTypes'));
-        
-    }
-
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
 		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
@@ -142,7 +106,7 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id)
+    public function edit($id)
     {
 		//
 		$this->updateSocialLinks(request());

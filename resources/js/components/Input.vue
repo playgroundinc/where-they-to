@@ -1,8 +1,11 @@
 <template>
     <div>
-        <label v-if="type !== 'submit'" :for="name">{{ label }}</label>
+        <label class="label" v-if="type !== 'submit'" :for="name">{{
+            label
+        }}</label>
         <textarea
             v-if="type === 'textarea'"
+            class="input"
             :name="name"
             :id="name"
             :required="required"
@@ -12,17 +15,39 @@
             :aria-invalid="invalid"
             v-on:keyup="onChange"
         ></textarea>
+        <select
+            v-else-if="type === 'select'"
+            class="input"
+            :name="name"
+            :id="name"
+            :required="required"
+            :value="value"
+            :aria-invalid="invalid"
+            v-on:change="onChange"
+        >
+            <option default="true" value="" disabled>Select {{ name }}</option>
+            <option
+                v-for="(option, index) in options"
+                :value="index"
+                v-bind:key="index"
+            >
+                {{ option }}
+            </option>
+        </select>
         <input
             v-else
+            class="input"
             :id="name"
             :type="type"
             :name="name"
             :value="value"
             :required="required"
             :aria-invalid="invalid"
+            :aria-describedby="helperText ? 'helper-text' : null"
             v-on:keyup="onChange"
         />
-        <p v-if="type !== 'submit'" class="error">{{ errorMsg }}</p>
+        <p class="input__error-msg" v-if="errorMsg">{{ errorMsg }}</p>
+        <p id="helper-text" class="input__helper-text">{{ helperText }}</p>
     </div>
 </template>
 
@@ -48,12 +73,21 @@ export default {
         errorMsg: {
             type: String,
             required: false,
-            default: "Something is wrong with this field"
+            default: "This field is required"
+        },
+        helperText: {
+            type: String,
+            required: false
         },
         errors: {
             type: Array,
             required: false,
             default: () => []
+        },
+        options: {
+            type: Object,
+            required: false,
+            default: () => {}
         }
     },
     methods: {
@@ -77,7 +111,8 @@ export default {
     },
     computed: {
         label() {
-            return this.name.toUpperCase();
+            const labelText = this.name.replace("_", " ");
+            return labelText;
         },
         invalid() {
             if (this.errors.length) {

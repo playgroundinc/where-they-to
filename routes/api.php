@@ -17,7 +17,7 @@ Route::post('auth/register', 'UserController@register');
 Route::post('auth/login', 'UserController@authenticate');
 Route::get('user/{id}/profile', 'UserController@profile');
 
-Route::group(['middleware' => ['jwt.verify']], function() {
+// Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
 
     Route::put('events/{id}/performers', 'EventController@addPerformer');
@@ -36,7 +36,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     
     Route::post('performers', 'PerformerController@store');
     Route::delete('performers/{id}', 'PerformerController@destroy');
-    Route::put('performers/{id}', 'PerformerController@update');
+    Route::put('performers/{id}', 'PerformerController@edit');
     Route::put('performers/{id}/performerType', 'PerformerController@addType');
     Route::delete('performers/{id}/performerType', 'PerformerController@removeType');
 
@@ -48,7 +48,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('venues', 'VenueController@store');
     Route::delete('venues/{id}', 'VenueController@destroy');    
 
-});
+// });
 
 Route::get('performers', 'PerformerController@index');
 Route::get('performers/{id}', 'PerformerController@show');

@@ -1,14 +1,7 @@
 <template>
     <div class="main">
         <h1>Create Performer profile</h1>
-        <div v-if="errors.length > 0">
-            <p>There are {{ errors.length }} errors.</p>
-            <ul>
-                <li v-for="error in errors" v-bind:key="error">
-                    <a :href="`#${error}`">{{ error }}</a>
-                </li>
-            </ul>
-        </div>
+        <ErrorsContainer :errors="errors" />
         <form
             novalidate
             method="POST"
@@ -49,6 +42,7 @@ import { mapState } from "vuex";
 import socialMedia from "../../core/social-media";
 import Input from "../../components/Input";
 import Errors from "../../core/errors";
+import ErrorContainer from "../../components/ErrorsContainer";
 export default {
     data() {
         return {
@@ -62,7 +56,8 @@ export default {
         ...mapState(["performers", "user", "performerTypes"])
     },
     components: {
-        Input
+        Input,
+        ErrorContainer
     },
     methods: {
         updateValue: function(updateObject) {
