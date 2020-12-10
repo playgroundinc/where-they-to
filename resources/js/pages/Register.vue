@@ -6,135 +6,135 @@
                 <a href="/login">Log-In</a>
             </p>
         </div>
+        <Errors
+          :errors="errors"
+        />
+
         <form
             autocomplete="off"
             @submit.prevent="register"
-            v-if="!success"
             method="post"
+            novalidate
         >
-            <div
-                class="form-group"
-                v-bind:class="{ 'has-error': error && errors.email }"
-            >
-                <label class="label" for="email">E-mail</label>
-                <input
-                    type="email"
-                    id="email"
-                    class="input form-control"
-                    placeholder="user@example.com"
-                    v-model="email"
-                    required
-                />
-                <span class="help-block" v-if="error && errors.email">{{
-                    errors.email
-                }}</span>
-            </div>
-            <div
-                class="form-group"
-                v-bind:class="{ 'has-error': error && errors.password }"
-            >
-                <label class="label" for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    class="input form-control"
-                    v-model="password"
-                    required
-                />
-                <span class="help-block" v-if="error && errors.password">{{
-                    errors.password
-                }}</span>
-            </div>
-            <div
-                class="form-group"
-                v-bind:class="{ 'has-error': error && errors.password }"
-            >
-                <label class="label" for="password_confirmation"
-                    >Confirm Password</label
-                >
-                <input
-                    type="password"
-                    id="password_confirmation"
-                    class="input form-control"
-                    v-model="password_confirmation"
-                    required
-                />
-                <span class="help-block" v-if="error && errors.password">{{
-                    errors.password
-                }}</span>
-            </div>
-            <Location
-                :country="country"
-                :city="city"
-                :state="state"
-                @changed="echoLocation"
-            ></Location>
-            <label for="timezone" class="label">Timezone</label>
-            <select
-                name="timezone"
-                id="timezone"
-                class="input"
-                v-model="timezone"
-            >
-                <option
-                    v-for="timezone in timezones"
-                    v-bind:key="timezone"
-                    :value="timezone"
-                    >{{ timezone }}</option
-                >
-            </select>
+            <Input
+                name="email"
+                :value="email"
+                type="email"
+                :required="true"
+                :errors="errors"
+                v-on:update="updateValue"
+                :errorMsg="duplicate ? 'An account already existis for this email' : 'This field is required'"
+
+            />
+            <Input
+                name="password"
+                :value="password"
+                type="password"
+                :required="true"
+                :errors="errors"
+                v-on:update="updateValue"
+            />
+            <Input
+                name="password_confirmation"
+                :value="password_confirmation"
+                type="password"
+                :required="true"
+                :errors="errors"
+                v-on:update="updateValue"
+            />
+            <Input
+              name="province"
+              :value="province"
+              type="select"
+              :required="true"
+              :errors="errors"
+              v-on:update="updateValue"
+              :options="provinces"
+            />
+            <Input
+              name="city"
+              :value="city"
+              type="text"
+              :required="true"
+              :errors="errors"
+              v-on:update="updateValue"
+            />
+
             <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
 </template>
 <script>
 import { mapState } from "vuex";
-import Location from "../components/Location";
-import Timezones from "../Timezones";
+import Input from "../components/Input";
+import Errors from "../components/Error";
+
+import LocationClass from "../core/location";
+import FormClass from "../core/form";
+
+import { updateValue } from "../core/utilities";
+
 export default {
-    data() {
-        return {
-            email: "",
-            password: "",
-            password_confirmation: "",
-            city: "",
-            state: "",
-            country: "",
-            timezones: Timezones,
-            timezone: "",
-            error: false,
-            errors: {},
-            success: false
-        };
-    },
+  data() {
+    return {
+      email: "",
+      password: "",
+      password_confirmation: "",
+      city: "",
+      province: "",
+      country: "Canada",
+      errors: [],
+      duplicate: false,
+    };
+  },
+  computed: {
+    provinces() {
+      const Location = new LocationClass();
+      const provinces = Location.getProvinces();
+      return provinces;
+    }
+  },
     components: {
-        Location
+        Input, Errors,
     },
     methods: {
-        register: function() {
-            let data = {
-                email: this.email,
-                password: this.password,
-                password_confirmation: this.password_confirmation,
-                city: this.city,
-                country: this.country,
-                region: this.state,
-                timezone: this.timezone
-            };
-            this.$store
-                .dispatch("register", data)
-                .then(resp => {
-                    this.$router.push("/dashboard");
-                })
-                .catch(err => console.log(err));
-        },
-        echoLocation: function(locationObject) {
-            if (locationObject.key === "country") {
-                this.state = "";
-                this.city = "";
-            }
-            this[locationObject.key] = locationObject.value;
+      updateValue,
+      checkRequiredFields: function(data) {
+        const errors = new ErrorsClass(data);
+      },
+      verifyEmail: async function() {
+        if (this.email.length) {
+          const existing = await this.$store.dispatch('checkEmail', { email });
+          if (!existing) {
+            return false;
+          }
         }
+        this.errors.push('email');
+        return true;
+      },
+      register: async function() {
+        let data = {
+            email: this.email,
+            password: this.password,
+            password_confirmation: this.password_confirmation,
+            city: this.city,
+            country: this.country,
+            province: this.province,
+          };
+        const form = new FormClass(data, 'register', this.$store);
+        const duplicate = await this.verifyEmail();
+        console.log(duplicate);
+        if (duplicate) {
+          this.duplicate = true;
+          return;
+        }
+        const resp = await form.handleSubmit();
+        if (resp.status === 'error') {
+          this.errors = resp.errors;
+          return;
+        }
+        this.$router.push('/dashboard');
+      }
     }
 };
 </script>

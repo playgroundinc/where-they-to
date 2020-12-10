@@ -24,7 +24,7 @@ class CreatePerformersTable extends Migration
 			$table->timestamp('email_verified_at')->nullable();
 			$table->integer('role')->default(1);
 			$table->string('city')->nullable();
-			$table->string('region')->nullable();
+			$table->string('province')->nullable();
 			$table->string('country')->nullable();
 			$table->string('timezone')->nullable();
 			$table->rememberToken();

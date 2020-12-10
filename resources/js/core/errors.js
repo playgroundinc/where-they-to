@@ -9,7 +9,6 @@ class Errors {
                 this.errors.push(field);
             }
         }
-        console.log(this.errors);
         return this.errors;
     }
 }

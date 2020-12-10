@@ -12,6 +12,10 @@
             :aria-invalid="invalid"
             v-on:keyup="onChange"
         ></textarea>
+        <select v-else-if="type === 'select'" :selected="value" v-on:change="onChange" :name="name" :id="name" >
+          <option value="" disabled :selected="value === ''">Select Province</option>
+          <option v-for="(key, value) in options" v-bind:key="value" :value="value">{{key}}</option>
+        </select>
         <input
             v-else
             :id="name"
@@ -54,6 +58,11 @@ export default {
             type: Array,
             required: false,
             default: () => []
+        },
+        options: {
+          type: Object,
+          required: false,
+          default: () => {},
         }
     },
     methods: {
@@ -77,7 +86,9 @@ export default {
     },
     computed: {
         label() {
-            return this.name.toUpperCase();
+            let label = this.name.split('_');
+            label = label.join(' ');
+            return label;
         },
         invalid() {
             if (this.errors.length) {
