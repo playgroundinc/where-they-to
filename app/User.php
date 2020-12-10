@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
       'performers',
       'venues',
       'city',
-      'region',
+      'province',
       'country',
       'timezone'
     ];

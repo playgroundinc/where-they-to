@@ -69,7 +69,6 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         createPerformer: function(data) {
-            return console.log(data);
             this.$store
                 .dispatch("create", { route: "performers", data })
                 .then(async () => {

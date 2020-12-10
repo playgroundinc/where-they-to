@@ -9,12 +9,6 @@
 				<textarea class="input" name="description" id="description" cols="30" rows="10" placeholder="Venue description" v-model="description"></textarea>
 				<label class="label" for="address">Address</label>
 				<input class="input" type="text" name="address" v-model="address">
-				<Location
-					:country="country"
-					:city="city" 
-					:state="state"
-					@changed="echoLocation"
-				></Location>
 			</div>
 			<h2>Create Social Links</h2>
 			<label class="label" for="facebook">Facebook</label>
@@ -34,7 +28,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import Location from "../../components/Location";
 export default {
     data() {
 		return {
@@ -55,7 +48,7 @@ export default {
 		...mapState(['user']),
 	},
 	components: {
-        Location
+        
     },
     async beforeMount() {
 		if(this.user === 0) {

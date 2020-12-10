@@ -79,7 +79,6 @@
 		},
 		types: {
 			get: function() { 
-				console.log(this.performer);
 				if (this.performer) { 
 					return this.performer.type 
 				}

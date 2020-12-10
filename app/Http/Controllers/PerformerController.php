@@ -46,18 +46,6 @@ class PerformerController extends Controller
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $performerTypes = PerformerType::all();
-        return view('performers.create', compact('performerTypes'));
-    }
     /**
      * Store a newly created resource in storage.
      *
