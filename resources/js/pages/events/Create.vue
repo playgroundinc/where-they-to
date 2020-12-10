@@ -175,7 +175,8 @@ export default {
 
 		} catch(error) {
 			this.errors.push(error);
-		}
+    }
+    
 		
 	}
 }

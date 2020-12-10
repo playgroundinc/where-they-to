@@ -4450,7 +4450,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Error */ "./resources/js/components/Error.vue");
 /* harmony import */ var _core_location__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/location */ "./resources/js/core/location.js");
 /* harmony import */ var _core_form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/form */ "./resources/js/core/form.js");
-/* harmony import */ var _core_utilities__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../core/utilities */ "./resources/js/core/utilities.js");
+/* harmony import */ var _core_contrast_checker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../core/contrast-checker */ "./resources/js/core/contrast-checker.js");
+/* harmony import */ var _core_utilities__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../core/utilities */ "./resources/js/core/utilities.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -4529,6 +4530,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4554,7 +4556,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     Errors: _components_Error__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   methods: {
-    updateValue: _core_utilities__WEBPACK_IMPORTED_MODULE_6__["updateValue"],
+    updateValue: _core_utilities__WEBPACK_IMPORTED_MODULE_7__["updateValue"],
     checkRequiredFields: function checkRequiredFields(data) {
       var errors = new ErrorsClass(data);
     },
@@ -4628,35 +4630,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
                 duplicate = _context2.sent;
-                console.log(duplicate);
 
                 if (!duplicate) {
-                  _context2.next = 9;
+                  _context2.next = 8;
                   break;
                 }
 
                 this.duplicate = true;
                 return _context2.abrupt("return");
 
-              case 9:
-                _context2.next = 11;
+              case 8:
+                _context2.next = 10;
                 return form.handleSubmit();
 
-              case 11:
+              case 10:
                 resp = _context2.sent;
 
                 if (!(resp.status === 'error')) {
-                  _context2.next = 15;
+                  _context2.next = 14;
                   break;
                 }
 
                 this.errors = resp.errors;
                 return _context2.abrupt("return");
 
-              case 15:
+              case 14:
                 this.$router.push('/dashboard');
 
-              case 16:
+              case 15:
               case "end":
                 return _context2.stop();
             }
@@ -29926,6 +29927,90 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Lists_vue_vue_type_template_id_eb27ec8c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/core/contrast-checker.js":
+/*!***********************************************!*\
+  !*** ./resources/js/core/contrast-checker.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var ContrastChecker =
+/*#__PURE__*/
+function () {
+  function ContrastChecker(color) {
+    _classCallCheck(this, ContrastChecker);
+
+    this.color = color;
+  }
+
+  _createClass(ContrastChecker, [{
+    key: "calculateLuminance",
+    value: function calculateLuminance(hue) {
+      var luminance = hue / 255;
+
+      if (luminance <= 0.03928) {
+        luminance = luminance / 12.92;
+      } else {
+        var base = (luminance + 0.055) / 1.055;
+        luminance = Math.pow(base, 2.4);
+      }
+
+      return luminance;
+    }
+  }, {
+    key: "compareL",
+    value: function compareL(rgb) {
+      var luminance = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+      var lowestContrast = luminance > 0.319 ? (luminance + 0.05) / 0.369 : 0.369 / (luminance + 0.05);
+      var highestContrast = luminance > 1 ? (luminance + 0.05) / 1.05 : 1.05 / (luminance + 0.05);
+      var contrast = (lowestContrast + highestContrast) / 2;
+      return contrast;
+    }
+  }, {
+    key: "hexToRgb",
+    value: function hexToRgb() {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.color);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    }
+  }, {
+    key: "checkContrast",
+    value: function checkContrast() {
+      var rgb = this.hexToRgb();
+
+      for (var hue in rgb) {
+        var luminance = this.calculateLuminance(rgb[hue]);
+        rgb[hue] = luminance;
+      }
+
+      var contrast = this.compareL(rgb);
+
+      if (contrast > 3) {
+        return true;
+      }
+
+      return false;
+    }
+  }]);
+
+  return ContrastChecker;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (ContrastChecker);
 
 /***/ }),
 

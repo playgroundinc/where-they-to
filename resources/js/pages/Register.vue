@@ -71,6 +71,7 @@ import Errors from "../components/Error";
 
 import LocationClass from "../core/location";
 import FormClass from "../core/form";
+import ColorClass from "../core/contrast-checker";
 
 import { updateValue } from "../core/utilities";
 
@@ -123,7 +124,6 @@ export default {
           };
         const form = new FormClass(data, 'register', this.$store);
         const duplicate = await this.verifyEmail();
-        console.log(duplicate);
         if (duplicate) {
           this.duplicate = true;
           return;
