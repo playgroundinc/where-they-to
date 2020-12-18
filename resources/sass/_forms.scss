@@ -2,11 +2,12 @@
     display: block;
     width: 100%;
     padding: 10px;
-    border: 1px solid black;
+    border: none;
+    border-bottom: 1px solid black;
     appearance: none;
     border-radius: 0;
     &[aria-invalid="true"] {
-        border: 1px solid red;
+        border-bottom: 1px solid red;
         + .input__error-msg {
             display: block;
         }
@@ -20,8 +21,19 @@
     }
 }
 .label {
+    position: relative;
+    top: 100%;
     font-family: $main-font;
     padding: 10px 0;
     display: block;
-    text-transform: capitalize;
+    &--floating {
+        position: absolute;
+        transition: top 0.3s ease-in-out;
+        &.sink {
+            top: 100%;
+        }
+        &.float {
+            top: 0;
+        }
+    }
 }

@@ -6,6 +6,10 @@
                 <a href="/login">Log-In</a>
             </p>
         </div>
+        <h1>Register</h1>
+        <p>If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events.</p>
+        <p>If you're a fan, there's nothing you can do with an account that you can't do without one.</p>
+        <p class="copy--italic"><em>IMPORTANT:</em> This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses.</p>
         <ErrorsContainer :errors="errors" />
         <form
             autocomplete="off"

@@ -1,8 +1,11 @@
 <template>
-    <div>
-        <label class="label" v-if="type !== 'submit'" :for="name">{{
+    <div class="input__container">
+        <label class="label" v-if="type === 'select'" :for="name">{{
             label
         }}</label>
+        <label class="label" v-else-if="type !== 'submit'" :for="name">
+            <span :class="floating">{{ label }}</span>
+        </label>
         <textarea
             v-if="type === 'textarea'"
             class="input"
@@ -45,9 +48,11 @@
             :aria-invalid="invalid"
             :aria-describedby="helperText ? 'helper-text' : null"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="descendLabel"
         />
-        <p class="input__error-msg" v-if="errorMsg">{{ errorMsg }}</p>
-        <p id="helper-text" class="input__helper-text">{{ helperText }}</p>
+        <p class="input__error-msg copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
+        <p id="helper-text" class="copy--small copy--italic input__helper-text">{{ helperText }}</p>
     </div>
 </template>
 
@@ -88,6 +93,11 @@ export default {
             type: Object,
             required: false,
             default: () => {}
+        },
+    },
+    data() {
+        return {
+            floating: "label--floating sink",
         }
     },
     methods: {
@@ -107,6 +117,14 @@ export default {
                 name: this.name,
                 value: event.target.value
             });
+        },
+        floatLabel: function(e) {
+            this.floating = "label--floating float";
+        },
+        descendLabel: function() {
+            if (this.value === "") {
+                this.floating = "label--floating sink";
+            }
         }
     },
     computed: {

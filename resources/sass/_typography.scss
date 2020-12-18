@@ -1,3 +1,12 @@
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: $body-font;
+    font-size: 1.6rem;
+}
+
 h1,
 h2,
 h3,
@@ -8,6 +17,27 @@ h6 {
     font-weight: normal;
 }
 
+h1 {
+    font-size: 5.6rem;
+}
+
+p {
+    line-height: 1.5;
+}
+
 .title {
-  text-align: center;
+    text-align: center;
+}
+
+em {
+    font-weight: bold;
+}
+
+.copy {
+    &--italic {
+        font-style: italic;
+    }
+    &--small {
+        font-size: 1.4rem;
+    }
 }
