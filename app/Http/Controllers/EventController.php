@@ -9,7 +9,7 @@ use App\Performer;
 use App\Venue;
 use App\Family;
 use App\EventType;
-use App\Ticket;
+use App\SocialLinks;
 
 use Illuminate\Http\Request;
 
@@ -23,38 +23,31 @@ class EventController extends Controller
 
     private function saveFields($request, $event) {
         if ($request['venue']):
-          $venue = Venue::find($request['venue']);
-          if ($venue) {
-            $venue->events()->save($event);
-          }
+			$venue = Venue::find($request['venue']);
+			if ($venue) {
+				$venue->events()->save($event);
+			}
         endif;
         if ($request['family']):
-          $family = Family::find($request['family']);
-          if ($family) {
-            $family->events()->save($event);
-          }
+			$family = Family::find($request['family']);
+			if ($family) {
+				$family->events()->save($event);
+			}
         endif;
         if ($request['eventType']):
-          $eventType = EventType::find($request['eventType']);
-          if ($eventType) {
-            $eventType->events()->save($event);
-          }
+			$eventType = EventType::find($request['eventType']);
+			if ($eventType) {
+				$eventType->events()->save($event);
+			}
         endif;
         if ($request['performers']):
-          $performers = Performer::find(request('performers'));
-          $event->performers()->detach();
-          foreach($performers as $performer):
-            $event->performers()->attach($performer);
-          endforeach;
+			$performers = Performer::find(request('performers'));
+			$event->performers()->detach();
+			foreach($performers as $performer):
+				$event->performers()->attach($performer);
+			endforeach;
         endif;
         
-        if ($request['tickets']):
-          $tickets = Ticket::find(request('tickets'));
-          $event->tickets()->detach();
-          foreach($tickets as $ticket):
-            $event->tickets()->attach($ticket);
-          endforeach;
-        endif;
     }
 
     private function updateFields($request, $event) {
@@ -65,9 +58,8 @@ class EventController extends Controller
         //
         $events = Event::all();
         foreach($events as $index=>$event):
-          $events[$index]['performers'] = $event->performers;
-          $events[$index]['tickets'] = $event->tickets;
-          $events[$index]['social_links'] = $event->socialLinks;
+			$events[$index]['performers'] = $event->performers;
+			$events[$index]['social_links'] = $event->socialLinks;
         endforeach;
         return $events;
     }
@@ -85,7 +77,24 @@ class EventController extends Controller
         $venues = Venue::all();
         $eventTypes = EventType::all();
         return view('events.create', compact('performers', 'families', 'venues', 'eventTypes'));
-    }
+	}
+	
+	public function createSocialLinks($request) {
+		$attributes = $request->validate([
+			'facebook' => 'nullable',
+			'twitter' => 'nullable',
+			'instagram' => 'nullable',
+			'website' => 'nullable',
+			'youtube' => 'nullable',
+		]);
+		$socialLinks = SocialLinks::create($attributes);
+		return $socialLinks;
+	}
+
+	public function updateSocialLinks($request) {
+		$socialLinks = SocialLinks::find(request('socialLinksId'));
+		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+	}
 
     /**
      * Store a newly created resource in storage.
@@ -93,14 +102,17 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        //
+		//
+		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
-          'time' => 'nullable',
-          'name' => 'required',
-          'description' => 'required',
-          'timezone' => 'nullable',
+			'time' => 'nullable',
+			'name' => 'required',
+			'description' => 'required',
+			'timezone' => 'nullable',
+			'tickets' => 'nullable',
+			'tickets_url' => 'nullable'
         ]);
         $date = Carbon::parse(request('date'));
 
@@ -110,7 +122,8 @@ class EventController extends Controller
         $user = request('user');
         // return response()->json($user);
         $user->events()->save($event);
-        $this->saveFields(request(), $event);
+		$this->saveFields(request(), $event);
+		$event->socialLinks()->save($socialLinks);
         return response()->json(['status'=> 'success'], 200);
     }
 
@@ -141,8 +154,7 @@ class EventController extends Controller
         $performers = Performer::all();
         $families = Family::all();
         $eventTypes = EventType::all();
-        $eventTickets = Ticket::all();
-        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes', 'eventTickets'));
+        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes'));
     }
 
     /**
@@ -154,21 +166,24 @@ class EventController extends Controller
      */
     public function update($id)
     {
-        //
+		//
+		$this->updateSocialLinks(request());
         $event = Event::find($id);
         $user = $event->user;
         $validatedUser = request('user');
         if ($user['id'] === $validatedUser['id']):
-          $event->update(request([
-            'name',
-            'description',
-            'date',
-            'type'
-          ]));
-          $this->saveFields(request(), $event);
-          return response()->json(['status' => 'success'], 200);
-        endif;
-        return response()->json(['status' => 'unauthorized'], 401);
+			$event->update(request([
+				'name',
+				'description',
+				'date',
+				'type',
+				'tickets', 
+				'tickets_url'
+			]));
+			$this->saveFields(request(), $event);
+			return response()->json(['status' => 'success'], 200);
+		endif;
+		return response()->json(['status' => 'unauthorized'], 401);
     }
 
     /**
@@ -184,85 +199,45 @@ class EventController extends Controller
         $user = $event->user;
         $validatedUser = request('user');
         if ($user['id'] === $validatedUser['id']):
-          $event->performers()->detach();
-          $event->delete();
-          return response()->json(['status' => 'success'], 200);
+			$event->performers()->detach();
+			$event->delete();
+			return response()->json(['status' => 'success'], 200);
         endif; 
         return response()->json(['status' => 'unauthorized'], 401);
     }
 
-    public function addTicket($id) 
-    {
-      $ticket = Ticket::find(request('ticket'));
-      $event = Event::find($id);
-      $ticket->events()->attach($event);
-      return response()->json(['status' => 'success'], 200);
-    }
-
-    public function deleteTicket($id) 
-    {
-      $ticket = Ticket::find(request('ticket'));
-      $event = Event::find($id);
-      $event->tickets()->detach($ticket);
-      return response()->json(['status' => 'success'], 200);
-    }
-
     public function addPerformer($id) 
     {
-      $performer = Performer::find(request('performer'));
-      $event = Event::find($id);
-      $performer->events()->attach($event);
-      return response()->json(['status' => 'success'], 200);
+		$performer = Performer::find(request('performer'));
+		$event = Event::find($id);
+		$performer->events()->attach($event);
+		return response()->json(['status' => 'success'], 200);
     }
 
     public function deletePerformer($id) 
     {
-      $performer = Performer::find(request('performer'));
-      $event = Event::find($id);
-      $event->performers()->detach($performer);
-      return response()->json(['status' => 'success'], 200);
-    }
-
-    public function createTickets($id) 
-    {
-      $attributes = request()->validate([
-        'price' => 'required',
-        'description' => 'required',
-        'url' => 'nullable'
-      ]);
-      $ticket = Ticket::create($attributes);
-
-      $event = Event::find($id);
-      $ticket->events()->attach($event);
-      return redirect('/events');
-    }
-    public function updateTickets($id) {
-      $event = Event::find($id);
-      $event->tickets()->detach();
-      $tickets = request('tickets');
-      foreach($tickets as $ticket):
-        $ticket = Ticket::find($ticket);
-        $event->tickets()->attach($ticket);
-      endforeach;
-      return redirect('/events');
+		$performer = Performer::find(request('performer'));
+		$event = Event::find($id);
+		$event->performers()->detach($performer);
+		return response()->json(['status' => 'success'], 200);
     }
 
     public function date($date) {
-      $today = Carbon::parse($date);
-      $events = Event::where('date', '=', $date)
+		$today = Carbon::parse($date);
+		$events = Event::where('date', '=', $date)
         ->get()
         ->toJSON();
-      $date = Carbon::parse($date)->format('F j');
-      return response()->json(['events' => $events, 'date' => $date]);
+		$date = Carbon::parse($date)->format('F j');
+		return response()->json(['events' => $events, 'date' => $date]);
     }
 
     public function week($date) {
-      $today = Carbon::parse($date);
-      $thisWeek = $today->addDays(6);
-      $events = Event::where('date', '>=', $date)
+		$today = Carbon::parse($date);
+		$thisWeek = $today->addDays(6);
+		$events = Event::where('date', '>=', $date)
         ->where('date', '<=', $thisWeek)
         ->get()
         ->toJSON();
-      return response($events);
+		return response()->json(['events' => $events]);
     }
 }

@@ -1,44 +1,35 @@
 <template>
-  <div class="container">
-    <h1>Dashboard</h1>
-    <list :listitems="user.performers" title="Performer" slug="performers"></list>
-    <list :listitems="user.venues" title="Venue" slug="venues"></list>
-    <list :listitems="user.events" title="Event" slug="events"></list>
-  </div>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <List
+            :listitems="user.performers"
+            title="Performer"
+            slug="performers"
+        ></List>
+        <List :listitems="user.venues" title="Venue" slug="venues"></List>
+        <List :listitems="user.events" title="Event" slug="events"></List>
+        <List :listitems="user.families" title="Family" slug="families"></List>
+    </div>
 </template>
 <script>
-  import { mapState } from 'vuex'
-  import List from '../../components/Lists';
+import { mapState } from "vuex";
+import List from "../../components/Lists";
 
-  export default {
+export default {
     data() {
-      return {
-        //
-      }
+        return {
+            //
+        };
     },
     computed: {
-      ...mapState(['performers', 'events', 'venues', 'families', 'user', 'profile']),
-    },
-    components: {
-      //
-      List,
+        ...mapState(["user", "profile"])
     },
     mounted() {
-      if (this.$route.query.performer) {
-        this.$store.dispatch('fetchState', {
-          route: 'performers'
-        });
-      }
-      if (this.$route.query.venue) {
-        this.$store.dispatch('fetchState', {
-          route: 'venues'
-        });
-      }
-      if (this.$route.query.events) {
-        this.$store.dispatch('fetchState', {
-          route: 'events'
-        });
-      }
+        this.$store.dispatch("findUser");
+    },
+    components: {
+        //
+        List
     }
-  }
+};
 </script>

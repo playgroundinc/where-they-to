@@ -17,6 +17,8 @@ class VenuesTableSeeder extends Seeder
         'name' => $faker->company,
         'address' => $faker->address,
         'city' => $faker->city,
+        'state' => 'Ontario',
+        'country' => 'Canada',
         'description' => $faker->text,
         'user_id' => '2',
       ]);
@@ -24,6 +26,8 @@ class VenuesTableSeeder extends Seeder
         'name' => $faker->company,
         'address' => $faker->address,
         'city' => $faker->city,
+        'state' => 'Ontario',
+        'country' => 'Canada',
         'description' => $faker->text,
         'user_id' => '4',
       ]);

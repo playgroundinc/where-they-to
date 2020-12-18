@@ -19,8 +19,7 @@ class SocialLinksTableSeeder extends Seeder
         'twitter' => $faker->word,
         'website' => $faker->word,
         'youtube' => $faker->word,
-        'user_id' => '1',
-        'event_id' => '1'
+        'performer_id' => '1',
       ]);
       DB::table('social_links')->insert([
         'facebook' => $faker->word,
@@ -28,7 +27,7 @@ class SocialLinksTableSeeder extends Seeder
         'twitter' => $faker->word,
         'website' => $faker->word,
         'youtube' => $faker->word,
-        'user_id' => '2',
+        'venue_id' => '2',
       ]);
       DB::table('social_links')->insert([
         'facebook' => $faker->word,
@@ -36,7 +35,7 @@ class SocialLinksTableSeeder extends Seeder
         'twitter' => $faker->word,
         'website' => $faker->word,
         'youtube' => $faker->word,
-        'user_id' => '3',
+        'performer_id' => '2',
       ]);
       DB::table('social_links')->insert([
         'facebook' => $faker->word,
@@ -44,7 +43,7 @@ class SocialLinksTableSeeder extends Seeder
         'twitter' => $faker->word,
         'website' => $faker->word,
         'youtube' => $faker->word,
-        'user_id' => '4',
+        'venue_id' => '1',
       ]);
     }
 }

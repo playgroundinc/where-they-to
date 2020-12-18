@@ -41,32 +41,31 @@ class SocialLinksController extends Controller
      */
     public function store()
     {
-      // 
-      $authenticatedUser = request('user');
-      $attributes = request()->validate([
-        'facebook' => 'nullable',
-        'twitter' => 'nullable',
-        'instagram' => 'nullable',
-        'website' => 'nullable',
-        'youtube' => 'nullable',
-      ]);
-      $socialLinks = SocialLinks::create($attributes);
-      if (request('event_id')) {
-        $event = Event::find(request('event_id'));
-        $event->socialLinks()->save($socialLinks);
-        return response()->json(['status' => 'success'], 201);
-      }
-      if (request('family_id')) {
-        $family = Family::find(request('family_id'));
-        $family->socialLinks()->save($socialLinks);
-        return response()->json(['status' => 'success'], 201);
-      } 
-      if (request('user_id') && intval(request('user_id')) === intval($authenticatedUser['id'])) {
-        $user = User::find(request('user_id'));
-        $user->socialLinks()->save($socialLinks);
-        return response()->json(['status' => 'success'], 201);
-      } 
-
+		// 
+		$authenticatedUser = request('user');
+		$attributes = request()->validate([
+			'facebook' => 'nullable',
+			'twitter' => 'nullable',
+			'instagram' => 'nullable',
+			'website' => 'nullable',
+			'youtube' => 'nullable',
+		]);
+		$socialLinks = SocialLinks::create($attributes);
+		if (request('event_id')) {
+			$event = Event::find(request('event_id'));
+			$event->socialLinks()->save($socialLinks);
+			return response()->json(['status' => 'success'], 201);
+		}
+		if (request('family_id')) {
+			$family = Family::find(request('family_id'));
+			$family->socialLinks()->save($socialLinks);
+			return response()->json(['status' => 'success'], 201);
+		} 
+		if (request('user_id') && intval(request('user_id')) === intval($authenticatedUser['id'])) {
+			$user = User::find(request('user_id'));
+			$user->socialLinks()->save($socialLinks);
+			return response()->json(['status' => 'success'], 201);
+		} 
     }
 
     /**

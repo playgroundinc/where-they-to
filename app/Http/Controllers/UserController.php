@@ -16,81 +16,75 @@ use BenSampo\Enum\Rules\EnumValue;
 
 class UserController extends Controller
 {
-  public $timestamps = true;
+	public $timestamps = true;
 
-  public function authenticate(Request $request)
+	public function authenticate(Request $request)
     {
-      $credentials = $request->only('email', 'password');
+		$credentials = $request->only('email', 'password');
 
         try {
-          if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'invalid_credentials'], 400);
-          }
+			if (!$token = JWTAuth::attempt($credentials)) {
+				return response()->json(['error' => 'invalid_credentials'], 400);
+			}
         } catch (JWTException $e) {
-          return response()->json(['error' => 'could_not_create_token'], 500);
-      }
-      $user = JWTAuth::user();
-      if ($user) {
-        $user = array(
-          'id' => $user['id'],
-          'type' => $user['type'],
-          'socialLinks' => $user->socialLinks,
-        );
-        return response()->json(compact('token', 'user'));
-      }
-      return response()->json(['error' => 'could_not_create_token'], 500);
+			return response()->json(['error' => 'could_not_create_token'], 500);
+		}
+		$user = JWTAuth::user();
+		if ($user) {
+			$user = array(
+				'id' => $user['id'],
+			);
+			return response()->json(compact('token', 'user'));
+		}
+		return response()->json(['error' => 'could_not_create_token'], 500);
     }
 
     public function register(Request $request)
-      {
+	{
         $validator = Validator::make($request->all(), [
-          'email' => 'required|string|email|max:255|unique:users',
-          'password' => 'required|string|min:6|confirmed',
-          'type' => 'required',
+			'email' => 'required|string|email|max:255|unique:users',
+			'password' => 'required|string|min:6|confirmed',
         ]);
 
         if($validator->fails()){
-          return response()->json($validator->errors()->toJson(), 400);
+			return response()->json($validator->errors()->toJson(), 400);
         }
 
         $user = User::create([
-          'email' => $request->get('email'),
-          'password' => Hash::make($request->get('password')),
-          'type' => $request->get('type'),
-          'country' => $request->get('country'),
-          'region' => $request->get('region'),
-          'city' => $request->get('city'),
-          'timezone' => $request->get('timezone')
+			'email' => $request->get('email'),
+			'password' => Hash::make($request->get('password')),
+			'country' => $request->get('country'),
+			'province' => $request->get('province'),
+			'city' => $request->get('city'),
+			'timezone' => $request->get('timezone')
         ]);
 
         $token = JWTAuth::fromUser($user);
         $user = array(
-          'id' => $user['id'],
-          'type' => $user['type'],
-          'socialLinks' => $user->socialLinks
+			'id' => $user['id'],
         );
         return response()->json(compact('user','token'),201);
     }
 
     public function getAuthenticatedUser()
-      {
-      try {
-        if (! $user = JWTAuth::parseToken()->authenticate()) {
-          return response()->json(['user_not_found'], 404);
+	{
+		try {
+			if (! $user = JWTAuth::parseToken()->authenticate()) {
+				return response()->json(['user_not_found'], 404);
+			}
+		} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+			return response()->json(['token_expired'], $e->getStatusCode());
+		} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+			return response()->json(['token_invalid'], $e->getStatusCode());
+		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+			return response()->json(['token_absent'], $e->getStatusCode());
         }
-      } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-        return response()->json(['token_expired'], $e->getStatusCode());
-      } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-        return response()->json(['token_invalid'], $e->getStatusCode());
-
-      } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-        return response()->json(['token_absent'], $e->getStatusCode());
-      }
-      $user['socialLinks'] = $user->socialLinks;
-      $user['performers'] = $user->performers;
-      $user['venues'] = $user->venues;
-      $user['events'] = $user->events;
-      return response()->json(compact('user'));
+        
+		$user['performers'] = $user->performers;
+		$user['venues'] = $user->venues;
+		$user['events'] = $user->events;
+		$user['families'] = $user->families;
+		return response()->json(compact('user'));
     }
     /**
      * Display a listing of the resource.
@@ -105,14 +99,14 @@ class UserController extends Controller
     }
 
     public function profile($id) {
-      $user = User::find($id);
-      if ($user['type'] === UserType::VENUE): 
-        $venue = $user->venue;
-        return response()->json(compact('venue'));
-      else: 
-        $performer = $user->performer;
-        return response()->json(compact('performer'));
-      endif;
+		$user = User::find($id);
+		if ($user['type'] === UserType::VENUE): 
+			$venue = $user->venue;
+			return response()->json(compact('venue'));
+		else: 
+			$performer = $user->performer;
+			return response()->json(compact('performer'));
+		endif;
     }
 
     /**
@@ -123,7 +117,7 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view('users.create');
+        return response()->json(array('status' => 'Not found'));
     }
 
     /**
@@ -135,21 +129,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        $attributes = request()->validate([
-          'type' => Rule::in(UserType::$types),
-          'username' => 'required',
-          'password' => 'required',
-          'email' => 'required'
-        ]);
-
-        $user = User::create($attributes);
-        $user_id = $user['id'];
-        $performerTypes = PerformerType::all();
-        if (intval($attributes['type']) === UserType::VENUE) {
-          
-          return view('venues.create', compact('user_id', 'performerTypes'));
-        } 
-        return view('performers/create', compact('user_id', 'performerTypes'));
+        return response()->json(array('status' => 'Not found'));
     }
 
     /**
@@ -161,14 +141,8 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
-        if (intval($user->type) === UserType::VENUE) {
-          $venue = User::find($user->id)->venue;
-          return view('users.show', compact('user', 'venue'));
+        return response()->json(array('status' => 'Not found'));
 
-        } else {
-          $performer = User::find($user->id)->performer;
-          return view('users.show', compact('user', 'performer'));
-        }
     }
 
     /**
@@ -180,7 +154,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         //
-        return view('users.edit', compact('user'));
+        return response()->json(array('status' => 'Not found'));
+
     }
 
     /**
@@ -193,6 +168,7 @@ class UserController extends Controller
     public function update(User $user)
     {
         //
+        return response()->json(array('status' => 'Not found'));
         $user->update(request(['email', 'name']));
         return redirect('/users/'.$user->id);
 
@@ -207,6 +183,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+        return response()->json(array('status' => 'Not found'));
         $user->delete();
         return redirect('/users');
     }

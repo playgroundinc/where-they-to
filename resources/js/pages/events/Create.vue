@@ -1,193 +1,303 @@
 <template>
-  <div class="main" v-if="user">
-    <h1>Create Event</h1>
-    <form action="/events" v-on:submit.prevent="handleSubmit">
-      <label class="label" for="name" >Name</label>
-      <input class="input" type="text" name="name" id="name" v-model="name">
-      <label class="label" for="description">Description</label>
-      <textarea class="input" name="description" id="description" cols="30" rows="10" v-model="description"></textarea>
-      <label class="label" for="date">Date</label>
-      <input class="input" type="text" name="date" id="date" v-model="date">
-      <label for="date" class="label">Time</label>
-      <input class="input" type="text" id="time" name="time" v-model="time">
-      <label for="timezone" class="label">Timezone</label>
-      <select name="timezone" id="timezone" class="input" v-model="timezone">
-        <option v-for="timezone in timezones" v-bind:key="timezone" :value="timezone">{{ timezone }}</option>
-      </select>
-      <label class="label" for="venue">Venue</label>
-      <select class="input" name="venue" id="venue" v-model="venue">
-        <option v-for="venue in venues" v-bind:key="venue.id" :value="venue.id" v-text="venue.name"></option>
-      </select>
-      <fieldset v-if="eventTypes">
-        <legend for="type" class="label">Event Type</legend>
-        <ul class="list">
-          <li class="list-item" v-for="eventType in eventTypes" v-bind:key="eventType.id" >
-            <input type="radio" name="type" :value="eventType.id" :id="eventType.name" v-model="type">
-            <label :for="eventType.name" v-text="eventType.name"></label>
-          </li>
-        </ul> 
-      </fieldset>
-      <div v-if="family">
-        <label class="label" for="family">Family</label>
-        <select class="input" name="family" id="family" v-model="family">
-            <option v-for="family in families" v-bind:key="family.id" :value="family.id" v-text="family.name"></option>
-        </select>
-      </div>
-      <fieldset v-if="performers">
-        <legend for="newPerformers" class="label">Performers</legend>
-        <ul class="list">
-          <li class="list-item" v-for="performer in performers" v-bind:key="performer.id" >
-            <input v-if="user.id && performer.id !== user.id" type="checkbox" :name="performer.name" :value="performer.id" :id="performer.name" v-model="newPerformers">
-            <label v-if="user.id && performer.id !== user.id" :for="performer.name" v-text="performer.name"></label>
-          </li>
-        </ul> 
-      </fieldset>
-      <fieldset v-if="tickets">
-        <legend for="tickets" class="label">Tickets</legend>
-        <ul class="list">
-          <li class="list-item" v-for="ticket in tickets" v-bind:key="ticket.id" >
-            <input type="checkbox" :name="ticket.id" :value="ticket.id" :id="ticket.id" v-model="newTickets">
-            <label :for="ticket.id">${{ ticket.price}} {{ ticket.description }}</label>
-          </li>
-        </ul> 
-        <div v-if="newTicket">
-          <label class="label" for="ticketPrice">Ticket Price</label>  
-          <input class="input" type="number" name="ticketPrice" v-model="ticketPrice">
-          <label for="ticketDescription" class="label">Description</label>
-          <input class="input" type="text" name="ticketDescription" id="ticketDescription" v-model="ticketDescription">
-          <label class="label" for="ticketUrl">Ticket URL</label>
-          <input class="input" type="url" name="ticketUrl" v-model="ticketUrl">
-          <button class="btn" v-on:click.prevent="createTicket">Add Ticket</button>
-        </div>
-        <button v-if="!newTicket" class="btn" @click.prevent="addTicket">Create New Ticket</button>
-      </fieldset>
-      <input class="btn" type="submit" value="Create Event">
-    </form>
-  </div>
+    <div class="main">
+        <h1>Create Event</h1>
+        <form action="/events" v-on:submit.prevent="handleSubmit">
+            <!-- NAME -->
+            <label class="label" for="name">Name</label>
+            <input
+                class="input"
+                type="text"
+                name="name"
+                id="name"
+                v-model="name"
+            />
+            <!-- DESCRIPTION -->
+            <label class="label" for="description">Description</label>
+            <textarea
+                class="input"
+                name="description"
+                id="description"
+                cols="30"
+                rows="10"
+                v-model="description"
+            ></textarea>
+            <!-- DATE -->
+            <label class="label" for="date">Date</label>
+            <input
+                class="input"
+                type="text"
+                name="date"
+                id="date"
+                v-model="date"
+            />
+            <!-- TIME -->
+            <label for="date" class="label">Time</label>
+            <input
+                class="input"
+                type="text"
+                id="time"
+                name="time"
+                v-model="time"
+            />
+            <!-- TIMEZONE -->
+            <label for="timezone" class="label">Timezone</label>
+            <select
+                name="timezone"
+                id="timezone"
+                class="input"
+                v-model="timezone"
+            >
+                <option
+                    v-for="timezone in timezones"
+                    v-bind:key="timezone"
+                    :value="timezone"
+                    >{{ timezone }}</option
+                >
+            </select>
+            <!-- VENUE -->
+            <label class="label" for="venue">Venue</label>
+            <select class="input" name="venue" id="venue" v-model="venue">
+                <option
+                    v-for="venue in venues"
+                    v-bind:key="venue.id"
+                    :value="venue.id"
+                    v-text="venue.name"
+                ></option>
+            </select>
+            <!-- EVENT TYPES -->
+            <fieldset v-if="eventTypes">
+                <legend for="type" class="label">Event Type</legend>
+                <ul class="list">
+                    <li
+                        class="list-item"
+                        v-for="eventType in eventTypes"
+                        v-bind:key="eventType.id"
+                    >
+                        <input
+                            type="radio"
+                            name="type"
+                            :value="eventType.id"
+                            :id="eventType.name"
+                            v-model="type"
+                        />
+                        <label
+                            :for="eventType.name"
+                            v-text="eventType.name"
+                        ></label>
+                    </li>
+                </ul>
+            </fieldset>
+            <!-- FAMILY -->
+            <div v-if="family">
+                <label class="label" for="family">Family</label>
+                <select
+                    class="input"
+                    name="family"
+                    id="family"
+                    v-model="family"
+                >
+                    <option
+                        v-for="family in families"
+                        v-bind:key="family.id"
+                        :value="family.id"
+                        v-text="family.name"
+                    ></option>
+                </select>
+            </div>
+            <!-- PERFORMERS -->
+            <fieldset v-if="performers">
+                <Autocomplete
+                    label="Performers"
+                    :values="performers"
+                    @selection="
+                        performer => {
+                            addPerformer(performer);
+                        }
+                    "
+                ></Autocomplete>
+                <div v-if="newPerformers.length > 0">
+                    <h2>Current Performers</h2>
+                    <ul>
+                        <li
+                            v-for="(performer, index) in newPerformers"
+                            v-bind:key="performer.id"
+                        >
+                            {{ performer.name }}
+                            <a
+                                href="#"
+                                @click.prevent="() => removePerformer(index)"
+                                >Remove</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
+            <!-- TICKETS -->
+            <label class="label" for="tickets">Ticket Information</label>
+            <textarea
+                class="input"
+                name="tickets"
+                id="tickets"
+                cols="30"
+                rows="10"
+                v-model="tickets"
+            ></textarea>
+            <label class="label" for="tickets_url">Ticket Url</label>
+            <input
+                class="input"
+                type="url"
+                name="tickets_url"
+                id="tickets_url"
+                v-model="tickets_url"
+            />
+            <h2>Create Social Links</h2>
+            <label class="label" for="facebook">Facebook</label>
+            <input
+                type="text"
+                class="input"
+                id="facebook"
+                name="facebook"
+                v-model="facebook"
+            />
+            <label for="instagram" class="label">Instagram</label>
+            <input
+                type="text"
+                class="input"
+                id="instagram"
+                name="instagram"
+                v-model="instagram"
+            />
+            <label for="twitter" class="label">Twitter</label>
+            <input
+                type="text"
+                class="input"
+                id="twitter"
+                name="twitter"
+                v-model="twitter"
+            />
+            <label for="youtube" class="label">Youtube</label>
+            <input
+                type="text"
+                class="input"
+                id="youtube"
+                name="youtube"
+                v-model="youtube"
+            />
+            <label for="website" class="label">Website</label>
+            <input
+                type="text"
+                class="input"
+                id="website"
+                name="website"
+                v-model="website"
+            />
+            <input class="btn" type="submit" value="Create Event" />
+        </form>
+    </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import timezones from '../../components/Timezone'
-export default {
-  data() {
-    return {
-      id: this.$route.params.id || '',
-      name: '',
-      description: '',
-      date: '',
-      time: '',
-      venue: '',
-      newPerformers: [],
-      newTickets: [],
-      family: '',
-      type: '',
-      newTicket: false,
-      ticketPrice: 0,
-      ticketDescription: '',
-      ticketUrl: '',
-      timezone: '',
-      timezones: timezones || '',
-    }
-  },
-  computed: {
-    ...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes', 'tickets']),
-  },
-  methods: {
-    addTicket: function() {
-      this.newTicket = true;
-    },
-    handleSubmit: function() {
-      let data = {
-        name: this.name,
-        description: this.description,
-        date: this.date,
-        time: this.time,
-        venue: this.venue,
-        family: this.family,
-        eventType: this.type,
-        performers: this.newPerformers,
-        tickets: this.newTickets,
-        timezone: this.timezone,
-      }
-      this.$store.dispatch('create', {
-        route: 'events',
-        data,
-      }).then((resp) => {
-        this.$store.dispatch('fetchState', {
-          route: 'events',
-        })
-        this.$router.push({path: `/dashboard?events=1`})
-      });
-    },
-    updateTickets: function(ticket) {
-      let data = {
-        ticket,
-      }
-      this.$store.dispatch('edit', {
-        route: 'events',
-        id: `${this.id}/tickets`,
-        data
-      })
-    },
-    createTicket: function() {
-      let data = {
-        price: this.ticketPrice,
-        description: this.ticketDescription,
-        url: this.ticketUrl,
-      }
-      this.$store.dispatch('create', {
-        route: 'tickets',
-        data,
-      }).then((resp) => {
-        this.$store.dispatch('fetchState', {
-          route: 'tickets',
-        })
-        this.ticketPrice = 0;
-        this.ticketDescription = '';
-        this.ticketUrl = '';
-        this.newTicket = false;
-      })
-    },
-    deleteTicket: function(ticket) {
-      let data = {
-        ticket
-      }
-      this.$store.dispatch('destroy', {
-        route: 'events',
-        id: `${this.id}/tickets`,
-        data,
-      })
-    },
+import { mapState } from "vuex";
+import Location from "../../Location";
+import Autocomplete from "../../components/Autocomplete";
 
-    addPerformer: function(performer) {
-      let data = {
-        performer,
-      }
-      this.$store.dispatch('edit', {
-        route: 'events',
-        id: `${this.id}/performers`,
-        data
-      })
+export default {
+    data() {
+        return {
+            id: this.$route.params.id || "",
+            name: "",
+            description: "",
+            date: "",
+            time: "",
+            venue: "",
+            newPerformers: [],
+            family: "",
+            type: "",
+            timezones: timezones || "",
+            errors: [],
+            facebook: "",
+            instagram: "",
+            twitter: "",
+            youtube: "",
+            website: "",
+            tickets: "",
+            tickets_url: ""
+        };
     },
-    removePerformer: function(performer) {
-      let data = {
-        performer
-      }
-      this.$store.dispatch('destroy', {
-        route: 'events',
-        id: `${this.id}/performers`,
-        data,
-      })
+    computed: {
+        ...mapState([
+            "user",
+            "events",
+            "venues",
+            "performers",
+            "families",
+            "eventTypes"
+        ]),
+        timezone: {
+            get: function() {
+                if (this.user.timezone) {
+                    return this.user.timezone;
+                }
+                return "";
+            },
+            set: function(newValue) {
+                this.user.timezone = newValue;
+            }
+        }
     },
-  },
-  mounted: function() {
-    this.$store.dispatch('fetchState', { 
-      route: 'eventTypes',
-    });
-    this.$store.dispatch('fetchState', { 
-      route: 'tickets',
-    })
-  }
-}
+    components: {
+        Autocomplete
+    },
+    methods: {
+        handleSubmit: function() {
+            let data = {
+                name: this.name,
+                description: this.description,
+                date: this.date,
+                time: this.time,
+                venue: this.venue,
+                family: this.family,
+                eventType: this.type,
+                performers: this.newPerformers,
+                timezone: this.timezone,
+                tickets: this.tickets,
+                tickets_url: this.tickets_url,
+                facebook: this.facebook,
+                instagram: this.instagram,
+                twitter: this.twitter,
+                youtube: this.youtube,
+                website: this.website
+            };
+            this.$store
+                .dispatch("create", {
+                    route: "events",
+                    data
+                })
+                .then(async resp => {
+                    await this.$store.dispatch("fetchState", {
+                        route: "events"
+                    });
+                    this.$store.dispatch("findUser");
+                    this.$router.push({ path: `/dashboard?events=1` });
+                });
+        },
+        addPerformer: function(performer) {
+            if (this.newPerformers.indexOf(performer) === -1) {
+                this.newPerformers.push(performer);
+            }
+        },
+        removePerformer: function(index) {
+            this.newPerformers.splice(index, 1);
+        }
+    },
+    async mounted() {
+        try {
+            this.$store.dispatch("fetchState", {
+                route: "eventTypes"
+            });
+        } catch (error) {
+            this.errors.push(error);
+        }
+    }
+};
 </script>

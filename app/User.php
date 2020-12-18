@@ -17,6 +17,9 @@ class User extends Authenticatable implements JWTSubject
     public function venues() {
       return $this->hasMany(Venue::class);
     }
+    public function families() {
+      return $this->hasMany(Family::class);
+    }
     public function socialLinks() {
       return $this->hasOne(SocialLinks::class);
     }
@@ -26,11 +29,10 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
       'password',
       'email',
-      'type',
       'performers',
       'venues',
       'city',
-      'region',
+      'province',
       'country',
       'timezone'
     ];

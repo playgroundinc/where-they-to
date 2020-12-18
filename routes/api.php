@@ -17,11 +17,8 @@ Route::post('auth/register', 'UserController@register');
 Route::post('auth/login', 'UserController@authenticate');
 Route::get('user/{id}/profile', 'UserController@profile');
 
-Route::group(['middleware' => ['jwt.verify']], function() {
+// Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
-
-    Route::put('events/{id}/tickets', 'EventController@addTicket');
-    Route::delete('events/{id}/tickets', 'EventController@deleteTicket');
 
     Route::put('events/{id}/performers', 'EventController@addPerformer');
     Route::delete('events/{id}/performers', 'EventController@deletePerformer');
@@ -39,32 +36,29 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     
     Route::post('performers', 'PerformerController@store');
     Route::delete('performers/{id}', 'PerformerController@destroy');
-    Route::put('performers/{id}', 'PerformerController@update');
+    Route::put('performers/{id}', 'PerformerController@edit');
     Route::put('performers/{id}/performerType', 'PerformerController@addType');
     Route::delete('performers/{id}/performerType', 'PerformerController@removeType');
 
     Route::post('social-links', 'SocialLinksController@store');
     Route::put('social-links/{id}', 'SocialLinksController@update');
     Route::delete('social-links/{id}', 'SocialLinksController@destroy');
-
-    Route::post('tickets', 'TicketController@store');
     
     Route::put('venues/{id}', 'VenueController@update');
     Route::post('venues', 'VenueController@store');
     Route::delete('venues/{id}', 'VenueController@destroy');    
 
-});
+// });
 
 Route::get('performers', 'PerformerController@index');
 Route::get('performers/{id}', 'PerformerController@show');
+Route::get('performers/{id}/events', 'PerformerController@events');
 
 Route::get('venues', 'VenueController@index');
 Route::get('venues/{id}', 'VenueController@show');
 
 Route::get('social-links', 'SocialLinksController@index');
 Route::get('social-links/{id}', 'SocialLinksController@show');
-
-Route::get('tickets', 'TicketController@index');
 
 Route::get('families', 'FamilyController@index');
 

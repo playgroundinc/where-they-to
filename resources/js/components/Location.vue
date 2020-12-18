@@ -1,77 +1,187 @@
-<template> 
-  <div>
-    <label class="label" for="country">Country</label>
-    <select class="input" name="country" v-model="country" @change.prevent="fetchLocations('country', 'states', 'country')">
-      <option value="">Select Country</option>
-      <option v-for="(country, index) in countries" :value="country" v-bind:key="index">{{country}}</option>
-    </select>
-    <div v-if="country">
-      <label class="label" for="region">Province/Region</label>
-      <select class="input" id="region" name="region" v-model="state" @change.prevent="fetchLocations(`country=${country}&state`, 'cities', 'state')">
-        <option v-if="states.length > 0" value="">Select Province/Region</option>
-        <option v-else value="">Loading...</option>
-        <option v-for="(state, index) in states" :value="state" v-bind:key="index">{{state}}</option>
-      </select>
+<template>
+    <div>
+        <label class="label" for="country">Country</label>
+        <select
+            class="input"
+            name="country"
+            v-model="selectedCountry"
+			@change.prevent="() => clearArray(true)"
+        >
+            <option value="">Select Country</option>
+            <option
+                v-for="(country, index) in countries"
+                :value="country"
+                v-bind:key="index"
+                >{{ country }}</option
+            >
+        </select>
+        <div v-if="country">
+            <label class="label" for="region">Province/Region</label>
+            <select
+                class="input"
+                id="region"
+                name="region"
+                v-model="selectedState"
+				@change.prevent="() => clearArray()"
+
+            >   
+                <option v-if="states.length > 0" value="" disabled selected>Select Province/Region</option> 
+                <option v-else value="" disabled selected>Loading...</option> 
+                <option
+                    v-for="(state, index) in states"
+                    :value="state"
+                    v-bind:key="index"
+                    >{{ state }}</option
+                >
+                
+                
+            </select>
+        </div>
+        <div v-if="state">
+            <label class="label" for="city">City</label>
+            <select
+                class="input"
+                name="city"
+                v-model="selectedCity"
+            >
+                <option v-if="cities.length > 0" value="" disabed selected>Select City</option>
+                <option v-else value="" disabed selected>Loading...</option>
+                <option
+                    v-for="(city, index) in cities"
+                    :value="city"
+                    v-bind:key="index"
+                    >{{ city }}</option
+                >
+
+            </select>
+        </div>
     </div>
-    <div v-if="state">
-      <label class="label" for="city">City</label>
-      <select class="input" name="city" v-model="city" @change="passToParent('city')">
-        <option v-if="cities.length > 0" value="">Select City</option>
-        <option v-else value="">Loading...</option>
-        <option v-for="(city, index) in cities" :value="city" v-bind:key="index">{{city}}</option>
-      </select>
-    </div>
-  </div>
 </template>
 
-<script> 
-import { mapState } from 'vuex';
-import countries from '../components/Countries.json';
+<script>
+import { mapState } from "vuex";
+import countries from "../components/Countries.json";
 
 export default {
-  data() {
-    return {
-      countries: countries,
-      country: '',
-      state: '',
-      city: '',
-    }
-  },
-  computed: {
-    ...mapState(['states', 'cities'])
-  },
-  methods: {
-    passToParent: function(ref) {
-      this.$emit('changed', {
-        key: ref,
-        value: this[ref],
-      });
+    data() {
+        return {
+            countries: countries,
+            states: [],
+            cities: [],
+            running: false,
+        };
     },
-    fetchLocations: async function(route, result, ref) {
-      let data = {
-        name: result,
-      }
-      try {
-        await this.$store.dispatch('clearState', data);
-        data = {
-          route,
-          value: this[ref],
-          result
+    props: ['city', 'country', 'state'],
+    computed: {
+		selectedCountry: {
+            get: function () {
+				if (this.country !== '') {
+					this.fetchLocations('country', 'states', 'country')
+				}
+                return this.country;
+            },
+            set: function(newCountry) {
+                this.passToParent("country", newCountry);
+                return 
+            }
+        },
+        selectedState: {
+            get: function () {
+				if (this.country !== '') {
+					this.fetchLocations(`country=${this.country}&state`, 'cities', 'state');  
+				}
+                return this.state;
+            },
+            set: function(newState) {
+                this.passToParent('state', newState);
+                return;
+            }
+		},
+		selectedCity: {
+            get: function () {
+                return this.city;
+            },
+            set: function(newCity) {
+                this.passToParent('city', newCity);
+                return;
+            }
+        },
+    },
+    methods: {
+		clearArray: function(country = false) {
+			if (country) {
+				this.states = [];
+			}
+			this.cities = [];
+		},
+        clearValue: function(ref) {
+            this.$emit("changed", {
+                key: ref,
+                value: "",
+            })  
+        },
+        passToParent: function(ref, value) {
+            this.$emit("changed", {
+                key: ref,
+                value
+            });
+        },
+        handleCities: function(citiesBlock) {
+            const location = [];
+            for (let city in citiesBlock) {
+                if (citiesBlock[city].city_name) {
+                    location.push(citiesBlock[city].city_name);
+                }
+            }
+            return this.cities = location;
+        },
+        handleRegions: function(regionBlocks) {
+            const location = [];
+            regionBlocks.forEach(region => {
+                location.push(region.state_name);
+            });
+            this.states = location;
+        },
+        callLocationsApi: async function(payload) {
+            try {
+                const resp = await axios.get(
+                    `https://cors-anywhere.herokuapp.com/https://geodata.solutions/restapi?${payload.route}=${payload.value}`
+                );
+                if (
+                    resp.data &&
+                    resp.data.details &&
+                    resp.data.details.regionalBlocs
+                ) {
+                    this.handleRegions(resp.data.details.regionalBlocs);
+                    return;
+                }
+                if (resp.data) {
+                    return this.handleCities(resp.data);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        fetchLocations: function(route, result, ref) {
+            try {
+                const data = {
+                    route,
+                    value: this[ref],
+                    result
+                };
+                this.callLocationsApi(data);
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        fetchCities: function(event) {
+            let data = {
+                route: "state",
+                value: event.target.value,
+                result: "cities"
+            };
+            this.callLocationsApi(data);
         }
-        this.$store.dispatch('fetchLocation', data);
-        this.passToParent(ref);
-      } catch(e) {
-        console.log(e);
-      }
-    },
-    fetchCities: function(event) {
-      let data = {
-        route: 'state',
-        value: event.target.value,
-        result: 'cities',
-      }
-      this.$store.dispatch('fetchLocation', data);
     }
-  }
-}
+};
 </script>

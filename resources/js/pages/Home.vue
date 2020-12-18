@@ -11,7 +11,7 @@
           </h3>
         </a>
         <p>{{ today.time }}</p>
-        <a :href="'/venues' + venue(today.venue_id, 'link')">{{ venue(today.venue_id ) }}</a>
+        <a :href="'/venues/' + venue(today.venue_id, 'link')">{{ venue(today.venue_id ) }}</a>
       </div>
     </div>
     <h2>This Week</h2>
@@ -27,7 +27,7 @@
               </h3>
             </a>
             <p>{{ day.time }}</p>
-            <a :href="'/venues' + venue(day.venue_id, 'link')">{{ venue(day.venue_id ) }}</a>
+            <a :href="'/venues/' + venue(day.venue_id, 'link')">{{ venue(day.venue_id ) }}</a>
           </div>
         </div>
       </div>
