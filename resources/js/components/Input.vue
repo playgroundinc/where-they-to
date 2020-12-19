@@ -1,9 +1,6 @@
 <template>
     <div class="input__container">
-        <label class="label" v-if="type === 'select'" :for="name">{{
-            label
-        }}</label>
-        <label class="label" v-else-if="type !== 'submit'" :for="name">
+        <label class="label label--floating" v-if="type !== 'submit'" :for="name">
             <span :class="floating">{{ label }}</span>
         </label>
         <textarea
@@ -27,8 +24,10 @@
             :value="value"
             :aria-invalid="invalid"
             v-on:change="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="descendLabel"
         >
-            <option default="true" value="" disabled>Select {{ name }}</option>
+            <option default="true" value="" disabled></option>
             <option
                 v-for="(option, index) in options"
                 :value="index"
@@ -51,8 +50,8 @@
             v-on:focus="floatLabel"
             v-on:blur="descendLabel"
         />
-        <p class="input__error-msg copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
-        <p id="helper-text" class="copy--small copy--italic input__helper-text">{{ helperText }}</p>
+        <p class="input__error-msg copy--error copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
+        <p id="helper-text" class="copy--small copy--italic input__helper-text" v-if="helperText">{{ helperText }}</p>
     </div>
 </template>
 
@@ -97,7 +96,7 @@ export default {
     },
     data() {
         return {
-            floating: "label--floating sink",
+            floating: "sink",
         }
     },
     methods: {
@@ -119,11 +118,13 @@ export default {
             });
         },
         floatLabel: function(e) {
-            this.floating = "label--floating float";
+            this.floating = "float";
         },
         descendLabel: function() {
             if (this.value === "") {
-                this.floating = "label--floating sink";
+                this.floating = "sink";
+            } else {
+                this.floating = "float";
             }
         }
     },

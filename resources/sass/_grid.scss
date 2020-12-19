@@ -1,0 +1,158 @@
+@function strip-unit($number) {
+    @if type-of($number) == "number" and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+
+    @return $number;
+}
+
+.container-fluid,
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+}
+
+.container {
+    max-width: 1770px;
+    width: 100%;
+
+    &--core {
+        max-width: $core;
+    }
+
+    @include xl {
+        width: 92%;
+    }
+}
+
+.row {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: calc(100% + #{$gutter-width});
+    margin-right: $gutter-compensation;
+    margin-left: $gutter-compensation;
+
+    &.centered {
+        justify-content: center;
+    }
+}
+
+.row.reverse {
+    flex-direction: row-reverse;
+}
+
+.col.reverse {
+    flex-direction: column-reverse;
+}
+
+[class^="col-"] {
+    box-sizing: border-box;
+    flex: 0 0 100%;
+    padding-right: $half-gutter-width;
+    padding-left: $half-gutter-width;
+    max-width: 100%;
+    width: 100%;
+}
+
+@mixin generateColumnWidths($className) {
+    @for $i from 1 through $columns {
+        .col-#{$className}-#{$i} {
+            flex-basis: $i / $columns * 100%;
+            max-width: $i / $columns * 100%;
+        }
+    }
+}
+
+@mixin generateOffset($className) {
+    @for $i from 1 through $columns {
+        .col-#{$className}-offset-#{$i} {
+            margin-left: $i / $columns * 100%;
+        }
+    }
+}
+
+@mixin helperClasses($className) {
+    .col-#{$className} {
+        flex-grow: 1;
+        flex-basis: 0;
+        max-width: 100%;
+    }
+
+    .start-#{$className} {
+        justify-content: flex-start;
+        text-align: start;
+    }
+
+    .center-#{$className} {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .end-#{$className} {
+        justify-content: flex-end;
+        text-align: end;
+    }
+
+    .top-#{$className} {
+        align-items: flex-start;
+    }
+
+    .middle-#{$className} {
+        align-items: center;
+    }
+
+    .bottom-#{$className} {
+        align-items: flex-end;
+    }
+
+    .around-#{$className} {
+        justify-content: space-around;
+    }
+
+    .between-#{$className} {
+        justify-content: space-between;
+    }
+
+    .first-#{$className} {
+        order: -1;
+    }
+
+    .last-#{$className} {
+        order: 1;
+    }
+
+    .text-center-#{$className} {
+        text-align: center;
+    }
+}
+
+@mixin makeGrid($sizes...) {
+    @each $classname, $width in keywords($sizes) {
+        $minwidth: strip-unit($width);
+        @if $width {
+            @media screen and (min-width: #{$minwidth}px) {
+                @include generateColumnWidths($classname);
+                @include generateOffset($classname);
+                @include helperClasses($classname);
+            }
+        } @else {
+            @include generateColumnWidths($classname);
+            @include generateOffset($classname);
+            @include helperClasses($classname);
+        }
+    }
+}
+
+@include makeGrid(
+    $xxs: 0,
+    $xs: $xs,
+    $sm: $sm,
+    $md: $md,
+    $lg: $lg,
+    $xl: $xl,
+    $xxl: $xxl
+);

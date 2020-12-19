@@ -1,15 +1,16 @@
 <template>
-    <div>
-        <div>
-            <p>
-                Have an Account?
-                <a href="/login">Log-In</a>
-            </p>
+    <main class="container--core container">
+        <h1 class="copy--center">Register</h1>
+        <p class="copy--center copy--italic">
+            Already have an account?
+            <a href="/login">Log-In</a>
+        </p>
+        <div class="copy">
+            <p>If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events.</p>
+            <p>If you're a fan, there's nothing you can do with an account that you can't do without one.</p>
+            <p class="copy--italic"><em>IMPORTANT:</em> This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses.</p>
         </div>
-        <h1>Register</h1>
-        <p>If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events.</p>
-        <p>If you're a fan, there's nothing you can do with an account that you can't do without one.</p>
-        <p class="copy--italic"><em>IMPORTANT:</em> This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses.</p>
+
         <ErrorsContainer :errors="errors" />
         <form
             autocomplete="off"
@@ -18,67 +19,81 @@
             v-if="!success"
             method="post"
         >
-            <div class="form-group">
-                <Input
-                    name="email"
-                    :value="email"
-                    type="email"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                />
+            <div class="form-group row between-md">
+                <div class="col-xxs-12">
+                    <h3 class="copy--center">Account Information</h3>
+                    <Input
+                        name="email"
+                        :value="email"
+                        type="email"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <Input
+                        name="password"
+                        :value="password"
+                        type="password"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                        helperText="Passwords must be at least 6 characters long."
+                    />
+                </div>
+                <div class="col-md-6">
+                    <Input
+                        name="password_confirmation"
+                        :value="password_confirmation"
+                        type="password"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                        errorMsg="Passwords must match"
+                    />
+                </div>
             </div>
-            <div class="form-group">
-                <Input
-                    name="password"
-                    :value="password"
-                    type="password"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                    helperText="Passwords must be at least 6 characters long."
-                />
+            <div class="form-group row">
+                    <div class="col-xxs-12">
+                        <h3 class="copy--center">Geographic Information</h3>
+                        <Input
+                            name="timezone"
+                            :value="timezone"
+                            type="select"
+                            :required="true"
+                            :errors="errors"
+                            :options="timezones"
+                            v-on:update="updateValue"
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <Input
+                            name="province"
+                            :value="province"
+                            type="select"
+                            :options="provinces"
+                            :required="true"
+                            :errors="errors"
+                            v-on:update="updateValue"
+                        />
+                    </div>
+                    <div class="col-md-6"> 
+                        <Input
+                            name="city"
+                            :value="city"
+                            type="text"
+                            :required="true"
+                            :errors="errors"
+                            v-on:update="updateValue"
+                        />
+                    </div>
+                    <div class="col-xxs-12">
+                        <button type="submit" class="btn btn-default">Sign Up</button>
+                    </div>
             </div>
-            <div class="form-group">
-                <Input
-                    name="password_confirmation"
-                    :value="password_confirmation"
-                    type="password"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                    errorMsg="Passwords must match"
-                />
-            </div>
-            <Input
-                name="province"
-                :value="province"
-                type="select"
-                :options="provinces"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="city"
-                :value="city"
-                type="text"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="timezone"
-                :value="timezone"
-                type="select"
-                :required="true"
-                :errors="errors"
-                :options="timezones"
-                v-on:update="updateValue"
-            />
-            <button type="submit" class="btn btn-default">Submit</button>
         </form>
-    </div>
+    </main>
 </template>
 <script>
 import { mapState } from "vuex";

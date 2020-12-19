@@ -3284,6 +3284,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     errors: {
@@ -3304,7 +3305,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -3404,7 +3404,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      floating: "label--floating sink"
+      floating: "sink"
     };
   },
   methods: {
@@ -3427,11 +3427,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     floatLabel: function floatLabel(e) {
-      this.floating = "label--floating float";
+      this.floating = "float";
     },
     descendLabel: function descendLabel() {
       if (this.value === "") {
-        this.floating = "label--floating sink";
+        this.floating = "sink";
+      } else {
+        this.floating = "float";
       }
     }
   },
@@ -3934,6 +3936,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
 /* harmony import */ var _core_errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/errors */ "./resources/js/core/errors.js");
 /* harmony import */ var _Location__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Location */ "./resources/js/Location.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -9233,19 +9250,35 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.errors.length > 0
-    ? _c("div", [
-        _c("p", [
-          _vm._v("There are " + _vm._s(_vm.errors.length) + " errors.")
+    ? _c("div", { staticClass: "errors" }, [
+        _c("h2", { staticClass: "copy--center" }, [_vm._v("Whoops!")]),
+        _vm._v(" "),
+        _c("p", { staticClass: "copy--center" }, [
+          _vm._v("We found the following "),
+          _c("strong", { staticClass: "copy--large copy--error" }, [
+            _vm._v(_vm._s(_vm.errors.length))
+          ]),
+          _vm._v(" errors in this form.")
         ]),
         _vm._v(" "),
         _c(
           "ul",
+          { staticClass: "errors__list row center-xxs bottom-xxs" },
           _vm._l(_vm.errors, function(error) {
-            return _c("li", { key: error }, [
-              _c("a", { attrs: { href: "#" + error } }, [
-                _vm._v(_vm._s(error.replace("_", " ")))
-              ])
-            ])
+            return _c(
+              "li",
+              { key: error, staticClass: "errors__single col-md-2 col-xxs-3" },
+              [
+                _c(
+                  "a",
+                  {
+                    staticClass: "errors__single__link copy--error",
+                    attrs: { href: "#" + error }
+                  },
+                  [_vm._v(_vm._s(error.replace("_", " ")))]
+                )
+              ]
+            )
           }),
           0
         )
@@ -9275,14 +9308,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "input__container" }, [
-    _vm.type === "select"
-      ? _c("label", { staticClass: "label", attrs: { for: _vm.name } }, [
-          _vm._v(_vm._s(_vm.label))
-        ])
-      : _vm.type !== "submit"
-      ? _c("label", { staticClass: "label", attrs: { for: _vm.name } }, [
-          _c("span", { class: _vm.floating }, [_vm._v(_vm._s(_vm.label))])
-        ])
+    _vm.type !== "submit"
+      ? _c(
+          "label",
+          { staticClass: "label label--floating", attrs: { for: _vm.name } },
+          [_c("span", { class: _vm.floating }, [_vm._v(_vm._s(_vm.label))])]
+        )
       : _vm._e(),
     _vm._v(" "),
     _vm.type === "textarea"
@@ -9311,14 +9342,16 @@ var render = function() {
               "aria-invalid": _vm.invalid
             },
             domProps: { value: _vm.value },
-            on: { change: _vm.onChange }
+            on: {
+              change: _vm.onChange,
+              focus: _vm.floatLabel,
+              blur: _vm.descendLabel
+            }
           },
           [
-            _c(
-              "option",
-              { attrs: { default: "true", value: "", disabled: "" } },
-              [_vm._v("Select " + _vm._s(_vm.name))]
-            ),
+            _c("option", {
+              attrs: { default: "true", value: "", disabled: "" }
+            }),
             _vm._v(" "),
             _vm._l(_vm.options, function(option, index) {
               return _c("option", { key: index, domProps: { value: index } }, [
@@ -9347,19 +9380,25 @@ var render = function() {
         }),
     _vm._v(" "),
     _vm.errorMsg
-      ? _c("p", { staticClass: "input__error-msg copy--small copy--italic" }, [
-          _vm._v(_vm._s(_vm.errorMsg))
-        ])
+      ? _c(
+          "p",
+          {
+            staticClass: "input__error-msg copy--error copy--small copy--italic"
+          },
+          [_vm._v(_vm._s(_vm.errorMsg))]
+        )
       : _vm._e(),
     _vm._v(" "),
-    _c(
-      "p",
-      {
-        staticClass: "copy--small copy--italic input__helper-text",
-        attrs: { id: "helper-text" }
-      },
-      [_vm._v(_vm._s(_vm.helperText))]
-    )
+    _vm.helperText
+      ? _c(
+          "p",
+          {
+            staticClass: "copy--small copy--italic input__helper-text",
+            attrs: { id: "helper-text" }
+          },
+          [_vm._v(_vm._s(_vm.helperText))]
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = []
@@ -9877,23 +9916,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "div",
+    "main",
+    { staticClass: "container--core container" },
     [
+      _c("h1", { staticClass: "copy--center" }, [_vm._v("Register")]),
+      _vm._v(" "),
       _vm._m(0),
-      _vm._v(" "),
-      _c("h1", [_vm._v("Register")]),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v(
-          "If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events."
-        )
-      ]),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v(
-          "If you're a fan, there's nothing you can do with an account that you can't do without one."
-        )
-      ]),
       _vm._v(" "),
       _vm._m(1),
       _vm._v(" "),
@@ -9912,105 +9940,133 @@ var render = function() {
               }
             },
             [
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("Input", {
-                    attrs: {
-                      name: "email",
-                      value: _vm.email,
-                      type: "email",
-                      required: true,
-                      errors: _vm.errors
-                    },
-                    on: { update: _vm.updateValue }
-                  })
-                ],
-                1
-              ),
+              _c("div", { staticClass: "form-group row between-md" }, [
+                _c(
+                  "div",
+                  { staticClass: "col-xxs-12" },
+                  [
+                    _c("h3", { staticClass: "copy--center" }, [
+                      _vm._v("Account Information")
+                    ]),
+                    _vm._v(" "),
+                    _c("Input", {
+                      attrs: {
+                        name: "email",
+                        value: _vm.email,
+                        type: "email",
+                        required: true,
+                        errors: _vm.errors
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c("Input", {
+                      attrs: {
+                        name: "password",
+                        value: _vm.password,
+                        type: "password",
+                        required: true,
+                        errors: _vm.errors,
+                        helperText:
+                          "Passwords must be at least 6 characters long."
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c("Input", {
+                      attrs: {
+                        name: "password_confirmation",
+                        value: _vm.password_confirmation,
+                        type: "password",
+                        required: true,
+                        errors: _vm.errors,
+                        errorMsg: "Passwords must match"
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                )
+              ]),
               _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("Input", {
-                    attrs: {
-                      name: "password",
-                      value: _vm.password,
-                      type: "password",
-                      required: true,
-                      errors: _vm.errors,
-                      helperText:
-                        "Passwords must be at least 6 characters long."
-                    },
-                    on: { update: _vm.updateValue }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("Input", {
-                    attrs: {
-                      name: "password_confirmation",
-                      value: _vm.password_confirmation,
-                      type: "password",
-                      required: true,
-                      errors: _vm.errors,
-                      errorMsg: "Passwords must match"
-                    },
-                    on: { update: _vm.updateValue }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c("Input", {
-                attrs: {
-                  name: "province",
-                  value: _vm.province,
-                  type: "select",
-                  options: _vm.provinces,
-                  required: true,
-                  errors: _vm.errors
-                },
-                on: { update: _vm.updateValue }
-              }),
-              _vm._v(" "),
-              _c("Input", {
-                attrs: {
-                  name: "city",
-                  value: _vm.city,
-                  type: "text",
-                  required: true,
-                  errors: _vm.errors
-                },
-                on: { update: _vm.updateValue }
-              }),
-              _vm._v(" "),
-              _c("Input", {
-                attrs: {
-                  name: "timezone",
-                  value: _vm.timezone,
-                  type: "select",
-                  required: true,
-                  errors: _vm.errors,
-                  options: _vm.timezones
-                },
-                on: { update: _vm.updateValue }
-              }),
-              _vm._v(" "),
-              _c(
-                "button",
-                { staticClass: "btn btn-default", attrs: { type: "submit" } },
-                [_vm._v("Submit")]
-              )
-            ],
-            1
+              _c("div", { staticClass: "form-group row" }, [
+                _c(
+                  "div",
+                  { staticClass: "col-xxs-12" },
+                  [
+                    _c("h3", { staticClass: "copy--center" }, [
+                      _vm._v("Geographic Information")
+                    ]),
+                    _vm._v(" "),
+                    _c("Input", {
+                      attrs: {
+                        name: "timezone",
+                        value: _vm.timezone,
+                        type: "select",
+                        required: true,
+                        errors: _vm.errors,
+                        options: _vm.timezones
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c("Input", {
+                      attrs: {
+                        name: "province",
+                        value: _vm.province,
+                        type: "select",
+                        options: _vm.provinces,
+                        required: true,
+                        errors: _vm.errors
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c("Input", {
+                      attrs: {
+                        name: "city",
+                        value: _vm.city,
+                        type: "text",
+                        required: true,
+                        errors: _vm.errors
+                      },
+                      on: { update: _vm.updateValue }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _vm._m(2)
+              ])
+            ]
           )
         : _vm._e()
     ],
@@ -10022,10 +10078,33 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
+    return _c("p", { staticClass: "copy--center copy--italic" }, [
+      _vm._v("\n        Already have an account?\n        "),
+      _c("a", { attrs: { href: "/login" } }, [_vm._v("Log-In")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "copy" }, [
       _c("p", [
-        _vm._v("\n            Have an Account?\n            "),
-        _c("a", { attrs: { href: "/login" } }, [_vm._v("Log-In")])
+        _vm._v(
+          "If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events."
+        )
+      ]),
+      _vm._v(" "),
+      _c("p", [
+        _vm._v(
+          "If you're a fan, there's nothing you can do with an account that you can't do without one."
+        )
+      ]),
+      _vm._v(" "),
+      _c("p", { staticClass: "copy--italic" }, [
+        _c("em", [_vm._v("IMPORTANT:")]),
+        _vm._v(
+          " This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses."
+        )
       ])
     ])
   },
@@ -10033,10 +10112,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "copy--italic" }, [
-      _c("em", [_vm._v("IMPORTANT:")]),
-      _vm._v(
-        " This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses."
+    return _c("div", { staticClass: "col-xxs-12" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-default", attrs: { type: "submit" } },
+        [_vm._v("Sign Up")]
       )
     ])
   }

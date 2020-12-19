@@ -19,6 +19,17 @@ h6 {
 
 h1 {
     font-size: 5.6rem;
+    margin-bottom: 0;
+}
+a {
+    text-decoration: underline;
+    color: inherit;
+}
+h2 {
+    font-size: 4.4rem;
+}
+h3 {
+    font-size: 3.6rem;
 }
 
 p {
@@ -34,10 +45,20 @@ em {
 }
 
 .copy {
+    margin-top: spacing(6);
     &--italic {
         font-style: italic;
     }
     &--small {
         font-size: 1.4rem;
+    }
+    &--center {
+        text-align: center;
+    }
+    &--large {
+        font-size: 2rem;
+    }
+    &--error {
+        color: $accessible-red;
     }
 }
