@@ -1,8 +1,11 @@
 import Errors from "./errors";
+import store from '../store'
 
 class Form {
-    constructor(data) {
+    constructor(data, route, destination) {
         this.originalData = data;
+        this.route = route;
+        this.destination = destination;
         for (let field in data) {
             this[field] = data[field];
         }
@@ -22,18 +25,23 @@ class Form {
         }
         this.errors.clear();
     }
-    submit(requestType, url) {
-        return new Promise((resolve, reject) => {
-            axios[requestType](url, this.data())
-                .then(response => {
-                    this.onSuccess(response.data);
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    this.onFail(error.response.data);
-                    reject(error.response.data);
-                });
-        });
+    verifyPasswords() {
+        return this.password === this.password_confirmation;
+    }
+    checkRequiredFields() {
+        const ErrorClass = new Errors(this.originalData);
+        const errors = ErrorClass.checkFields();
+        if (errors.length) {
+            return errors;
+        }
+        return [];
+    }
+    async submitForm() {
+        const resp = await store.dispatch(this.route, this.originalData)
+        if (resp.status === 201) {
+            return { status: 'success' };
+        }
+        return { status: 'error', error: resp.error };
     }
 
     onSuccess(data) {
@@ -41,7 +49,7 @@ class Form {
         this.reset();
     }
     onFail(errors) {
-        console.log(errors);
+
         this.errors.record(errors.errors);
     }
 }

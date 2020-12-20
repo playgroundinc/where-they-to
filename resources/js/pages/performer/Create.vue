@@ -1,6 +1,7 @@
 <template>
-    <div class="main">
-        <h1>Create Performer profile</h1>
+    <div>
+        <main class="container container--core">
+        <h1 class="copy--center">Create Performer Profile</h1>
         <ErrorsContainer :errors="errors" />
         <form
             novalidate
@@ -24,7 +25,6 @@
                 :errors="errors"
                 v-on:update="updateValue"
             />
-            <Input name="submit" value="Create Performer" type="submit" />
             <Input
                 v-for="(social, index) in socialMedia"
                 v-bind:key="index"
@@ -33,7 +33,10 @@
                 type="text"
                 :errors="errors"
             />
+            <Input name="submit" value="Create Performer" type="submit" />
+
         </form>
+        </main>
     </div>
 </template>
 

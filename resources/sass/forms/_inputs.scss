@@ -1,0 +1,37 @@
+.input {
+    display: block;
+    width: 100%;
+    padding: 10px 10px 10px 6px;
+    border: none;
+    border-bottom: 2px solid #393e41;
+    appearance: none;
+    border-radius: 0;
+    &[aria-invalid="true"] {
+        + .input__error-msg {
+            display: block;
+        }
+        ~ .input__helper-text {
+            display: none;
+        }
+    }
+    &__error-msg {
+        display: none;
+        padding-top: 6px;
+        margin: 0;
+    }
+    &__helper-text {
+        margin: 0;
+        padding-top: 6px;
+    }
+    &:focus {
+        outline: 0;
+        border-bottom: 2px solid slateblue;
+    }
+    &__container {
+        margin-top: 18px;
+        padding: 0 10px;
+    }
+    &__default {
+        opacity: 0;
+    }
+}

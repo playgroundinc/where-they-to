@@ -8,21 +8,14 @@ export default new Vuex.Store({
         status: "",
         user: 0,
         token: localStorage.getItem("token") || "",
-        events: [],
-        performers: [],
-        venues: [],
-        families: [],
-        performerTypes: [],
-        eventTypes: []
     },
     actions: {
         login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("auth_request");
-                const { user } = data;
                 axios({
                     url: "http://127.0.0.1:8000/api/auth/login",
-                    data: user,
+                    data,
                     method: "POST"
                 })
                     .then(resp => {
@@ -84,10 +77,6 @@ export default new Vuex.Store({
                 axios
                     .get(`http://127.0.0.1:8000/api/${route}`)
                     .then(resp => {
-                        commit("set_state", {
-                            name: route,
-                            value: resp.data
-                        });
                         resolve(resp);
                         return resp.data;
                     })

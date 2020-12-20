@@ -14,6 +14,8 @@
             :value="value"
             :aria-invalid="invalid"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="descendLabel"
         ></textarea>
         <select
             v-else-if="type === 'select'"
@@ -27,7 +29,7 @@
             v-on:focus="floatLabel"
             v-on:blur="descendLabel"
         >
-            <option default="true" value="" disabled></option>
+            <option class="input__default" default="true" value="" disabled></option>
             <option
                 v-for="(option, index) in options"
                 :value="index"

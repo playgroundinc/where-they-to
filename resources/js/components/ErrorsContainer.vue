@@ -1,6 +1,5 @@
 <template>
     <div class="errors" v-if="errors.length > 0">
-        <h2 class="copy--center">Whoops!</h2>
         <p class="copy--center">We found the following <strong class="copy--large copy--error">{{ errors.length }}</strong> errors in this form.</p>
         <ul class="errors__list row center-xxs bottom-xxs"> 
             <li class="errors__single col-md-2 col-xxs-3" v-for="error in errors" v-bind:key="error">

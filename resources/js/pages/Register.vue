@@ -1,7 +1,7 @@
 <template>
     <main class="container--core container">
         <h1 class="copy--center">Register</h1>
-        <p class="copy--center copy--italic">
+        <p class="copy--center copy--italic subtitle">
             Already have an account?
             <a href="/login">Log-In</a>
         </p>
@@ -69,20 +69,21 @@
                     </div>
                     <div class="col-md-6">
                         <Input
-                            name="province"
-                            :value="province"
-                            type="select"
-                            :options="provinces"
+                            name="city"
+                            :value="city"
+                            type="text"
                             :required="true"
                             :errors="errors"
                             v-on:update="updateValue"
                         />
+                        
                     </div>
                     <div class="col-md-6"> 
                         <Input
-                            name="city"
-                            :value="city"
-                            type="text"
+                            name="province"
+                            :value="province"
+                            type="select"
+                            :options="provinces"
                             :required="true"
                             :errors="errors"
                             v-on:update="updateValue"
@@ -99,7 +100,7 @@
 import { mapState } from "vuex";
 import Input from "../components/Input";
 import ErrorsContainer from "../components/ErrorsContainer";
-import Errors from "../core/errors";
+import Form from "../core/form";
 import Location from "../Location";
 export default {
     data() {
@@ -112,7 +113,7 @@ export default {
             country: "CA",
             timezone: "",
             errors: [],
-            success: false
+            valid: this.errors.length,
         };
     },
     computed: {
@@ -134,13 +135,11 @@ export default {
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
         },
-        registerUser: function(data) {
-            this.$store
-                .dispatch("register", data)
-                .then(resp => {
-                    this.$router.push("/dashboard");
-                })
-                .catch(err => console.log(err));
+        registerUser: async function(FormClass) {
+            const resp = await FormClass.submitForm();
+            if (resp.status === 'success') {
+                this.$router.push('/dashboard');
+            }
         },
         register: function() {
             let data = {
@@ -152,25 +151,17 @@ export default {
                 province: this.province,
                 timezone: this.timezone
             };
-            const match = this.verifyPasswords();
+            const FormClass = new Form(data, "register");
+            const match = FormClass.verifyPasswords();
             if (match) {
-                let valid = this.checkRequiredFields(data);
-                this.registerUser(data);
+                this.errors = FormClass.checkRequiredFields();
+                if (this.valid) {
+                    this.registerUser(FormClass);
+                }
                 return;
             }
             this.errors.push("password_confirmation");
         },
-        verifyPasswords: function() {
-            return this.password === this.password_confirmation;
-        },
-        checkRequiredFields: function(data) {
-            const errors = new Errors(data);
-            this.errors = errors.checkFields();
-            if (this.errors.length) {
-                return false;
-            }
-            return true;
-        }
     }
 };
 </script>

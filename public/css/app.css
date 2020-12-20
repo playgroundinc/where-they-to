@@ -1648,8 +1648,16 @@ em {
   color: #cd2026;
 }
 
+.subtitle {
+  margin: 6px 0 0;
+}
+
 .form-group {
   margin-top: 60px;
+}
+
+.form-group:first-child {
+  margin-top: 30px;
 }
 
 .input {
@@ -1693,6 +1701,10 @@ em {
   padding: 0 10px;
 }
 
+.input__default {
+  opacity: 0;
+}
+
 .label {
   position: relative;
   font-family: "Barlow", sans-serif;
@@ -1727,6 +1739,7 @@ em {
 
 .errors__list {
   padding: 0;
+  margin-bottom: 0;
 }
 
 .errors__single {
@@ -1778,6 +1791,7 @@ em {
   border: 2px solid black;
   background: transparent;
   padding: 18px 0;
+  text-decoration: none;
   position: relative;
   transition: color 0.3s ease-in-out;
   background: transparent;
@@ -1858,5 +1872,13 @@ nav ul li a {
 
 main {
   padding-bottom: 100px;
+}
+
+.content__row {
+  margin-top: 60px;
+}
+
+.content__row:first-child {
+  margin-top: 30px;
 }
 

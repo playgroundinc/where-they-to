@@ -17,3 +17,10 @@
 main {
     padding-bottom: 100px;
 }
+
+.content__row {
+    margin-top: spacing(10);
+    &:first-child {
+        margin-top: spacing(5);
+    }
+}
