@@ -1780,7 +1780,8 @@ em {
   height: 100%;
 }
 
-.btn {
+.btn,
+.input[type=submit] {
   display: block;
   width: 100%;
   margin: 84px auto 0;
@@ -1797,7 +1798,8 @@ em {
   background: transparent;
 }
 
-.btn::after {
+.btn::after,
+.input[type=submit]::after {
   transition: height 0.3s ease-in-out;
   content: "";
   background: #000;
@@ -1810,15 +1812,18 @@ em {
   z-index: -1;
 }
 
-.btn:hover {
+.btn:hover,
+.input[type=submit]:hover {
   color: white;
 }
 
-.btn:hover::after {
+.btn:hover::after,
+.input[type=submit]:hover::after {
   height: 100%;
 }
 
-.btn:hover {
+.btn:hover,
+.input[type=submit]:hover {
   cursor: pointer;
 }
 
@@ -1841,7 +1846,8 @@ em {
   justify-content: space-between;
 }
 
-.list .list-item--flex .btn {
+.list .list-item--flex .btn,
+.list .list-item--flex .input[type=submit] {
   margin: 20px;
 }
 

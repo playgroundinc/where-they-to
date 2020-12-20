@@ -5433,6 +5433,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -12259,13 +12260,7 @@ var render = function() {
               })
             }),
             _vm._v(" "),
-            _c("Input", {
-              attrs: {
-                name: "submit",
-                value: "Create Performer",
-                type: "submit"
-              }
-            })
+            _vm._m(0)
           ],
           2
         )
@@ -12274,7 +12269,20 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-xxs-12" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-default", attrs: { type: "submit" } },
+        [_vm._v("Create Performer")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 

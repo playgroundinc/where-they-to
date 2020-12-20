@@ -33,8 +33,9 @@
                 type="text"
                 :errors="errors"
             />
-            <Input name="submit" value="Create Performer" type="submit" />
-
+            <div class="col-xxs-12">
+                <button type="submit" class="btn btn-default">Create Performer</button>
+            </div>
         </form>
         </main>
     </div>

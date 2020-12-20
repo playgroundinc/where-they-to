@@ -34,4 +34,7 @@
     &__default {
         opacity: 0;
     }
+    &[type="submit"] {
+        @extend .btn;
+    }
 }
