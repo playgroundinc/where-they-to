@@ -41,10 +41,13 @@ export default {
         };
     },
     computed: {
-        ...mapState(["user", "profile"])
+        ...mapState(["user"])
     },
-    mounted() {
-        this.$store.dispatch("findUser");
+    async mounted() {
+        if (this.user === 0) {
+            await this.$store.dispatch("findUser");
+            console.log(this.user);
+        }
     },
     components: {
         //

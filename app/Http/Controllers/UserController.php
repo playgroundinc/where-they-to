@@ -101,13 +101,6 @@ class UserController extends Controller
 
     public function profile($id) {
 		$user = User::find($id);
-		if ($user['type'] === UserType::VENUE): 
-			$venue = $user->venue;
-			return response()->json(compact('venue'));
-		else: 
-			$performer = $user->performer;
-			return response()->json(compact('performer'));
-		endif;
     }
 
     /**

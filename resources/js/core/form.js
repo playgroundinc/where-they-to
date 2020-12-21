@@ -1,11 +1,12 @@
 import Errors from "./errors";
-import store from '../store'
+import store from '../store';
+import socialMedia from "../core/social-media";
 
 class Form {
-    constructor(data, route, destination) {
+    constructor(data, endpoint, route = null) {
         this.originalData = data;
+        this.endpoint = endpoint;
         this.route = route;
-        this.destination = destination;
         for (let field in data) {
             this[field] = data[field];
         }
@@ -36,8 +37,19 @@ class Form {
         }
         return [];
     }
+    setSocialMedia(socialMedia) {
+        for (let social in socialMedia) {
+            this.originalData[social] = socialMedia[social];
+        }
+
+    }
     async submitForm() {
-        const resp = await store.dispatch(this.route, this.originalData)
+        let resp;
+        if (this.route) {
+            resp = await store.dispatch(this.endpoint, { route: this.route, data: this.originalData })
+        } else {
+            resp = await store.dispatch(this.endpoint, this.originalData)
+        }
         if (resp.status === 201) {
             return { status: 'success' };
         }
@@ -49,7 +61,6 @@ class Form {
         this.reset();
     }
     onFail(errors) {
-
         this.errors.record(errors.errors);
     }
 }

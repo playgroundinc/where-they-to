@@ -16,19 +16,21 @@ use App\SocialLinks;
 
 class PerformerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() 
+	/**
+   * Display a listing of the resource.  
+   * 
+   * @return \Illuminate\Http\Response
+   * 
+   * */
+	public function index() 
     {
-        //
+		//
+	
         $performers = Performer::all();
         return response()->json($performers, 200);
     }
 
-    public function createSocialLinks($request) {
+	public function createSocialLinks($request) {
 		$attributes = $request->validate([
 			'facebook' => 'nullable',
 			'twitter' => 'nullable',
@@ -38,7 +40,8 @@ class PerformerController extends Controller
 		]);
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
-    }
+	}
+
     /**
      * Store a newly created resource in storage.
      *
@@ -64,7 +67,8 @@ class PerformerController extends Controller
 			}
         }
 		$performer->socialLinks()->save($socialLinks);
-        $user = User::find($request['user']->id);
+
+        $user = User::find($request['user_id']);
 
         if ($user) {
 			$user->performers()->save($performer);

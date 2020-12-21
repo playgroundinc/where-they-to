@@ -25,13 +25,16 @@
                 :errors="errors"
                 v-on:update="updateValue"
             />
-            <Input
-                v-for="(social, index) in socialMedia"
-                v-bind:key="index"
-                :value="social"
-                :name="index"
-                type="text"
+            <SocialMedia 
                 :errors="errors"
+                :facebook="facebook"
+                :instagram="instagram"
+                :twitch="twitch"
+                :twitter="twitter"
+                :tiktok="tiktok"
+                :website="website"
+                :youtube="youtube"
+                v-on:update="updateValue"
             />
             <div class="col-xxs-12">
                 <button type="submit" class="btn btn-default">Create Performer</button>
@@ -43,68 +46,68 @@
 
 <script>
 import { mapState } from "vuex";
-import socialMedia from "../../core/social-media";
+import SocialMedia from "../../components/SocialMedia";
+import socials from "../../core/social-media";
 import Input from "../../components/Input";
-import Errors from "../../core/errors";
-import ErrorContainer from "../../components/ErrorsContainer";
+import Form from "../../core/form";
+import ErrorsContainer from "../../components/ErrorsContainer";
 export default {
     data() {
         return {
             name: "",
             bio: "",
             errors: [],
-            socialMedia: socialMedia
-        };
+            instagram: "",
+            facebook: "",
+            twitter: "",
+            website: "",
+            tiktok: "",
+            twitch: "",
+            youtube: "",
+            socials,
+        }
     },
     computed: {
-        ...mapState(["performers", "user", "performerTypes"])
+        ...mapState(["user"]),
+        valid: function() {
+            return this.errors.length <= 0;
+        }
     },
     components: {
         Input,
-        ErrorContainer
+        ErrorsContainer,
+        SocialMedia,
     },
     methods: {
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
         },
-        createPerformer: function(data) {
-            return console.log(data);
-            this.$store
-                .dispatch("create", { route: "performers", data })
-                .then(async () => {
-                    await this.$store.dispatch("fetchState", {
-                        route: "events"
-                    });
-                    this.$store.dispatch("findUser");
-                    this.$router.push("/dashboard");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
-        addSocialMedia: function(data) {
-            for (let social in this.socialMedia) {
-                data[social] = this.socialMedia[social];
+        createPerformer: async function(FormClass) {
+            const resp = await FormClass.submitForm();
+            if (resp.status === 'success') {
+                await this.$store.dispatch("findUser");
+                this.$router.push('/dashboard');
             }
-            this.createPerformer(data);
         },
-        checkRequiredFields: function(data) {
-            const errors = new Errors(data);
-            this.errors = errors.checkFields();
-            if (this.errors.length) {
-                return false;
+        getSocialMediaData: function() {
+            const socialMediaData = {};
+            for (let social in this.socials) {
+                socialMediaData[social] = this[social];
             }
-            return true;
+            return socialMediaData;
         },
         handleSubmit: function() {
             let data = {
                 name: this.name,
-                bio: this.bio
+                bio: this.bio,
+                user_id: this.user.id,
             };
-            const valid = this.checkRequiredFields(data);
-            if (valid) {
-                this.addSocialMedia(data);
-                return;
+            const FormClass = new Form(data, "create", "performers");
+            this.errors = FormClass.checkRequiredFields(data);
+            if (this.valid) {
+                const socialMediaData = this.getSocialMediaData();
+                FormClass.setSocialMedia(socialMediaData);
+                this.createPerformer(FormClass);
             }
         }
     },

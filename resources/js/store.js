@@ -121,7 +121,7 @@ export default new Vuex.Store({
             const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
                 if (user) {
-                    return axios({
+                    axios({
                         url: "http://127.0.0.1:8000/api/user",
                         headers: {
                             Authorization: `Bearer ${user}`
@@ -130,36 +130,36 @@ export default new Vuex.Store({
                     })
                         .then(res => {
                             if (res.data.user) {
-                                commit("set_state", {
-                                    name: "user",
-                                    value: {
-                                        id: res.data.user.id,
-                                        city: res.data.user.city,
-                                        province: res.data.user.province,
-                                        country: res.data.user.country,
-                                        timezone: res.data.user.timezone,
-                                        events: res.data.user.events || [],
-                                        venues: res.data.user.events || [],
-                                        performers: res.data.user.events || [],
-                                        families: res.data.user.events || []
-                                    }
-                                });
-                                resolve(res);
-                                return res.data.user;
-                            }
                             commit("set_state", {
                                 name: "user",
-                                value: false
+                                value: {
+                                    id: res.data.user.id,
+                                    city: res.data.user.city,
+                                    province: res.data.user.province,
+                                    country: res.data.user.country,
+                                    timezone: res.data.user.timezone,
+                                    events: res.data.user.events || [],
+                                    venues: res.data.user.venues || [],
+                                    performers: res.data.user.performers || [],
+                                    families: res.data.user.families || []
+                                }
                             });
-                        })
-                        .catch(error => {
-                            commit("set_state", {
-                                name: "user",
-                                value: null
-                            });
-                            reject(error);
-                            return new Error(error);
+                            resolve(res);
+                            return res.data.user;
+                        }
+                        commit("set_state", {
+                            name: "user",
+                            value: false
                         });
+                    })
+                    .catch(error => {
+                        commit("set_state", {
+                            name: "user",
+                            value: null
+                        });
+                        reject(error);
+                        return new Error(error);
+                    });
                 }
             });
         },
