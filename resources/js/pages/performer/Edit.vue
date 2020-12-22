@@ -191,7 +191,6 @@
 		},
 		editPerformer: async function(FormClass) {
 			const resp = await FormClass.submitForm();
-			console.log(resp);
 			if (resp.status === 'success') {
 				this.$router.push(`/performers/${this.id}`);
 			}
@@ -210,17 +209,19 @@
 				additionalData.socialLinksId = this.social_links_id;
 				additionalData.tips = this.tips;
 				FormClass.setAdditionalFields(additionalData);
-				console.log('running');
                 this.editPerformer(FormClass);
             }
         },
-		handleDelete: function() {
-			this.$store.dispatch('destroy', {
-				route: 'performers',
-				id: this.id,
-			}).then(()=>{
-				this.$router.push('/performers');
-			});
+		handleDelete: async function() {
+			const data = {
+				user_id: this.user.id,
+			}
+			const DeleteForm = new Form(data, 'destroy', { route: 'performers', id: this.id });
+			const resp = await DeleteForm.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch('findUser');
+				this.$router.push('/dashboard');
+			}
 		},
     },
     async mounted() {

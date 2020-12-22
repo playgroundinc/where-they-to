@@ -96,7 +96,6 @@ export default {
                 data,
             }
             const resp = await this.$store.dispatch('create', payload);
-            console.log(resp);
             if (resp && resp.data && resp.data.addition) {
                 this.updateValue(resp.data.addition);
                 this.getAllPerformerTypes();

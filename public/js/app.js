@@ -4017,14 +4017,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
                 resp = _context2.sent;
-                console.log(resp);
 
                 if (resp && resp.data && resp.data.addition) {
                   this.updateValue(resp.data.addition);
                   this.getAllPerformerTypes();
                 }
 
-              case 7:
+              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -4278,7 +4277,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     updateValue: function updateValue(updateObject) {
-      console.log(updateObject);
       this.$emit("update", updateObject);
     }
   }
@@ -6132,7 +6130,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         bio: this.bio,
         user_id: this.user.id
       };
-      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "create", "performers");
+      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "create", {
+        route: "performers"
+      });
       this.errors = FormClass.checkRequiredFields(data);
 
       if (this.valid) {
@@ -6440,13 +6440,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 2:
                 resp = _context2.sent;
-                console.log(resp);
 
                 if (resp.status === 'success') {
                   this.$router.push("/performers/".concat(this.id));
                 }
 
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -6478,37 +6477,71 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         additionalData.socialLinksId = this.social_links_id;
         additionalData.tips = this.tips;
         FormClass.setAdditionalFields(additionalData);
-        console.log('running');
         this.editPerformer(FormClass);
       }
     },
-    handleDelete: function handleDelete() {
-      var _this2 = this;
+    handleDelete: function () {
+      var _handleDelete = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var data, DeleteForm, resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                data = {
+                  user_id: this.user.id
+                };
+                DeleteForm = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, 'destroy', {
+                  route: 'performers',
+                  id: this.id
+                });
+                _context3.next = 4;
+                return DeleteForm.submitForm();
 
-      this.$store.dispatch('destroy', {
-        route: 'performers',
-        id: this.id
-      }).then(function () {
-        _this2.$router.push('/performers');
-      });
-    }
+              case 4:
+                resp = _context3.sent;
+
+                if (!(resp.status === 'success')) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                _context3.next = 8;
+                return this.$store.dispatch('findUser');
+
+              case 8:
+                this.$router.push('/dashboard');
+
+              case 9:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function handleDelete() {
+        return _handleDelete.apply(this, arguments);
+      }
+
+      return handleDelete;
+    }()
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this2 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _this3.getPerformer();
+              _this2.getPerformer();
 
             case 1:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3);
+      }, _callee4);
     }))();
   }
 });
@@ -7088,7 +7121,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context.prev = _context.next) {
             case 0:
               if (!(_this.user === 0)) {
-                _context.next = 4;
+                _context.next = 3;
                 break;
               }
 
@@ -7096,9 +7129,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               return _this.$store.dispatch("findUser");
 
             case 3:
-              console.log(_this.user);
-
-            case 4:
             case "end":
               return _context.stop();
           }
@@ -34633,7 +34663,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         }).then(function (resp) {
           var token = resp.data.token;
           var user = resp.data.user;
-          console.log(user);
           localStorage.setItem("token", token);
           axios.defaults.headers.common["Authorization"] = token;
           commit("auth_success", {

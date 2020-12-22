@@ -46,7 +46,6 @@ export default {
     async mounted() {
         if (this.user === 0) {
             await this.$store.dispatch("findUser");
-            console.log(this.user);
         }
     },
     components: {

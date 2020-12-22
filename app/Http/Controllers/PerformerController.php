@@ -151,7 +151,7 @@ class PerformerController extends Controller
         //
         $performer = Performer::find($id);
         $user = $performer->user;
-        if ($user->id !== request('user')->id):
+        if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
         $performer->performerTypes()->detach();

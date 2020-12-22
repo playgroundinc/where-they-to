@@ -146,7 +146,7 @@ export default {
                 bio: this.bio,
                 user_id: this.user.id,
             };
-            const FormClass = new Form(data, "create", "performers");
+            const FormClass = new Form(data, "create", { route: "performers" });
             this.errors = FormClass.checkRequiredFields(data);
             if (this.valid) {
                 const additionalData = this.getSocialMediaData();

@@ -117,7 +117,6 @@ export default {
     },
     methods: {
         updateValue: function(updateObject) {
-            console.log(updateObject);
             this.$emit("update", updateObject);
         },
     }
