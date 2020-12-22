@@ -16,4 +16,15 @@
         background-color: $accessible-red;
         border: 1px solid $accessible-red;
     }
+    &--inline {
+        appearance: none;
+        font-family: $main-font;
+        background: transparent;
+        padding: spacing(3);
+        border: 0;
+        transition: border-bottom 0.3s ease-in-out;
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }

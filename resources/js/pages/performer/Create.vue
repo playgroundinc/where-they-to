@@ -25,6 +25,15 @@
                 :errors="errors"
                 v-on:update="updateValue"
             />
+            <Input
+                name="tips"
+                :value="tips"
+                type="textarea"
+                :required="false"
+                :errors="errors"
+                v-on:update="updateValue"
+                helperText="Provide instructions on how people can leave you a tip."
+            />
             <SocialMedia 
                 :errors="errors"
                 :facebook="facebook"
@@ -72,6 +81,7 @@ export default {
             tiktok: "",
             twitch: "",
             youtube: "",
+            tips: "",
             socials,
             performerTypes: [],
         }
@@ -141,6 +151,7 @@ export default {
             if (this.valid) {
                 const additionalData = this.getSocialMediaData();
                 additionalData.performerTypes = this.performerTypes;
+                additionalData.tips = this.tips;
                 FormClass.setAdditionalFields(additionalData);
                 this.createPerformer(FormClass);
             }

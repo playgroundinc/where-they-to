@@ -159,7 +159,7 @@ export default new Vuex.Store({
                             value: null
                         });
                         reject(error);
-                        return new Error(error);
+                        return;
                     });
                 }
             });

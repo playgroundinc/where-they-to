@@ -17,16 +17,17 @@
                     v-on:focus="floatLabel"
                     v-on:blur="descendLabel"
                 />
-                <ul>
-                    <li v-if="searching">Searching...</li>
-                    <li
+                <ul class="autocomplete__list row">
+                    <li class="col-xxs-12 autocomplete__single no-link" v-if="searching">Searching...</li>
+                    <li 
+                        class="autocomplete__single col-xxs-12 col-md-4"
                         v-else-if="matches.length > 0"
                         v-for="match in matches"
                         v-bind:key="match.id"
                     >
-                        <a @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
+                        <a class="autocomplete__single__link" @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
                     </li>
-                    <li v-else-if="query">No results found. <a href="#" @click.prevent="function() { newTerm(query) }">Add a new term.</a></li>
+                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="query">No results found. <a href="#" @click.prevent="function() { newTerm(query) }">Add a new term.</a></li>
                 </ul>
             </div>
         </div>
@@ -91,7 +92,6 @@ export default {
             this.searching = false;
         },
         handleSelect: function(performer) {
-            this.clearQuery();
             this.$emit("selection", performer);
         },
         clearQuery: function() {

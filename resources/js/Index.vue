@@ -38,7 +38,11 @@ export default {
     },
     async mounted() {
         if (this.user === 0) {
-            this.$store.dispatch('findUser');
+            try {
+                this.$store.dispatch('findUser');
+            } catch (err) {
+                return;
+            }
         }
     },
     components: {

@@ -125,7 +125,7 @@ export default {
             return this.location.getProvinces();
         },
         valid() {
-            return this.errors.length;
+            return this.errors.length === 0;
         }
     },
     components: {
@@ -139,6 +139,7 @@ export default {
         registerUser: async function(FormClass) {
             const resp = await FormClass.submitForm();
             if (resp.status === 'success') {
+                await this.$store.dispatch('findUser');
                 this.$router.push('/dashboard');
             }
         },

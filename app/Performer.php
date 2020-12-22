@@ -36,6 +36,7 @@ class Performer extends Model
       'bio',
       'user_id',
       'family_id',
-      'event_id'
+      'event_id',
+      'tips',
     ];
 }

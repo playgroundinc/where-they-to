@@ -5,12 +5,24 @@
         </div>
         <div class="col-md-6 col-xxs-12">
             <Input
+                name="website"
+                :value="website"
+                type="text"
+                :required="false"
+                :errors="errors"
+                v-on:update="updateValue"
+                helperText="Please provide the full url."
+            />
+        </div>
+        <div class="col-md-6 col-xxs-12">
+            <Input
                 name="facebook"
                 :value="facebook"
                 type="text"
                 :required="false"
                 :errors="errors"
                 v-on:update="updateValue"
+                helperText="Please provide your user handle"
             />
         </div>
         <div class="col-md-6 col-xxs-12">
@@ -21,16 +33,7 @@
                 :required="false"
                 :errors="errors"
                 v-on:update="updateValue"
-            />
-        </div>
-        <div class="col-md-6 col-xxs-12">
-            <Input
-                name="twitter"
-                :value="twitter"
-                type="text"
-                :required="false"
-                :errors="errors"
-                v-on:update="updateValue"
+                helperText="Please provide your handle without the @ symbol."
             />
         </div>
         <div class="col-md-6 col-xxs-12">
@@ -41,6 +44,18 @@
                 :required="false"
                 :errors="errors"
                 v-on:update="updateValue"
+                helperText="Please provide your handle without the @ symbol."
+            />
+        </div>
+        <div class="col-md-6 col-xxs-12">
+            <Input
+                name="twitter"
+                :value="twitter"
+                type="text"
+                :required="false"
+                :errors="errors"
+                v-on:update="updateValue"
+                helperText="Please provide your handle without the @ symbol."
             />
         </div>
         <div class="col-md-6 col-xxs-12">
@@ -51,16 +66,7 @@
                 :required="false"
                 :errors="errors"
                 v-on:update="updateValue"
-            />
-        </div>
-        <div class="col-md-6 col-xxs-12">
-            <Input
-                name="website"
-                :value="website"
-                type="text"
-                :required="false"
-                :errors="errors"
-                v-on:update="updateValue"
+                helperText="Please provide your channel's name"
             />
         </div>
         <div class="col-md-6 col-xxs-12">
@@ -71,6 +77,7 @@
                 :required="false"
                 :errors="errors"
                 v-on:update="updateValue"
+                helperText="Please provide your channel's name"
             />
         </div>
     </div>

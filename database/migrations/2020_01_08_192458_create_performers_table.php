@@ -92,6 +92,7 @@ class CreatePerformersTable extends Migration
 			$table->timestamps();
 			$table->string('name');
 			$table->text('bio');
+			$table->text('tips')->nullable();
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families');
 			$table->bigInteger('user_id')->unsigned()->nullable();
@@ -105,6 +106,8 @@ class CreatePerformersTable extends Migration
 			$table->string('instagram')->nullable()->default('');
 			$table->string('twitter')->nullable()->default('');
 			$table->string('website')->nullable()->default('');
+			$table->string('twitch')->nullable()->default('');
+			$table->string('tiktok')->nullable()->default('');
 			$table->string('youtube')->nullable()->default('');
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families')->onDelete('cascade');

@@ -3,5 +3,6 @@ export default {
     instagram: "",
     twitter: "",
     youtube: "",
-    tiktok: ""
+    tiktok: "",
+    website: "",
 };

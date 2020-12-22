@@ -33,7 +33,9 @@ class PerformerController extends Controller
 	public function createSocialLinks($request) {
 		$attributes = $request->validate([
 			'facebook' => 'nullable',
-			'twitter' => 'nullable',
+            'twitter' => 'nullable',
+            'tiktok' => 'nullable',
+            'twitch' => 'nullable',
 			'instagram' => 'nullable',
 			'website' => 'nullable',
 			'youtube' => 'nullable',
@@ -54,7 +56,8 @@ class PerformerController extends Controller
 		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
 			'name' => 'required',
-			'bio' => 'required',
+            'bio' => 'required',
+            'tips' => 'nullable',
         ]);
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
@@ -87,12 +90,7 @@ class PerformerController extends Controller
     {
         //
         $performer = Performer::find($id);
-        $user = User::find($performer->user['id']);
-        $socialLinks = array();
-        if (isset($user)) {
-			$socialLinks = $user->socialLinks;
-        }
-        $platforms = config('enums.platforms');
+        $socialLinks = $performer->socialLinks;
         $family = Family::find($performer->family_id);
         $type = $performer->performerTypes;
         return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
