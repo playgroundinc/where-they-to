@@ -8,6 +8,7 @@
             </button>
             <h2 class="copy--center" v-if="title">{{title}}</h2>
             <p class="copy--center"> {{ copy }}</p>
+            <button v-if="button" class="btn" @click.prevent="handleClick">{{ button }}</button>
         </div>
     </div>
 </template>
@@ -25,11 +26,18 @@ export default {
         open: {
             type: Boolean,
             required: true,
+        },
+        button: {
+            type: String,
+            required: false,
         }
     },
     methods: {
         closeModal: function() {
             this.$emit('close');
+        },
+        handleClick: function() {
+            this.$emit('confirm');
         }
     }
 }

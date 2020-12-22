@@ -92,13 +92,13 @@ class PerformerController extends Controller
         $performer = Performer::find($id);
         $socialLinks = $performer->socialLinks;
         $family = Family::find($performer->family_id);
-        $type = $performer->performerTypes;
-        return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
+        $types = $performer->performerTypes;
+        return response()->json(compact('performer', 'types', 'family', 'socialLinks'));
     }
 
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
-		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+		$socialLinks->update(request(['facebook', 'instagram', 'tiktok','twitter','twitch', 'website', 'youtube']));
 	}
 
     /**
@@ -114,12 +114,12 @@ class PerformerController extends Controller
 		$this->updateSocialLinks(request());
 		$performer = Performer::find($id);
         $user = $performer->user;
-        if ($user->id !== request('user')->id):
+        if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
-        $performer->update(request(['name', 'bio']));
+        $performer->update(request(['name', 'bio', 'tips']));
         $performer->performerTypes()->detach();
-        foreach (request('performerType') as $performerTypeId):
+        foreach (request('performerTypes') as $performerTypeId):
 			$performerType = PerformerType::find($performerTypeId);
 			$performer->performerTypes()->attach($performerType);
         endforeach;

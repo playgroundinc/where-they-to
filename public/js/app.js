@@ -3460,6 +3460,13 @@ __webpack_require__.r(__webpack_exports__);
       floating: "sink"
     };
   },
+  watch: {
+    value: function value(val, oldVal) {
+      if (val !== '') {
+        this.floating = 'float';
+      }
+    }
+  },
   methods: {
     removeError: function removeError() {
       var index = this.errors.indexOf(this.name);
@@ -3818,6 +3825,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     title: {
@@ -3831,11 +3839,18 @@ __webpack_require__.r(__webpack_exports__);
     open: {
       type: Boolean,
       required: true
+    },
+    button: {
+      type: String,
+      required: false
     }
   },
   methods: {
     closeModal: function closeModal() {
       this.$emit('close');
+    },
+    handleClick: function handleClick() {
+      this.$emit('confirm');
     }
   }
 });
@@ -6169,6 +6184,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _core_social_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/social-media */ "./resources/js/core/social-media.js");
+/* harmony import */ var _core_form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/form */ "./resources/js/core/form.js");
+/* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/Input */ "./resources/js/components/Input.vue");
+/* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
+/* harmony import */ var _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../components/SocialMedia */ "./resources/js/components/SocialMedia.vue");
+/* harmony import */ var _components_PerformerTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/PerformerTypes */ "./resources/js/components/PerformerTypes.vue");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../components/Modal */ "./resources/js/components/Modal.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -6227,6 +6249,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+ // Classes.
+
+
+ // Components
+
+
+
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -6234,154 +6290,225 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       id: this.$route.params.id,
       name: '',
       bio: '',
+      tips: '',
       facebook: '',
       instagram: '',
       twitter: '',
       youtube: '',
-      website: ''
+      website: '',
+      twitch: '',
+      tiktok: '',
+      performerTypes: [],
+      errors: [],
+      social_links_id: '',
+      socials: _core_social_media__WEBPACK_IMPORTED_MODULE_2__["default"],
+      confirmModal: false
     };
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['performers', 'user', 'performerTypes'])), {}, {
-    performer: {
-      get: function get() {
-        var _this = this;
-
-        var performer = this.performers.find(function (entry) {
-          return Number(entry.id) === Number(_this.id);
-        });
-
-        if (performer) {
-          this.name = performer.name;
-          this.bio = performer.bio;
-          this.facebook = performer.social_links.facebook;
-          this.instagram = performer.social_links.instagram;
-          this.twitter = performer.social_links.twitter;
-          this.website = performer.social_links.website;
-          this.youtube = performer.social_links.youtube;
-        }
-
-        return performer;
-      }
-    },
-    types: {
-      get: function get() {
-        console.log(this.performer);
-
-        if (this.performer) {
-          return this.performer.type;
-        }
-
-        return [];
-      },
-      set: function set(value) {
-        if (this.performer) {
-          this.performer.type = value;
-        }
-      }
-    },
-    filteredPerformerTypes: function filteredPerformerTypes() {
-      var _this2 = this;
-
-      if (this.performerTypes && this.performer) {
-        return this.performerTypes.filter(function (entry) {
-          return !_this2.performer.type.find(function (item) {
-            return Number(item.id) === Number(entry.id);
-          });
-        });
-      }
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])), {}, {
+    valid: function valid() {
+      return this.errors.length === 0;
     }
   }),
+  components: {
+    Input: _components_Input__WEBPACK_IMPORTED_MODULE_4__["default"],
+    ErrorsContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_5__["default"],
+    PerformerTypes: _components_PerformerTypes__WEBPACK_IMPORTED_MODULE_7__["default"],
+    SocialMedia: _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__["default"],
+    Modal: _components_Modal__WEBPACK_IMPORTED_MODULE_8__["default"]
+  },
   methods: {
-    handleSubmit: function handleSubmit() {
-      var _this3 = this;
+    updateValue: function updateValue(updateObject) {
+      this[updateObject.name] = updateObject.value;
+    },
+    setStates: function setStates(fields, object) {
+      var _this = this;
 
+      if (fields.length > 0) {
+        fields.forEach(function (field) {
+          if (object[field]) {
+            _this[field] = object[field];
+          }
+        });
+      }
+    },
+    addToArray: function addToArray(updateObject, currentArray) {
+      if (!currentArray.includes(updateObject.value)) {
+        currentArray.push(updateObject.value);
+        this[updateObject.name] = currentArray;
+      }
+    },
+    deleteFromArray: function deleteFromArray(updateObject, currentArray) {
+      if (currentArray.includes(updateObject.value)) {
+        var index = currentArray.indexOf(updateObject.value);
+
+        if (index > -1) {
+          currentArray.splice(index, 1);
+          this[updateObject.name] = currentArray;
+        }
+      }
+    },
+    updateArray: function updateArray(updateObject) {
+      var currentArray = this[updateObject.name];
+
+      if (currentArray && updateObject.add) {
+        this.addToArray(updateObject, currentArray);
+      }
+
+      if (currentArray && !updateObject.add) {
+        this.deleteFromArray(updateObject, currentArray);
+      }
+    },
+    setPerformer: function setPerformer(performer) {
+      var fields = ['name', 'bio', 'tips'];
+      this.setStates(fields, performer);
+      this.social_links_id = performer.social_links.id;
+    },
+    setSocialLinks: function setSocialLinks(socialLinks) {
+      var fields = ['facebook', 'instagram', 'tiktok', 'twitch', 'twitter', 'youtube', 'website'];
+      this.setStates(fields, socialLinks);
+    },
+    getSocialMediaData: function getSocialMediaData() {
+      var socialMediaData = {};
+
+      for (var social in this.socials) {
+        socialMediaData[social] = this[social];
+      }
+
+      return socialMediaData;
+    },
+    setPerformerTypes: function setPerformerTypes(performerTypes) {
+      if (performerTypes.length > 0) {
+        this.performerTypes = performerTypes.map(function (type) {
+          return type.id;
+        });
+        return;
+      }
+    },
+    getPerformer: function () {
+      var _getPerformer = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return this.$store.dispatch('fetchSingle', {
+                  route: "performers",
+                  id: this.id
+                });
+
+              case 2:
+                resp = _context.sent;
+
+                if (!(resp.status === 200)) {
+                  _context.next = 8;
+                  break;
+                }
+
+                this.setPerformer(resp.data.performer);
+                this.setSocialLinks(resp.data.socialLinks);
+                this.setPerformerTypes(resp.data.types);
+                return _context.abrupt("return");
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function getPerformer() {
+        return _getPerformer.apply(this, arguments);
+      }
+
+      return getPerformer;
+    }(),
+    toggleModal: function toggleModal() {
+      this.confirmModal = !this.confirmModal;
+    },
+    editPerformer: function () {
+      var _editPerformer = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(FormClass) {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return FormClass.submitForm();
+
+              case 2:
+                resp = _context2.sent;
+                console.log(resp);
+
+                if (resp.status === 'success') {
+                  this.$router.push("/performers/".concat(this.id));
+                }
+
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function editPerformer(_x) {
+        return _editPerformer.apply(this, arguments);
+      }
+
+      return editPerformer;
+    }(),
+    handleSubmit: function handleSubmit() {
       var data = {
         name: this.name,
         bio: this.bio,
-        performerType: [this.performerType],
-        facebook: this.facebook,
-        instagram: this.instagram,
-        twitter: this.twitter,
-        website: this.website,
-        youtube: this.youtube,
-        socialLinksId: this.performer.social_links.id
+        user_id: this.user.id
       };
-      var route = "performers";
-      this.$store.dispatch('edit', {
-        route: route,
-        id: this.id,
-        data: data
-      }).then(function () {
-        _this3.$router.push("/performers/".concat(_this3.id));
-      })["catch"](function (err) {
-        console.log(err);
+      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "edit", {
+        route: "performers",
+        id: this.id
       });
+      this.errors = FormClass.checkRequiredFields(data);
+
+      if (this.valid) {
+        var additionalData = this.getSocialMediaData();
+        additionalData.performerTypes = this.performerTypes;
+        additionalData.socialLinksId = this.social_links_id;
+        additionalData.tips = this.tips;
+        FormClass.setAdditionalFields(additionalData);
+        console.log('running');
+        this.editPerformer(FormClass);
+      }
     },
     handleDelete: function handleDelete() {
-      var _this4 = this;
+      var _this2 = this;
 
       this.$store.dispatch('destroy', {
         route: 'performers',
         id: this.id
       }).then(function () {
-        _this4.$router.push('/performers');
-      });
-    },
-    addPerformerType: function addPerformerType(performerType_id) {
-      var _this5 = this;
-
-      var data = {
-        performerType_id: performerType_id
-      };
-      this.$store.dispatch('edit', {
-        route: 'performers',
-        id: "".concat(this.id, "/performerType"),
-        data: data
-      }).then(function (resp) {
-        _this5.$store.dispatch('fetchState', {
-          route: 'performers'
-        });
-      });
-    },
-    removePerformerType: function removePerformerType(performerType_id) {
-      var _this6 = this;
-
-      var data = {
-        performerType_id: performerType_id
-      };
-      this.$store.dispatch('destroy', {
-        route: 'performers',
-        id: "".concat(this.id, "/performerType"),
-        data: data
-      }).then(function (resp) {
-        _this6.$store.dispatch('fetchState', {
-          route: 'performers'
-        });
+        _this2.$router.push('/performers');
       });
     }
   },
   mounted: function mounted() {
-    var _this7 = this;
+    var _this3 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              if (_this7.user === 0) {
-                _this7.$store.dispatch('findUser');
-              }
+              _this3.getPerformer();
 
-              _this7.$store.dispatch('fetchState', {
-                route: 'performerTypes'
-              });
-
-            case 2:
+            case 1:
             case "end":
-              return _context.stop();
+              return _context3.stop();
           }
         }
-      }, _callee);
+      }, _callee3);
     }))();
   }
 });
@@ -6471,6 +6598,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       performer: [],
       socialLinks: [],
       family: [],
+      types: [],
       tipModal: false
     };
   },
@@ -6484,42 +6612,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     SocialLinks: _components_SocialLinks__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   mounted: function mounted() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var date, resp;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              date = new Date();
-              _context.next = 3;
-              return _this.$store.dispatch('fetchSingle', {
-                route: "performers",
-                id: _this.id
-              });
-
-            case 3:
-              resp = _context.sent;
-              console.log(resp);
-
-              if (resp.status === 200) {
-                _this.performer = resp.data.performer;
-                _this.family = resp.data.family;
-                _this.socialLinks = resp.data.socialLinks;
-              } // const resp = await axios.get(`http://127.0.0.1:8000/api/performers/${this.id}/events`);
-              // this.events = resp.data.events;
-
-
-            case 6:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
+    this.getPerformer();
   },
   methods: {
+    getPerformer: function () {
+      var _getPerformer = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return this.$store.dispatch('fetchSingle', {
+                  route: "performers",
+                  id: this.id
+                });
+
+              case 2:
+                resp = _context.sent;
+
+                if (resp.status === 200) {
+                  this.performer = resp.data.performer;
+                  this.types = resp.data.types;
+                  this.family = resp.data.family;
+                  this.socialLinks = resp.data.socialLinks;
+                }
+
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function getPerformer() {
+        return _getPerformer.apply(this, arguments);
+      }
+
+      return getPerformer;
+    }(),
     toggleModal: function toggleModal() {
       this.tipModal = !this.tipModal;
     }
@@ -10573,7 +10705,23 @@ var render = function() {
           _vm._v(" "),
           _c("p", { staticClass: "copy--center" }, [
             _vm._v(" " + _vm._s(_vm.copy))
-          ])
+          ]),
+          _vm._v(" "),
+          _vm.button
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.handleClick($event)
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.button))]
+              )
+            : _vm._e()
         ])
       ])
     : _vm._e()
@@ -13662,311 +13810,140 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _vm.id
     ? _c("div", { staticClass: "main" }, [
-        _c("h1", [_vm._v("Edit Performer profile")]),
-        _vm._v(" "),
         _c(
-          "form",
-          {
-            attrs: { action: "'/performers/' + id" },
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.handleSubmit($event)
-              }
-            }
-          },
+          "main",
+          { staticClass: "container container--core" },
           [
-            _c("div", [
-              _c("label", { staticClass: "label", attrs: { for: "name" } }, [
-                _vm._v("Name")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.name,
-                    expression: "name"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", name: "name" },
-                domProps: { value: _vm.name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.name = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "bio" } }, [
-                _vm._v("Bio")
-              ]),
-              _vm._v(" "),
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.bio,
-                    expression: "bio"
-                  }
-                ],
-                staticClass: "input",
+            _c("h1", { staticClass: "copy--center" }, [
+              _vm._v("Create Performer Profile")
+            ]),
+            _vm._v(" "),
+            _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
                 attrs: {
-                  name: "bio",
-                  id: "bio",
-                  cols: "30",
-                  rows: "10",
-                  placeholder: "Performer bio"
+                  novalidate: "",
+                  method: "POST",
+                  action: "/performers"
                 },
-                domProps: { value: _vm.bio },
                 on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.bio = $event.target.value
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.handleSubmit($event)
                   }
                 }
-              })
+              },
+              [
+                _c("Input", {
+                  attrs: {
+                    name: "name",
+                    value: _vm.name,
+                    type: "text",
+                    required: true,
+                    errors: _vm.errors
+                  },
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("Input", {
+                  attrs: {
+                    name: "bio",
+                    value: _vm.bio,
+                    type: "textarea",
+                    required: true,
+                    errors: _vm.errors
+                  },
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("Input", {
+                  attrs: {
+                    name: "tips",
+                    value: _vm.tips,
+                    type: "textarea",
+                    required: false,
+                    errors: _vm.errors,
+                    helperText:
+                      "Provide instructions on how people can leave you a tip."
+                  },
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("SocialMedia", {
+                  attrs: {
+                    errors: _vm.errors,
+                    facebook: _vm.facebook,
+                    instagram: _vm.instagram,
+                    twitch: _vm.twitch,
+                    twitter: _vm.twitter,
+                    tiktok: _vm.tiktok,
+                    website: _vm.website,
+                    youtube: _vm.youtube
+                  },
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("PerformerTypes", {
+                  attrs: {
+                    errors: _vm.errors,
+                    performerTypes: _vm.performerTypes
+                  },
+                  on: { update: _vm.updateArray }
+                }),
+                _vm._v(" "),
+                _vm._m(0)
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "copy--center" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn--inline copy--center",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.toggleModal($event)
+                    }
+                  }
+                },
+                [_vm._v("Delete Profile")]
+              )
             ]),
             _vm._v(" "),
-            _c("h2", [_vm._v("Performer Types")]),
-            _vm._v(" "),
-            _vm.types
-              ? _c(
-                  "ul",
-                  { staticClass: "list container--inner" },
-                  _vm._l(_vm.types, function(type) {
-                    return _c(
-                      "li",
-                      {
-                        key: type.id,
-                        staticClass: "list-item list-item--flex"
-                      },
-                      [
-                        _c("p", {
-                          domProps: { textContent: _vm._s(type.name) }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.removePerformerType(type.id)
-                              }
-                            }
-                          },
-                          [_vm._v("Remove Type")]
-                        )
-                      ]
-                    )
-                  }),
-                  0
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _c("h2", [_vm._v("Add New Type")]),
-            _vm._v(" "),
-            _vm.filteredPerformerTypes
-              ? _c("fieldset", [
-                  _c(
-                    "legend",
-                    { staticClass: "label", attrs: { for: "newPerformers" } },
-                    [_vm._v("Performer Types")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "list" },
-                    _vm._l(_vm.filteredPerformerTypes, function(performerType) {
-                      return _c(
-                        "li",
-                        { key: performerType.id, staticClass: "list-item" },
-                        [
-                          _c("p", [_vm._v(_vm._s(performerType.name))]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.addPerformerType(performerType.id)
-                                }
-                              }
-                            },
-                            [_vm._v("Add Type")]
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", [
-              _c("h2", [_vm._v("Edit Social Links")]),
-              _vm._v(" "),
-              _c(
-                "label",
-                { staticClass: "label", attrs: { for: "facebook" } },
-                [_vm._v("Facebook")]
-              ),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.facebook,
-                    expression: "facebook"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", id: "facebook", name: "facebook" },
-                domProps: { value: _vm.facebook },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.facebook = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c(
-                "label",
-                { staticClass: "label", attrs: { for: "instagram" } },
-                [_vm._v("Instagram")]
-              ),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.instagram,
-                    expression: "instagram"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", id: "instagram", name: "instagram" },
-                domProps: { value: _vm.instagram },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.instagram = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
-                _vm._v("Twitter")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.twitter,
-                    expression: "twitter"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", id: "twitter", name: "twitter" },
-                domProps: { value: _vm.twitter },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.twitter = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
-                _vm._v("Youtube")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.youtube,
-                    expression: "youtube"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", id: "youtube", name: "youtube" },
-                domProps: { value: _vm.youtube },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.youtube = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { staticClass: "label", attrs: { for: "website" } }, [
-                _vm._v("Website")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.website,
-                    expression: "website"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { type: "text", id: "website", name: "website" },
-                domProps: { value: _vm.website },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.website = $event.target.value
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "btn",
-              attrs: { type: "submit", value: "Edit Profile" }
+            _c("Modal", {
+              attrs: {
+                title: "Are you sure?",
+                copy:
+                  "This action will permanently delete this performer profile and any families and/or events created by it.",
+                open: _vm.confirmModal,
+                button: "Confirm Delete"
+              },
+              on: { confirm: _vm.handleDelete, close: _vm.toggleModal }
             })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn--danger", on: { click: _vm.handleDelete } },
-          [_vm._v("Delete Profile")]
+          ],
+          1
         )
       ])
     : _vm._e()
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-xxs-12" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-default", attrs: { type: "submit" } },
+        [_vm._v("Update Performer")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -32585,6 +32562,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_social_media__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/social-media */ "./resources/js/core/social-media.js");
 
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -32675,10 +32658,9 @@ var Form = /*#__PURE__*/function () {
                 }
 
                 _context.next = 3;
-                return _store__WEBPACK_IMPORTED_MODULE_2__["default"].dispatch(this.endpoint, {
-                  route: this.route,
+                return _store__WEBPACK_IMPORTED_MODULE_2__["default"].dispatch(this.endpoint, _objectSpread(_objectSpread({}, this.route), {}, {
                   data: this.originalData
-                });
+                }));
 
               case 3:
                 resp = _context.sent;
@@ -32693,7 +32675,7 @@ var Form = /*#__PURE__*/function () {
                 resp = _context.sent;
 
               case 9:
-                if (!(resp.status === 201)) {
+                if (!(resp.status === 201 || resp.status === 200)) {
                   _context.next = 11;
                   break;
                 }

@@ -101,6 +101,13 @@ export default {
             floating: "sink",
         }
     },
+    watch: {
+        value: function(val, oldVal) {
+            if (val !== '') {
+                this.floating = 'float';
+            }
+        }, 
+    },
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);

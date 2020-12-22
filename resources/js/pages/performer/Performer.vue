@@ -58,6 +58,7 @@ export default {
 			performer: [],
 			socialLinks: [],
 			family: [],
+			types: [],
 			tipModal: false,
 		}
     },
@@ -71,19 +72,19 @@ export default {
 		Modal,
 		SocialLinks,
 	},
-	async mounted() {
-		const date = new Date();
-		const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
-		console.log(resp);
-		if (resp.status === 200) {
-			this.performer = resp.data.performer;
-			this.family = resp.data.family;
-			this.socialLinks = resp.data.socialLinks;
-		}
-		// const resp = await axios.get(`http://127.0.0.1:8000/api/performers/${this.id}/events`);
-		// this.events = resp.data.events;
+	mounted() {
+		this.getPerformer();
 	},
 	methods: {
+		getPerformer: async function() {
+			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
+			if (resp.status === 200) {
+				this.performer = resp.data.performer;
+				this.types = resp.data.types;
+				this.family = resp.data.family;
+				this.socialLinks = resp.data.socialLinks;
+			}
+		},
 		toggleModal: function() {
 			this.tipModal = !this.tipModal;
 		}

@@ -45,11 +45,11 @@ class Form {
     async submitForm() {
         let resp;
         if (this.route) {
-            resp = await store.dispatch(this.endpoint, { route: this.route, data: this.originalData })
+            resp = await store.dispatch(this.endpoint, { ...this.route, data: this.originalData })
         } else {
             resp = await store.dispatch(this.endpoint, this.originalData)
         }
-        if (resp.status === 201) {
+        if (resp.status === 201 || resp.status === 200) {
             return { status: 'success' };
         }
         return { status: 'error', error: resp.error };
