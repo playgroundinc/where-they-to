@@ -61,6 +61,7 @@
       login: async function(FormClass) {
         const resp  = await FormClass.submitForm();
         if (resp.status === 'success') {
+          await this.$store.dispatch('findUser');
           this.$router.push('/dashboard');
         }
       },

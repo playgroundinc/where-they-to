@@ -16,7 +16,6 @@
             autocomplete="off"
             novalidate
             @submit.prevent="register"
-            v-if="!success"
             method="post"
         >
             <div class="form-group row between-md">
@@ -113,7 +112,6 @@ export default {
             country: "CA",
             timezone: "",
             errors: [],
-            valid: this.errors.length,
         };
     },
     computed: {
@@ -125,6 +123,9 @@ export default {
         },
         provinces() {
             return this.location.getProvinces();
+        },
+        valid() {
+            return this.errors.length;
         }
     },
     components: {

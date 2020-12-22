@@ -4,19 +4,32 @@
 
 <template>
     <div class="autocomplete">
-        <label :for="this.labelId">{{this.label}}</label>
-        <input type="text" :id="this.labelId" v-model="query" @keyup="addAutocomplete" />
-        <ul>
-            <li v-if="searching">Searching...</li>
-            <li
-                v-else-if="matches.length > 0"
-                v-for="match in matches"
-                v-bind:key="match.id"
-                v-text="match.name"
-                @click.prevent="function() { handleSelect(match) }"
-            ></li>
-            <li v-else>No results found. Please try a different term</li>
-        </ul>
+        <div class="row">
+            <div class="col-xxs-12">
+                <label :for="this.labelId" class="label label--floating">
+                    <span :class="floating">{{this.label}}</span>
+                </label>
+                <input 
+                    type="text" 
+                    :id="this.labelId" 
+                    v-model="query" class="input" 
+                    @keyup="addAutocomplete" 
+                    v-on:focus="floatLabel"
+                    v-on:blur="descendLabel"
+                />
+                <ul>
+                    <li v-if="searching">Searching...</li>
+                    <li
+                        v-else-if="matches.length > 0"
+                        v-for="match in matches"
+                        v-bind:key="match.id"
+                    >
+                        <a @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
+                    </li>
+                    <li v-else-if="query">No results found. <a href="#" @click.prevent="function() { newTerm(query) }">Add a new term.</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -29,12 +42,27 @@ export default {
             query: "",
             timer: null,
             matches: [],
-            searching: false
+            searching: false,
+            floating: 'sink',
         };
     },
     props: {
-        label: String,
-        values: Array
+        label: {
+            type: String,
+            required: true,
+        },
+        values: { 
+            type: Array,
+            required: true,
+        },
+        currentArray: {
+            type: Array,
+            required:false,
+        },
+        currentValue: {
+            type: String,
+            required: false,
+        }
     },
     computed: {
         labelId() {
@@ -46,7 +74,7 @@ export default {
             clearTimeout(this.timer);
             this.matches = [];
             this.searching = true;
-            this.timer = setTimeout(this.handleAutocomplete, 2000);
+            this.timer = setTimeout(this.handleAutocomplete, 200);
             return;
             this.searching = false;
         },
@@ -63,7 +91,26 @@ export default {
             this.searching = false;
         },
         handleSelect: function(performer) {
+            this.clearQuery();
             this.$emit("selection", performer);
+        },
+        clearQuery: function() {
+            this.matches = [];
+            this.query = "";
+        },
+        newTerm: function(term) {
+            this.clearQuery();
+            this.$emit("new", term);
+        },
+        floatLabel: function(e) {
+            this.floating = "float";
+        },
+        descendLabel: function() {
+            if (this.value === "") {
+                this.floating = "sink";
+            } else {
+                this.floating = "float";
+            }
         }
     }
 };

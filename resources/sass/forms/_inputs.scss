@@ -1,7 +1,7 @@
 .input {
     display: block;
     width: 100%;
-    padding: 10px 10px 10px 6px;
+    padding: spacing(2) spacing(2) spacing(2) spacing(1);
     border: none;
     border-bottom: 2px solid #393e41;
     appearance: none;
@@ -28,8 +28,8 @@
         border-bottom: 2px solid slateblue;
     }
     &__container {
-        margin-top: 18px;
-        padding: 0 10px;
+        margin-top: spacing(3);
+        padding: 0 spacing(2);
     }
     &__default {
         opacity: 0;

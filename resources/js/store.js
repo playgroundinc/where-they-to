@@ -21,6 +21,7 @@ export default new Vuex.Store({
                     .then(resp => {
                         const token = resp.data.token;
                         const user = resp.data.user;
+                        console.log(user);
                         localStorage.setItem("token", token);
                         axios.defaults.headers.common["Authorization"] = token;
                         commit("auth_success", {
@@ -237,7 +238,11 @@ export default new Vuex.Store({
             state.user = {
                 id: payload.user.id,
                 type: payload.user.type,
-                socialLinks: payload.user.socialLinks
+                socialLinks: payload.user.socialLinks,
+                events: payload.user.events,
+                families: payload.user.families,
+                venues: payload.user.venues,
+                performers: payload.user.performers,
             };
         },
         auth_error(state) {

@@ -48,6 +48,7 @@ Route::get('user/{id}/profile', 'UserController@profile');
     Route::post('venues', 'VenueController@store');
     Route::delete('venues/{id}', 'VenueController@destroy');    
 
+    Route::post('types', 'TypeController@store');
 // });
 
 Route::get('performers', 'PerformerController@index');

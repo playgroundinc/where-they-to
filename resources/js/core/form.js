@@ -37,11 +37,10 @@ class Form {
         }
         return [];
     }
-    setSocialMedia(socialMedia) {
-        for (let social in socialMedia) {
-            this.originalData[social] = socialMedia[social];
+    setAdditionalFields(fields) {
+        for (let field in fields) {
+            this.originalData[field] = fields[field];
         }
-
     }
     async submitForm() {
         let resp;

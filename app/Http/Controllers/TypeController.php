@@ -44,12 +44,14 @@ class TypeController extends Controller
         $attributes = request()->validate([
           'name' => 'required'
         ]);
+        $newType;
         if ($request['type'] === 'performer'):
-          PerformerType::create($attributes);
+          $newType = PerformerType::create($attributes);
         elseif ($request['type'] === 'event'):
-          EventType::create($attributes);
+          $newType = EventType::create($attributes);
         endif;
-        return redirect('/types');
+
+        return response()->json(array('addition' => $newType), 201);
     }
 
     /**

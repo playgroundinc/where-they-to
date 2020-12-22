@@ -57,8 +57,8 @@ class PerformerController extends Controller
 			'bio' => 'required',
         ]);
         $performer = Performer::create($attributes);
-        if ($request['performerType']) {
-			$types = PerformerType::find($request['performerType']);
+        if ($request['performerTypes']) {
+			$types = PerformerType::find($request['performerTypes']);
 			if ($types) {
 				$performer->performerTypes()->detach();
 				foreach ($types as $type) {

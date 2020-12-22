@@ -36,6 +36,11 @@
                 :youtube="youtube"
                 v-on:update="updateValue"
             />
+            <PerformerTypes
+                :errors="errors"
+                :performerTypes="performerTypes"
+                v-on:update="updateArray"
+            />
             <div class="col-xxs-12">
                 <button type="submit" class="btn btn-default">Create Performer</button>
             </div>
@@ -46,11 +51,14 @@
 
 <script>
 import { mapState } from "vuex";
-import SocialMedia from "../../components/SocialMedia";
+// Classes.
 import socials from "../../core/social-media";
-import Input from "../../components/Input";
 import Form from "../../core/form";
+// Components.
+import Input from "../../components/Input";
+import SocialMedia from "../../components/SocialMedia";
 import ErrorsContainer from "../../components/ErrorsContainer";
+import PerformerTypes from "../../components/PerformerTypes";
 export default {
     data() {
         return {
@@ -65,6 +73,7 @@ export default {
             twitch: "",
             youtube: "",
             socials,
+            performerTypes: [],
         }
     },
     computed: {
@@ -77,11 +86,36 @@ export default {
         Input,
         ErrorsContainer,
         SocialMedia,
+        PerformerTypes,
     },
     methods: {
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
         },
+        addToArray: function(updateObject, currentArray) {
+            if (!currentArray.includes(updateObject.value)) {
+                currentArray.push(updateObject.value);
+                this[updateObject.name] = currentArray;
+            }
+        },
+        deleteFromArray: function(updateObject, currentArray) {
+            if (currentArray.includes(updateObject.value)) {
+                const index = currentArray.indexOf(updateObject.value);
+                if (index > -1) {
+                    currentArray.splice(index, 1);
+                    this[updateObject.name] = currentArray;
+                }
+            }
+        },
+        updateArray: function(updateObject) {
+            const currentArray = this[updateObject.name];
+            if (currentArray && updateObject.add) {
+                this.addToArray(updateObject, currentArray);
+            } 
+            if (currentArray && !updateObject.add) {
+                this.deleteFromArray(updateObject, currentArray);
+            }
+        }, 
         createPerformer: async function(FormClass) {
             const resp = await FormClass.submitForm();
             if (resp.status === 'success') {
@@ -105,8 +139,9 @@ export default {
             const FormClass = new Form(data, "create", "performers");
             this.errors = FormClass.checkRequiredFields(data);
             if (this.valid) {
-                const socialMediaData = this.getSocialMediaData();
-                FormClass.setSocialMedia(socialMediaData);
+                const additionalData = this.getSocialMediaData();
+                additionalData.performerTypes = this.performerTypes;
+                FormClass.setAdditionalFields(additionalData);
                 this.createPerformer(FormClass);
             }
         }
