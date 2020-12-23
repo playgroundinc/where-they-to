@@ -5859,8 +5859,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_Autocomplete__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Autocomplete */ "./resources/js/components/Autocomplete.vue");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _core_social_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/social-media */ "./resources/js/core/social-media.js");
+/* harmony import */ var _core_form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/form */ "./resources/js/core/form.js");
+/* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
+/* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/Input */ "./resources/js/components/Input.vue");
+/* harmony import */ var _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../components/SocialMedia */ "./resources/js/components/SocialMedia.vue");
+/* harmony import */ var _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/SelectPerformers */ "./resources/js/components/SelectPerformers.vue");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -5909,108 +5922,154 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+ // Classes
+
+
+ // Components
+
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       id: this.$route.params.id,
-      newPerformers: []
+      name: '',
+      description: '',
+      performers: [],
+      errors: [],
+      facebook: '',
+      twitter: '',
+      website: '',
+      tiktok: '',
+      twitch: '',
+      youtube: '',
+      instagram: '',
+      socials: _core_social_media__WEBPACK_IMPORTED_MODULE_2__["default"]
     };
   },
-  components: {
-    Autocomplete: _components_Autocomplete__WEBPACK_IMPORTED_MODULE_1__["default"]
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['families', 'performers', 'user'])), {}, {
-    family: function family() {
-      var _this = this;
-
-      return this.families.find(function (entry) {
-        return Number(entry.id) === Number(_this.id);
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])), {}, {
+    performerIds: function performerIds() {
+      return this.performers.map(function (performer) {
+        return performer.id;
       });
     },
-    filteredPerformers: function filteredPerformers() {
-      var _this2 = this;
-
-      return this.performers.filter(function (entry) {
-        return !_this2.family.performers.find(function (item) {
-          return Number(item.id) === Number(entry.id);
-        });
-      });
+    valid: function valid() {
+      return this.errors.length === 0;
     }
   }),
-  created: function created() {
-    if (!this.user) {
-      this.$store.dispatch('findUser');
-    }
+  components: {
+    ErrorsContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_4__["default"],
+    Input: _components_Input__WEBPACK_IMPORTED_MODULE_5__["default"],
+    SocialMedia: _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__["default"],
+    SelectPerformers: _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_7__["default"]
   },
   methods: {
-    removePerformer: function removePerformer(id) {
-      this.$store.dispatch('destroy', {
-        route: 'families',
-        id: "performers/".concat(id, "/delete")
-      });
+    updateValue: function updateValue(updateObject) {
+      this[updateObject.name] = updateObject.value;
     },
-    addPerformer: function addPerformer(id) {
-      var _this3 = this;
+    createFamily: function () {
+      var _createFamily = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(FormClass) {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return FormClass.submitForm();
 
-      var data = {
-        performer: id
-      };
-      this.$store.dispatch('create', {
-        route: "families/".concat(this.id, "/performer"),
-        data: data
-      }).then(function () {
-        _this3.$store.dispatch('fetchState', {
-          route: 'families'
-        });
-      });
-    },
-    leaveFamily: function leaveFamily(id) {
-      var _this4 = this;
+              case 2:
+                resp = _context.sent;
 
-      this.$store.dispatch('destroy', {
-        route: 'families',
-        id: "performers/".concat(id, "/delete")
-      }).then(function () {
-        _this4.$router.push({
-          path: "families/".concat(id)
-        });
-      })["catch"](function (err) {
-        console.log(err);
-      });
-    },
+                if (!(resp.status === 'success')) {
+                  _context.next = 7;
+                  break;
+                }
+
+                _context.next = 6;
+                return this.$store.dispatch("findUser");
+
+              case 6:
+                this.$router.push('/dashboard');
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function createFamily(_x) {
+        return _createFamily.apply(this, arguments);
+      }
+
+      return createFamily;
+    }(),
     handleSubmit: function handleSubmit() {
-      var _this5 = this;
-
       var data = {
-        name: this.family.name,
-        description: this.family.description
+        name: this.name,
+        description: this.description,
+        performers: this.performerIds
       };
-      var route = "families";
-      this.$store.dispatch('edit', {
-        route: route,
-        id: this.id,
-        data: data
-      }).then(function () {
-        _this5.$router.push("/families/".concat(_this5.id));
-      })["catch"](function (err) {
-        console.log(err);
+      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "create", {
+        route: "families"
       });
-    },
-    destroyFamily: function destroyFamily() {
-      var _this6 = this;
+      this.errors = FormClass.checkRequiredFields(data);
 
-      var data = {};
-      this.$store.dispatch('destroy', {
-        route: 'families',
-        id: this.id,
-        data: data
-      }).then(function () {
-        _this6.$router.push('/families');
-      })["catch"](function (err) {
-        console.log(err);
-      });
+      if (this.valid) {
+        var additionalData = this.getSocialMediaData();
+        FormClass.setAdditionalFields(additionalData);
+        this.createFamily(FormClass);
+      }
+    },
+    addToArray: function addToArray(updateObject, currentArray) {
+      var index = currentArray.findIndex(this.findValue, updateObject.value);
+
+      if (index <= -1) {
+        currentArray.push(updateObject.value);
+        this[updateObject.name] = currentArray;
+      }
+    },
+    findValue: function findValue(value) {
+      return function (array) {
+        return array.value === value;
+      };
+    },
+    deleteFromArray: function deleteFromArray(updateObject, currentArray) {
+      var index = currentArray.findIndex(this.findValue, updateObject.value);
+
+      if (index > -1) {
+        currentArray.splice(index, 1);
+        this[updateObject.name] = currentArray;
+      }
+    },
+    updateArray: function updateArray(updateObject) {
+      var currentArray = this[updateObject.name];
+
+      if (currentArray && updateObject.add) {
+        this.addToArray(updateObject, currentArray);
+      }
+
+      if (currentArray && !updateObject.add) {
+        this.deleteFromArray(updateObject, currentArray);
+      }
+    },
+    getSocialMediaData: function getSocialMediaData() {
+      var socialMediaData = {};
+
+      for (var social in this.socials) {
+        socialMediaData[social] = this[social];
+      }
+
+      return socialMediaData;
     }
   }
 });
@@ -13869,210 +13928,89 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.family && _vm.user
+  return _vm.user
     ? _c("div", { staticClass: "main" }, [
-        _c("h1", [_vm._v("Edit Family")]),
-        _vm._v(" "),
         _c(
-          "form",
-          {
-            attrs: { action: "/families/" },
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.handleSubmit($event)
-              }
-            }
-          },
+          "main",
+          { staticClass: "container container--core" },
           [
-            _c("label", { staticClass: "label", attrs: { for: "name" } }, [
-              _vm._v("Name")
+            _c("h1", { staticClass: "copy--center" }, [
+              _vm._v("Create Family")
             ]),
             _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.family.name,
-                  expression: "family.name"
-                }
-              ],
-              staticClass: "input",
-              attrs: { type: "text", name: "name", id: "name" },
-              domProps: { value: _vm.family.name },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.family, "name", $event.target.value)
-                }
-              }
-            }),
+            _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
             _vm._v(" "),
             _c(
-              "label",
-              { staticClass: "label", attrs: { for: "description" } },
-              [_vm._v("Description:")]
-            ),
-            _vm._v(" "),
-            _c("textarea", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.family.description,
-                  expression: "family.description"
+              "form",
+              {
+                attrs: { novalidate: "" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.handleSubmit($event)
+                  }
                 }
-              ],
-              staticClass: "input",
-              attrs: {
-                name: "description",
-                id: "description",
-                cols: "30",
-                rows: "10"
               },
-              domProps: { value: _vm.family.description },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.family, "description", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c("h2", [_vm._v("Current Performers")]),
-            _vm._v(" "),
-            _c(
-              "ul",
-              { staticClass: "list container--inner" },
-              _vm._l(_vm.family.performers, function(performer) {
-                return _c(
-                  "li",
-                  {
-                    key: performer.id,
-                    staticClass: "list-item list-item--flex"
+              [
+                _c("div", { staticClass: "form-group row between-md" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-xxs-12" },
+                    [
+                      _c("Input", {
+                        attrs: {
+                          name: "name",
+                          value: _vm.name,
+                          type: "text",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      }),
+                      _vm._v(" "),
+                      _c("Input", {
+                        attrs: {
+                          name: "description",
+                          value: _vm.description,
+                          type: "textarea",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("SelectPerformers", {
+                  attrs: { errors: _vm.errors, performers: _vm.performers },
+                  on: { update: _vm.updateArray }
+                }),
+                _vm._v(" "),
+                _c("SocialMedia", {
+                  attrs: {
+                    errors: _vm.errors,
+                    facebook: _vm.facebook,
+                    instagram: _vm.instagram,
+                    twitch: _vm.twitch,
+                    twitter: _vm.twitter,
+                    tiktok: _vm.tiktok,
+                    website: _vm.website,
+                    youtube: _vm.youtube
                   },
-                  [
-                    _c("a", {
-                      attrs: { href: "/performers/" + performer.id },
-                      domProps: { textContent: _vm._s(performer.name) }
-                    }),
-                    _vm._v(" "),
-                    performer.id !== _vm.user.id
-                      ? _c(
-                          "button",
-                          {
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.removePerformer(performer.id)
-                              }
-                            }
-                          },
-                          [_vm._v("Remove Performer")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    performer.id === _vm.user.id
-                      ? _c(
-                          "button",
-                          {
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.leaveFamily(performer.id)
-                              }
-                            }
-                          },
-                          [_vm._v("Leave Family")]
-                        )
-                      : _vm._e()
-                  ]
-                )
-              }),
-              0
-            ),
-            _vm._v(" "),
-            _c("h2", [_vm._v("Add New Performer")]),
-            _vm._v(" "),
-            _vm.performers
-              ? _c(
-                  "fieldset",
-                  [
-                    _c("Autocomplete", {
-                      attrs: { label: "Performers", values: _vm.performers },
-                      on: {
-                        selection: function(performer) {
-                          _vm.addPerformer(performer)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _vm.newPerformers.length > 0
-                      ? _c("div", [
-                          _c("h2", [_vm._v("Current Performers")]),
-                          _vm._v(" "),
-                          _c(
-                            "ul",
-                            _vm._l(_vm.newPerformers, function(
-                              performer,
-                              index
-                            ) {
-                              return _c("li", { key: performer.id }, [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(performer.name) +
-                                    "\n                            "
-                                ),
-                                _c(
-                                  "a",
-                                  {
-                                    attrs: { href: "#" },
-                                    on: {
-                                      click: function($event) {
-                                        $event.preventDefault()
-                                        return (function() {
-                                          return _vm.removePerformer(index)
-                                        })($event)
-                                      }
-                                    }
-                                  },
-                                  [_vm._v("Remove")]
-                                )
-                              ])
-                            }),
-                            0
-                          )
-                        ])
-                      : _vm._e()
-                  ],
-                  1
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "btn",
-              attrs: { type: "submit", value: "Submit" }
-            })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn--danger",
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.destroyFamily($event)
-              }
-            }
-          },
-          [_vm._v("Delete Family")]
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "btn",
+                  attrs: { type: "submit", value: "Create Family" }
+                })
+              ],
+              1
+            )
+          ],
+          1
         )
       ])
     : _vm._e()
