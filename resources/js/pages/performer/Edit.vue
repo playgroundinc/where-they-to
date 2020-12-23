@@ -9,31 +9,35 @@
             action="/performers"
             v-on:submit.prevent="handleSubmit"
         >
-            <Input
-                name="name"
-                :value="name"
-                type="text"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="bio"
-                :value="bio"
-                type="textarea"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="tips"
-                :value="tips"
-                type="textarea"
-                :required="false"
-                :errors="errors"
-                v-on:update="updateValue"
-                helperText="Provide instructions on how people can leave you a tip."
-            />
+			<div class="form-group row between-md">
+				<div class="col-xxs-12">
+					<Input
+						name="name"
+						:value="name"
+						type="text"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+					<Input
+						name="bio"
+						:value="bio"
+						type="textarea"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+					<Input
+						name="tips"
+						:value="tips"
+						type="textarea"
+						:required="false"
+						:errors="errors"
+						v-on:update="updateValue"
+						helperText="Provide instructions on how people can leave you a tip."
+					/>
+				</div>
+			</div>
             <SocialMedia 
                 :errors="errors"
                 :facebook="facebook"
@@ -161,8 +165,8 @@
 			this.social_links_id = performer.social_links.id;
 		},
 		setSocialLinks: function(socialLinks) {
-			const fields = ['facebook', 'instagram', 'tiktok', 'twitch', 'twitter', 'youtube', 'website'];
-			this.setStates(fields, socialLinks);
+			const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+			this.setStates(socials, socialLinks);
 		},
 		getSocialMediaData: function() {
             const socialMediaData = {};

@@ -1,112 +1,200 @@
 <template>
 	<div class="main" v-if="id">
-		<h1>Edit Venue profile</h1>
+		<main class="container container--core">
+			<ErrorsContainer :errors="errors"/>
+		<h1>Edit Venue Profile</h1>
 		<form v-on:submit.prevent="handleSubmit" action="'/venues/' + id">
-			<div>
-				<label class="label" for="name">Name</label>
-				<input class="input" type="text" name="name" v-model="name">
-				<label class="label" for="description">Bio</label>
-				<textarea class="input" name="description" id="description" cols="30" rows="10" placeholder="Venue description" v-model="description"></textarea>
-				<label class="label" for="address">Address</label>
-				<input class="input" type="text" name="address" v-model="address">
-				<label class="label" for="city">City</label>
-				<input class="input" type="text" name="city" v-model="city">
+            <div class="form-group row between-md">
+				<div class="col-xxs-12">
+					<Input
+						name="name"
+						:value="name"
+						type="text"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+					<Input
+						name="description"
+						:value="description"
+						type="textarea"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+				</div>
 			</div>
-			<div>
-				<h2>Edit Social Links</h2>
-				<label class="label" for="facebook">Facebook</label>
-				<input type="text" class="input" id="facebook" name="facebook" v-model="facebook">
-				<label for="instagram" class="label">Instagram</label>
-				<input type="text" class="input" id="instagram" name="instagram" v-model="instagram">
-				<label for="twitter" class="label">Twitter</label>
-				<input type="text" class="input" id="twitter" name="twitter" v-model="twitter">
-				<label for="youtube" class="label">Youtube</label>
-				<input type="text" class="input" id="youtube" name="youtube" v-model="youtube">
-				<label for="website" class="label">Website</label>
-				<input type="text" class="input" id="website" name="website" v-model="website">
-			</div>
-			<input class="btn" type="submit" value="Edit Profile">
+			<Address
+				:address="address"
+				:city="city"
+				:province="province"
+				:timezone="timezone"
+				:errors="errors"
+				v-on:update="updateValue"
+			/>
+			<SocialMedia 
+                :errors="errors"
+                :facebook="facebook"
+                :instagram="instagram"
+                :twitch="twitch"
+                :twitter="twitter"
+                :tiktok="tiktok"
+                :website="website"
+                :youtube="youtube"
+                v-on:update="updateValue"
+            />
+			<div class="col-xxs-12">
+                <button type="submit" class="btn btn-default">Update Venue</button>
+            </div>
 
 		</form>
-		<button class="btn btn--danger" v-on:click="handleDelete">Delete Profile</button>
+		<div class="copy--center">
+			<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Venue</button>
+		</div>
+		</main>
+		<Modal 
+			title="Are you sure?"
+			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			:open="confirmModal"
+			button="Confirm Delete"
+			v-on:confirm="handleDelete"
+			v-on:close="toggleModal"
+		/>
 	</div>
 </template>
 
 <script>
-	import { mapState } from 'vuex';
-	export default {
+import { mapState } from 'vuex';
+// Classes
+import socials from "../../core/social-media";
+import Form from "../../core/form";
 
-    data() {
+// Components
+import ErrorsContainer from "../../components/ErrorsContainer";
+import Input from "../../components/Input";
+import SocialMedia from "../../components/SocialMedia";
+import Address from "../../components/Address";
+import Modal from "../../components/Modal";
+
+export default {
+	data() {
 		return {
+			errors: [],
 			id: this.$route.params.id,
 			name: '',
 			description: '',
 			address: '',
 			city: '',
+			province: '',
+			timezone: '',
 			facebook: '',
 			instagram: '',
+			tiktok: '',
 			twitter: '',
+			twitch: '',
+			youtube: '',
 			website: '',
 			youtube: '',
+			socials,
+			socialLinksId: '',
+			confirmModal: false,
 		}
     },
     computed: {
-		...mapState(['venues', 'user']),
-		venue: {
-			get: function() {
-				const venue = this.venues.find(entry => Number(entry.id) === Number(this.id));
-				this.name = venue.name;
-				this.description = venue.description;
-				this.address = venue.address;
-				this.city = venue.city;
-				this.facebook = venue.social_links.facebook;
-				this.instagram = venue.social_links.instagram;
-				this.twitter = venue.social_links.twitter;
-				this.website = venue.social_links.website;
-				this.youtube = venue.social_links.youtube;
-				return venue;
-			}
-		},
-    },
+		...mapState(['user']),
+		valid() {
+			return this.errors.length === 0;
+		}
+	},
+	components: {
+		Address,
+		ErrorsContainer,
+		Input,
+		Modal,
+		SocialMedia,
+	},
     methods: {
+		updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
+		},
+		getSocialMediaData: function() {
+            const socialMediaData = {};
+            for (let social in this.socials) {
+                socialMediaData[social] = this[social];
+            }
+            return socialMediaData;
+		},
+		getAdditionalData: function(additionalData) {
+			const fields = ['timezone', 'city', 'socialLinksId'];
+			fields.forEach((field) => {
+				additionalData[field] = this[field];
+			});
+			return additionalData;
+		},
+		updateVenue: async function(FormClass) {
+            const resp = await FormClass.submitForm();
+            if (resp.status === 'success') {
+                await this.$store.dispatch("findUser");
+                this.$router.push(`/venues/${this.id}`);
+            }
+        },
 		handleSubmit: function() {
 			let data = {
 				name: this.name,
 				description: this.description,
 				address: this.address,
-				city: this.city,
-				facebook: this.facebook,
-				instagram: this.instagram,
-				twitter: this.twitter,
-				website: this.website,
-				youtube: this.youtube,
-				socialLinksId: this.venue.social_links.id,
+				province: this.province,
+				user_id: this.user.id,
 			}
-			let route = `venues`;
-			this.$store
-				.dispatch('edit', {
-					route, 
-					id: this.id,
-					data
-			}).then(() => {
-				this.$router.push(`/venues/${this.id}`)
-			}).catch((err)=>{
-				console.log(err);
+			const FormClass = new Form(data, "edit", { route: "venues", id: this.id });
+			this.errors = FormClass.checkRequiredFields(data);
+			if (this.valid) {
+				const socialMediaData = this.getSocialMediaData();
+				const additionalData = this.getAdditionalData(socialMediaData);
+				FormClass.setAdditionalFields(additionalData);
+                this.updateVenue(FormClass);
+            }
+		},
+		toggleModal: function() {
+			this.confirmModal = !this.confirmModal;
+		},
+		handleDelete: async function() {
+			const data = {
+				user_id: this.user.id,
+			}
+			const DeleteForm = new Form(data, 'destroy', { route: 'venues', id: this.id });
+			const resp = await DeleteForm.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch('findUser');
+				this.$router.push('/dashboard');
+			}
+		},
+		setStates: function(fields, object) {
+			fields.forEach((field) => {
+				if (object[field]) {
+					this[field] = object[field];
+				}
 			});
 		},
-		handleDelete: function() {
-			this.$store.dispatch('destroy', {
-				route: 'venues',
-				id: this.id,
-			}).then(()=>{
-				this.$router.push('/venues');
-			});
-		}
+		setVenue: function(venue) {
+			const fields = ['name', 'description', 'address', 'province', 'city', 'timezone'];
+			this.setStates(fields, venue);
+			this.socialLinksId = venue.social_links.id;
+		},
+		setSocialLinks: function(socialLinks) {
+			const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+			this.setStates(socials, socialLinks );
+		},
+		getVenue: async function() {
+			const resp = await this.$store.dispatch('fetchSingle', { route: "venues", id: this.id });
+			if (resp.status === 200) {
+				this.setVenue(resp.data.venue);
+				this.setSocialLinks(resp.data.socialLinks);
+			}
+		},
     },
     async mounted() {
-		if(this.user === 0) {
-			this.$store.dispatch('findUser');
-		}
+		this.getVenue();
     }
 }
 </script>

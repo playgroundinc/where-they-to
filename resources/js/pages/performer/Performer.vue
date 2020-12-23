@@ -2,6 +2,9 @@
 	<div v-if="performer">
 		<main class="container">
 		<h1 class="copy--center">{{ performer.name }}</h1>
+		<ul class="selections__list row center-md" v-if="performer.performer_types">
+			<li class="selections__single" v-for="type in performer.performer_types" v-bind:key="type.id">{{ type.name }}</li>
+		</ul>
 		<div class="row">
 			<div class="col-xxs-12 col-md-6">
 

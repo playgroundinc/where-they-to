@@ -36,11 +36,10 @@ class CreatePerformersTable extends Migration
 			$table->string('name');
 			$table->string('address');
 			$table->string('city')->nullable();
-			$table->string('state')->nullable();
-			$table->string('country');
-			$table->string('province')->default('Ontario');
+			$table->string('country')->default('CA');
+			$table->string('province')->default('ON');
 			$table->integer('accessibility')->default('0');
-			$table->integer('neighbourhood')->default('0');
+			$table->string('timezone')->nullable();
 			$table->text('description');
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

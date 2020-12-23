@@ -2,6 +2,7 @@
     <div class="row form-group">
         <div class="col-xxs-12">
             <h3 class="copy--center">Social Media</h3>
+            <p class="copy--center">All social media fields are optional.</p>
         </div>
         <div class="col-md-6 col-xxs-12">
             <Input

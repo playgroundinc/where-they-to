@@ -15,7 +15,7 @@
             :aria-invalid="invalid"
             v-on:keyup="onChange"
             v-on:focus="floatLabel"
-            v-on:blur="descendLabel"
+            v-on:blur="floatLabel"
         ></textarea>
         <select
             v-else-if="type === 'select'"
@@ -27,7 +27,7 @@
             :aria-invalid="invalid"
             v-on:change="onChange"
             v-on:focus="floatLabel"
-            v-on:blur="descendLabel"
+            v-on:blur="floatLabel"
         >
             <option class="input__default" default="true" value="" disabled></option>
             <option
@@ -50,7 +50,7 @@
             :aria-describedby="helperText ? 'helper-text' : null"
             v-on:keyup="onChange"
             v-on:focus="floatLabel"
-            v-on:blur="descendLabel"
+            v-on:blur="floatLabel"
         />
         <p class="input__error-msg copy--error copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
         <p id="helper-text" class="copy--small copy--italic input__helper-text" v-if="helperText">{{ helperText }}</p>
@@ -98,16 +98,9 @@ export default {
     },
     data() {
         return {
-            floating: "sink",
+            active: false,
         }
-    },
-    watch: {
-        value: function(val, oldVal) {
-            if (val !== '') {
-                this.floating = 'float';
-            }
-        }, 
-    },
+    }, 
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);
@@ -127,17 +120,13 @@ export default {
             });
         },
         floatLabel: function(e) {
-            this.floating = "float";
+            this.active = !this.active;
         },
-        descendLabel: function() {
-            if (this.value === "") {
-                this.floating = "sink";
-            } else {
-                this.floating = "float";
-            }
-        }
     },
     computed: {
+        floating() {
+            return this.active || this.value !== '' ? 'float' : 'sink';
+        },
         label() {
             const labelText = this.name.replace("_", " ");
             return labelText;
