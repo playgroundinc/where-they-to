@@ -141,6 +141,34 @@ class PerformerController extends Controller
     }
 
     /**
+     * Search for performers by name.
+     * 
+     * @param string $search_term.
+     */
+    public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $performers = Performer::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($performers)) {
+            return response()->json(compact('performers'), 200);
+        }
+        return response()->json([], 200);
+    }
+
+    /**
+     * Search for performers by name.
+     * 
+     * @param string $search_term.
+     */
+    public function getNames() {
+        $performer_ids = request();
+        return response()->json(['ids' => $performer_ids], 200);
+        $performers = Performer::find($performer_ids);
+        return response()->json(compact('performers'), 200);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

@@ -133,7 +133,6 @@
 					}
 				});
 			}
-
 		},
 		addToArray: function(updateObject, currentArray) {
             if (!currentArray.includes(updateObject.value)) {

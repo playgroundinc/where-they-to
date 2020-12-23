@@ -130,36 +130,36 @@ export default new Vuex.Store({
                     })
                         .then(res => {
                             if (res.data.user) {
+                                commit("set_state", {
+                                    name: "user",
+                                    value: {
+                                        id: res.data.user.id,
+                                        city: res.data.user.city,
+                                        province: res.data.user.province,
+                                        country: res.data.user.country,
+                                        timezone: res.data.user.timezone,
+                                        events: res.data.user.events || [],
+                                        venues: res.data.user.venues || [],
+                                        performers: res.data.user.performers || [],
+                                        families: res.data.user.families || []
+                                    }
+                                });
+                                resolve(res);
+                                return res.data.user;
+                            }
                             commit("set_state", {
                                 name: "user",
-                                value: {
-                                    id: res.data.user.id,
-                                    city: res.data.user.city,
-                                    province: res.data.user.province,
-                                    country: res.data.user.country,
-                                    timezone: res.data.user.timezone,
-                                    events: res.data.user.events || [],
-                                    venues: res.data.user.venues || [],
-                                    performers: res.data.user.performers || [],
-                                    families: res.data.user.families || []
-                                }
+                                value: false
                             });
-                            resolve(res);
-                            return res.data.user;
-                        }
-                        commit("set_state", {
-                            name: "user",
-                            value: false
+                        })
+                        .catch(error => {
+                            commit("set_state", {
+                                name: "user",
+                                value: null
+                            });
+                            reject(error);
+                            return;
                         });
-                    })
-                    .catch(error => {
-                        commit("set_state", {
-                            name: "user",
-                            value: null
-                        });
-                        reject(error);
-                        return;
-                    });
                 }
             });
         },
@@ -194,7 +194,6 @@ export default new Vuex.Store({
                     data: payload.data
                 })
                     .then(resp => {
-                        this.dispatch("fetchState", { route: payload.route });
                         resolve(resp);
                         return resp.data;
                     })
@@ -213,17 +212,48 @@ export default new Vuex.Store({
                     method: "DELETE",
                     data: payload.data
                 })
-                    .then(resp => {
-                        this.dispatch("fetchState", {
-                            route: payload.route
-                        });
-                        resolve(resp);
-                        return resp.data;
-                    })
-                    .catch(error => {
-                        reject(error);
-                        return error.message;
-                    });
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message;
+                });
+            });
+        },
+        search({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}`,
+                    method: "GET",
+                })
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
+            })
+        },
+        getNames({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                axios({
+                    method: 'POST',
+                    url: `http://127.0.0.1:8000/api/${payload.route}/names`,
+                    data: payload.data,
+                })
+                .then(resp => {
+                    resolve(resp);
+                    console.log(resp.data);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
             });
         }
     },

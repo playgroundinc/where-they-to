@@ -54,6 +54,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 Route::get('performers', 'PerformerController@index');
 Route::get('performers/{id}', 'PerformerController@show');
 Route::get('performers/{id}/events', 'PerformerController@events');
+Route::get('performers/search/{term}', 'PerformerController@search');
+Route::post('performers/names', 'PerformerController@getNames');
 
 Route::get('venues', 'VenueController@index');
 Route::get('venues/{id}', 'VenueController@show');
@@ -62,6 +64,7 @@ Route::get('social-links', 'SocialLinksController@index');
 Route::get('social-links/{id}', 'SocialLinksController@show');
 
 Route::get('families', 'FamilyController@index');
+Route::get('families/{id}', 'FamilyController@show');
 
 Route::get('events', 'EventController@index');
 Route::get('events/date/{date}', 'EventController@date');

@@ -6,16 +6,13 @@
     <div class="autocomplete">
         <div class="row">
             <div class="col-xxs-12">
-                <label :for="this.labelId" class="label label--floating">
-                    <span :class="floating">{{this.label}}</span>
-                </label>
-                <input 
-                    type="text" 
-                    :id="this.labelId" 
-                    v-model="query" class="input" 
-                    @keyup="addAutocomplete" 
-                    v-on:focus="floatLabel"
-                    v-on:blur="descendLabel"
+                <Input
+                    name="performers"
+                    :value="performers"
+                    type="text"
+                    :required="true"
+                    :errors="errors"
+                    v-on:update="addAutocomplete"
                 />
                 <ul class="autocomplete__list row">
                     <li class="col-xxs-12 autocomplete__single no-link" v-if="searching">Searching...</li>
@@ -27,7 +24,7 @@
                     >
                         <a class="autocomplete__single__link" @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
                     </li>
-                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="query">No results found. <a href="#" @click.prevent="function() { newTerm(query) }">Add a new term.</a></li>
+                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="performers">No results found. <a href="#" @click.prevent="function() { newTerm(performers) }">Add a new term.</a></li>
                 </ul>
             </div>
         </div>
@@ -37,23 +34,33 @@
 <script>
 import { mapState } from "vuex";
 
+// Components 
+import Input from "../components/Input";
+
 export default {
     data() {
         return {
-            query: "",
+            performers: "",
             timer: null,
             matches: [],
             searching: false,
             floating: 'sink',
         };
     },
+    components: {
+        Input,
+    },
     props: {
+        errors: {
+            type: Array,
+            required: true,
+        },
         label: {
             type: String,
             required: true,
         },
-        values: { 
-            type: Array,
+        route: {
+            type: String, 
             required: true,
         },
         currentArray: {
@@ -71,47 +78,42 @@ export default {
         }
     },
     methods: {
-        addAutocomplete: function() {
+        updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
+		},
+        addAutocomplete: function(updateObject) {
+            this.updateValue(updateObject);
             clearTimeout(this.timer);
             this.matches = [];
             this.searching = true;
-            this.timer = setTimeout(this.handleAutocomplete, 200);
+            this.timer = setTimeout(this.handleAutocomplete, 1000);
             return;
-            this.searching = false;
         },
-        handleAutocomplete: function() {
-            if (this.query.length > 0) {
-                const regExp = new RegExp(`${this.query}`, "gi");
-                this.matches = this.values.filter(value => {
-                    return regExp.test(value.name);
-                });
-                if (this.matches > 10) {
-                    this.matches = this.matches.slice(0, 10);
-                }
+        triggerSearch: async function() {
+            const resp = await this.$store.dispatch('search', { route: this.route, term: this.performers });
+            if (resp.status === 200) {
+                return resp.data.performers;
+            }
+            return [];
+        },
+        handleAutocomplete: async function() {
+            if (this.performers.length > 0) {
+                this.matches = await this.triggerSearch()
             }
             this.searching = false;
         },
         handleSelect: function(performer) {
+            this.clearQuery();
             this.$emit("selection", performer);
         },
         clearQuery: function() {
             this.matches = [];
-            this.query = "";
+            this.performers = "";
         },
         newTerm: function(term) {
             this.clearQuery();
             this.$emit("new", term);
         },
-        floatLabel: function(e) {
-            this.floating = "float";
-        },
-        descendLabel: function() {
-            if (this.value === "") {
-                this.floating = "sink";
-            } else {
-                this.floating = "float";
-            }
-        }
     }
 };
 </script>

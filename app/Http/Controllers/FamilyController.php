@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Family;
 use App\Performer;
 use App\User;
+use App\SocialLinks;
 use Illuminate\Http\Request;
 
 class FamilyController extends Controller
@@ -19,7 +20,7 @@ class FamilyController extends Controller
         //
         $families = Family::all();
 		foreach ($families as $index=>$family):
-			$families[$index]['socialLinks'] = $family->socialLinks;
+			$families[$index]['social_links'] = $family->socialLinks;
 			$families[$index]['performers'] = $family->performers;
         endforeach;
         return response()->json($families, 200);
@@ -37,6 +38,20 @@ class FamilyController extends Controller
         return view('families.create');
     }
 
+    public function createSocialLinks($request) {
+		$attributes = $request->validate([
+            'facebook' => 'nullable',
+            'twitch' => 'nullable',
+            'twitter' => 'nullable',
+            'tiktok' => 'nullable',
+			'instagram' => 'nullable',
+			'website' => 'nullable',
+			'youtube' => 'nullable',
+		]);
+		$socialLinks = SocialLinks::create($attributes);
+		return $socialLinks;
+	}
+
     /**
      * Store a newly created resource in storage.
      *
@@ -45,19 +60,21 @@ class FamilyController extends Controller
      */
     public function store(Request $request)
     {
-		//
+        //
+        $socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
 			'name' => 'required',
 			'description' => 'required',
         ]);
         $family = Family::create($attributes);
+        $family->socialLinks()->save($socialLinks);
 		$user = User::find($request['user']->id);
 		if ($user) {
 			$user->families()->save($family);
 		}
         $performers = request('performers');
         foreach ($performers as $performer):
-			$newPerformer = Performer::find($performer['id']);
+			$newPerformer = Performer::find($performer);
 			$family->performers()->save($newPerformer);
         endforeach;
         return response()->json(['status' => 'success'], 200);
@@ -69,13 +86,13 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function show(Family $family)
+    public function show($id)
     {
         //
+        $family = Family::find($id);
         $performers = $family->performers;
         $socialLinks = $family->socialLinks;
-        $platforms = config('enums.platforms');
-        return view('families.show', compact('family', 'performers', 'socialLinks', 'platforms'));
+        return response()->json(compact('family', 'performers', 'socialLinks'), 200);
     }
 
     /**
