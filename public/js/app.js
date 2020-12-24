@@ -5805,20 +5805,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     addToArray: function addToArray(updateObject, currentArray) {
-      var index = currentArray.findIndex(this.findValue, updateObject.value);
+      var index = this.findValue(currentArray, updateObject.value);
 
       if (index <= -1) {
         currentArray.push(updateObject.value);
         this[updateObject.name] = currentArray;
       }
     },
-    findValue: function findValue(value) {
-      return function (array) {
-        return array.value === value;
-      };
+    findValue: function findValue(currentArray, updateObject) {
+      var index = -1;
+      currentArray.forEach(function (item, i) {
+        if (item.id === updateObject.id) {
+          index = i;
+          return index;
+        }
+      });
+      return index;
     },
     deleteFromArray: function deleteFromArray(updateObject, currentArray) {
-      var index = currentArray.findIndex(this.findValue, updateObject.value);
+      var index = this.findValue(currentArray, updateObject.value);
 
       if (index > -1) {
         currentArray.splice(index, 1);
@@ -5868,6 +5873,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/Input */ "./resources/js/components/Input.vue");
 /* harmony import */ var _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../components/SocialMedia */ "./resources/js/components/SocialMedia.vue");
 /* harmony import */ var _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/SelectPerformers */ "./resources/js/components/SelectPerformers.vue");
+/* harmony import */ var _components_Modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../components/Modal */ "./resources/js/components/Modal.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5928,10 +5934,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  // Classes
 
 
  // Components
+
 
 
 
@@ -5952,7 +5970,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       twitch: '',
       youtube: '',
       instagram: '',
-      socials: _core_social_media__WEBPACK_IMPORTED_MODULE_2__["default"]
+      socials: _core_social_media__WEBPACK_IMPORTED_MODULE_2__["default"],
+      socialLinksId: '',
+      confirmModal: false
     };
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['user'])), {}, {
@@ -5968,15 +5988,38 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     ErrorsContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_4__["default"],
     Input: _components_Input__WEBPACK_IMPORTED_MODULE_5__["default"],
+    Modal: _components_Modal__WEBPACK_IMPORTED_MODULE_8__["default"],
     SocialMedia: _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__["default"],
     SelectPerformers: _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_7__["default"]
+  },
+  mounted: function mounted() {
+    this.getFamily();
   },
   methods: {
     updateValue: function updateValue(updateObject) {
       this[updateObject.name] = updateObject.value;
     },
-    createFamily: function () {
-      var _createFamily = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(FormClass) {
+    setStates: function setStates(fields, object) {
+      var _this = this;
+
+      if (fields.length > 0) {
+        fields.forEach(function (field) {
+          if (object[field]) {
+            _this[field] = object[field];
+          }
+        });
+      }
+    },
+    setSocialLinks: function setSocialLinks(socialLinks) {
+      var socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+      this.setStates(socials, socialLinks);
+      this.socialLinksId = socialLinks.id;
+    },
+    setPerformers: function setPerformers(performers) {
+      this.performers = performers;
+    },
+    updateFamily: function () {
+      var _updateFamily = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(FormClass) {
         var resp;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -5987,19 +6030,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 2:
                 resp = _context.sent;
+                console.log(resp);
 
                 if (!(resp.status === 'success')) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
-                _context.next = 6;
+                _context.next = 7;
                 return this.$store.dispatch("findUser");
 
-              case 6:
-                this.$router.push('/dashboard');
-
               case 7:
+                this.$router.push("/families/".concat(this.id));
+
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -6007,44 +6051,119 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee, this);
       }));
 
-      function createFamily(_x) {
-        return _createFamily.apply(this, arguments);
+      function updateFamily(_x) {
+        return _updateFamily.apply(this, arguments);
       }
 
-      return createFamily;
+      return updateFamily;
     }(),
+    setFamily: function setFamily(family) {
+      var fields = ['name', 'description'];
+      this.setStates(fields, family);
+    },
+    getFamily: function () {
+      var _getFamily = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return this.$store.dispatch('fetchSingle', {
+                  route: "families",
+                  id: this.id
+                });
+
+              case 2:
+                resp = _context2.sent;
+
+                if (!(resp.status === 200)) {
+                  _context2.next = 8;
+                  break;
+                }
+
+                this.setFamily(resp.data.family);
+                this.setSocialLinks(resp.data.family.social_links);
+                this.setPerformers(resp.data.family.performers);
+                return _context2.abrupt("return");
+
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function getFamily() {
+        return _getFamily.apply(this, arguments);
+      }
+
+      return getFamily;
+    }(),
+    getSocialMediaData: function getSocialMediaData() {
+      var socialMediaData = {};
+
+      for (var social in this.socials) {
+        socialMediaData[social] = this[social];
+      }
+
+      return socialMediaData;
+    },
     handleSubmit: function handleSubmit() {
       var data = {
         name: this.name,
         description: this.description,
         performers: this.performerIds
       };
-      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "create", {
-        route: "families"
+      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "edit", {
+        route: "families",
+        id: this.id
       });
       this.errors = FormClass.checkRequiredFields(data);
 
       if (this.valid) {
-        var additionalData = this.getSocialMediaData();
+        var socialMediaData = this.getSocialMediaData();
+        var additionalData = this.addAdditionalData(socialMediaData);
         FormClass.setAdditionalFields(additionalData);
-        this.createFamily(FormClass);
+        this.updateFamily(FormClass);
       }
     },
     addToArray: function addToArray(updateObject, currentArray) {
-      var index = currentArray.findIndex(this.findValue, updateObject.value);
+      var index = this.findValue(currentArray, updateObject.value);
 
       if (index <= -1) {
         currentArray.push(updateObject.value);
         this[updateObject.name] = currentArray;
       }
     },
-    findValue: function findValue(value) {
-      return function (array) {
-        return array.value === value;
-      };
+    findValue: function findValue(currentArray, updateObject) {
+      var index = -1;
+      console.log(updateObject);
+      currentArray.forEach(function (item, i) {
+        if (updateObject.id && item.id === updateObject.id) {
+          index = i;
+          return;
+        }
+
+        if (item.id === updateObject) {
+          index = i;
+          return index;
+        }
+      });
+      return index;
+    },
+    addAdditionalData: function addAdditionalData(currentFields) {
+      var _this2 = this;
+
+      var fields = ['socialLinksId'];
+      fields.forEach(function (field) {
+        currentFields[field] = _this2[field];
+      });
+      return currentFields;
     },
     deleteFromArray: function deleteFromArray(updateObject, currentArray) {
-      var index = currentArray.findIndex(this.findValue, updateObject.value);
+      var index = this.findValue(currentArray, updateObject.value);
 
       if (index > -1) {
         currentArray.splice(index, 1);
@@ -6062,15 +6181,54 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.deleteFromArray(updateObject, currentArray);
       }
     },
-    getSocialMediaData: function getSocialMediaData() {
-      var socialMediaData = {};
+    toggleModal: function toggleModal() {
+      this.confirmModal = !this.confirmModal;
+    },
+    handleDelete: function () {
+      var _handleDelete = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var data, DeleteForm, resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                data = {
+                  user_id: this.user.id
+                };
+                DeleteForm = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, 'destroy', {
+                  route: 'families',
+                  id: this.id
+                });
+                _context3.next = 4;
+                return DeleteForm.submitForm();
 
-      for (var social in this.socials) {
-        socialMediaData[social] = this[social];
+              case 4:
+                resp = _context3.sent;
+
+                if (!(resp.status === 'success')) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                _context3.next = 8;
+                return this.$store.dispatch('findUser');
+
+              case 8:
+                this.$router.push('/dashboard');
+
+              case 9:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function handleDelete() {
+        return _handleDelete.apply(this, arguments);
       }
 
-      return socialMediaData;
-    }
+      return handleDelete;
+    }()
   }
 });
 
@@ -13929,90 +14087,122 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.user
-    ? _c("div", { staticClass: "main" }, [
-        _c(
-          "main",
-          { staticClass: "container container--core" },
-          [
-            _c("h1", { staticClass: "copy--center" }, [
-              _vm._v("Create Family")
-            ]),
-            _vm._v(" "),
-            _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
-            _vm._v(" "),
-            _c(
-              "form",
-              {
-                attrs: { novalidate: "" },
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                    return _vm.handleSubmit($event)
+    ? _c(
+        "div",
+        { staticClass: "main" },
+        [
+          _c(
+            "main",
+            { staticClass: "container container--core" },
+            [
+              _c("h1", { staticClass: "copy--center" }, [
+                _vm._v("Edit Family")
+              ]),
+              _vm._v(" "),
+              _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: { novalidate: "" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.handleSubmit($event)
+                    }
                   }
-                }
-              },
-              [
-                _c("div", { staticClass: "form-group row between-md" }, [
-                  _c(
-                    "div",
-                    { staticClass: "col-xxs-12" },
-                    [
-                      _c("Input", {
-                        attrs: {
-                          name: "name",
-                          value: _vm.name,
-                          type: "text",
-                          required: true,
-                          errors: _vm.errors
-                        },
-                        on: { update: _vm.updateValue }
-                      }),
-                      _vm._v(" "),
-                      _c("Input", {
-                        attrs: {
-                          name: "description",
-                          value: _vm.description,
-                          type: "textarea",
-                          required: true,
-                          errors: _vm.errors
-                        },
-                        on: { update: _vm.updateValue }
-                      })
-                    ],
-                    1
-                  )
-                ]),
-                _vm._v(" "),
-                _c("SelectPerformers", {
-                  attrs: { errors: _vm.errors, performers: _vm.performers },
-                  on: { update: _vm.updateArray }
-                }),
-                _vm._v(" "),
-                _c("SocialMedia", {
-                  attrs: {
-                    errors: _vm.errors,
-                    facebook: _vm.facebook,
-                    instagram: _vm.instagram,
-                    twitch: _vm.twitch,
-                    twitter: _vm.twitter,
-                    tiktok: _vm.tiktok,
-                    website: _vm.website,
-                    youtube: _vm.youtube
+                },
+                [
+                  _c("div", { staticClass: "form-group row between-md" }, [
+                    _c(
+                      "div",
+                      { staticClass: "col-xxs-12" },
+                      [
+                        _c("Input", {
+                          attrs: {
+                            name: "name",
+                            value: _vm.name,
+                            type: "text",
+                            required: true,
+                            errors: _vm.errors
+                          },
+                          on: { update: _vm.updateValue }
+                        }),
+                        _vm._v(" "),
+                        _c("Input", {
+                          attrs: {
+                            name: "description",
+                            value: _vm.description,
+                            type: "textarea",
+                            required: true,
+                            errors: _vm.errors
+                          },
+                          on: { update: _vm.updateValue }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("SelectPerformers", {
+                    attrs: { errors: _vm.errors, performers: _vm.performers },
+                    on: { update: _vm.updateArray }
+                  }),
+                  _vm._v(" "),
+                  _c("SocialMedia", {
+                    attrs: {
+                      errors: _vm.errors,
+                      facebook: _vm.facebook,
+                      instagram: _vm.instagram,
+                      twitch: _vm.twitch,
+                      twitter: _vm.twitter,
+                      tiktok: _vm.tiktok,
+                      website: _vm.website,
+                      youtube: _vm.youtube
+                    },
+                    on: { update: _vm.updateValue }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    staticClass: "btn",
+                    attrs: { type: "submit", value: "Edit Family" }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "copy--center" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn--inline copy--center",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.toggleModal($event)
+                      }
+                    }
                   },
-                  on: { update: _vm.updateValue }
-                }),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "btn",
-                  attrs: { type: "submit", value: "Create Family" }
-                })
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ])
+                  [_vm._v("Delete Venue")]
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("Modal", {
+            attrs: {
+              title: "Are you sure?",
+              copy:
+                "This action will permanently delete this performer profile and any families and/or events created by it.",
+              open: _vm.confirmModal,
+              button: "Confirm Delete"
+            },
+            on: { confirm: _vm.handleDelete, close: _vm.toggleModal }
+          })
+        ],
+        1
+      )
     : _vm._e()
 }
 var staticRenderFns = []

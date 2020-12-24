@@ -50,6 +50,11 @@ class FamilyController extends Controller
 		]);
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
+    }
+    
+    public function updateSocialLinks($request) {
+		$socialLinks = SocialLinks::find(request('socialLinksId'));
+		$socialLinks->update(request(['facebook', 'instagram', 'tiktok','twitter','twitch', 'website', 'youtube']));
 	}
 
     /**
@@ -71,12 +76,15 @@ class FamilyController extends Controller
 		$user = User::find($request['user']->id);
 		if ($user) {
 			$user->families()->save($family);
-		}
-        $performers = request('performers');
-        foreach ($performers as $performer):
-			$newPerformer = Performer::find($performer);
-			$family->performers()->save($newPerformer);
-        endforeach;
+        }
+        $performers = Performer::find(request('performers'));
+        if (!empty($performers)) {
+            foreach ($performers as $performer) {
+                $family->performers()->attach($performer);
+            }
+
+        }
+
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -123,9 +131,15 @@ class FamilyController extends Controller
     {
         //
         $family = Family::find($id);
+        $this->updateSocialLinks(request());
         $user = request('user');
+        $family->performers()->detach();
         if ($user['id'] === $family['user_id']):
-			$family->update(request(['name', 'description']));
+            $family->update(request(['name', 'description']));
+            foreach (request('performers') as $performerId):
+                $performer = Performer::find($performerId);
+                $family->performers()->attach($performer);
+            endforeach;
 			return response()->json(['status' => 'success'], 200);
         endif;
         return response()->json(['message' => 'unauthorized'], 405);
@@ -141,18 +155,8 @@ class FamilyController extends Controller
     {
         //
         $family = Family::find($id);
-        $user = request('user');
-        $userPerformer = $user->performer;
-        if ($userPerformer['family_id'] === $family['id']):
-			$performers = $family->performers;
-			foreach($performers as $performer) {
-				$performer->family_id = null;
-				$performer->save();
-			}
-			$family->delete();
-			return response()->json(['status' => 'success'], 200);
-        endif;
-        return response()->json(['status' => 'unauthorized'], 401);
+        $family->delete();
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function performer($id) {

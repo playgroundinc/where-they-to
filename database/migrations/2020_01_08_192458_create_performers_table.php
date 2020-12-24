@@ -92,8 +92,6 @@ class CreatePerformersTable extends Migration
 			$table->string('name');
 			$table->text('bio');
 			$table->text('tips')->nullable();
-			$table->bigInteger('family_id')->unsigned()->nullable();
-			$table->foreign('family_id')->references('id')->on('families');
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});

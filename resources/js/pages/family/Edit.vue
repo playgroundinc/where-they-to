@@ -1,7 +1,7 @@
 <template>
 	<div class="main" v-if="user">
 		<main class="container container--core">
-			<h1 class="copy--center">Create Family</h1>
+			<h1 class="copy--center">Edit Family</h1>
 			<ErrorsContainer :errors="errors"/>
 			<form novalidate v-on:submit.prevent="handleSubmit">
 				<div class="form-group row between-md">
@@ -40,9 +40,20 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Create Family">
+				<input class="btn" type="submit" value="Edit Family">
 			</form>    
+			<div class="copy--center">
+				<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Venue</button>
+			</div>
 		</main>
+		<Modal 
+			title="Are you sure?"
+			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			:open="confirmModal"
+			button="Confirm Delete"
+			v-on:confirm="handleDelete"
+			v-on:close="toggleModal"
+		/>
 	</div>
 </template>
 
@@ -57,6 +68,8 @@
 	import Input from "../../components/Input";
 	import SocialMedia from "../../components/SocialMedia";
 	import SelectPerformers from "../../components/SelectPerformers";
+	import Modal from "../../components/Modal";
+
 	export default {
 		data() {
 			return {
@@ -73,6 +86,8 @@
 				youtube: '',
 				instagram: '',
 				socials,
+				socialLinksId: '',
+				confirmModal: false,
 			}
 		},
 		computed: {
@@ -87,47 +102,109 @@
 		components: {
 			ErrorsContainer, 
 			Input,
+			Modal,
 			SocialMedia,
 			SelectPerformers,
+		},
+		mounted() {
+			this.getFamily();
 		},
 		methods: {
 			updateValue: function(updateObject) {
 				this[updateObject.name] = updateObject.value;
 			},
-			createFamily: async function(FormClass) {
-				const resp = await FormClass.submitForm();
-				if (resp.status === 'success') {
-					await this.$store.dispatch("findUser");
-					this.$router.push('/dashboard');
+			setStates: function(fields, object) {
+				if (fields.length > 0) {
+					fields.forEach((field) => {
+						if (object[field]) {
+							this[field] = object[field];
+						}
+					});
 				}
 			},
+			setSocialLinks: function(socialLinks) {
+				const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+				this.setStates(socials, socialLinks);
+				this.socialLinksId = socialLinks.id;
+			},
+			setPerformers: function(performers) {
+				this.performers = performers;
+			},
+			updateFamily: async function(FormClass) {
+				const resp = await FormClass.submitForm();
+				console.log(resp);
+				if (resp.status === 'success') {
+					await this.$store.dispatch("findUser");
+					this.$router.push(`/families/${this.id}`);
+				}
+			},
+			setFamily: function(family) {
+				const fields = ['name', 'description'];
+				this.setStates(fields, family);
+			},
+			getFamily: async function() {
+				const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.id });
+				if (resp.status === 200) {
+					this.setFamily(resp.data.family);
+					this.setSocialLinks(resp.data.family.social_links);
+					this.setPerformers(resp.data.family.performers);
+					return;
+				}
+			},
+			getSocialMediaData: function() {
+				const socialMediaData = {};
+				for (let social in this.socials) {
+					socialMediaData[social] = this[social];
+				}
+				return socialMediaData;
+			}, 
 			handleSubmit: function() {
 				let data = {
 					name: this.name,
 					description: this.description,
 					performers: this.performerIds,
 				}
-				const FormClass = new Form(data, "create", { route: "families" });
+				const FormClass = new Form(data, "edit", { route: "families", id: this.id });
 				this.errors = FormClass.checkRequiredFields(data);
 				if (this.valid) {
-					const additionalData = this.getSocialMediaData();
+					const socialMediaData = this.getSocialMediaData();
+					const additionalData = this.addAdditionalData(socialMediaData);
 					FormClass.setAdditionalFields(additionalData);
-					this.createFamily(FormClass);
+					this.updateFamily(FormClass);
 				}
 
 			},
 			addToArray: function(updateObject, currentArray) {
-				const index = currentArray.findIndex(this.findValue, updateObject.value);
+				const index = this.findValue(currentArray, updateObject.value);
 				if (index <= -1) {
 					currentArray.push(updateObject.value);
 					this[updateObject.name] = currentArray;
 				}
 			},
-			findValue: function(value) {
-				return (array) => array.value === value;
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				console.log(updateObject);
+				currentArray.forEach((item, i) => {
+					if (updateObject.id && item.id === updateObject.id) {
+						index = i;
+						return;
+					}
+					if (item.id === updateObject) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
+			},
+			addAdditionalData: function(currentFields) {
+				const fields = ['socialLinksId'];
+				fields.forEach((field) => {
+					currentFields[field] = this[field];
+				});
+				return currentFields;
 			},
 			deleteFromArray: function(updateObject, currentArray) {
-				const index = currentArray.findIndex(this.findValue, updateObject.value);
+				const index = this.findValue(currentArray, updateObject.value);
 				if (index > -1) {
 					currentArray.splice(index, 1);
 					this[updateObject.name] = currentArray;
@@ -142,13 +219,20 @@
 					this.deleteFromArray(updateObject, currentArray);
 				}
 			},
-			getSocialMediaData: function() {
-				const socialMediaData = {};
-				for (let social in this.socials) {
-					socialMediaData[social] = this[social];
+			toggleModal: function() {
+				this.confirmModal = !this.confirmModal;
+			},
+			handleDelete: async function() {
+				const data = {
+					user_id: this.user.id,
 				}
-				return socialMediaData;
-			}, 
+				const DeleteForm = new Form(data, 'destroy', { route: 'families', id: this.id });
+				const resp = await DeleteForm.submitForm();
+				if (resp.status === 'success') {
+					await this.$store.dispatch('findUser');
+					this.$router.push('/dashboard');
+				}
+			},
 		}
 	}
 </script>

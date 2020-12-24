@@ -100,33 +100,11 @@ class SocialLinksController extends Controller
      * @param  \App\SocialLinks  $socialLinks
      * @return \Illuminate\Http\Response
      */
-    public function update($id)
+    public function update($request)
     {
         //
-        $socialLinks = SocialLinks::find($id);
-        $user = $socialLinks->user;
-        if (request('family_id')) {
-          $userPerformer = request('user')->performer;
-          if (intval($userPerformer['family_id']) === intval(request('family_id'))):
-            $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
-            return response()->json(['message'=>'success'], 200);
-          endif;
-          return response()->json(['message' => 'unauthorized'], 401);
-        }
-        if (request('event_id')) {
-          $event = Event::find(request('event_id'));
-          $user = $event->user;
-          $validatedUser = request('user');
-          if ($user['id'] === $validatedUser['id']):
-            $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
-            return response()->json(['message'=>'success'], 200);
-          endif;
-        }
-        if (request('user_id') && $user->id === request('user')->id):
-          $socialLinks->update(request(['facebook', 'instagram', 'website', 'youtube', 'twitter']));
-          return response()->json(['status' => 'success'], 200);
-        endif;
-        return response()->json(['status' => 'unauthorized'], 401);
+        $socialLinks = SocialLinks::find(request('socialLinksId'));
+        $socialLinks->update(request(['facebook', 'instagram', 'tiktok','twitter','twitch', 'website', 'youtube']));
     }
 
     /**

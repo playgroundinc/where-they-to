@@ -116,17 +116,24 @@
 
 			},
 			addToArray: function(updateObject, currentArray) {
-				const index = currentArray.findIndex(this.findValue, updateObject.value);
+				const index = this.findValue(currentArray, updateObject.value);
 				if (index <= -1) {
 					currentArray.push(updateObject.value);
 					this[updateObject.name] = currentArray;
 				}
 			},
-			findValue: function(value) {
-				return (array) => array.value === value;
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				currentArray.forEach((item, i) => {
+					if (item.id === updateObject.id) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
 			},
 			deleteFromArray: function(updateObject, currentArray) {
-				const index = currentArray.findIndex(this.findValue, updateObject.value);
+				const index = this.findValue(currentArray, updateObject.value);
 				if (index > -1) {
 					currentArray.splice(index, 1);
 					this[updateObject.name] = currentArray;
