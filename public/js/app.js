@@ -4177,7 +4177,7 @@ __webpack_require__.r(__webpack_exports__);
       return null;
     },
     twitchUrl: function twitchUrl() {
-      if (this.socialLinks.twitter) {
+      if (this.socialLinks.twitch) {
         return "https://www.twitch.tv/".concat(this.socialLinks.twitch);
       }
 
@@ -4900,8 +4900,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _Location__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Location */ "./resources/js/Location.js");
-/* harmony import */ var _components_Autocomplete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Autocomplete */ "./resources/js/components/Autocomplete.vue");
+/* harmony import */ var _core_social_media__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/social-media */ "./resources/js/core/social-media.js");
+/* harmony import */ var _core_form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/form */ "./resources/js/core/form.js");
+/* harmony import */ var _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/ErrorsContainer */ "./resources/js/components/ErrorsContainer.vue");
+/* harmony import */ var _components_Input__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/Input */ "./resources/js/components/Input.vue");
+/* harmony import */ var _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../components/SocialMedia */ "./resources/js/components/SocialMedia.vue");
+/* harmony import */ var _components_Address__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/Address */ "./resources/js/components/Address.vue");
+/* harmony import */ var _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../components/SelectPerformers */ "./resources/js/components/SelectPerformers.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5049,69 +5054,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+ // Classes
+
+
+ // Components
+
+
+
 
 
 
@@ -5119,26 +5068,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       id: this.$route.params.id || "",
+      errors: [],
       name: "",
       description: "",
       date: "",
       time: "",
       venue: "",
+      performers: [],
       newPerformers: [],
       family: "",
       type: "",
-      timezones: timezones || "",
-      errors: [],
       facebook: "",
       instagram: "",
       twitter: "",
+      twitch: "",
+      tiktok: "",
       youtube: "",
       website: "",
       tickets: "",
       tickets_url: ""
     };
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["user", "events", "venues", "performers", "families", "eventTypes"])), {}, {
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["user"])), {}, {
     timezone: {
       get: function get() {
         if (this.user.timezone) {
@@ -5153,7 +5104,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   components: {
-    Autocomplete: _components_Autocomplete__WEBPACK_IMPORTED_MODULE_3__["default"]
+    Address: _components_Address__WEBPACK_IMPORTED_MODULE_7__["default"],
+    ErrorsContainer: _components_ErrorsContainer__WEBPACK_IMPORTED_MODULE_4__["default"],
+    Input: _components_Input__WEBPACK_IMPORTED_MODULE_5__["default"],
+    SocialMedia: _components_SocialMedia__WEBPACK_IMPORTED_MODULE_6__["default"],
+    SelectPerformers: _components_SelectPerformers__WEBPACK_IMPORTED_MODULE_8__["default"]
   },
   methods: {
     handleSubmit: function handleSubmit() {
@@ -5211,17 +5166,67 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         };
       }());
     },
-    addPerformer: function addPerformer(performer) {
-      if (this.newPerformers.indexOf(performer) === -1) {
-        this.newPerformers.push(performer);
+    updateValue: function updateValue(updateObject) {
+      this[updateObject.name] = updateObject.value;
+    },
+    getSocialMediaData: function getSocialMediaData() {
+      var socialMediaData = {};
+
+      for (var social in this.socials) {
+        socialMediaData[social] = this[social];
+      }
+
+      return socialMediaData;
+    },
+    getAdditionalData: function getAdditionalData(additionalData) {
+      var _this2 = this;
+
+      var fields = ['timezone', 'city'];
+      fields.forEach(function (field) {
+        additionalData[field] = _this2[field];
+      });
+      return additionalData;
+    },
+    addToArray: function addToArray(updateObject, currentArray) {
+      var index = this.findValue(currentArray, updateObject.value);
+
+      if (index <= -1) {
+        currentArray.push(updateObject.value);
+        this[updateObject.name] = currentArray;
       }
     },
-    removePerformer: function removePerformer(index) {
-      this.newPerformers.splice(index, 1);
+    findValue: function findValue(currentArray, updateObject) {
+      var index = -1;
+      currentArray.forEach(function (item, i) {
+        if (item.id === updateObject.id) {
+          index = i;
+          return index;
+        }
+      });
+      return index;
+    },
+    deleteFromArray: function deleteFromArray(updateObject, currentArray) {
+      var index = this.findValue(currentArray, updateObject.value);
+
+      if (index > -1) {
+        currentArray.splice(index, 1);
+        this[updateObject.name] = currentArray;
+      }
+    },
+    updateArray: function updateArray(updateObject) {
+      var currentArray = this[updateObject.name];
+
+      if (currentArray && updateObject.add) {
+        this.addToArray(updateObject, currentArray);
+      }
+
+      if (currentArray && !updateObject.add) {
+        this.deleteFromArray(updateObject, currentArray);
+      }
     }
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -5229,11 +5234,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               try {
-                _this2.$store.dispatch("fetchState", {
+                _this3.$store.dispatch("fetchState", {
                   route: "eventTypes"
                 });
               } catch (error) {
-                _this2.errors.push(error);
+                _this3.errors.push(error);
               }
 
             case 1:
@@ -12579,171 +12584,109 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "main" }, [
-    _c("h1", [_vm._v("Create Event")]),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        attrs: { action: "/events" },
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.handleSubmit($event)
-          }
-        }
-      },
-      [
-        _c("label", { staticClass: "label", attrs: { for: "name" } }, [
-          _vm._v("Name")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.name,
-              expression: "name"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", name: "name", id: "name" },
-          domProps: { value: _vm.name },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.name = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "description" } }, [
-          _vm._v("Description")
-        ]),
-        _vm._v(" "),
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.description,
-              expression: "description"
-            }
-          ],
-          staticClass: "input",
-          attrs: {
-            name: "description",
-            id: "description",
-            cols: "30",
-            rows: "10"
-          },
-          domProps: { value: _vm.description },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.description = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "date" } }, [
-          _vm._v("Date")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.date,
-              expression: "date"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", name: "date", id: "date" },
-          domProps: { value: _vm.date },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.date = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "date" } }, [
-          _vm._v("Time")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.time,
-              expression: "time"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "time", name: "time" },
-          domProps: { value: _vm.time },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.time = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "timezone" } }, [
-          _vm._v("Timezone")
-        ]),
-        _vm._v(" "),
+  return _vm.user
+    ? _c("div", { staticClass: "main" }, [
         _c(
-          "select",
-          {
-            directives: [
+          "main",
+          { staticClass: "container container--core" },
+          [
+            _c("h1", { staticClass: "copy--center" }, [_vm._v("Create Event")]),
+            _vm._v(" "),
+            _c("ErrorsContainer", { attrs: { errors: _vm.errors } }),
+            _vm._v(" "),
+            _c(
+              "form",
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.timezone,
-                expression: "timezone"
-              }
-            ],
-            staticClass: "input",
-            attrs: { name: "timezone", id: "timezone" },
-            on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.timezone = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
-            }
-          },
-          _vm._l(_vm.timezones, function(timezone) {
-            return _c(
-              "option",
-              { key: timezone, domProps: { value: timezone } },
-              [_vm._v(_vm._s(timezone))]
+                attrs: { novalidate: "" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.handleSubmit($event)
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "form-group row between-md" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-xxs-12" },
+                    [
+                      _c("Input", {
+                        attrs: {
+                          name: "name",
+                          value: _vm.name,
+                          type: "text",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      }),
+                      _vm._v(" "),
+                      _c("Input", {
+                        attrs: {
+                          name: "description",
+                          value: _vm.description,
+                          type: "textarea",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      }),
+                      _vm._v(" "),
+                      _c("Input", {
+                        attrs: {
+                          name: "date",
+                          value: _vm.date,
+                          type: "text",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      }),
+                      _vm._v(" "),
+                      _c("Input", {
+                        attrs: {
+                          name: "time",
+                          value: _vm.time,
+                          type: "text",
+                          required: true,
+                          errors: _vm.errors
+                        },
+                        on: { update: _vm.updateValue }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("SelectPerformers", {
+                  attrs: { errors: _vm.errors, performers: _vm.performers },
+                  on: { update: _vm.updateArray }
+                }),
+                _vm._v(" "),
+                _c("SocialMedia", {
+                  attrs: {
+                    errors: _vm.errors,
+                    facebook: _vm.facebook,
+                    instagram: _vm.instagram,
+                    twitch: _vm.twitch,
+                    twitter: _vm.twitter,
+                    tiktok: _vm.tiktok,
+                    website: _vm.website,
+                    youtube: _vm.youtube
+                  },
+                  on: { update: _vm.updateValue }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "btn",
+                  attrs: { type: "submit", value: "Create Family" }
+                })
+              ],
+              1
             )
-          }),
-          0
+          ],
+          1
         ),
         _vm._v(" "),
         _c("label", { staticClass: "label", attrs: { for: "venue" } }, [
@@ -12888,58 +12831,6 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.performers
-          ? _c(
-              "fieldset",
-              [
-                _c("Autocomplete", {
-                  attrs: { label: "Performers", values: _vm.performers },
-                  on: {
-                    selection: function(performer) {
-                      _vm.addPerformer(performer)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.newPerformers.length > 0
-                  ? _c("div", [
-                      _c("h2", [_vm._v("Current Performers")]),
-                      _vm._v(" "),
-                      _c(
-                        "ul",
-                        _vm._l(_vm.newPerformers, function(performer, index) {
-                          return _c("li", { key: performer.id }, [
-                            _vm._v(
-                              "\n                        " +
-                                _vm._s(performer.name) +
-                                "\n                        "
-                            ),
-                            _c(
-                              "a",
-                              {
-                                attrs: { href: "#" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return (function() {
-                                      return _vm.removePerformer(index)
-                                    })($event)
-                                  }
-                                }
-                              },
-                              [_vm._v("Remove")]
-                            )
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  : _vm._e()
-              ],
-              1
-            )
-          : _vm._e(),
-        _vm._v(" "),
         _c("label", { staticClass: "label", attrs: { for: "tickets" } }, [
           _vm._v("Ticket Information")
         ]),
@@ -12992,145 +12883,12 @@ var render = function() {
           }
         }),
         _vm._v(" "),
-        _c("h2", [_vm._v("Create Social Links")]),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "facebook" } }, [
-          _vm._v("Facebook")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.facebook,
-              expression: "facebook"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "facebook", name: "facebook" },
-          domProps: { value: _vm.facebook },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.facebook = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "instagram" } }, [
-          _vm._v("Instagram")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.instagram,
-              expression: "instagram"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "instagram", name: "instagram" },
-          domProps: { value: _vm.instagram },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.instagram = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "twitter" } }, [
-          _vm._v("Twitter")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.twitter,
-              expression: "twitter"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "twitter", name: "twitter" },
-          domProps: { value: _vm.twitter },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.twitter = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "youtube" } }, [
-          _vm._v("Youtube")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.youtube,
-              expression: "youtube"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "youtube", name: "youtube" },
-          domProps: { value: _vm.youtube },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.youtube = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { staticClass: "label", attrs: { for: "website" } }, [
-          _vm._v("Website")
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.website,
-              expression: "website"
-            }
-          ],
-          staticClass: "input",
-          attrs: { type: "text", id: "website", name: "website" },
-          domProps: { value: _vm.website },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.website = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
         _c("input", {
           staticClass: "btn",
           attrs: { type: "submit", value: "Create Event" }
         })
-      ]
-    )
-  ])
+      ])
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true

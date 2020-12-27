@@ -69,7 +69,7 @@ export default {
             return null;
         },
         twitchUrl() {
-            if (this.socialLinks.twitter) {
+            if (this.socialLinks.twitch) {
                 return `https://www.twitch.tv/${this.socialLinks.twitch}`;
             } 
             return null;

@@ -1,59 +1,65 @@
 <template>
-    <div class="main">
-        <h1>Create Event</h1>
-        <form action="/events" v-on:submit.prevent="handleSubmit">
-            <!-- NAME -->
-            <label class="label" for="name">Name</label>
-            <input
-                class="input"
-                type="text"
-                name="name"
-                id="name"
-                v-model="name"
-            />
-            <!-- DESCRIPTION -->
-            <label class="label" for="description">Description</label>
-            <textarea
-                class="input"
-                name="description"
-                id="description"
-                cols="30"
-                rows="10"
-                v-model="description"
-            ></textarea>
-            <!-- DATE -->
-            <label class="label" for="date">Date</label>
-            <input
-                class="input"
-                type="text"
-                name="date"
-                id="date"
-                v-model="date"
-            />
-            <!-- TIME -->
-            <label for="date" class="label">Time</label>
-            <input
-                class="input"
-                type="text"
-                id="time"
-                name="time"
-                v-model="time"
-            />
-            <!-- TIMEZONE -->
-            <label for="timezone" class="label">Timezone</label>
-            <select
-                name="timezone"
-                id="timezone"
-                class="input"
-                v-model="timezone"
-            >
-                <option
-                    v-for="timezone in timezones"
-                    v-bind:key="timezone"
-                    :value="timezone"
-                    >{{ timezone }}</option
-                >
-            </select>
+	<div class="main" v-if="user">
+		<main class="container container--core">
+			<h1 class="copy--center">Create Event</h1>
+			<ErrorsContainer :errors="errors"/>
+			<form novalidate v-on:submit.prevent="handleSubmit">
+				<div class="form-group row between-md">
+					<div class="col-xxs-12">
+						<Input
+							name="name"
+							:value="name"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+						<Input
+							name="description"
+							:value="description"
+							type="textarea"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+                        <Input
+							name="date"
+							:value="date"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+                        <Input
+							name="time"
+							:value="time"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+					</div>
+				</div>
+				<SelectPerformers 
+					:errors="errors"
+					:performers="performers"
+					v-on:update="updateArray"
+				/>	
+				<SocialMedia 
+					:errors="errors"
+					:facebook="facebook"
+					:instagram="instagram"
+					:twitch="twitch"
+					:twitter="twitter"
+					:tiktok="tiktok"
+					:website="website"
+					:youtube="youtube"
+					v-on:update="updateValue"
+				/>
+				<input class="btn" type="submit" value="Create Family">
+			</form>    
+		</main>
+
             <!-- VENUE -->
             <label class="label" for="venue">Venue</label>
             <select class="input" name="venue" id="venue" v-model="venue">
@@ -104,34 +110,6 @@
                     ></option>
                 </select>
             </div>
-            <!-- PERFORMERS -->
-            <fieldset v-if="performers">
-                <Autocomplete
-                    label="Performers"
-                    :values="performers"
-                    @selection="
-                        performer => {
-                            addPerformer(performer);
-                        }
-                    "
-                ></Autocomplete>
-                <div v-if="newPerformers.length > 0">
-                    <h2>Current Performers</h2>
-                    <ul>
-                        <li
-                            v-for="(performer, index) in newPerformers"
-                            v-bind:key="performer.id"
-                        >
-                            {{ performer.name }}
-                            <a
-                                href="#"
-                                @click.prevent="() => removePerformer(index)"
-                                >Remove</a
-                            >
-                        </li>
-                    </ul>
-                </div>
-            </fieldset>
             <!-- TICKETS -->
             <label class="label" for="tickets">Ticket Information</label>
             <textarea
@@ -150,47 +128,6 @@
                 id="tickets_url"
                 v-model="tickets_url"
             />
-            <h2>Create Social Links</h2>
-            <label class="label" for="facebook">Facebook</label>
-            <input
-                type="text"
-                class="input"
-                id="facebook"
-                name="facebook"
-                v-model="facebook"
-            />
-            <label for="instagram" class="label">Instagram</label>
-            <input
-                type="text"
-                class="input"
-                id="instagram"
-                name="instagram"
-                v-model="instagram"
-            />
-            <label for="twitter" class="label">Twitter</label>
-            <input
-                type="text"
-                class="input"
-                id="twitter"
-                name="twitter"
-                v-model="twitter"
-            />
-            <label for="youtube" class="label">Youtube</label>
-            <input
-                type="text"
-                class="input"
-                id="youtube"
-                name="youtube"
-                v-model="youtube"
-            />
-            <label for="website" class="label">Website</label>
-            <input
-                type="text"
-                class="input"
-                id="website"
-                name="website"
-                v-model="website"
-            />
             <input class="btn" type="submit" value="Create Event" />
         </form>
     </div>
@@ -198,40 +135,47 @@
 
 <script>
 import { mapState } from "vuex";
-import Location from "../../Location";
-import Autocomplete from "../../components/Autocomplete";
+
+// Classes
+import socials from "../../core/social-media";
+import Form from "../../core/form";
+
+// Components
+import ErrorsContainer from "../../components/ErrorsContainer";
+import Input from "../../components/Input";
+import SocialMedia from "../../components/SocialMedia";
+import Address from "../../components/Address";
+import SelectPerformers from "../../components/SelectPerformers";
 
 export default {
     data() {
         return {
             id: this.$route.params.id || "",
+            errors: [],
             name: "",
             description: "",
             date: "",
             time: "",
             venue: "",
+            performers: [],
             newPerformers: [],
             family: "",
             type: "",
-            timezones: timezones || "",
-            errors: [],
             facebook: "",
             instagram: "",
             twitter: "",
+            twitch: "",
+            tiktok: "",
             youtube: "",
             website: "",
             tickets: "",
             tickets_url: ""
         };
     },
+
     computed: {
         ...mapState([
             "user",
-            "events",
-            "venues",
-            "performers",
-            "families",
-            "eventTypes"
         ]),
         timezone: {
             get: function() {
@@ -246,7 +190,11 @@ export default {
         }
     },
     components: {
-        Autocomplete
+        Address,
+		ErrorsContainer,
+		Input,
+        SocialMedia,
+        SelectPerformers,
     },
     methods: {
         handleSubmit: function() {
@@ -281,14 +229,56 @@ export default {
                     this.$router.push({ path: `/dashboard?events=1` });
                 });
         },
-        addPerformer: function(performer) {
-            if (this.newPerformers.indexOf(performer) === -1) {
-                this.newPerformers.push(performer);
+        updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
+		},
+		getSocialMediaData: function() {
+            const socialMediaData = {};
+            for (let social in this.socials) {
+                socialMediaData[social] = this[social];
             }
+            return socialMediaData;
+		},
+		getAdditionalData: function(additionalData) {
+			const fields = ['timezone', 'city'];
+			fields.forEach((field) => {
+				additionalData[field] = this[field];
+			});
+			return additionalData;
         },
-        removePerformer: function(index) {
-            this.newPerformers.splice(index, 1);
-        }
+        addToArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index <= -1) {
+					currentArray.push(updateObject.value);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				currentArray.forEach((item, i) => {
+					if (item.id === updateObject.id) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
+			},
+			deleteFromArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index > -1) {
+					currentArray.splice(index, 1);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			updateArray: function(updateObject) {
+				const currentArray = this[updateObject.name];
+				if (currentArray && updateObject.add) {
+					this.addToArray(updateObject, currentArray);
+				} 
+				if (currentArray && !updateObject.add) {
+					this.deleteFromArray(updateObject, currentArray);
+				}
+			},
     },
     async mounted() {
         try {
