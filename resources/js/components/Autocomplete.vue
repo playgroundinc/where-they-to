@@ -1,14 +1,14 @@
 // This is a template for an autocomplete input
 // When a selection is made it emits a "selection" action
-// Takes in an array as "values"
+// Takes in an array as "value"
 
 <template>
     <div class="autocomplete">
         <div class="row">
             <div class="col-xxs-12">
                 <Input
-                    name="performers"
-                    :value="performers"
+                    :name="label"
+                    :value="value"
                     type="text"
                     :required="true"
                     :errors="errors"
@@ -24,7 +24,7 @@
                     >
                         <a class="autocomplete__single__link" @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
                     </li>
-                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="performers">No results found. <a href="#" @click.prevent="function() { newTerm(performers) }">Add a new term.</a></li>
+                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="value">No results found. <a href="#" @click.prevent="function() { newTerm(value) }">Add a new term.</a></li>
                 </ul>
             </div>
         </div>
@@ -40,7 +40,7 @@ import Input from "../components/Input";
 export default {
     data() {
         return {
-            performers: "",
+            value: "",
             timer: null,
             matches: [],
             searching: false,
@@ -79,7 +79,7 @@ export default {
     },
     methods: {
         updateValue: function(updateObject) {
-            this[updateObject.name] = updateObject.value;
+            this.value = updateObject.value;
 		},
         addAutocomplete: function(updateObject) {
             this.updateValue(updateObject);
@@ -90,28 +90,26 @@ export default {
             return;
         },
         triggerSearch: async function() {
-            const resp = await this.$store.dispatch('search', { route: this.route, term: this.performers });
+            const resp = await this.$store.dispatch('search', { route: this.route, term: this.value });
             if (resp.status === 200) {
-                return resp.data.performers;
+                return resp.data[this.route];
             }
             return [];
         },
         handleAutocomplete: async function() {
-            if (this.performers.length > 0) {
-                this.matches = await this.triggerSearch()
-            }
+            this.matches = await this.triggerSearch()
             this.searching = false;
         },
-        handleSelect: function(performer) {
+        handleSelect: function(selection) {
             this.clearQuery();
-            this.$emit("selection", performer);
+            this.$emit("selection", selection);
         },
         clearQuery: function() {
             this.matches = [];
-            this.performers = "";
+            this.value = "";
         },
         newTerm: function(term) {
-            this.clearQuery();
+            // this.clearQuery();
             this.$emit("new", term);
         },
     }

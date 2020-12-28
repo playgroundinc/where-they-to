@@ -143,4 +143,15 @@ class VenueController extends Controller
         $venue->delete();
         return response()->json(['status' => 'success'], 200);
     }
+
+    public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($venues)) {
+            return response()->json(compact('venues'), 200);
+        }
+        return response()->json([], 200);
+    }
 }

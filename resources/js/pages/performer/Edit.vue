@@ -49,7 +49,7 @@
                 :youtube="youtube"
                 v-on:update="updateValue"
             />
-            <PerformerTypes
+            <SelectTypes
                 :errors="errors"
                 :performerTypes="performerTypes"
                 v-on:update="updateArray"
@@ -83,7 +83,7 @@
 	import Input from "../../components/Input";
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import SocialMedia from "../../components/SocialMedia";
-	import PerformerTypes from "../../components/PerformerTypes";
+	import SelectTypes from "../../components/SelectTypes";
 	import Modal from "../../components/Modal";
 
 	export default {
@@ -117,7 +117,7 @@
 	components: {
 		Input,
 		ErrorsContainer,
-		PerformerTypes,
+		SelectTypes,
 		SocialMedia,
 		Modal,
 	},

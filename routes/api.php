@@ -54,7 +54,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 Route::get('performers', 'PerformerController@index');
 Route::get('performers/{id}', 'PerformerController@show');
 Route::get('performers/{id}/events', 'PerformerController@events');
-Route::get('performers/search/{term}', 'PerformerController@search');
 Route::post('performers/names', 'PerformerController@getNames');
 
 Route::get('venues', 'VenueController@index');
@@ -76,3 +75,9 @@ Route::resources([
 
 Route::get('/performerTypes', 'TypeController@performerIndex');
 Route::get('/eventTypes', 'TypeController@eventIndex');
+Route::post('/eventTypes', 'TypeController@eventStore');
+
+// SEARCH
+Route::get('/eventTypes/search/{term}', 'TypeController@eventSearch');
+Route::get('performers/search/{term}', 'PerformerController@search');
+Route::get('/venues/search/{term}', 'VenueController@search');

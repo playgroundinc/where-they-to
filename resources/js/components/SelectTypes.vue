@@ -1,12 +1,14 @@
 <template>
     <div class="row form-group">
         <div class="col-xxs-12">
-            <h3 class="copy--center">Performer Types</h3>
+            <h3 class="copy--center">{{ type }} Types</h3>
         </div>
         <div class="col-xxs-12 col-md-6">
             <Autocomplete 
-                label="Performer Types"
-                :values="allPerformerTypes"
+                :label="label"
+                :errors="errors"
+                :route="route"
+                :values="allTypes"
                 v-on:new="addTerm"
                 v-on:selection="updateValue"
             />
@@ -14,7 +16,7 @@
         <div class="col-xxs-12 col-md-6">
             <p class="label label--floating"><span class="float">Current Selections</span></p>
             <ul class="row selections__list">
-                <li class="selections__single col-md-4 col-xxs-6" v-for="type in currentPerformerTypes" v-bind:key="type.id">
+                <li class="selections__single col-md-4 col-xxs-6" v-for="type in currentTypes" v-bind:key="type.id">
                     <a href="#" class="selections__single__link" @click.prevent="function() { removeValue(type.id) }">
                         {{ type.name }} 
                         <svg class="selections__single__close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,14 +34,17 @@ import Autocomplete from "./Autocomplete";
 export default {
     data() {
         return {
-            allPerformerTypes: [],
+            allTypes: [],
         }
     },
     computed: {
-        currentPerformerTypes: function() {
-            return this.allPerformerTypes.filter((type) => {
-                return this.performerTypes.includes(type.id);
+        currentTypes: function() {
+            return this.allTypes.filter((type) => {
+                return this.types.includes(type.id);
             });
+        },
+        label: function() {
+            return `${this.type}_types`
         }
     },
     props: {
@@ -47,22 +52,30 @@ export default {
             type: Array,
             required: true,
         },
-        performerTypes: {
+        types: {
             type: Array,
             required: true,
-        }
+        },
+        route: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            required: true,
+        },
     },
     components: {
         Input,
         Autocomplete
     },
     mounted() {
-        this.getAllPerformerTypes();
+        this.getAllTypes();
     },
     methods: {
         updateValue: function(updateObject) {
             const updateArray = {
-                name: 'performerTypes',
+                name: this.route,
                 add: true,
                 value: updateObject.id,
             }
@@ -70,26 +83,27 @@ export default {
         },
         removeValue: function(updateObject) {
             const updateArray = {
-                name: "performerTypes",
+                name: this.route,
                 add: false,
                 value: updateObject,
             };
             this.$emit("update", updateArray);
         },
-        getAllPerformerTypes: async function() {
+        getAllTypes: async function() {
             try {
-                const resp = await this.$store.dispatch('fetchState', { route: 'performerTypes' });
+                const resp = await this.$store.dispatch('fetchState', { route: this.route });
                 if (resp.data) {
-                    this.allPerformerTypes = resp.data;
+                    this.allTypes = resp.data;
                 }
             } catch (err) {
                 console.log(err);
             }
         },
         addTerm: async function(term) {
+            console.log(term);
             const data = {
                 name: term,
-                type: 'performer',
+                type: this.type,
             }
             const payload = {
                 route: "types",
@@ -98,7 +112,7 @@ export default {
             const resp = await this.$store.dispatch('create', payload);
             if (resp && resp.data && resp.data.addition) {
                 this.updateValue(resp.data.addition);
-                this.getAllPerformerTypes();
+                this.getAllTypes();
             }
         }
     }

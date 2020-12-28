@@ -40,11 +40,26 @@
 						/>
 					</div>
 				</div>
-				<SelectPerformers 
+                <Autocomplete 
+                    label="Venue"
+                    :errors="errors"
+                    route="venues"
+                    v-on:selection="updateVenue"
+                />
+				<Select
+                    label="Performers"
+                    route="performers"
 					:errors="errors"
-					:performers="performers"
+					:currentArray="performers"
 					v-on:update="updateArray"
 				/>	
+                <SelectTypes 
+                    :errors="errors"
+                    :types="eventTypes"
+                    route="eventTypes"
+                    type="event"
+					v-on:update="updateArray"
+                />
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -56,11 +71,11 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Create Family">
+				<input class="btn" type="submit" value="Create Event">
 			</form>    
 		</main>
 
-            <!-- VENUE -->
+            <!-- VENUE
             <label class="label" for="venue">Venue</label>
             <select class="input" name="venue" id="venue" v-model="venue">
                 <option
@@ -70,7 +85,6 @@
                     v-text="venue.name"
                 ></option>
             </select>
-            <!-- EVENT TYPES -->
             <fieldset v-if="eventTypes">
                 <legend for="type" class="label">Event Type</legend>
                 <ul class="list">
@@ -93,7 +107,7 @@
                     </li>
                 </ul>
             </fieldset>
-            <!-- FAMILY -->
+
             <div v-if="family">
                 <label class="label" for="family">Family</label>
                 <select
@@ -110,7 +124,7 @@
                     ></option>
                 </select>
             </div>
-            <!-- TICKETS -->
+
             <label class="label" for="tickets">Ticket Information</label>
             <textarea
                 class="input"
@@ -127,8 +141,7 @@
                 name="tickets_url"
                 id="tickets_url"
                 v-model="tickets_url"
-            />
-            <input class="btn" type="submit" value="Create Event" />
+            /> -->
         </form>
     </div>
 </template>
@@ -141,11 +154,13 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import Autocomplete from "../../components/Autocomplete";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import Address from "../../components/Address";
-import SelectPerformers from "../../components/SelectPerformers";
+import Select from "../../components/Select";
+import SelectTypes from "../../components/SelectTypes";
 
 export default {
     data() {
@@ -155,10 +170,10 @@ export default {
             name: "",
             description: "",
             date: "",
+            eventTypes: [],
             time: "",
             venue: "",
             performers: [],
-            newPerformers: [],
             family: "",
             type: "",
             facebook: "",
@@ -194,7 +209,9 @@ export default {
 		ErrorsContainer,
 		Input,
         SocialMedia,
-        SelectPerformers,
+        Select,
+        SelectTypes,
+        Autocomplete,
     },
     methods: {
         handleSubmit: function() {
@@ -247,7 +264,7 @@ export default {
 			return additionalData;
         },
         addToArray: function(updateObject, currentArray) {
-				const index = this.findValue(currentArray, updateObject.value);
+                const index = this.findValue(currentArray, updateObject.value);
 				if (index <= -1) {
 					currentArray.push(updateObject.value);
 					this[updateObject.name] = currentArray;
@@ -264,13 +281,14 @@ export default {
 				return index;
 			},
 			deleteFromArray: function(updateObject, currentArray) {
-				const index = this.findValue(currentArray, updateObject.value);
+                const index = this.findValue(currentArray, updateObject.value);
 				if (index > -1) {
 					currentArray.splice(index, 1);
 					this[updateObject.name] = currentArray;
 				}
 			},
 			updateArray: function(updateObject) {
+                console.log(updateObject);
 				const currentArray = this[updateObject.name];
 				if (currentArray && updateObject.add) {
 					this.addToArray(updateObject, currentArray);
@@ -278,7 +296,10 @@ export default {
 				if (currentArray && !updateObject.add) {
 					this.deleteFromArray(updateObject, currentArray);
 				}
-			},
+            },
+            updateVenue: function(venue) {
+                console.log(venue);
+            }
     },
     async mounted() {
         try {

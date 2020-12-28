@@ -24,9 +24,11 @@
 						/>
 					</div>
 				</div>
-				<SelectPerformers 
+				<Select
+                    label="Performers"
+                    route="performers"
 					:errors="errors"
-					:performers="performers"
+					:currentArray="performers"
 					v-on:update="updateArray"
 				/>	
 				<SocialMedia 
@@ -56,7 +58,7 @@
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import Input from "../../components/Input";
 	import SocialMedia from "../../components/SocialMedia";
-	import SelectPerformers from "../../components/SelectPerformers";
+	import Select from "../../components/Select";
 	export default {
 		data() {
 			return {
@@ -87,7 +89,7 @@
 			ErrorsContainer, 
 			Input,
 			SocialMedia,
-			SelectPerformers,
+			Select,
 		},
 		methods: {
 			updateValue: function(updateObject) {

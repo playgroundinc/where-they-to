@@ -45,7 +45,7 @@
                 :youtube="youtube"
                 v-on:update="updateValue"
             />
-            <PerformerTypes
+            <SelectTypes
                 :errors="errors"
                 :performerTypes="performerTypes"
                 v-on:update="updateArray"
@@ -67,7 +67,7 @@ import Form from "../../core/form";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import ErrorsContainer from "../../components/ErrorsContainer";
-import PerformerTypes from "../../components/PerformerTypes";
+import SelectTypes from "../../components/SelectTypes";
 export default {
     data() {
         return {
@@ -96,7 +96,7 @@ export default {
         Input,
         ErrorsContainer,
         SocialMedia,
-        PerformerTypes,
+        SelectTypes,
     },
     methods: {
         updateValue: function(updateObject) {

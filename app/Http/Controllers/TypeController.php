@@ -127,4 +127,23 @@ class TypeController extends Controller
       $eventTypes = EventType::all();
       return response()->json($eventTypes, 200);
     }
+
+    public function eventSearch($term) {
+      if (empty($term)) {
+        return response()->json([], 200);
+      }
+      $eventTypes = EventType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($eventTypes)) {
+            return response()->json(compact('eventTypes'), 200);
+        }
+        return response()->json([], 200);
+    }
+
+    public function eventStore($request) {
+      $attributes = request()->validate([
+        'name' => 'required'
+      ]);
+      $newType = EventType::create($attributes);
+      return response()->json(compact('newType'), 200);
+    }
 }

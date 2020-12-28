@@ -24,11 +24,13 @@
 						/>
 					</div>
 				</div>
-				<SelectPerformers 
+				<Select
+                    label="Performers"
+                    route="performers"
 					:errors="errors"
-					:performers="performers"
+					:currentArray="performers"
 					v-on:update="updateArray"
-				/>	
+				/>		
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -67,7 +69,7 @@
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import Input from "../../components/Input";
 	import SocialMedia from "../../components/SocialMedia";
-	import SelectPerformers from "../../components/SelectPerformers";
+	import Select from "../../components/Select";
 	import Modal from "../../components/Modal";
 
 	export default {
@@ -104,7 +106,7 @@
 			Input,
 			Modal,
 			SocialMedia,
-			SelectPerformers,
+			Select,
 		},
 		mounted() {
 			this.getFamily();
@@ -183,7 +185,6 @@
 			},
 			findValue: function(currentArray, updateObject) {
 				let index = -1;
-				console.log(updateObject);
 				currentArray.forEach((item, i) => {
 					if (updateObject.id && item.id === updateObject.id) {
 						index = i;
