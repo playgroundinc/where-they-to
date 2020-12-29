@@ -29,18 +29,22 @@ class Event extends Model
     {
       return $this->hasOne(SocialLinks::class);
     }
-    public function eventType() 
+    public function eventTypes() 
     {
-      return $this->belongsTo(EventType::class);
+      return $this->belongsToMany(EventType::class);
     }
 
     protected $fillable = [
       'name',
+      'address',
+      'city',
+      'doors',
+      'province',
+      'timezone',
       'description',
       'date',
-      'time',
+      'show_time',
       'type',
-      'timezone',
       'tickets',
       'tickets_url'
     ];

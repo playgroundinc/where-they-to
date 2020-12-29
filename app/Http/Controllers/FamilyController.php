@@ -182,5 +182,15 @@ class FamilyController extends Controller
 		endif;
 	return response()->json(['message' => 'unauthorized user'], 401);
 
+	}
+	public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $families = Family::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($families)) {
+            return response()->json(compact('families'), 200);
+        }
+        return response()->json([], 200);
     }
 }

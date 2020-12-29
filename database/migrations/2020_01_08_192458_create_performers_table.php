@@ -69,9 +69,13 @@ class CreatePerformersTable extends Migration
 		Schema::create('events', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('name');
-			$table->timestamps();
+      $table->timestamps();
+      $table->string('address')->nullable();
+      $table->string('city')->nullable();
+      $table->string('province')->nullable();
 			$table->date('date')->nullable();
-			$table->string('time')->nullable();
+      $table->string('show_time')->nullable();
+      $table->string('doors')->nullable();
 			$table->string('timezone')->nullable();
 			$table->text('description');
 			$table->text('tickets')->nullable();
@@ -80,8 +84,6 @@ class CreatePerformersTable extends Migration
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families')->onDelete('set null');
-			$table->bigInteger('event_type_id')->unsigned()->nullable();
-			$table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('set null');
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});

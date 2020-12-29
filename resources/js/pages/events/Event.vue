@@ -1,88 +1,99 @@
-
 <template>
-	<div class="main" v-if="event">
-		<h1>{{ event.name }}</h1>
-		<div>
-			<p>
-				<span v-if="event.date">{{ event.date }}</span>
-				<span v-if="event.time">{{ event.time }}</span>
-			</p>
-			<p>{{ event.description }}</p>
-		</div>
-		<div v-if="venue">
-			<h2>Venue</h2>
-			<p>
-				<a :href="'/venues/' + venue.id">{{ venue.name }}</a>
-			</p>
-			<p>
-				<span v-if="venue.address">{{ venue.address}}</span>
-				<span v-if="venue.city">{{ venue.city }}</span>
-				<span v-if="venue.province">{{ venue.province }}</span>
-			</p>
-			<p v-if="venue.description">{{venue.description}}</p>
-		</div>
-		<div v-if="family">
-			<h2>Family</h2>
-			<li>
-				<a :href="'/families/' + family.id"> {{ family.name }} </a>
-			</li>
-		</div>
-		<div>
-			<h2>Performers</h2>
-			<ul v-if="event.performers.length > 0">
-				<li v-for="performer in event.performers" v-bind:key="performer.id">
-					<a :href="'/performers/' + performer.id " v-text="performer.name"></a>
-				</li>
-			</ul>
-			<p v-else>No performers currently listed</p>
-		</div>
-		<div>
-			<h2>Tickets</h2>
-			<p v-if="event.tickets">{{event.tickets}}</p>
-			<p v-else>No tickets listed</p>
-			<a v-if="event.tickets_url" :href="event.tickets_url">Buy Tickets</a>
-		</div>
-		<div>
-			<h2>Social Links</h2>
-			<ul v-if="event.social_links">
-				<li v-if="event.social_links.facebook">Facebook: {{event.social_links.facebook }}</li>
-				<li v-if="event.social_links.instagram">Instagram: {{event.social_links.instagram }}</li>
-				<li v-if="event.social_links.twitter">Twitter: {{ event.social_links.twitter }}</li>
-				<li v-if="event.social_links.youtube">Youtube: {{ event.social_links.youtube }}</li>
-				<li v-if="event.social_links.website">Website: {{ event.social_links.website }}</li>
-			</ul>
-		</div>
-		<a v-if="user && user.id === event.user_id" :href="'/events/' + event.id + '/edit'" class="btn">Edit Event</a>
+	<div>
+		<main class="container">
+			<div class="row">
+				<div class="col-xxs-12">
+					<h1 class="copy--center">{{ event.name }}</h1>
+					<ul v-if="eventTypes.length">
+						<li v-for="eventType in eventTypes" v-bind:key="eventType.id">{{ eventType.name }}</li>
+					</ul>
+				</div>
+				<div class="col-xxs-12 col-md-6">
+
+				</div>
+				<div class="col-xxs-12 col-md-6">
+					<p>{{ event.date }} at {{ event.show_time }}</p>
+					<p v-if="event.doors">Doors @ {{ event.doors }}</p>
+					<div v-if="venue">
+						<p>{{ venue.name }}</p>
+						<p>{{ venue.address }}</p>
+						<p>{{ venue.city}}, {{ venue.province }}</p>
+					</div>
+					<div v-else>
+						<p>{{ event.address }}</p>
+						<p>{{ event.city}}, {{ event.province }}</p>
+					</div>
+					<div>
+						<p>{{ event.description	 }}</p>
+					</div>
+					<div v-if="family && family.name">
+						<h2>Family</h2>
+						<a :href="familyLink">{{ family.name }}</a>
+					</div>
+					<div v-if="performers.length">
+						<h2>Performers</h2>
+						<ul>
+							<li v-for="performer in performers" v-bind:key="performer.id">
+								<a :href="'/performers/' + performer.id">{{ performer.name }}</a>
+							</li>
+						</ul>
+					</div>
+					<div>
+						<a class="btn copy--center" :href="'/events/' + id + '/edit'" >Edit Profile</a>
+					</div>
+				</div>
+				<SocialLinks 
+					:socialLinks="socialLinks"
+				/>
+				
+			</div>
+		</main>
 	</div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
+import SocialLinks from "../../components/SocialLinks";
+import Lists from "../../components/Lists";
+
 export default {
 
 	data() {
 		return {
 			id: this.$route.params.id || '',
-			family_id: null,
+			family: "",
+			event: {},
+			eventTypes: [],
+			performers: [],
+			socialLinks: [],
+			venue: {},	
 		}
 	},
 	computed: {
-		...mapState(['user', 'events', 'families', 'venues', 'performers']),
-		event: function() {
-			return this.events.find(entry => Number(entry.id) === Number(this.id))
-		},
-		family: function() {
-			return this.families.find((entry) => Number(entry.id) === Number(this.event.family_id))
-		},
-		venue: function() {
-			return this.venues.find((entry) => Number(entry.id) === Number(this.event.venue_id))
-		},
+		...mapState(['user']),
+		familyLink: function() {
+			return `/families/${this.family.id}`;
+		}
     },
     created() {
-		if (!this.user) {
-			this.$store.dispatch('findUser');
+		this.getEvent();
+	},
+	components: {
+		Lists,
+		SocialLinks,
+	},
+	methods: {
+		setState: function(update) {
+			const fields = ['event', 'eventTypes', 'family', 'performers', 'socialLinks', 'venue'];
+			fields.forEach((field) => {
+				this[field] = update[field];
+			});
+		},
+		getEvent: async function() {
+			const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
+			this.setState(resp.data);
 		}
-    }
+	}
 }
 </script>

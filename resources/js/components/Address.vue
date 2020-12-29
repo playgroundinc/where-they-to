@@ -3,6 +3,7 @@
     <div class="col-xxs-12">
         <h2 class="copy--center">Address</h2>
         <p class="copy--center">This site is only currently set up to support Canadian addresses or web addresses. If you're creating a profile for a digital platform, make the address the web address and set the province to Online. Rather than a city, we ask that you provide the timezone.</p>
+        <p class="copy--center">{{ helperText }} <a v-if="buttonText" href="#" @click.prevent="handleClick">{{ buttonText }}</a></p>
         <Input
             name="address"
             :value="address"
@@ -59,6 +60,14 @@ export default {
             type: String,
             required: true,
         },
+        buttonText: {
+          type: String,
+          required: false,
+        },
+        helperText: {
+          type: String,
+          required: false,
+        },
         province: {
             type: String,
             required: true,
@@ -93,6 +102,9 @@ export default {
     methods: {
         updateValue: function(updateObject) {
             this.$emit("update", updateObject);
+        },
+        handleClick: function() {
+          this.$emit("buttonClick");
         }
     }
 }

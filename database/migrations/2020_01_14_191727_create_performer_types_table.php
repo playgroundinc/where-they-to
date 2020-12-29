@@ -24,6 +24,13 @@ class CreatePerformerTypesTable extends Migration
             $table->bigInteger('family_id')->unsigned();
             $table->bigInteger('performer_id')->unsigned();
         });
+
+        Schema::create('event_event_type', function (Blueprint $table) {
+          $table->bigIncrements('id');
+          $table->bigInteger('event_id')->unsigned();
+          $table->bigInteger('event_type_id')->unsigned();
+      });
+
     }
 
     /**

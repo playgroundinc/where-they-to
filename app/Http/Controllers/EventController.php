@@ -22,24 +22,31 @@ class EventController extends Controller
      */
 
     private function saveFields($request, $event) {
-        if ($request['venue']):
-			$venue = Venue::find($request['venue']);
+        if ($request['venue_id']) {
+			$venue = Venue::find($request['venue_id']);
 			if ($venue) {
 				$venue->events()->save($event);
 			}
-        endif;
-        if ($request['family']):
-			$family = Family::find($request['family']);
+		} else {
+			$event->address = $request['address'];
+			$event->city = $request['city'];
+			$event->province = $request['province'];
+			$event->save();
+		}
+        if (!empty($request['family_id'])) {
+			$family = Family::find($request['family_id']);
 			if ($family) {
 				$family->events()->save($event);
 			}
-        endif;
-        if ($request['eventType']):
-			$eventType = EventType::find($request['eventType']);
-			if ($eventType) {
-				$eventType->events()->save($event);
+		}
+			
+        if (!empty($request['eventTypes'])) {
+			$eventTypes = EventType::find($request['eventTypes']);
+			$event->eventTypes()->detach();
+			foreach ($eventTypes as $type) {
+				$event->eventTypes()->attach($type);
 			}
-        endif;
+		}
         if ($request['performers']):
 			$performers = Performer::find(request('performers'));
 			$event->performers()->detach();
@@ -82,8 +89,10 @@ class EventController extends Controller
 	public function createSocialLinks($request) {
 		$attributes = $request->validate([
 			'facebook' => 'nullable',
-			'twitter' => 'nullable',
 			'instagram' => 'nullable',
+			'tiktok' => 'nullable',
+			'twitch' => 'nullable',
+			'twitter' => 'nullable',
 			'website' => 'nullable',
 			'youtube' => 'nullable',
 		]);
@@ -107,23 +116,23 @@ class EventController extends Controller
 		//
 		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
-			'time' => 'nullable',
+			'show_time' => 'nullable',
 			'name' => 'required',
+			'doors' => 'nullable',
 			'description' => 'required',
 			'timezone' => 'nullable',
 			'tickets' => 'nullable',
 			'tickets_url' => 'nullable'
         ]);
         $date = Carbon::parse(request('date'));
-
         $event = Event::create($attributes);
         $event->date = $date;
         $event->save();
+
         $user = request('user');
-        // return response()->json($user);
         $user->events()->save($event);
-		$this->saveFields(request(), $event);
-		$event->socialLinks()->save($socialLinks);
+        $this->saveFields(request(), $event);
+        $event->socialLinks()->save($socialLinks);
         return response()->json(['status'=> 'success'], 200);
     }
 
@@ -133,12 +142,18 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show(Event $event)
+    public function show($id)
     {
         //
-        $event->date = Carbon::parse($event->date.' '.$event->time)->format('M d, Y @ h:i A');
-        $platforms = config('enums.platforms');
-        return view('events.show', compact('event', 'platforms'));
+		$event = Event::find($id);
+		$event_date = Carbon::parse($event['date']);
+		$event->date = $event_date->format('M d, Y');
+        $socialLinks = $event->socialLinks;
+        $family = $event->family;
+        $venue = $event->venue;
+		$performers = $event->performers;
+		$eventTypes = $event->eventTypes;
+        return response()->json(compact('event', 'socialLinks', 'family', 'venue', 'performers', 'eventTypes'), 200);
     }
 
     /**

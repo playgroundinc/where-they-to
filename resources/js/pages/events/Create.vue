@@ -30,9 +30,17 @@
 							:errors="errors"
 							v-on:update="updateValue"
 						/>
+						<Input
+							name="doors"
+							:value="doors"
+							type="text"
+							:required="false"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
                         <Input
-							name="time"
-							:value="time"
+							name="show_time"
+							:value="show_time"
 							type="text"
 							:required="true"
 							:errors="errors"
@@ -40,13 +48,12 @@
 						/>
 					</div>
 				</div>
-                <Autocomplete 
-                    label="Venue"
-                    :errors="errors"
-                    route="venues"
-                    v-on:selection="updateVenue"
-                />
-				<Select
+				<FamilySelect 
+					:name="family"
+					:errors="errors"
+					v-on:update="updateFamily"
+				/>
+                <Select
                     label="Performers"
                     route="performers"
 					:errors="errors"
@@ -60,6 +67,33 @@
                     type="event"
 					v-on:update="updateArray"
                 />
+				<VenueSelect 
+					:errors="errors"
+					:province="province"
+					:city="city"
+					:timezone="timezone"
+					:address="address"
+					:name="venue_name"
+					v-on:updateVenue="updateVenue"
+					v-on:update="updateValue"
+				/>
+				<h2 class="copy--center">Tickets</h2>
+				<Input
+					name="tickets"
+					:value="tickets"
+					type="text"
+					:required="true"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
+				<Input
+					name="tickets_url"
+					:value="tickets_url"
+					type="text"
+					:required="true"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -74,75 +108,6 @@
 				<input class="btn" type="submit" value="Create Event">
 			</form>    
 		</main>
-
-            <!-- VENUE
-            <label class="label" for="venue">Venue</label>
-            <select class="input" name="venue" id="venue" v-model="venue">
-                <option
-                    v-for="venue in venues"
-                    v-bind:key="venue.id"
-                    :value="venue.id"
-                    v-text="venue.name"
-                ></option>
-            </select>
-            <fieldset v-if="eventTypes">
-                <legend for="type" class="label">Event Type</legend>
-                <ul class="list">
-                    <li
-                        class="list-item"
-                        v-for="eventType in eventTypes"
-                        v-bind:key="eventType.id"
-                    >
-                        <input
-                            type="radio"
-                            name="type"
-                            :value="eventType.id"
-                            :id="eventType.name"
-                            v-model="type"
-                        />
-                        <label
-                            :for="eventType.name"
-                            v-text="eventType.name"
-                        ></label>
-                    </li>
-                </ul>
-            </fieldset>
-
-            <div v-if="family">
-                <label class="label" for="family">Family</label>
-                <select
-                    class="input"
-                    name="family"
-                    id="family"
-                    v-model="family"
-                >
-                    <option
-                        v-for="family in families"
-                        v-bind:key="family.id"
-                        :value="family.id"
-                        v-text="family.name"
-                    ></option>
-                </select>
-            </div>
-
-            <label class="label" for="tickets">Ticket Information</label>
-            <textarea
-                class="input"
-                name="tickets"
-                id="tickets"
-                cols="30"
-                rows="10"
-                v-model="tickets"
-            ></textarea>
-            <label class="label" for="tickets_url">Ticket Url</label>
-            <input
-                class="input"
-                type="url"
-                name="tickets_url"
-                id="tickets_url"
-                v-model="tickets_url"
-            /> -->
-        </form>
     </div>
 </template>
 
@@ -161,6 +126,8 @@ import SocialMedia from "../../components/SocialMedia";
 import Address from "../../components/Address";
 import Select from "../../components/Select";
 import SelectTypes from "../../components/SelectTypes";
+import FamilySelect from "../../components/FamilySelect";
+import VenueSelect from "../../components/VenueSelect";
 
 export default {
     data() {
@@ -169,12 +136,17 @@ export default {
             errors: [],
             name: "",
             description: "",
-            date: "",
+			date: "",
+			doors: "",
             eventTypes: [],
-            time: "",
+            show_time: "",
             venue: "",
             performers: [],
-            family: "",
+			province: "",
+			city: "",
+			address: "",
+			family: "",
+			family_id: "",
             type: "",
             facebook: "",
             instagram: "",
@@ -184,14 +156,19 @@ export default {
             youtube: "",
             website: "",
             tickets: "",
-            tickets_url: ""
+			tickets_url: "",
+			venue_id: "",
+			venue_name: "",
         };
     },
 
     computed: {
         ...mapState([
             "user",
-        ]),
+		]),
+		valid: function() {
+			return this.errors.length === 0;
+		},
         timezone: {
             get: function() {
                 if (this.user.timezone) {
@@ -207,47 +184,55 @@ export default {
     components: {
         Address,
 		ErrorsContainer,
+		FamilySelect,
 		Input,
         SocialMedia,
         Select,
         SelectTypes,
         Autocomplete,
+        VenueSelect,
     },
     methods: {
-        handleSubmit: function() {
-            let data = {
-                name: this.name,
-                description: this.description,
-                date: this.date,
-                time: this.time,
-                venue: this.venue,
-                family: this.family,
-                eventType: this.type,
-                performers: this.newPerformers,
-                timezone: this.timezone,
-                tickets: this.tickets,
-                tickets_url: this.tickets_url,
-                facebook: this.facebook,
-                instagram: this.instagram,
-                twitter: this.twitter,
-                youtube: this.youtube,
-                website: this.website
-            };
-            this.$store
-                .dispatch("create", {
-                    route: "events",
-                    data
-                })
-                .then(async resp => {
-                    await this.$store.dispatch("fetchState", {
-                        route: "events"
-                    });
-                    this.$store.dispatch("findUser");
-                    this.$router.push({ path: `/dashboard?events=1` });
-                });
-        },
+		createEvent: async function(FormClass) {
+			const resp = await FormClass.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch("findUser");
+                this.$router.push('/dashboard');
+			}
+		},
+		handleSubmit: function() {
+			let data = {
+				name: this.name,
+				description: this.description,
+				date: this.date,
+				show_time: this.show_time,
+			}
+			const FormClass = new Form(data, "create", { route: "events" });
+			this.errors = FormClass.checkRequiredFields(data);
+			if (this.valid) {
+				const socialMediaData = this.getSocialMediaData();
+				const additionalData = this.getAdditionalData(socialMediaData);
+				FormClass.setAdditionalFields(additionalData);
+				this.createEvent(FormClass);
+			}
+		},
+		updateFields: function(venue, fields) {
+			fields.forEach((field) => {
+				this[field] = venue[field];
+			});
+		},
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
+		},
+		updateVenue: function(updateObject) {
+			const fields = ['address', 'city', 'province', 'timezone'];
+			this.updateFields(updateObject, fields);
+			this.venue_id = updateObject.id;
+			this.venue_name = updateObject.name;
+		},
+		updateFamily: function(updateObject) {
+			this.family = updateObject.name;
+			this.family_id = updateObject.id;
 		},
 		getSocialMediaData: function() {
             const socialMediaData = {};
@@ -257,7 +242,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['timezone', 'city'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});
@@ -297,9 +282,6 @@ export default {
 					this.deleteFromArray(updateObject, currentArray);
 				}
             },
-            updateVenue: function(venue) {
-                console.log(venue);
-            }
     },
     async mounted() {
         try {

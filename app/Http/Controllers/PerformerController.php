@@ -62,11 +62,9 @@ class PerformerController extends Controller
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
 			$types = PerformerType::find($request['performerTypes']);
-			if ($types) {
-				$performer->performerTypes()->detach();
-				foreach ($types as $type) {
-					$performer->performerTypes()->attach($type);
-				}
+			$performer->performerTypes()->detach();
+			foreach ($types as $type) {
+				$performer->performerTypes()->attach($type);
 			}
         }
 		$performer->socialLinks()->save($socialLinks);

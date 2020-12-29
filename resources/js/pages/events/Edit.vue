@@ -1,183 +1,296 @@
 <template>
-	<div class="main" v-if="user && event">
-		<h1>Edit Event</h1>
-		<form action="/events" v-on:submit.prevent="handleSubmit">
-			<label class="label" for="name" >Name</label>
-			<input class="input" type="text" name="name" id="name" v-model="event.name">
-			<label class="label" for="description">description</label>
-			<textarea class="input" name="description" id="description" cols="30" rows="10" v-model="event.description"></textarea>
-			<label class="label" for="date">Date</label>
-			<input class="input" type="text" name="date" id="date" v-model="event.date">
-			<label class="label" for="venue">Venue</label>
-			<div v-if="venue">
-				<select class="input" name="venue" id="venue" v-model="event.venue_id">
-					<option v-for="venue in venues" v-bind:key="venue.id" :value="venue.id" v-text="venue.name" :selected="{ true: venue.id === event.venue_id }"></option>
-				</select>
-			</div>
-			<fieldset v-if="eventTypes">
-				<legend for="type" class="label">Event Type</legend>
-				<ul class="list">
-					<li class="list-item" v-for="eventType in eventTypes" v-bind:key="eventType.id" >
-						<input type="radio" name="type" :value="eventType.id" :id="eventType.name" :checked="Number(eventType.id) === Number(event['event_type_id'])" v-model="type">
-						<label :for="eventType.name" v-text="eventType.name"></label>
-					</li>
-				</ul> 
-			</fieldset>
-			<div v-if="family">
-				<label class="label" for="family">Family</label>
-				<select class="input" name="family" id="family" v-model="event.family_id">
-					<option v-for="family in families" v-bind:key="family.id" :value="family.id" v-text="family.name"></option>
-				</select>
-			</div>
-			<fieldset v-if="event.performers">
-				<legend class="label">Current Performers</legend>
-				<ul class="list">
-					<li class="list-item" v-for="eventPerformer in event.performers" v-bind:key="eventPerformer.id" >
-						<div v-if="eventPerformer.id !== user.id">
-							<p>{{ eventPerformer.name }}</p>
-							<button @click.prevent="removePerformer(eventPerformer.id)">Remove Performer</button>
-						</div>
-					</li>
-				</ul> 
-			</fieldset>
-			<fieldset v-if="performers">
-				<Autocomplete
+	<div class="main" v-if="user">
+		<main class="container container--core">
+			<h1 class="copy--center">Update Event</h1>
+			<ErrorsContainer :errors="errors"/>
+			<form novalidate v-on:submit.prevent="handleSubmit">
+				<div class="form-group row between-md">
+					<div class="col-xxs-12">
+						<Input
+							name="name"
+							:value="name"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+						<Input
+							name="description"
+							:value="description"
+							type="textarea"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+                        <Input
+							name="date"
+							:value="date"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+						<Input
+							name="doors"
+							:value="doors"
+							type="text"
+							:required="false"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+                        <Input
+							name="show_time"
+							:value="show_time"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+					</div>
+				</div>
+				<FamilySelect 
+					:name="family"
+					:errors="errors"
+					v-on:update="updateFamily"
+				/>
+                <Select
                     label="Performers"
-                    :values="filteredPerformers"
-                    @selection="function(performer) { addPerformer(performer.id) }"
-                ></Autocomplete>
-			</fieldset>
-			<div>
-				<h2>Edit Social Links</h2>
-				<label class="label" for="facebook">Facebook</label>
-				<input type="text" class="input" id="facebook" name="facebook" v-model="event.social_links.facebook">
-				<label for="instagram" class="label">Instagram</label>
-				<input type="text" class="input" id="instagram" name="instagram" v-model="event.social_links.instagram">
-				<label for="twitter" class="label">Twitter</label>
-				<input type="text" class="input" id="twitter" name="twitter" v-model="event.social_links.twitter">
-				<label for="youtube" class="label">Youtube</label>
-				<input type="text" class="input" id="youtube" name="youtube" v-model="event.social_links.youtube">
-				<label for="website" class="label">Website</label>
-				<input type="text" class="input" id="website" name="website" v-model="event.social_links.website">
-			</div>
-			<label class="label" for="tickets">Ticket Information</label>
-			<textarea class="input" name="tickets" id="tickets" cols="30" rows="10" v-model="event.tickets"></textarea>
-			<label class="label" for="tickets_url">Ticket Url</label>
-			<input class="input" type="url" name="tickets_url" id="tickets_url" v-model="event.tickets_url">
-			<input class="btn" type="submit" value="Update Event">
-		</form>
-		<a v-if="this.event.social_links" :href="'/events/' + this.id + '/social-links/' + this.event.social_links.id">Update Social Links</a>
-		<a v-else :href="'/events/' + this.id + '/social-links'">Create Social Links</a>
-		<button class="btn btn--danger" @click.prevent="handleDelete">Delete Event</button>
-	</div>
+                    route="performers"
+					:errors="errors"
+					:currentArray="performers"
+					v-on:update="updateArray"
+				/>	
+                <SelectTypes 
+                    :errors="errors"
+                    :types="eventTypes"
+                    route="eventTypes"
+                    type="event"
+					v-on:update="updateArray"
+                />
+				<VenueSelect 
+					:errors="errors"
+					:province="province"
+					:city="city"
+					:timezone="timezone"
+					:address="address"
+					:name="venue_name"
+					v-on:updateVenue="updateVenue"
+					v-on:update="updateValue"
+				/>
+				<h2 class="copy--center">Tickets</h2>
+				<Input
+					name="tickets"
+					:value="tickets"
+					type="text"
+					:required="true"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
+				<Input
+					name="tickets_url"
+					:value="tickets_url"
+					type="text"
+					:required="true"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
+				<SocialMedia 
+					:errors="errors"
+					:facebook="facebook"
+					:instagram="instagram"
+					:twitch="twitch"
+					:twitter="twitter"
+					:tiktok="tiktok"
+					:website="website"
+					:youtube="youtube"
+					v-on:update="updateValue"
+				/>
+				<input class="btn" type="submit" value="Update Event">
+			</form>    
+		</main>
+    </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import Autocomplete from '../../components/Autocomplete';
+import { mapState } from "vuex";
+
+// Classes
+import socials from "../../core/social-media";
+import Form from "../../core/form";
+
+// Components
+import Autocomplete from "../../components/Autocomplete";
+import ErrorsContainer from "../../components/ErrorsContainer";
+import Input from "../../components/Input";
+import SocialMedia from "../../components/SocialMedia";
+import Address from "../../components/Address";
+import Select from "../../components/Select";
+import SelectTypes from "../../components/SelectTypes";
+import FamilySelect from "../../components/FamilySelect";
+import VenueSelect from "../../components/VenueSelect";
+
 export default {
-	data() {
-		return {
-			id: this.$route.params.id || '',
-			newPerformers: [],
-		}
-	},
-	components: {
-		Autocomplete,
-	},
-	computed: {
-		...mapState(['user', 'events', 'venues', 'performers', 'families', 'eventTypes']),
-		event: function() {
-			return this.events.find(entry => Number(entry.id) === Number(this.id))
+    data() {
+        return {
+            id: this.$route.params.id || "",
+            errors: [],
+            name: "",
+            description: "",
+			date: "",
+			doors: "",
+            eventTypes: [],
+            show_time: "",
+            venue: "",
+            performers: [],
+			province: "",
+			city: "",
+			address: "",
+			family: "",
+			family_id: "",
+            type: "",
+            facebook: "",
+            instagram: "",
+            twitter: "",
+            twitch: "",
+            tiktok: "",
+            youtube: "",
+            website: "",
+            tickets: "",
+			tickets_url: "",
+			venue_id: "",
+			venue_name: "",
+        };
+    },
+
+    computed: {
+        ...mapState([
+            "user",
+		]),
+		valid: function() {
+			return this.errors.length === 0;
 		},
-		family: function() {
-			return this.families.find((entry) => Number(entry.id) === Number(this.event.family_id))
+        timezone: {
+            get: function() {
+                if (this.user.timezone) {
+                    return this.user.timezone;
+                }
+                return "";
+            },
+            set: function(newValue) {
+                this.user.timezone = newValue;
+            }
+        }
+    },
+    components: {
+        Address,
+		ErrorsContainer,
+		FamilySelect,
+		Input,
+        SocialMedia,
+        Select,
+        SelectTypes,
+        Autocomplete,
+        VenueSelect,
+    },
+    methods: {
+		createEvent: async function(FormClass) {
+			const resp = await FormClass.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch("findUser");
+                this.$router.push('/dashboard');
+			}
 		},
-		venue: function() {
-			return this.venues.find((entry) => Number(entry.id) === Number(this.event.venue_id))
-		},
-		filteredPerformers: function() {
-			return this.performers.filter(entry => !this.event.performers.find((item) => Number(item.id) === Number(entry.id)));
-		},
-		type: {
-			get() {
-				return this.event.event_type_id;
-			},
-			set(value) {
-				this.event.event_type_id = value;
-			}	
-		}
-	},
-	methods: {
 		handleSubmit: function() {
 			let data = {
-				name: this.event.name,
-				description: this.event.description,
-				date: this.event.date,
-				time: this.event.time,
-				eventType: this.type,
-				tickets: this.event.tickets,
-				tickets_url: this.event.tickets_url,
-				facebook: this.event.social_links.facebook,
-				instagram: this.event.social_links.instagram,
-				twitter: this.event.social_links.twitter,
-				website: this.event.social_links.website,
-				youtube: this.event.social_links.youtube,
-				socialLinksId: this.event.social_links.id,
+				name: this.name,
+				description: this.description,
+				date: this.date,
+				show_time: this.show_time,
 			}
-
-			if (this.venue) {
-				data['venue'] = this.venue['id']
+			const FormClass = new Form(data, "create", { route: "events" });
+			this.errors = FormClass.checkRequiredFields(data);
+			if (this.valid) {
+				const socialMediaData = this.getSocialMediaData();
+				const additionalData = this.getAdditionalData(socialMediaData);
+				FormClass.setAdditionalFields(additionalData);
+				this.createEvent(FormClass);
 			}
-			if (this.family) {
-				data['family'] = this.family['id']
-			}
-			this.$store.dispatch('edit', {
-				route: 'events',
-				id: this.id,
-				data,
-			}).then((resp) => {
-				this.$router.push({path: `/events/${this.id}`})
+		},
+		updateFields: function(venue, fields) {
+			fields.forEach((field) => {
+				this[field] = venue[field];
 			});
 		},
-		handleDelete: function() {
-			let data = {}
-			this.$store.dispatch('destroy', {
-				route: 'events',
-				id: this.id,
-				data,
-			}).then(() => {
-				this.$router.push('/events');
-			}).catch((err) => {
-				console.log(err)
-			})
+        updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
 		},
-
-		addPerformer: function(performer) {
-			let data = {
-				performer,
-			}
-			this.$store.dispatch('edit', {
-				route: 'events',
-				id: `${this.id}/performers`,
-				data
-			})
+		updateVenue: function(updateObject) {
+			const fields = ['address', 'city', 'province', 'timezone'];
+			this.updateFields(updateObject, fields);
+			this.venue_id = updateObject.id;
+			this.venue_name = updateObject.name;
 		},
-		removePerformer: function(performer) {
-			let data = {
-				performer
-			}
-			this.$store.dispatch('destroy', {
-				route: 'events',
-				id: `${this.id}/performers`,
-				data,
-			})
+		updateFamily: function(updateObject) {
+			this.family = updateObject.name;
+			this.family_id = updateObject.id;
 		},
-	},
-	mounted: function() {
-		this.$store.dispatch('fetchState', { 
-			route: 'eventTypes',
-		});
-	}
-}
+		getSocialMediaData: function() {
+            const socialMediaData = {};
+            for (let social in this.socials) {
+                socialMediaData[social] = this[social];
+            }
+            return socialMediaData;
+		},
+		getAdditionalData: function(additionalData) {
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			fields.forEach((field) => {
+				additionalData[field] = this[field];
+			});
+			return additionalData;
+        },
+        addToArray: function(updateObject, currentArray) {
+                const index = this.findValue(currentArray, updateObject.value);
+				if (index <= -1) {
+					currentArray.push(updateObject.value);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				currentArray.forEach((item, i) => {
+					if (item.id === updateObject.id) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
+			},
+			deleteFromArray: function(updateObject, currentArray) {
+                const index = this.findValue(currentArray, updateObject.value);
+				if (index > -1) {
+					currentArray.splice(index, 1);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			updateArray: function(updateObject) {
+                console.log(updateObject);
+				const currentArray = this[updateObject.name];
+				if (currentArray && updateObject.add) {
+					this.addToArray(updateObject, currentArray);
+				} 
+				if (currentArray && !updateObject.add) {
+					this.deleteFromArray(updateObject, currentArray);
+				}
+            },
+    },
+    async mounted() {
+        try {
+            this.$store.dispatch("fetchState", {
+                route: "eventTypes"
+            });
+        } catch (error) {
+            this.errors.push(error);
+        }
+    }
+};
 </script>

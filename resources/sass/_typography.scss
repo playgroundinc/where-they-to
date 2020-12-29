@@ -62,6 +62,9 @@ em {
     &--error {
         color: $accessible-red;
     }
+    &--bold {
+      font-weight: bold;
+    }
 }
 
 .subtitle {

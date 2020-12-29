@@ -115,7 +115,6 @@
 					FormClass.setAdditionalFields(additionalData);
 					this.createFamily(FormClass);
 				}
-
 			},
 			addToArray: function(updateObject, currentArray) {
 				const index = this.findValue(currentArray, updateObject.value);

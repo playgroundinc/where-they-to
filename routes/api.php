@@ -66,6 +66,7 @@ Route::get('families', 'FamilyController@index');
 Route::get('families/{id}', 'FamilyController@show');
 
 Route::get('events', 'EventController@index');
+Route::get('events/{id}', 'EventController@show');
 Route::get('events/date/{date}', 'EventController@date');
 Route::get('events/week/{date}', 'EventController@week');
 
@@ -81,3 +82,4 @@ Route::post('/eventTypes', 'TypeController@eventStore');
 Route::get('/eventTypes/search/{term}', 'TypeController@eventSearch');
 Route::get('performers/search/{term}', 'PerformerController@search');
 Route::get('/venues/search/{term}', 'VenueController@search');
+Route::get('/families/search/{term}', 'FamilyController@search');
