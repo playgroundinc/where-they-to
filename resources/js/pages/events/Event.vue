@@ -19,7 +19,7 @@
 						<p>{{ venue.address }}</p>
 						<p>{{ venue.city}}, {{ venue.province }}</p>
 					</div>
-					<div v-else>
+					<div v-else-if="event.address">
 						<p>{{ event.address }}</p>
 						<p>{{ event.city}}, {{ event.province }}</p>
 					</div>
@@ -38,13 +38,14 @@
 							</li>
 						</ul>
 					</div>
+					<SocialLinks 
+					:socialLinks="socialLinks"
+					/>
 					<div>
-						<a class="btn copy--center" :href="'/events/' + id + '/edit'" >Edit Profile</a>
+						<a class="btn copy--center" :href="'/events/' + id + '/edit'" >Edit Event</a>
 					</div>
 				</div>
-				<SocialLinks 
-					:socialLinks="socialLinks"
-				/>
+
 				
 			</div>
 		</main>
@@ -75,8 +76,8 @@ export default {
 		familyLink: function() {
 			return `/families/${this.family.id}`;
 		}
-    },
-    created() {
+	},
+	created() {
 		this.getEvent();
 	},
 	components: {
@@ -91,8 +92,12 @@ export default {
 			});
 		},
 		getEvent: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
-			this.setState(resp.data);
+			try {
+				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
+				this.setState(resp.data);
+			} catch(err) {
+				console.log(err);
+			}
 		}
 	}
 }

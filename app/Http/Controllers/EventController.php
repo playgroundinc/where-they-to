@@ -189,13 +189,20 @@ class EventController extends Controller
         if ($user['id'] === $validatedUser['id']):
 			$event->update(request([
 				'name',
+				'address',
+				'city',
+				'doors',
+				'province',
+				'timezone',
 				'description',
-				'date',
-				'type',
-				'tickets', 
+				'show_time',
+				'tickets',
 				'tickets_url'
 			]));
 			$this->saveFields(request(), $event);
+			$date = Carbon::parse(request('date'));
+			$event->date = $date;
+			$event->save();
 			return response()->json(['status' => 'success'], 200);
 		endif;
 		return response()->json(['status' => 'unauthorized'], 401);

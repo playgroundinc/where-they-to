@@ -159,6 +159,7 @@ export default {
 			tickets_url: "",
 			venue_id: "",
 			venue_name: "",
+			socials,
         };
     },
 

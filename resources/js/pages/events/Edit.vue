@@ -159,6 +159,7 @@ export default {
 			tickets_url: "",
 			venue_id: "",
 			venue_name: "",
+			socialLinksId: "",
         };
     },
 
@@ -200,6 +201,53 @@ export default {
                 this.$router.push('/dashboard');
 			}
 		},
+		setStates: function(fields, object) {
+			if (fields.length > 0) {
+				fields.forEach((field) => {
+					if (object[field]) {
+						this[field] = object[field];
+					}
+				});
+			}
+		},
+		setSocialLinks: function(socialLinks) {
+			const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+			this.setStates(socials, socialLinks);
+			this.socialLinksId = socialLinks.id;
+		},
+		setValue: function(name, value) {
+			this[name] = value;
+		},
+		setFamily: function(family) {
+			const fields = ['name', 'description'];
+			this.setStates(fields, family);
+		},
+		setEvent: function(event) {
+			const fields = ['name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
+			this.setStates(fields, event);
+		},
+		getEvent: async function() {
+			try {
+				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
+				console.log(resp);
+				if (resp.status === 200) {
+					this.setEvent(resp.data.event);
+					this.setSocialLinks(resp.data.socialLinks);
+					if (resp.data.family) {
+						this.setFamily(resp.data.family);
+					}
+					if (resp.data.eventTypes) {
+						this.setValue('eventTypes', resp.data.eventTypes);
+					}
+					if (resp.data.performers) {
+						this.setValue('performers', resp.data.performers);
+					}
+					return;
+				}
+			} catch(err) {
+				console.log(err)
+			}
+		},
 		handleSubmit: function() {
 			let data = {
 				name: this.name,
@@ -207,7 +255,7 @@ export default {
 				date: this.date,
 				show_time: this.show_time,
 			}
-			const FormClass = new Form(data, "create", { route: "events" });
+			const FormClass = new Form(data, "edit", { route: "events", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);
 			if (this.valid) {
 				const socialMediaData = this.getSocialMediaData();
@@ -242,7 +290,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});
@@ -287,7 +335,8 @@ export default {
         try {
             this.$store.dispatch("fetchState", {
                 route: "eventTypes"
-            });
+			});
+			this.getEvent();
         } catch (error) {
             this.errors.push(error);
         }

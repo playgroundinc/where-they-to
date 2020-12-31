@@ -15,7 +15,7 @@
                     v-on:update="addAutocomplete"
                 />
                 <ul class="autocomplete__list row">
-                    <li class="col-xxs-12 autocomplete__single no-link" v-if="searching">Searching...</li>
+                    <li class="col-xxs-12 autocomplete__single no-link" v-if="searching && acitveSearch">Searching...</li>
                     <li 
                         class="autocomplete__single col-xxs-12 col-md-4"
                         v-else-if="matches.length > 0"
@@ -75,7 +75,10 @@ export default {
     computed: {
         labelId() {
             return this.label.toLowerCase();
-        }
+		},
+		acitveSearch() {
+			return this.value !== '';
+		}
     },
     methods: {
         updateValue: function(updateObject) {
@@ -97,6 +100,9 @@ export default {
             return [];
         },
         handleAutocomplete: async function() {
+			if (!this.acitveSearch) {
+				return;
+			}
             this.matches = await this.triggerSearch()
             this.searching = false;
         },

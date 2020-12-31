@@ -4167,6 +4167,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   computed: {
     labelId: function labelId() {
       return this.label.toLowerCase();
+    },
+    acitveSearch: function acitveSearch() {
+      return this.value !== '';
     }
   },
   methods: {
@@ -4231,14 +4234,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
-                return this.triggerSearch();
+                if (this.acitveSearch) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return");
 
               case 2:
+                _context2.next = 4;
+                return this.triggerSearch();
+
+              case 4:
                 this.matches = _context2.sent;
                 this.searching = false;
 
-              case 4:
+              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -6066,7 +6077,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       tickets: "",
       tickets_url: "",
       venue_id: "",
-      venue_name: ""
+      venue_name: "",
+      socials: _core_social_media__WEBPACK_IMPORTED_MODULE_2__["default"]
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["user"]), {
@@ -6459,7 +6471,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       tickets: "",
       tickets_url: "",
       venue_id: "",
-      venue_name: ""
+      venue_name: "",
+      socialLinksId: ""
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["user"]), {
@@ -6531,6 +6544,98 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       return createEvent;
     }(),
+    setStates: function setStates(fields, object) {
+      var _this = this;
+
+      if (fields.length > 0) {
+        fields.forEach(function (field) {
+          if (object[field]) {
+            _this[field] = object[field];
+          }
+        });
+      }
+    },
+    setSocialLinks: function setSocialLinks(socialLinks) {
+      var socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+      this.setStates(socials, socialLinks);
+      this.socialLinksId = socialLinks.id;
+    },
+    setValue: function setValue(name, value) {
+      this[name] = value;
+    },
+    setFamily: function setFamily(family) {
+      var fields = ['name', 'description'];
+      this.setStates(fields, family);
+    },
+    setEvent: function setEvent(event) {
+      var fields = ['name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
+      this.setStates(fields, event);
+    },
+    getEvent: function () {
+      var _getEvent = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var resp;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.prev = 0;
+                _context2.next = 3;
+                return this.$store.dispatch('fetchSingle', {
+                  route: "events",
+                  id: this.id
+                });
+
+              case 3:
+                resp = _context2.sent;
+                console.log(resp);
+
+                if (!(resp.status === 200)) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                this.setEvent(resp.data.event);
+                this.setSocialLinks(resp.data.socialLinks);
+
+                if (resp.data.family) {
+                  this.setFamily(resp.data.family);
+                }
+
+                if (resp.data.eventTypes) {
+                  this.setValue('eventTypes', resp.data.eventTypes);
+                }
+
+                if (resp.data.performers) {
+                  this.setValue('performers', resp.data.performers);
+                }
+
+                return _context2.abrupt("return");
+
+              case 12:
+                _context2.next = 17;
+                break;
+
+              case 14:
+                _context2.prev = 14;
+                _context2.t0 = _context2["catch"](0);
+                console.log(_context2.t0);
+
+              case 17:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[0, 14]]);
+      }));
+
+      function getEvent() {
+        return _getEvent.apply(this, arguments);
+      }
+
+      return getEvent;
+    }(),
     handleSubmit: function handleSubmit() {
       var data = {
         name: this.name,
@@ -6538,8 +6643,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         date: this.date,
         show_time: this.show_time
       };
-      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "create", {
-        route: "events"
+      var FormClass = new _core_form__WEBPACK_IMPORTED_MODULE_3__["default"](data, "edit", {
+        route: "events",
+        id: this.id
       });
       this.errors = FormClass.checkRequiredFields(data);
 
@@ -6551,10 +6657,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     updateFields: function updateFields(venue, fields) {
-      var _this = this;
+      var _this2 = this;
 
       fields.forEach(function (field) {
-        _this[field] = venue[field];
+        _this2[field] = venue[field];
       });
     },
     updateValue: function updateValue(updateObject) {
@@ -6580,11 +6686,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return socialMediaData;
     },
     getAdditionalData: function getAdditionalData(additionalData) {
-      var _this2 = this;
+      var _this3 = this;
 
-      var fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+      var fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
       fields.forEach(function (field) {
-        additionalData[field] = _this2[field];
+        additionalData[field] = _this3[field];
       });
       return additionalData;
     },
@@ -6630,25 +6736,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function () {
     var _mounted = _asyncToGenerator(
     /*#__PURE__*/
-    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               try {
                 this.$store.dispatch("fetchState", {
                   route: "eventTypes"
                 });
+                this.getEvent();
               } catch (error) {
                 this.errors.push(error);
               }
 
             case 1:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, this);
+      }, _callee3, this);
     }));
 
     function mounted() {
@@ -6687,6 +6794,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
 //
 //
 //
@@ -6785,22 +6893,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                _context.prev = 0;
+                _context.next = 3;
                 return this.$store.dispatch('fetchSingle', {
                   route: "events",
                   id: this.id
                 });
 
-              case 2:
+              case 3:
                 resp = _context.sent;
                 this.setState(resp.data);
+                _context.next = 10;
+                break;
 
-              case 4:
+              case 7:
+                _context.prev = 7;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
+
+              case 10:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this);
+        }, _callee, this, [[0, 7]]);
       }));
 
       function getEvent() {
@@ -11560,7 +11676,7 @@ var render = function() {
             "ul",
             { staticClass: "autocomplete__list row" },
             [
-              _vm.searching
+              _vm.searching && _vm.acitveSearch
                 ? _c(
                     "li",
                     { staticClass: "col-xxs-12 autocomplete__single no-link" },
@@ -13714,31 +13830,31 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("main", { staticClass: "container" }, [
-      _c(
-        "div",
-        { staticClass: "row" },
-        [
-          _c("div", { staticClass: "col-xxs-12" }, [
-            _c("h1", { staticClass: "copy--center" }, [
-              _vm._v(_vm._s(_vm.event.name))
-            ]),
-            _vm._v(" "),
-            _vm.eventTypes.length
-              ? _c(
-                  "ul",
-                  _vm._l(_vm.eventTypes, function(eventType) {
-                    return _c("li", { key: eventType.id }, [
-                      _vm._v(_vm._s(eventType.name))
-                    ])
-                  }),
-                  0
-                )
-              : _vm._e()
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-xxs-12" }, [
+          _c("h1", { staticClass: "copy--center" }, [
+            _vm._v(_vm._s(_vm.event.name))
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-xxs-12 col-md-6" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-xxs-12 col-md-6" }, [
+          _vm.eventTypes.length
+            ? _c(
+                "ul",
+                _vm._l(_vm.eventTypes, function(eventType) {
+                  return _c("li", { key: eventType.id }, [
+                    _vm._v(_vm._s(eventType.name))
+                  ])
+                }),
+                0
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-xxs-12 col-md-6" }),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-xxs-12 col-md-6" },
+          [
             _c("p", [
               _vm._v(
                 _vm._s(_vm.event.date) + " at " + _vm._s(_vm.event.show_time)
@@ -13761,7 +13877,8 @@ var render = function() {
                     )
                   ])
                 ])
-              : _c("div", [
+              : _vm.event.address
+              ? _c("div", [
                   _c("p", [_vm._v(_vm._s(_vm.event.address))]),
                   _vm._v(" "),
                   _c("p", [
@@ -13769,7 +13886,8 @@ var render = function() {
                       _vm._s(_vm.event.city) + ", " + _vm._s(_vm.event.province)
                     )
                   ])
-                ]),
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("div", [_c("p", [_vm._v(_vm._s(_vm.event.description))])]),
             _vm._v(" "),
@@ -13803,6 +13921,8 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
+            _c("SocialLinks", { attrs: { socialLinks: _vm.socialLinks } }),
+            _vm._v(" "),
             _c("div", [
               _c(
                 "a",
@@ -13810,15 +13930,13 @@ var render = function() {
                   staticClass: "btn copy--center",
                   attrs: { href: "/events/" + _vm.id + "/edit" }
                 },
-                [_vm._v("Edit Profile")]
+                [_vm._v("Edit Event")]
               )
             ])
-          ]),
-          _vm._v(" "),
-          _c("SocialLinks", { attrs: { socialLinks: _vm.socialLinks } })
-        ],
-        1
-      )
+          ],
+          1
+        )
+      ])
     ])
   ])
 }
