@@ -22,6 +22,8 @@ class EventController extends Controller
      */
 
     private function saveFields($request, $event) {
+		// If existing venue has been provided, save to Event.
+		// Otherwise add city, address, and province separately.
         if ($request['venue_id']) {
 			$venue = Venue::find($request['venue_id']);
 			if ($venue) {
@@ -33,13 +35,14 @@ class EventController extends Controller
 			$event->province = $request['province'];
 			$event->save();
 		}
+		// If family has been provided, attach to event.
         if (!empty($request['family_id'])) {
 			$family = Family::find($request['family_id']);
 			if ($family) {
 				$family->events()->save($event);
 			}
 		}
-			
+		// If event has defined types, add to event.
         if (!empty($request['eventTypes'])) {
 			$eventTypes = EventType::find($request['eventTypes']);
 			$event->eventTypes()->detach();
@@ -47,6 +50,7 @@ class EventController extends Controller
 				$event->eventTypes()->attach($type);
 			}
 		}
+		// If performers have been defined, add to
         if ($request['performers']):
 			$performers = Performer::find(request('performers'));
 			$event->performers()->detach();
@@ -57,9 +61,6 @@ class EventController extends Controller
         
     }
 
-    private function updateFields($request, $event) {
-
-    }
     public function index()
     {
         //
@@ -70,21 +71,6 @@ class EventController extends Controller
         endforeach;
         return $events;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $performers = Performer::all();
-        $families = Family::all();
-        $venues = Venue::all();
-        $eventTypes = EventType::all();
-        return view('events.create', compact('performers', 'families', 'venues', 'eventTypes'));
-	}
 	
 	public function createSocialLinks($request) {
 		$attributes = $request->validate([
