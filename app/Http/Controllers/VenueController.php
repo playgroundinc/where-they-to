@@ -8,8 +8,7 @@ use App\User;
 use App\Event;
 use App\SocialLinks;
 
-class VenueController extends Controller
-{
+class VenueController extends Controller {
     /**
      * Display a listing of the resource.
      *
@@ -19,23 +18,14 @@ class VenueController extends Controller
     {
         //
 		$venues = Venue::all();
-		// foreach ($venues as $index=>$venue) {
-		// 	$venues[$index]['social_links'] = $venue->socialLinks;
-		// }
         return $venues;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        return view('venues.create');
-	}
-	
+	/**
+	 * Create social links connected to venue.
+	 * 
+	 * @param object $request the request object from the POST to the store method.
+	 */
 	public function createSocialLinks($request) {
 		$attributes = $request->validate([
             'facebook' => 'nullable',
@@ -56,23 +46,27 @@ class VenueController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-		//
+    public function store(Request $request) {
 		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
             'name' => 'required',
             'description' => 'required',
             'address' => 'required',
             'country' => 'nullable',
-            'province' => 'required',
+			'province' => 'required',
+			// city and timezone are nullable since it could be an online venue.
             'city' => 'nullable',
             'timezone' => 'nullable',
-        ]);
+		]);
+		// Create the venue.
 		$venue = Venue::create($attributes);
+		// Save the social links to the newly created venue.
 		$venue->socialLinks()->save($socialLinks);
-        $user = User::find($request['user']->id);
-        $user->venues()->save($venue);
+		// Find the user.
+		$user = User::find($request['user']->id);
+		// Attach the venue to the user.
+		$user->venues()->save($venue);
+		// Send back success message.
         return response()->json(['status' => 'success'], 201);
 
     }
@@ -85,28 +79,23 @@ class VenueController extends Controller
      */
     public function show($id)
     { 
-        //
-        $venue = Venue::find($id);
-        $socialLinks = $venue->socialLinks;
+        // Finds venue by the id.
+		$venue = Venue::find($id);
+		// Pulls the associated social links.
+		$socialLinks = $venue->socialLinks;
+		// Returns venue and socialLinks as data.
         return response()->json(compact('venue', 'socialLinks'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Venue $venue)
-    {
-        //
-        $socialLinks = User::find($venue->user['id'])->socialLinks;
-        $platforms = config('enums.platforms');
-        return view('venues.edit', compact('venue', 'socialLinks', 'platforms'));
 	}
 	
+	/**
+	 * Update Social Links connected to a specific venue.
+	 * 
+	 * @param object $request the request object.
+	 */
 	public function updateSocialLinks($request) {
+		// Finds the current social links.
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
+		// Updates its values.
 		$socialLinks->update(request(['facebook', 'instagram', 'tiktok', 'twitter', 'twitch', 'website', 'youtube']));
 	}
 
@@ -119,14 +108,19 @@ class VenueController extends Controller
      */
     public function update($id)
     {
-		//
+		// Passes the POST request object to update social links.
 		$this->updateSocialLinks(request());
+		// Finds venue by id.
 		$venue = Venue::find($id);
-        $user = $venue->user;
-        if ($user->id !== request('user')->id):
+		// Findes user attached to venue.
+		$user = $venue->user;
+		// Confirms that request came from same user.
+        if ($user->id !== request('user')->id) {
 			return response()->json(['status' => 'unauthorized'], 401);
-        endif;
+		}
+		// As long as they match, update venue.
 		$venue->update(request(['name', 'address', 'city', 'description']));
+		// Send success message.
         return response()->json(['status'=> 'success'], 200);
     }
 
@@ -144,14 +138,25 @@ class VenueController extends Controller
         return response()->json(['status' => 'success'], 200);
     }
 
+	/**
+	 * Search for a venue by a search term.
+	 * 
+	 * @param string $term the search term.
+	 * @return array $venue either the matching venues or an empty array.
+	 */
     public function search($term) {
+		// If term is empty, return empty array.
         if (empty($term)) {
             return response()->json([], 200);
-        }
-        $venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
+		}
+		// Searches for venue by name.
+		// Caps at 10 items to keep autocomplete manageable.
+		$venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
+		// As long as something is found, returns values.
         if (!empty($venues)) {
             return response()->json(compact('venues'), 200);
-        }
+		}
+		// If no venues found, returns empty array.
         return response()->json([], 200);
     }
 }
