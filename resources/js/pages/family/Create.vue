@@ -1,81 +1,161 @@
 <template>
 	<div class="main" v-if="user">
-		<h1>Create Family</h1>
-		<form action="/families/" v-on:submit.prevent="handleSubmit">
-			<label class="label" for="name">Name</label>
-			<input class="input" type="text" name="name" id="name" v-model="name">
-			<label class="label" for="description">Description:</label>
-			<textarea class="input" name="description" id="description" cols="30" rows="10" v-model="description"></textarea>
-			<fieldset v-if="performers">
-				<Autocomplete
+		<main class="container container--core">
+			<h1 class="copy--center">Create Family</h1>
+			<ErrorsContainer :errors="errors"/>
+			<form novalidate v-on:submit.prevent="handleSubmit">
+				<div class="form-group row between-md">
+					<div class="col-xxs-12">
+						<Input
+							name="name"
+							:value="name"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+						<Input
+							name="description"
+							:value="description"
+							type="textarea"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+					</div>
+				</div>
+				<Select
                     label="Performers"
-                    :values="performers"
-                    @selection="function(performer) { addPerformer(performer) }"
-                ></Autocomplete>
-                <div v-if="newPerformers.length > 0">
-                    <h2>Current Performers</h2>
-                    <ul>
-                        <li v-for="(performer, index) in newPerformers" v-bind:key="performer.id">
-                            {{ performer.name }}
-                            <a
-                                href="#"
-                                @click.prevent="() => removePerformer(index)"
-                            >Remove</a>
-                        </li>
-                    </ul>
-                </div>
-			</fieldset>
-			<input class="btn" type="submit" value="Create Family">
-		</form>    
+                    route="performers"
+					:errors="errors"
+					:currentArray="performers"
+					v-on:update="updateArray"
+				/>	
+				<SocialMedia 
+					:errors="errors"
+					:facebook="facebook"
+					:instagram="instagram"
+					:twitch="twitch"
+					:twitter="twitter"
+					:tiktok="tiktok"
+					:website="website"
+					:youtube="youtube"
+					v-on:update="updateValue"
+				/>
+				<input class="btn" type="submit" value="Create Family">
+			</form>    
+		</main>
 	</div>
 </template>
 
 <script>
 	import { mapState } from 'vuex';
-	import Autocomplete from '../../components/Autocomplete';
+	// Classes
+	import socials from "../../core/social-media";
+	import Form from "../../core/form";
+
+	// Components
+	import ErrorsContainer from "../../components/ErrorsContainer";
+	import Input from "../../components/Input";
+	import SocialMedia from "../../components/SocialMedia";
+	import Select from "../../components/Select";
 	export default {
 		data() {
 			return {
 				name: '',
 				description: '',
-				newPerformers: [],
+				performers: [],
+				errors: [],
+				facebook: '',
+				twitter: '',
+				website: '',
+				tiktok: '',
+				twitch: '',
+				youtube: '',
+				instagram: '',
+				socials,
 			}
 		},
 		computed: {
-			...mapState(['user', 'families', 'performers']),
+			...mapState(['user']),
+			performerIds() {
+				return this.performers.map((performer) => performer.id);
+			},
+			valid() {
+				return this.errors.length === 0;
+			}
 		},
 		components: {
-			Autocomplete,
+			ErrorsContainer, 
+			Input,
+			SocialMedia,
+			Select,
 		},
 		methods: {
-			handleSubmit: function() {
-			let data = {
-				name: this.name,
-				description: this.description,
-				performers: this.newPerformers,
-			}
-			let route = `families`;
-			this.$store
-				.dispatch('create', {
-					route, 
-					data
-				}).then((res) => {
-					this.$store.dispatch('fetchState', {
-						route: 'families',
-					})
-					this.$router.push(`/dashboard`)
-				}).catch((err)=>{
-					console.log(err);
-				});
+			updateValue: function(updateObject) {
+				this[updateObject.name] = updateObject.value;
 			},
-			addPerformer: function(performer) {
-				if (this.newPerformers.indexOf(performer) === -1) {
-					this.newPerformers.push(performer);
+			createFamily: async function(FormClass) {
+				const resp = await FormClass.submitForm();
+				if (resp.status === 'success') {
+					await this.$store.dispatch("findUser");
+					this.$router.push('/dashboard');
 				}
 			},
-			removePerformer: function(index) {
-				this.newPerformers.splice(index, 1);
+			handleSubmit: function() {
+				let data = {
+					name: this.name,
+					description: this.description,
+					performers: this.performerIds,
+				}
+				const FormClass = new Form(data, "create", { route: "families" });
+				this.errors = FormClass.checkRequiredFields(data);
+				if (this.valid) {
+					const additionalData = this.getSocialMediaData();
+					FormClass.setAdditionalFields(additionalData);
+					this.createFamily(FormClass);
+				}
 			},
+			addToArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index <= -1) {
+					currentArray.push(updateObject.value);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				currentArray.forEach((item, i) => {
+					if (item.id === updateObject.id) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
+			},
+			deleteFromArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index > -1) {
+					currentArray.splice(index, 1);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			updateArray: function(updateObject) {
+				const currentArray = this[updateObject.name];
+				if (currentArray && updateObject.add) {
+					this.addToArray(updateObject, currentArray);
+				} 
+				if (currentArray && !updateObject.add) {
+					this.deleteFromArray(updateObject, currentArray);
+				}
+			},
+			getSocialMediaData: function() {
+				const socialMediaData = {};
+				for (let social in this.socials) {
+					socialMediaData[social] = this[social];
+				}
+				return socialMediaData;
+			}, 
 		}
 	}
 </script>

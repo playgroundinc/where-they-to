@@ -1,51 +1,91 @@
 <template>
 	<div class="main" v-if="id">
-    <h1>Edit Performer profile</h1>
-    <form v-on:submit.prevent="handleSubmit" action="'/performers/' + id">
-		<div>
-			<label class="label" for="name">Name</label>
-			<input class="input" type="text" name="name" v-model="name">
-			<label class="label" for="bio">Bio</label>
-			<textarea class="input" name="bio" id="bio" cols="30" rows="10" placeholder="Performer bio" v-model="bio"></textarea>
+		<main class="container container--core">
+        <h1 class="copy--center">Create Performer Profile</h1>
+        <ErrorsContainer :errors="errors" />
+        <form
+            novalidate
+            method="POST"
+            action="/performers"
+            v-on:submit.prevent="handleSubmit"
+        >
+			<div class="form-group row between-md">
+				<div class="col-xxs-12">
+					<Input
+						name="name"
+						:value="name"
+						type="text"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+					<Input
+						name="bio"
+						:value="bio"
+						type="textarea"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
+					<Input
+						name="tips"
+						:value="tips"
+						type="textarea"
+						:required="false"
+						:errors="errors"
+						v-on:update="updateValue"
+						helperText="Provide instructions on how people can leave you a tip."
+					/>
+				</div>
+			</div>
+            <SocialMedia 
+                :errors="errors"
+                :facebook="facebook"
+                :instagram="instagram"
+                :twitch="twitch"
+                :twitter="twitter"
+                :tiktok="tiktok"
+                :website="website"
+                :youtube="youtube"
+                v-on:update="updateValue"
+            />
+            <SelectTypes
+                :errors="errors"
+                :performerTypes="performerTypes"
+                v-on:update="updateArray"
+            />
+            <div class="col-xxs-12">
+                <button type="submit" class="btn btn-default">Update Performer</button>
+            </div>
+        </form>
+		<div class="copy--center">
+			<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Profile</button>
 		</div>
-		<h2>Performer Types</h2>
-		<ul v-if="types" class="list container--inner">
-			<li class="list-item list-item--flex" v-for="type in types" v-bind:key="type.id">
-				<p v-text="type.name"></p>
-				<button v-on:click.prevent="removePerformerType(type.id)">Remove Type</button>
-			</li>
-		</ul>
-		<h2>Add New Type</h2>
-		<fieldset v-if="filteredPerformerTypes">
-			<legend for="newPerformers" class="label">Performer Types</legend>
-			<ul class="list">
-				<li class="list-item" v-for="performerType in filteredPerformerTypes" v-bind:key="performerType.id" >
-					<p>{{ performerType.name }}</p>
-					<button @click.prevent="addPerformerType(performerType.id)">Add Type</button>
-				</li>
-			</ul> 
-		</fieldset>
-		<div>
-			<h2>Edit Social Links</h2>
-			<label class="label" for="facebook">Facebook</label>
-			<input type="text" class="input" id="facebook" name="facebook" v-model="facebook">
-			<label for="instagram" class="label">Instagram</label>
-			<input type="text" class="input" id="instagram" name="instagram" v-model="instagram">
-			<label for="twitter" class="label">Twitter</label>
-			<input type="text" class="input" id="twitter" name="twitter" v-model="twitter">
-			<label for="youtube" class="label">Youtube</label>
-			<input type="text" class="input" id="youtube" name="youtube" v-model="youtube">
-			<label for="website" class="label">Website</label>
-			<input type="text" class="input" id="website" name="website" v-model="website">
-		</div>
-		<input class="btn" type="submit" value="Edit Profile">
-	</form>
-    <button class="btn btn--danger" v-on:click="handleDelete">Delete Profile</button>
+		<Modal 
+			title="Are you sure?"
+			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			:open="confirmModal"
+			button="Confirm Delete"
+			v-on:confirm="handleDelete"
+			v-on:close="toggleModal"
+		/>
+	</main>
 </div>
 </template>
 
 <script>
 	import { mapState } from 'vuex';
+	// Classes.
+	import socials from "../../core/social-media";
+	import Form from "../../core/form";
+	
+	// Components
+	import Input from "../../components/Input";
+	import ErrorsContainer from "../../components/ErrorsContainer";
+	import SocialMedia from "../../components/SocialMedia";
+	import SelectTypes from "../../components/SelectTypes";
+	import Modal from "../../components/Modal";
+
 	export default {
 
 	data() {
@@ -53,118 +93,142 @@
 			id: this.$route.params.id,
 			name: '',
 			bio: '',
+			tips: '',
 			facebook: '',
 			instagram: '',
 			twitter: '',
 			youtube: '',
 			website: '',
+			twitch: '',
+			tiktok: '',
+			performerTypes: [],
+			errors: [],
+			social_links_id: '',
+			socials,
+			confirmModal: false,
 		}
     },
     computed: {
-		...mapState(['performers', 'user', 'performerTypes']),
-		performer: {
-			get: function() {
-				const performer = this.performers.find(entry => Number(entry.id) === Number(this.id));
-				if (performer) {
-					this.name = performer.name;
-					this.bio = performer.bio;
-					this.facebook = performer.social_links.facebook;
-					this.instagram = performer.social_links.instagram;
-					this.twitter = performer.social_links.twitter;
-					this.website = performer.social_links.website;
-					this.youtube = performer.social_links.youtube;
-				}
-				return performer;
-			},
-		},
-		types: {
-			get: function() { 
-				if (this.performer) { 
-					return this.performer.type 
-				}
-				return []
-			},
-			set: function(value) {
-				if (this.performer) {
-					this.performer.type = value;
-				}
-			}
-		},
-		filteredPerformerTypes: function() {
-			if (this.performerTypes && this.performer) {
-				return this.performerTypes.filter(entry => !this.performer.type.find((item) => Number(item.id) === Number(entry.id)));
-			}
-		},
-    },
-    methods: {
-		handleSubmit: function() {
-			let data = {
-				name: this.name,
-				bio: this.bio,
-				performerType: [this.performerType],
-				facebook: this.facebook,
-				instagram: this.instagram,
-				twitter: this.twitter,
-				website: this.website,
-				youtube: this.youtube,
-				socialLinksId: this.performer.social_links.id,
-			}
-			let route = `performers`;
-			this.$store
-				.dispatch('edit', {
-					route, 
-					id: this.id,
-					data
-			}).then(() => {
-				this.$router.push(`/performers/${this.id}`)
-			}).catch((err)=>{
-				console.log(err);
-			});
-		},
-		handleDelete: function() {
-			this.$store.dispatch('destroy', {
-				route: 'performers',
-				id: this.id,
-			}).then(()=>{
-				this.$router.push('/performers');
-			});
-		},
-		addPerformerType: function(performerType_id) {
-			let data = {
-				performerType_id,
-			}
-			this.$store.dispatch('edit', {
-				route: 'performers',
-				id: `${this.id}/performerType`, 
-				data
-			}).then((resp)=> {
-				this.$store.dispatch('fetchState', {
-					route: 'performers'
-				});
-			})
-		},
-		removePerformerType: function(performerType_id) {
-			let data = {
-				performerType_id,
-			}
-			this.$store.dispatch('destroy', {
-				route: 'performers',
-				id: `${this.id}/performerType`, 
-				data
-			}).then((resp)=> {
-				this.$store.dispatch('fetchState', {
-					route: 'performers'
-				});
-			})
+		...mapState(['user']),
+		valid: function() {
+			return this.errors.length === 0;
 		}
+	},
+	components: {
+		Input,
+		ErrorsContainer,
+		SelectTypes,
+		SocialMedia,
+		Modal,
+	},
+    methods: {
+		updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
+		},
+		setStates: function(fields, object) {
+			if (fields.length > 0) {
+				fields.forEach((field) => {
+					if (object[field]) {
+						this[field] = object[field];
+					}
+				});
+			}
+		},
+		addToArray: function(updateObject, currentArray) {
+            if (!currentArray.includes(updateObject.value)) {
+                currentArray.push(updateObject.value);
+                this[updateObject.name] = currentArray;
+            }
+        },
+        deleteFromArray: function(updateObject, currentArray) {
+            if (currentArray.includes(updateObject.value)) {
+                const index = currentArray.indexOf(updateObject.value);
+                if (index > -1) {
+                    currentArray.splice(index, 1);
+                    this[updateObject.name] = currentArray;
+                }
+            }
+        },
+        updateArray: function(updateObject) {
+            const currentArray = this[updateObject.name];
+            if (currentArray && updateObject.add) {
+                this.addToArray(updateObject, currentArray);
+            } 
+            if (currentArray && !updateObject.add) {
+                this.deleteFromArray(updateObject, currentArray);
+            }
+		}, 
+		setPerformer: function(performer) {
+			const fields = ['name', 'bio', 'tips'];
+			this.setStates(fields, performer);
+			this.social_links_id = performer.social_links.id;
+		},
+		setSocialLinks: function(socialLinks) {
+			const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+			this.setStates(socials, socialLinks);
+		},
+		getSocialMediaData: function() {
+            const socialMediaData = {};
+            for (let social in this.socials) {
+                socialMediaData[social] = this[social];
+            }
+            return socialMediaData;
+        },
+		setPerformerTypes: function(performerTypes) {
+			if (performerTypes.length > 0) {
+				this.performerTypes = performerTypes.map((type) => type.id);
+				return;
+			}
+		},
+		getPerformer: async function() {
+			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
+			if (resp.status === 200) {
+				this.setPerformer(resp.data.performer);
+				this.setSocialLinks(resp.data.socialLinks);
+				this.setPerformerTypes(resp.data.types);
+				return;
+			}
+		},
+		toggleModal: function() {
+			this.confirmModal = !this.confirmModal;
+		},
+		editPerformer: async function(FormClass) {
+			const resp = await FormClass.submitForm();
+			if (resp.status === 'success') {
+				this.$router.push(`/performers/${this.id}`);
+			}
+		},
+		handleSubmit: function() {
+            let data = {
+                name: this.name,
+				bio: this.bio,
+                user_id: this.user.id,
+            };
+			const FormClass = new Form(data, "edit", { route: "performers", id: this.id });
+            this.errors = FormClass.checkRequiredFields(data);
+            if (this.valid) {
+                const additionalData = this.getSocialMediaData();
+				additionalData.performerTypes = this.performerTypes;
+				additionalData.socialLinksId = this.social_links_id;
+				additionalData.tips = this.tips;
+				FormClass.setAdditionalFields(additionalData);
+                this.editPerformer(FormClass);
+            }
+        },
+		handleDelete: async function() {
+			const data = {
+				user_id: this.user.id,
+			}
+			const DeleteForm = new Form(data, 'destroy', { route: 'performers', id: this.id });
+			const resp = await DeleteForm.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch('findUser');
+				this.$router.push('/dashboard');
+			}
+		},
     },
     async mounted() {
-		if(this.user === 0) {
-			this.$store.dispatch('findUser');
-		}
-		this.$store.dispatch('fetchState', { 
-			route: 'performerTypes',
-		})
+		this.getPerformer();
     }
 
 }

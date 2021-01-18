@@ -38,8 +38,10 @@ class VenueController extends Controller
 	
 	public function createSocialLinks($request) {
 		$attributes = $request->validate([
-			'facebook' => 'nullable',
-			'twitter' => 'nullable',
+            'facebook' => 'nullable',
+            'twitch' => 'nullable',
+            'twitter' => 'nullable',
+            'tiktok' => 'nullable',
 			'instagram' => 'nullable',
 			'website' => 'nullable',
 			'youtube' => 'nullable',
@@ -62,9 +64,10 @@ class VenueController extends Controller
             'name' => 'required',
             'description' => 'required',
             'address' => 'required',
-            'country' => 'required',
-            'state' => 'required',
-            'city' => 'required',
+            'country' => 'nullable',
+            'province' => 'required',
+            'city' => 'nullable',
+            'timezone' => 'nullable',
         ]);
 		$venue = Venue::create($attributes);
 		$venue->socialLinks()->save($socialLinks);
@@ -84,7 +87,8 @@ class VenueController extends Controller
     { 
         //
         $venue = Venue::find($id);
-        return response()->json(compact('venue'));
+        $socialLinks = $venue->socialLinks;
+        return response()->json(compact('venue', 'socialLinks'));
     }
 
     /**
@@ -103,7 +107,7 @@ class VenueController extends Controller
 	
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
-		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+		$socialLinks->update(request(['facebook', 'instagram', 'tiktok', 'twitter', 'twitch', 'website', 'youtube']));
 	}
 
     /**
@@ -138,5 +142,16 @@ class VenueController extends Controller
         $venue = Venue::find($id);
         $venue->delete();
         return response()->json(['status' => 'success'], 200);
+    }
+
+    public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($venues)) {
+            return response()->json(compact('venues'), 200);
+        }
+        return response()->json([], 200);
     }
 }

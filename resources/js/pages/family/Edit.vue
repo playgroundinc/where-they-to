@@ -1,131 +1,239 @@
 <template>
-	<div class="main" v-if="family && user">
-		<h1>Edit Family</h1>
-		<form action="/families/" v-on:submit.prevent="handleSubmit">
-			<label class="label" for="name">Name</label>
-			<input class="input" type="text" name="name" id="name" v-model="family.name">
-			<label class="label" for="description">Description:</label>
-			<textarea class="input" name="description" id="description" cols="30" rows="10" v-model="family.description"></textarea>
-			<h2>Current Performers</h2>
-			<ul class="list container--inner">
-				<li class="list-item list-item--flex" v-for="performer in family.performers" v-bind:key="performer.id">
-					<a :href="'/performers/' + performer.id" v-text="performer.name"></a>
-					<button v-if="performer.id !== user.id" v-on:click.prevent="removePerformer(performer.id)">Remove Performer</button>
-					<button v-if="performer.id === user.id" v-on:click.prevent="leaveFamily(performer.id)">Leave Family</button>
-				</li>
-			</ul>
-			<h2>Add New Performer</h2>
-			<fieldset v-if="performers">
-				<Autocomplete
+	<div class="main" v-if="user">
+		<main class="container container--core">
+			<h1 class="copy--center">Edit Family</h1>
+			<ErrorsContainer :errors="errors"/>
+			<form novalidate v-on:submit.prevent="handleSubmit">
+				<div class="form-group row between-md">
+					<div class="col-xxs-12">
+						<Input
+							name="name"
+							:value="name"
+							type="text"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+						<Input
+							name="description"
+							:value="description"
+							type="textarea"
+							:required="true"
+							:errors="errors"
+							v-on:update="updateValue"
+						/>
+					</div>
+				</div>
+				<Select
                     label="Performers"
-                    :values="performers"
-                    @selection="function(performer) { addPerformer(performer) }"
-                ></Autocomplete>
-                <div v-if="newPerformers.length > 0">
-                    <h2>Current Performers</h2>
-                    <ul>
-                        <li v-for="(performer, index) in newPerformers" v-bind:key="performer.id">
-                            {{ performer.name }}
-                            <a
-                                href="#"
-                                @click.prevent="() => removePerformer(index)"
-                            >Remove</a>
-                        </li>
-                    </ul>
-                </div>
-			</fieldset>
-			<input class="btn" type="submit" value="Submit">
-		</form>
-		<button class="btn btn--danger" @click.prevent="destroyFamily">Delete Family</button>
+                    route="performers"
+					:errors="errors"
+					:currentArray="performers"
+					v-on:update="updateArray"
+				/>		
+				<SocialMedia 
+					:errors="errors"
+					:facebook="facebook"
+					:instagram="instagram"
+					:twitch="twitch"
+					:twitter="twitter"
+					:tiktok="tiktok"
+					:website="website"
+					:youtube="youtube"
+					v-on:update="updateValue"
+				/>
+				<input class="btn" type="submit" value="Edit Family">
+			</form>    
+			<div class="copy--center">
+				<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Venue</button>
+			</div>
+		</main>
+		<Modal 
+			title="Are you sure?"
+			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			:open="confirmModal"
+			button="Confirm Delete"
+			v-on:confirm="handleDelete"
+			v-on:close="toggleModal"
+		/>
 	</div>
 </template>
 
 <script>
 	import { mapState } from 'vuex';
-	import Autocomplete from '../../components/Autocomplete';
+	// Classes
+	import socials from "../../core/social-media";
+	import Form from "../../core/form";
+
+	// Components
+	import ErrorsContainer from "../../components/ErrorsContainer";
+	import Input from "../../components/Input";
+	import SocialMedia from "../../components/SocialMedia";
+	import Select from "../../components/Select";
+	import Modal from "../../components/Modal";
+
 	export default {
 		data() {
 			return {
 				id: this.$route.params.id,
-				newPerformers: [],
+				name: '',
+				description: '',
+				performers: [],
+				errors: [],
+				facebook: '',
+				twitter: '',
+				website: '',
+				tiktok: '',
+				twitch: '',
+				youtube: '',
+				instagram: '',
+				socials,
+				socialLinksId: '',
+				confirmModal: false,
 			}
-	},
-	components: {
-		Autocomplete,
-	},
-    computed: {
-		...mapState(['families', 'performers', 'user']),
-		family: function() {
-			return this.families.find(entry => Number(entry.id) === Number(this.id))
 		},
-		filteredPerformers: function() {
-			return this.performers.filter(entry => !this.family.performers.find((item) => Number(item.id) === Number(entry.id)));
+		computed: {
+			...mapState(['user']),
+			performerIds() {
+				return this.performers.map((performer) => performer.id);
+			},
+			valid() {
+				return this.errors.length === 0;
+			}
 		},
-	},
-	created() {
-		if (!this.user) {
-			this.$store.dispatch('findUser');
+		components: {
+			ErrorsContainer, 
+			Input,
+			Modal,
+			SocialMedia,
+			Select,
+		},
+		mounted() {
+			this.getFamily();
+		},
+		methods: {
+			updateValue: function(updateObject) {
+				this[updateObject.name] = updateObject.value;
+			},
+			setStates: function(fields, object) {
+				if (fields.length > 0) {
+					fields.forEach((field) => {
+						if (object[field]) {
+							this[field] = object[field];
+						}
+					});
+				}
+			},
+			setSocialLinks: function(socialLinks) {
+				const socials = ['facebook', 'instagram', 'twitch', 'twitter', 'tiktok', 'youtube', 'website'];
+				this.setStates(socials, socialLinks);
+				this.socialLinksId = socialLinks.id;
+			},
+			setPerformers: function(performers) {
+				this.performers = performers;
+			},
+			updateFamily: async function(FormClass) {
+				const resp = await FormClass.submitForm();
+				console.log(resp);
+				if (resp.status === 'success') {
+					await this.$store.dispatch("findUser");
+					this.$router.push(`/families/${this.id}`);
+				}
+			},
+			setFamily: function(family) {
+				const fields = ['name', 'description'];
+				this.setStates(fields, family);
+			},
+			getFamily: async function() {
+				const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.id });
+				if (resp.status === 200) {
+					this.setFamily(resp.data.family);
+					this.setSocialLinks(resp.data.family.social_links);
+					this.setPerformers(resp.data.family.performers);
+					return;
+				}
+			},
+			getSocialMediaData: function() {
+				const socialMediaData = {};
+				for (let social in this.socials) {
+					socialMediaData[social] = this[social];
+				}
+				return socialMediaData;
+			}, 
+			handleSubmit: function() {
+				let data = {
+					name: this.name,
+					description: this.description,
+					performers: this.performerIds,
+				}
+				const FormClass = new Form(data, "edit", { route: "families", id: this.id });
+				this.errors = FormClass.checkRequiredFields(data);
+				if (this.valid) {
+					const socialMediaData = this.getSocialMediaData();
+					const additionalData = this.addAdditionalData(socialMediaData);
+					FormClass.setAdditionalFields(additionalData);
+					this.updateFamily(FormClass);
+				}
+
+			},
+			addToArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index <= -1) {
+					currentArray.push(updateObject.value);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			findValue: function(currentArray, updateObject) {
+				let index = -1;
+				currentArray.forEach((item, i) => {
+					if (updateObject.id && item.id === updateObject.id) {
+						index = i;
+						return;
+					}
+					if (item.id === updateObject) {
+						index = i;
+						return index;
+					}
+				});
+				return index;
+			},
+			addAdditionalData: function(currentFields) {
+				const fields = ['socialLinksId'];
+				fields.forEach((field) => {
+					currentFields[field] = this[field];
+				});
+				return currentFields;
+			},
+			deleteFromArray: function(updateObject, currentArray) {
+				const index = this.findValue(currentArray, updateObject.value);
+				if (index > -1) {
+					currentArray.splice(index, 1);
+					this[updateObject.name] = currentArray;
+				}
+			},
+			updateArray: function(updateObject) {
+				const currentArray = this[updateObject.name];
+				if (currentArray && updateObject.add) {
+					this.addToArray(updateObject, currentArray);
+				} 
+				if (currentArray && !updateObject.add) {
+					this.deleteFromArray(updateObject, currentArray);
+				}
+			},
+			toggleModal: function() {
+				this.confirmModal = !this.confirmModal;
+			},
+			handleDelete: async function() {
+				const data = {
+					user_id: this.user.id,
+				}
+				const DeleteForm = new Form(data, 'destroy', { route: 'families', id: this.id });
+				const resp = await DeleteForm.submitForm();
+				if (resp.status === 'success') {
+					await this.$store.dispatch('findUser');
+					this.$router.push('/dashboard');
+				}
+			},
 		}
-    },
-    methods: {
-		removePerformer: function(id) {
-			this.$store.dispatch('destroy', {
-				route: 'families', 
-				id: `performers/${id}/delete`,
-			})
-		},
-		addPerformer: function(id) {
-			let data = {
-				performer: id,
-			}
-			this.$store.dispatch('create', {
-				route: `families/${this.id}/performer`,
-				data,
-			}).then(()=> {
-				this.$store.dispatch('fetchState', {
-					route: 'families',
-				})
-			})
-		},
-		leaveFamily: function(id) {
-			this.$store.dispatch('destroy', {
-				route: 'families',
-				id: `performers/${id}/delete`
-			}).then(() => {
-				this.$router.push({path: `families/${id}`});
-			}).catch((err) => {
-				console.log(err)
-			})
-		},
-		handleSubmit: function() {
-			let data = {
-				name: this.family.name,
-				description: this.family.description,
-			}
-			let route = `families`;
-			this.$store
-				.dispatch('edit', {
-					route, 
-					id: this.id,
-					data
-			}).then(() => {
-				this.$router.push(`/families/${this.id}`)
-			}).catch((err)=>{
-				console.log(err);
-			});
-		},
-		destroyFamily: function() {
-			let data = {}
-			this.$store.dispatch('destroy', {
-				route: 'families',
-				id: this.id,
-				data
-			}).then(() => {
-				this.$router.push('/families');
-			}).catch((err) => {
-				console.log(err)
-			});
-		},
-    }
-}
+	}
 </script>

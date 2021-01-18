@@ -17,19 +17,16 @@ class PerformersTableSeeder extends Seeder
         'name' => $faker->firstName,
         'bio' => $faker->text,
         'user_id' => '1',
-        'family_id' => '1',
       ]);
       DB::table('performers')->insert([
         'name' => $faker->firstName,
         'bio' => $faker->text,
         'user_id' => '1',
-        'family_id' => '2',
       ]);
       DB::table('performers')->insert([
         'name' => $faker->firstName,
         'bio' => $faker->text,
         'user_id' => '1',
-        'family_id' => '1',
       ]);
     }
 }

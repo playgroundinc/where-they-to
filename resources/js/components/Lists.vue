@@ -1,5 +1,5 @@
 <template>
-    <div v-if="listitems"><h2>{{ title }}</h2>
+    <div v-if="listitems"><h2 class="copy--center">{{ title }}</h2>
       <div v-if="listitems.length > 0">
         <h3>Edit {{ slug }}:</h3>
         <ul>
@@ -9,9 +9,9 @@
         </ul>
       </div>
       <div v-else>
-        <p>You currently have no {{ slug }}.</p>
+        <p class="copy--italic">You currently have no {{ slug }}.</p>
       </div>
-      <a class="btn" :href="'/' + slug + '/create'">Create New {{ title }}</a>
+      <a class="copy--center btn" :href="'/' + slug + '/create'">Create New {{ title }}</a>
     </div>
 </template>
 

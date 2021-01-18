@@ -1,0 +1,18 @@
+.autocomplete {
+    &__list {
+        @extend .selections__list;
+        margin-top: spacing(2);
+    }
+    &__single {
+        @extend .selections__single;
+        &.no-link {
+            padding: spacing(2) 0;
+            text-align: center;
+        }
+        &__link {
+            @extend .selections__single__link;
+            border-bottom: 2px solid green;
+            @include hover(green);
+        }
+    }
+}

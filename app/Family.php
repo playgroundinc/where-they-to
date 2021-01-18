@@ -12,7 +12,7 @@ class Family extends Model
       return $this->belongsTo(User::class);
     }
     public function performers() {
-      return $this->hasMany(Performer::class);
+      return $this->belongsToMany(Performer::class);
     }
     public function socialLinks() {
       return $this->hasOne(SocialLinks::class);

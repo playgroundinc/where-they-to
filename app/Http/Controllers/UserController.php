@@ -21,7 +21,7 @@ class UserController extends Controller
 
 	public function authenticate(Request $request)
     {
-		$credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
         try {
 			if (!$token = JWTAuth::attempt($credentials)) {
@@ -35,7 +35,7 @@ class UserController extends Controller
 			$user = array(
 				'id' => $user['id'],
 			);
-			return response()->json(compact('token', 'user'));
+			return response()->json(compact('token', 'user'), 201);
 		}
 		return response()->json(['error' => 'could_not_create_token'], 500);
     }
@@ -43,20 +43,22 @@ class UserController extends Controller
     public function register(Request $request)
 	{
         $validator = Validator::make($request->all(), [
-			'email' => 'required|string|email|max:255|unique:users',
-			'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
         ]);
+    
 
         if($validator->fails()){
 			return response()->json($validator->errors()->toJson(), 400);
         }
 
         $user = User::create([
-          'email' => $request->get('email'),
-          'password' => Hash::make($request->get('password')),
-          'country' => $request->get('country'),
-          'province' => $request->get('province'),
-          'city' => $request->get('city'),
+        'email' => $request->get('email'),
+        'password' => Hash::make($request->get('password')),
+        'country' => $request->get('country'),
+        'province' => $request->get('province'),
+        'city' => $request->get('city'),
+        'timezone' => $request->get('timezone')
         ]);
 
         $token = JWTAuth::fromUser($user);
@@ -78,7 +80,8 @@ class UserController extends Controller
 			return response()->json(['token_invalid'], $e->getStatusCode());
 		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 			return response()->json(['token_absent'], $e->getStatusCode());
-		}	
+        }
+        
 		$user['performers'] = $user->performers;
 		$user['venues'] = $user->venues;
 		$user['events'] = $user->events;
@@ -99,13 +102,6 @@ class UserController extends Controller
 
     public function profile($id) {
 		$user = User::find($id);
-		if ($user['type'] === UserType::VENUE): 
-			$venue = $user->venue;
-			return response()->json(compact('venue'));
-		else: 
-			$performer = $user->performer;
-			return response()->json(compact('performer'));
-		endif;
     }
 
     /**

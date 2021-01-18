@@ -28,36 +28,23 @@ export default {
     },
     computed: {
         ...mapState([
-            "performers",
-            "events",
-            "venues",
-            "families",
             "user",
-            "profile"
         ])
     },
     methods: {
         logout: function() {
             this.$store.dispatch("logout");
         }
-	},
-	async mounted() {
-		if (!this.performers.length > 0) {
-			await this.$store.dispatch('fetchState', { route: 'performers' });
-		}
-		if (!this.venues.length > 0) {
-			await this.$store.dispatch('fetchState', { route: 'venues' });
-		}
-		if (!this.events.length > 0) {
-			await this.$store.dispatch('fetchState', { route: 'events' });
-		}
-		if (!this.families.length > 0) {
-			await this.$store.dispatch('fetchState', { route: 'families' });
-		}
-		if (!this.user) {
-			this.$store.dispatch('findUser');
-		}
-	},
+    },
+    async mounted() {
+        if (this.user === 0) {
+            try {
+                this.$store.dispatch('findUser');
+            } catch (err) {
+                return;
+            }
+        }
+    },
     components: {
         //
         List

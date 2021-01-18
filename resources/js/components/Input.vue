@@ -1,8 +1,11 @@
 <template>
-    <div>
-        <label v-if="type !== 'submit'" :for="name">{{ label }}</label>
+    <div class="input__container">
+        <label class="label label--floating" v-if="type !== 'submit'" :for="name">
+            <span :class="floating">{{ label }}</span>
+        </label>
         <textarea
             v-if="type === 'textarea'"
+            class="input"
             :name="name"
             :id="name"
             :required="required"
@@ -11,22 +14,46 @@
             :value="value"
             :aria-invalid="invalid"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
         ></textarea>
-        <select v-else-if="type === 'select'" :selected="value" v-on:change="onChange" :name="name" :id="name" >
-          <option value="" disabled :selected="value === ''">Select Province</option>
-          <option v-for="(key, value) in options" v-bind:key="value" :value="value">{{key}}</option>
+        <select
+            v-else-if="type === 'select'"
+            class="input"
+            :name="name"
+            :id="name"
+            :required="required"
+            :value="value"
+            :aria-invalsid="invalid"
+            v-on:change="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
+        >
+            <option class="input__default" default="true" value="" disabled></option>
+            <option
+                v-for="(option, index) in options"
+                :value="index"
+                v-bind:key="index"
+            >
+                {{ option }}
+            </option>
         </select>
         <input
             v-else
+            class="input"
             :id="name"
             :type="type"
             :name="name"
             :value="value"
             :required="required"
             :aria-invalid="invalid"
+            :aria-describedby="helperText ? 'helper-text' : null"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
         />
-        <p v-if="type !== 'submit'" class="error">{{ errorMsg }}</p>
+        <p class="input__error-msg copy--error copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
+        <p id="helper-text" class="copy--small copy--italic input__helper-text" v-if="helperText">{{ helperText }}</p>
     </div>
 </template>
 
@@ -52,7 +79,11 @@ export default {
         errorMsg: {
             type: String,
             required: false,
-            default: "Something is wrong with this field"
+            default: "This field is required"
+        },
+        helperText: {
+            type: String,
+            required: false
         },
         errors: {
             type: Array,
@@ -60,11 +91,16 @@ export default {
             default: () => []
         },
         options: {
-          type: Object,
-          required: false,
-          default: () => {},
-        }
+            type: Object,
+            required: false,
+            default: () => {}
+        },
     },
+    data() {
+        return {
+            active: false,
+        }
+    }, 
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);
@@ -82,13 +118,18 @@ export default {
                 name: this.name,
                 value: event.target.value
             });
-        }
+        },
+        floatLabel: function(e) {
+            this.active = !this.active;
+        },
     },
     computed: {
+        floating() {
+            return this.active || this.value !== '' ? 'float' : 'sink';
+        },
         label() {
-            let label = this.name.split('_');
-            label = label.join(' ');
-            return label;
+            const labelText = this.name.replace("_", " ");
+            return labelText;
         },
         invalid() {
             if (this.errors.length) {

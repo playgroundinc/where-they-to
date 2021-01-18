@@ -1,14 +1,24 @@
-
 <template>
-	<div class="main" v-if="performer">
-		<h1>{{ performer.name }}</h1>
-		<h2>Bio</h2>
+	<div v-if="performer">
+		<main class="container">
+		<h1 class="copy--center">{{ performer.name }}</h1>
+		<ul class="selections__list row center-md" v-if="performer.performer_types">
+			<li class="selections__single" v-for="type in performer.performer_types" v-bind:key="type.id">{{ type.name }}</li>
+		</ul>
+		<div class="row">
+			<div class="col-xxs-12 col-md-6">
 
-		<p>{{ performer.bio }}</p>
-		<div v-if="family">
-			<h2>Family</h2>
-			<a :href="'/families/' + family.id" >{{ family.name }}</a>
-		</div> 
+			</div>
+			<div class="col-xxs-12 col-md-6">
+				<p>{{ performer.bio }}</p>
+				<div v-if="socialLinks">
+					<SocialLinks
+						:socialLinks="socialLinks"
+					/>
+				</div>
+				<button class="btn" @click.prevent="toggleModal" v-if="performer.tips">Tip {{ performer.name}}</button>
+			</div>
+		</div>
 		<div v-if="events.length > 0">
 			<h2>Events</h2>
 			<ul>
@@ -22,25 +32,24 @@
 				</li>
 			</ul>
 		</div>
-
-		<div v-if="performer.socialLinks">
-			<h2>Social Links</h2>
-			<ul>
-				<li>Facebook: {{ performer.socialLinks.facebook }}</li> 
-				<li>Twitter: {{ performer.socialLinks.twitter }}</li>
-				<li>Instagram: {{ performer.socialLinks.instagram }}</li>
-				<li>YouTube: {{ performer.socialLinks.youtube }}</li>
-				<li>Website: {{ performer.socialLinks.website }}</li>
-			</ul>
-		</div>
 		<div v-if="performer.user_id && user && performer.user_id === user.id">
-			<a class="btn" :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
+			<a class="btn copy--center" :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
 		</div>
+		<Modal 
+			:title="tipTitle"
+			:copy="performer.tips || ''"
+			:open="tipModal"
+			v-on:close="toggleModal"
+		/>
+		</main>
 	</div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+// Components 
+import Modal from "../../components/Modal";
+import SocialLinks from "../../components/SocialLinks";
 
 export default {
 
@@ -49,26 +58,39 @@ export default {
 			id: this.$route.params.id,
 			platforms: [],
 			events: [],
+			performer: [],
+			socialLinks: [],
+			family: [],
+			types: [],
+			tipModal: false,
 		}
     },
     computed: {
-		...mapState(['user', 'performers', 'families']),
-		performer: function() {
-			return this.performers.find(entry => Number(entry.id) === Number(this.id))
+		...mapState(['user']),
+		tipTitle() {
+			return `How to tip ${this.performer.name}`
+		}
+	},
+	components: {
+		Modal,
+		SocialLinks,
+	},
+	mounted() {
+		this.getPerformer();
+	},
+	methods: {
+		getPerformer: async function() {
+			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
+			if (resp.status === 200) {
+				this.performer = resp.data.performer;
+				this.types = resp.data.types;
+				this.family = resp.data.family;
+				this.socialLinks = resp.data.socialLinks;
+			}
 		},
-		family: function() {
-			return this.families.find(entry => Number(entry.id) === Number(this.performer.family_id));
+		toggleModal: function() {
+			this.tipModal = !this.tipModal;
 		}
-	},
-	async mounted() {
-		const date = new Date();
-		const resp = await axios.get(`http://127.0.0.1:8000/api/performers/${this.id}/events`);
-		this.events = resp.data.events;
-	},
-    created() {
-		if (!this.user) {
-			this.$store.dispatch('findUser');
-		}
-    }
+	}
 }
 </script>
