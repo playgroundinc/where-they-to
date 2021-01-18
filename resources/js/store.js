@@ -10,6 +10,20 @@ export default new Vuex.Store({
         token: localStorage.getItem("token") || "",
     },
     actions: {
+      checkEmail({commit}, data) {
+        return new Promise((resolve, reject) => {
+            axios({
+              method: "POST",
+              data,
+              url: "http://127.0.0.1:8000/api/user/existing",
+            }).then((resp) => {
+              return resolve(resp);
+            }).catch((err) => {
+              console.log(err);
+              return reject(err);
+            })
+        });
+      },
         login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("auth_request");

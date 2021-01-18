@@ -17,6 +17,7 @@
             novalidate
             @submit.prevent="register"
             method="post"
+            novalidate
         >
             <div class="form-group row between-md">
                 <div class="col-xxs-12">

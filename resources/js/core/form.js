@@ -62,6 +62,10 @@ class Form {
     onFail(errors) {
         this.errors.record(errors.errors);
     }
+  async handleSubmit() {
+    const resp = await this.checkRequiredFields();
+    return resp;
+  }
 }
 
 export default Form;

@@ -91,10 +91,17 @@ export default {
             default: () => []
         },
         options: {
+<<<<<<< HEAD
             type: Object,
             required: false,
             default: () => {}
         },
+=======
+          type: Object,
+          required: false,
+          default: () => {},
+        }
+>>>>>>> 6b7eda231f87af5c250babab1bebdf4b7cf77cd4
     },
     data() {
         return {
@@ -128,8 +135,14 @@ export default {
             return this.active || this.value !== '' ? 'float' : 'sink';
         },
         label() {
+<<<<<<< HEAD
             const labelText = this.name.replace("_", " ");
             return labelText;
+=======
+            let label = this.name.split('_');
+            label = label.join(' ');
+            return label;
+>>>>>>> 6b7eda231f87af5c250babab1bebdf4b7cf77cd4
         },
         invalid() {
             if (this.errors.length) {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\DB;
 
 use App\PerformerType;
 use App\Enums\UserType;
@@ -52,12 +53,12 @@ class UserController extends Controller
         }
 
         $user = User::create([
-			'email' => $request->get('email'),
-			'password' => Hash::make($request->get('password')),
-			'country' => $request->get('country'),
-			'province' => $request->get('province'),
-			'city' => $request->get('city'),
-			'timezone' => $request->get('timezone')
+        'email' => $request->get('email'),
+        'password' => Hash::make($request->get('password')),
+        'country' => $request->get('country'),
+        'province' => $request->get('province'),
+        'city' => $request->get('city'),
+        'timezone' => $request->get('timezone')
         ]);
 
         $token = JWTAuth::fromUser($user);
@@ -112,6 +113,15 @@ class UserController extends Controller
     {
         //
         return response()->json(array('status' => 'Not found'));
+    }
+
+    public function existing(Request $request) {
+      $email = $request->get('email');
+      $user = DB::table('users')->where('email', $email)->first();
+      if ($user) {
+        return response()->json(array('match' => true));
+      }
+      return response()->json(array('match' => false));
     }
 
     /**
