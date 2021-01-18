@@ -26,18 +26,11 @@ class FamilyController extends Controller
         return response()->json($families, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-
-        return view('families.create');
-    }
-
+	/**
+	 * Create social links connected to the family.
+	 * 
+	 * @param object $request the request object.
+	 */
     public function createSocialLinks($request) {
 		$attributes = $request->validate([
             'facebook' => 'nullable',
@@ -51,7 +44,11 @@ class FamilyController extends Controller
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
     }
-    
+    /**
+	 * Update Social Links connected to family.
+	 * 
+	 * @param object $request the request object.
+	 */
     public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
 		$socialLinks->update(request(['facebook', 'instagram', 'tiktok','twitter','twitch', 'website', 'youtube']));
@@ -65,18 +62,24 @@ class FamilyController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $socialLinks = $this->createSocialLinks($request);
+		// Create the social links.
+		$socialLinks = $this->createSocialLinks($request);
+		// Validae that required fields have been provided.
         $attributes = request()->validate([
 			'name' => 'required',
 			'description' => 'required',
-        ]);
-        $family = Family::create($attributes);
-        $family->socialLinks()->save($socialLinks);
+		]);
+		// Create a family with these atttributes.
+		$family = Family::create($attributes);
+		// Attach social links to family.
+		$family->socialLinks()->save($socialLinks);
+		// Find user.
 		$user = User::find($request['user']->id);
+		// Attach family to user.
 		if ($user) {
 			$user->families()->save($family);
-        }
+		}
+		// Find and attach performers.
         $performers = Performer::find(request('performers'));
         if (!empty($performers)) {
             foreach ($performers as $performer) {
@@ -84,7 +87,7 @@ class FamilyController extends Controller
             }
 
         }
-
+		// Return a success message.
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -96,28 +99,14 @@ class FamilyController extends Controller
      */
     public function show($id)
     {
-        //
-        $family = Family::find($id);
-        $performers = $family->performers;
-        $socialLinks = $family->socialLinks;
+        // Find family by ID.
+		$family = Family::find($id);
+		// Get all performers in family.
+		$performers = $family->performers;
+		// Get all social links for family.
+		$socialLinks = $family->socialLinks;
+		// Return these variables.
         return response()->json(compact('family', 'performers', 'socialLinks'), 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Family  $family
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Family $family)
-    {
-        //
-        $socialLinks = $family->socialLinks;
-        $allPerformers = Performer::all();
-        $familyPerformers = $family->performers;
-        $platforms = config('enums.platforms');
-        return view('families.edit', compact('allPerformers', 'familyPerformers', 'family', 'socialLinks', 'platforms'));
-
     }
 
     /**
@@ -129,19 +118,24 @@ class FamilyController extends Controller
      */
     public function update($id)
     {
-        //
-        $family = Family::find($id);
-        $this->updateSocialLinks(request());
-        $user = request('user');
+        // Find the family by ID.
+		$family = Family::find($id);
+		// Update the attached social links.
+		$this->updateSocialLinks(request());
+		// Find the user.
+		$user = request('user');
+		// Since performers and families are many-to-many, detach and re-attach.
         $family->performers()->detach();
-        if ($user['id'] === $family['user_id']):
-            $family->update(request(['name', 'description']));
+        if ($user['id'] === $family['user_id']) {
+			$family->update(request(['name', 'description']));
             foreach (request('performers') as $performerId):
                 $performer = Performer::find($performerId);
                 $family->performers()->attach($performer);
-            endforeach;
+			endforeach;
+			// Return a success message.
 			return response()->json(['status' => 'success'], 200);
-        endif;
+		}
+		// If not the right user return an unauthorized message.
         return response()->json(['message' => 'unauthorized'], 405);
     }
 
@@ -153,41 +147,24 @@ class FamilyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // Find family by ID and delete.
         $family = Family::find($id);
         $family->delete();
         return response()->json(['status' => 'success'], 200);
     }
-
-    public function performer($id) {
-		$family = Family::find($id);
-		$request_performer = request('performer');
-		$performer = Performer::find($request_performer['id']);
-		$user = request('user');
-		if (intval($family['user_id']) === intval($user['id'])):
-			$family->performers()->save($performer);
-			return response()->json(['status' => 'success'], 200);
-		endif;
-		return response()->json(['message' => 'unauthorized user'], 401);
-    }
-
-    public function performerDestroy($id) {
-		$performer = Performer::find($id);
-		$family = $performer->family;
-		$user = request('user');
-		if (intval($family['user_id']) === intval($user['id'])):
-			$performer->family()->dissociate();
-			$performer->save();
-			return response()->json(['status' => 'success'], 200);
-		endif;
-	return response()->json(['message' => 'unauthorized user'], 401);
-
-	}
+	/** 
+	 * Search for a family by a search term.
+	 * 
+	 * @param string $term the term to be searched for.
+	 */
 	public function search($term) {
+		// If no term has been provided return an empty array.
         if (empty($term)) {
             return response()->json([], 200);
-        }
-        $families = Family::where('name','LIKE','%'.$term.'%')->take(10)->get();
+		}
+		// Search families for term.
+		$families = Family::where('name','LIKE','%'.$term.'%')->take(10)->get();
+		// Return  either results  or an empty array.
         if (!empty($families)) {
             return response()->json(compact('families'), 200);
         }
