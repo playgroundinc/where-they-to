@@ -20,9 +20,6 @@ Route::post('user/existing', 'UserController@existing');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'UserController@getAuthenticatedUser');
-  
-    Route::put('events/{id}/performers', 'EventController@addPerformer');
-    Route::delete('events/{id}/performers', 'EventController@deletePerformer');
 
     Route::post('events', 'EventController@store');
     Route::put('events/{id}', 'EventController@update');

@@ -22,6 +22,8 @@ class EventController extends Controller
      */
 
     private function saveFields($request, $event) {
+		// If existing venue has been provided, save to Event.
+		// Otherwise add city, address, and province separately.
         if ($request['venue_id']) {
 			$venue = Venue::find($request['venue_id']);
 			if ($venue) {
@@ -33,13 +35,14 @@ class EventController extends Controller
 			$event->province = $request['province'];
 			$event->save();
 		}
+		// If family has been provided, attach to event.
         if (!empty($request['family_id'])) {
 			$family = Family::find($request['family_id']);
 			if ($family) {
 				$family->events()->save($event);
 			}
 		}
-			
+		// If event has defined types, add to event.
         if (!empty($request['eventTypes'])) {
 			$eventTypes = EventType::find($request['eventTypes']);
 			$event->eventTypes()->detach();
@@ -47,6 +50,7 @@ class EventController extends Controller
 				$event->eventTypes()->attach($type);
 			}
 		}
+		// If performers have been defined, add to
         if ($request['performers']):
 			$performers = Performer::find(request('performers'));
 			$event->performers()->detach();
@@ -56,10 +60,9 @@ class EventController extends Controller
         endif;
         
     }
-
-    private function updateFields($request, $event) {
-
-    }
+	/**
+	 * Show all events.
+	 */
     public function index()
     {
         //
@@ -70,23 +73,13 @@ class EventController extends Controller
         endforeach;
         return $events;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $performers = Performer::all();
-        $families = Family::all();
-        $venues = Venue::all();
-        $eventTypes = EventType::all();
-        return view('events.create', compact('performers', 'families', 'venues', 'eventTypes'));
-	}
-	
+	/**
+	 * Create social links for current event.
+	 * 
+	 * @param object $request the request object from the initial POST.
+	 */
 	public function createSocialLinks($request) {
+		// Validate all fields. 
 		$attributes = $request->validate([
 			'facebook' => 'nullable',
 			'instagram' => 'nullable',
@@ -96,10 +89,16 @@ class EventController extends Controller
 			'website' => 'nullable',
 			'youtube' => 'nullable',
 		]);
+		// Create social links and return.
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
 	}
 
+	/**
+	 * Update existing social links.
+	 * 
+	 * @param object $request the request Object from the original POST.
+	 */
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
 		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
@@ -113,8 +112,9 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-		//
+		// Create social links.
 		$socialLinks = $this->createSocialLinks($request);
+		// Valiate all fields.
         $attributes = request()->validate([
 			'show_time' => 'nullable',
 			'name' => 'required',
@@ -123,16 +123,21 @@ class EventController extends Controller
 			'timezone' => 'nullable',
 			'tickets' => 'nullable',
 			'tickets_url' => 'nullable'
-        ]);
+		]);
+		// Use Carbon to parse and format date.
         $date = Carbon::parse(request('date'));
         $event = Event::create($attributes);
         $event->date = $date;
         $event->save();
-
-        $user = request('user');
-        $user->events()->save($event);
-        $this->saveFields(request(), $event);
-        $event->socialLinks()->save($socialLinks);
+		// Find the user.
+		$user = request('user');
+		// Save the event to the user.
+		$user->events()->save($event);
+		// Save most other fields.
+		$this->saveFields(request(), $event);
+		// Save the social links.
+		$event->socialLinks()->save($socialLinks);
+		// Return a success message.
         return response()->json(['status'=> 'success'], 200);
     }
 
@@ -144,32 +149,24 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //
+        // Find event by ID.
 		$event = Event::find($id);
+		// Parse the date.
 		$event_date = Carbon::parse($event['date']);
+		// Format the date.
 		$event->date = $event_date->format('M d, Y');
-        $socialLinks = $event->socialLinks;
-        $family = $event->family;
-        $venue = $event->venue;
+		// Find the social links.
+		$socialLinks = $event->socialLinks;
+		// Find the family.
+		$family = $event->family;
+		// Find the venue.
+		$venue = $event->venue;
+		// Find the performers.
 		$performers = $event->performers;
+		// Find the event types.
 		$eventTypes = $event->eventTypes;
+		// Return all of these fields.
         return response()->json(compact('event', 'socialLinks', 'family', 'venue', 'performers', 'eventTypes'), 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Event $event)
-    {
-        //
-        $venues = Venue::all();
-        $performers = Performer::all();
-        $families = Family::all();
-        $eventTypes = EventType::all();
-        return view('events.edit', compact('event', 'venues', 'performers', 'families', 'eventTypes'));
     }
 
     /**
@@ -181,11 +178,14 @@ class EventController extends Controller
      */
     public function update($id)
     {
-		//
+		// Update the social links.
 		$this->updateSocialLinks(request());
-        $event = Event::find($id);
-        $user = $event->user;
-        $validatedUser = request('user');
+		// Find the event.
+		$event = Event::find($id);
+		// Find the user attached to the event.
+		$user = $event->user;
+		$validatedUser = request('user');
+		// Check that user attached to request is also the user stored in the system.
         if ($user['id'] === $validatedUser['id']):
 			$event->update(request([
 				'name',
@@ -199,12 +199,17 @@ class EventController extends Controller
 				'tickets',
 				'tickets_url'
 			]));
+
+			// Save the fields.
 			$this->saveFields(request(), $event);
+			// Parse the date.
 			$date = Carbon::parse(request('date'));
+			// Update the date.
 			$event->date = $date;
 			$event->save();
 			return response()->json(['status' => 'success'], 200);
 		endif;
+		// If users don't match, return unauthorized.
 		return response()->json(['status' => 'unauthorized'], 401);
     }
 
@@ -216,50 +221,52 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // Find event by ID.
         $event = Event::find($id);
         $user = $event->user;
-        $validatedUser = request('user');
-        if ($user['id'] === $validatedUser['id']):
+		$validatedUser = request('user');
+		// Check that user from request owns this event.
+        if ($user['id'] === $validatedUser['id']) {
 			$event->performers()->detach();
 			$event->delete();
 			return response()->json(['status' => 'success'], 200);
-        endif; 
+		}
+		// If user does not own this event, return unauthorized. 
         return response()->json(['status' => 'unauthorized'], 401);
     }
 
-    public function addPerformer($id) 
-    {
-		$performer = Performer::find(request('performer'));
-		$event = Event::find($id);
-		$performer->events()->attach($event);
-		return response()->json(['status' => 'success'], 200);
-    }
-
-    public function deletePerformer($id) 
-    {
-		$performer = Performer::find(request('performer'));
-		$event = Event::find($id);
-		$event->performers()->detach($performer);
-		return response()->json(['status' => 'success'], 200);
-    }
-
+	/**
+	 * Pull events by specific date.
+	 * 
+	 * @param string $date the date to be queried.
+	 */
     public function date($date) {
+		// Parse the date.
 		$today = Carbon::parse($date);
+		// Find events on this date.
 		$events = Event::where('date', '=', $date)
         ->get()
-        ->toJSON();
+		->toJSON();
+		// Parse the date and format it.
 		$date = Carbon::parse($date)->format('F j');
 		return response()->json(['events' => $events, 'date' => $date]);
-    }
-
+	}
+	
+	/**
+	 * Pull events by specific week.
+	 * 
+	 * @param string $date the first day of the week in question.
+	 */
     public function week($date) {
+		// Parse the date.
 		$today = Carbon::parse($date);
+		// Add six days to account for the week.
 		$thisWeek = $today->addDays(6);
 		$events = Event::where('date', '>=', $date)
         ->where('date', '<=', $thisWeek)
         ->get()
-        ->toJSON();
+		->toJSON();
+		// Return any events found.
 		return response()->json(['events' => $events]);
     }
 }
