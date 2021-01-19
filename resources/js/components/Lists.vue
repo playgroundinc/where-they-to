@@ -11,11 +11,17 @@
       <div v-else>
         <p class="copy--italic">You currently have no {{ slug }}.</p>
       </div>
-      <a class="copy--center btn" :href="'/' + slug + '/create'">Create New {{ title }}</a>
+      <Button 
+        :label="'Create new ' + title"
+        :link="'/' + slug + '/create'"
+      />
     </div>
 </template>
 
 <script>
+// Components.
+import Button from "./Button";
+
 export default {
   props: {
     listitems: {
@@ -29,6 +35,9 @@ export default {
       type: String,
       required: true,
     }
+  },
+  components: {
+    Button,
   }
 }
 </script>

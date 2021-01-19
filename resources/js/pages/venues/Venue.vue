@@ -20,7 +20,7 @@
 				</div>
 			</div>
 			<div v-if="venue.user_id && user && venue.user_id === user.id">
-				<a class="btn copy--center" :href="'/venues/' + venue.id + '/edit'" >Edit Profile</a>
+				<Button :link="'/venues/' + venue.id + '/edit'" label="Edit Venue" />
 			</div>
 		</main>
 	</div>
@@ -29,6 +29,8 @@
 <script>
 import { mapState } from 'vuex';
 
+// Components
+import Button from "../../components/Button";
 import SocialLinks from "../../components/SocialLinks";
 
 export default {
@@ -48,6 +50,7 @@ export default {
 		this.getVenue();
 	},
 	components: {
+    Button,
 		SocialLinks,
 	},
 	methods: {

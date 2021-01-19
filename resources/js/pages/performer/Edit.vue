@@ -55,11 +55,18 @@
                 v-on:update="updateArray"
             />
             <div class="col-xxs-12">
-                <button type="submit" class="btn btn-default">Update Performer</button>
+                <Button 
+                  variation="input" 
+                  label="Update Performer" 
+                />
             </div>
         </form>
 		<div class="copy--center">
-			<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Profile</button>
+      <Button 
+        classes="btn--inline copy--center"
+        label="Delete Performer" 
+        v-on:clicked.prevent="toggleModal"
+      />
 		</div>
 		<Modal 
 			title="Are you sure?"
@@ -84,7 +91,8 @@
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import SocialMedia from "../../components/SocialMedia";
 	import SelectTypes from "../../components/SelectTypes";
-	import Modal from "../../components/Modal";
+  import Modal from "../../components/Modal";
+  import Button from "../../components/Button";
 
 	export default {
 
@@ -115,6 +123,7 @@
 		}
 	},
 	components: {
+    Button,
 		Input,
 		ErrorsContainer,
 		SelectTypes,

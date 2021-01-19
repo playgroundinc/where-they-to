@@ -51,7 +51,7 @@
                 v-on:update="updateArray"
             />
             <div class="col-xxs-12">
-                <button type="submit" class="btn btn-default">Create Performer</button>
+                <Button variation="input" label="Create Performer" />
             </div>
         </form>
         </main>
@@ -68,6 +68,8 @@ import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import SelectTypes from "../../components/SelectTypes";
+import Button from "../../components/Button";
+
 export default {
     data() {
         return {
@@ -93,6 +95,7 @@ export default {
         }
     },
     components: {
+        Button,
         Input,
         ErrorsContainer,
         SocialMedia,

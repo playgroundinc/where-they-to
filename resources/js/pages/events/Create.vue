@@ -105,7 +105,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Create Event">
+				<Button variation="input" label="Create Event" />
 			</form>    
 		</main>
     </div>
@@ -128,6 +128,7 @@ import Select from "../../components/Select";
 import SelectTypes from "../../components/SelectTypes";
 import FamilySelect from "../../components/FamilySelect";
 import VenueSelect from "../../components/VenueSelect";
+import Button from '../../components/Button.vue';
 
 export default {
     data() {
@@ -183,7 +184,8 @@ export default {
         }
     },
     components: {
-        Address,
+		Address,
+		Button,
 		ErrorsContainer,
 		FamilySelect,
 		Input,
@@ -192,6 +194,7 @@ export default {
         SelectTypes,
         Autocomplete,
         VenueSelect,
+        Button,
     },
     methods: {
 		createEvent: async function(FormClass) {
@@ -274,7 +277,6 @@ export default {
 				}
 			},
 			updateArray: function(updateObject) {
-                console.log(updateObject);
 				const currentArray = this[updateObject.name];
 				if (currentArray && updateObject.add) {
 					this.addToArray(updateObject, currentArray);

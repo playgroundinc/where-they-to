@@ -42,10 +42,17 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Edit Family">
+				<Button 
+          variation="input"
+          label="Edit Family"
+        />
 			</form>    
 			<div class="copy--center">
-				<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Venue</button>
+				<Button 
+          classes="btn--inline copy--center" 
+          v-on:clicked.prevent="toggleModal" 
+          label="Delete Family" 
+        />
 			</div>
 		</main>
 		<Modal 
@@ -71,6 +78,7 @@
 	import SocialMedia from "../../components/SocialMedia";
 	import Select from "../../components/Select";
 	import Modal from "../../components/Modal";
+  import Button from "../../components/Button";
 
 	export default {
 		data() {
@@ -102,7 +110,8 @@
 			}
 		},
 		components: {
-			ErrorsContainer, 
+      ErrorsContainer, 
+      Button,
 			Input,
 			Modal,
 			SocialMedia,
@@ -134,7 +143,6 @@
 			},
 			updateFamily: async function(FormClass) {
 				const resp = await FormClass.submitForm();
-				console.log(resp);
 				if (resp.status === 'success') {
 					await this.$store.dispatch("findUser");
 					this.$router.push(`/families/${this.id}`);

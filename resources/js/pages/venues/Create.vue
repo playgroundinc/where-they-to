@@ -44,7 +44,7 @@
                 v-on:update="updateValue"
             />
 			<div class="col-xxs-12">
-                <button type="submit" class="btn btn-default">Create Venue</button>
+                <Button variation="input" label="Create Venue" />
             </div>
 		</form>
 		</main>
@@ -63,6 +63,7 @@ import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import Address from "../../components/Address";
+import Button from "../../components/Button";
 
 export default {
     data() {
@@ -92,6 +93,7 @@ export default {
 	},
 	components: {
 		Address,
+		Button,
 		ErrorsContainer,
 		Input,
 		SocialMedia,

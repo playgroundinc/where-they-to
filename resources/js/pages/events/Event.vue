@@ -42,7 +42,7 @@
 					:socialLinks="socialLinks"
 					/>
 					<div>
-						<a class="btn copy--center" :href="'/events/' + id + '/edit'" >Edit Event</a>
+						<Button :link="'/events/' + id + '/edit'" label="Edit Event" />
 					</div>
 				</div>
 
@@ -55,8 +55,10 @@
 <script>
 import { mapState } from 'vuex';
 
+// Components.
 import SocialLinks from "../../components/SocialLinks";
 import Lists from "../../components/Lists";
+import Button from "../../components/Button";
 
 export default {
 
@@ -81,6 +83,7 @@ export default {
 		this.getEvent();
 	},
 	components: {
+    Button,
 		Lists,
 		SocialLinks,
 	},

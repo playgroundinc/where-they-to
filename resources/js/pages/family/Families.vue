@@ -7,17 +7,22 @@
         <a :href="'families/' + family.id"> {{ family.name }}</a>
       </li>
     </ul>
-    <a href="/families/create" class="btn">Create a Family</a>
+    <Button link="/families/create" label="Create a Family" />
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  // Components
+  import Button from "../../components/Button";
 
 export default {
     data() {
       return {
       }
+    },
+    components: {
+      Button
     },
     computed: mapState(['families', 'user']),
   }

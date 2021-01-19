@@ -27,16 +27,19 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-default">Sign in</button>
+            <Button variation="input" classes="btn btn-default" label="Sign in" />
         </form>
       </main>
     </div>
 </template>
 <script>
+  // Components
   import Input from "../components/Input";
   import ErrorsContainer from "../components/ErrorsContainer";
   import Errors from "../core/errors";
   import Form from "../core/form";
+  import Button from "../components/Button";
+
   export default {
     data(){
       return {
@@ -51,6 +54,7 @@
       }
     },
     components: {
+      Button,
       Input,
       ErrorsContainer,
     },

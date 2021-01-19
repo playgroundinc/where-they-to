@@ -27,6 +27,11 @@
                     </div>
                 </div>
             </div>
+            <Button 
+              label="Button Component"
+              variation="primary"
+              v-on:clicked="handleClick"
+            />
         </main>
     </div>
 </template>
@@ -50,6 +55,11 @@ export default {
         if (this.user === 0) {
             await this.$store.dispatch("findUser");
         }
+    },
+    methods: {
+      handleClick: function(e) {
+        e.preventDefault();
+      }
     },
     components: {
         //
