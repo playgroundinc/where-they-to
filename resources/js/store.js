@@ -261,7 +261,6 @@ export default new Vuex.Store({
                 })
                 .then(resp => {
                     resolve(resp);
-                    console.log(resp.data);
                     return resp.data;
                 })
                 .catch(error => {

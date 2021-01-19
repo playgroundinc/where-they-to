@@ -16,8 +16,12 @@
 						:socialLinks="socialLinks"
 					/>
 				</div>
-				<button class="btn" @click.prevent="toggleModal" v-if="performer.tips">Tip {{ performer.name}}</button>
-			</div>
+				<Button 
+          v-if="performer.tips" 
+          v-on:clicked.prevent="toggleModal" 
+          :label="'Tip ' + performer.name" 
+        />			
+      </div>
 		</div>
 		<div v-if="events.length > 0">
 			<h2>Events</h2>
@@ -33,7 +37,7 @@
 			</ul>
 		</div>
 		<div v-if="performer.user_id && user && performer.user_id === user.id">
-			<a class="btn copy--center" :href="'/performers/' + performer.id + '/edit'" >Edit Profile</a>
+			<Button :link="'/performers/' + performer.id + '/edit'" label="Edit Profile"/>
 		</div>
 		<Modal 
 			:title="tipTitle"
@@ -47,7 +51,9 @@
 
 <script>
 import { mapState } from 'vuex';
+
 // Components 
+import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import SocialLinks from "../../components/SocialLinks";
 
@@ -72,6 +78,7 @@ export default {
 		}
 	},
 	components: {
+    Button,
 		Modal,
 		SocialLinks,
 	},

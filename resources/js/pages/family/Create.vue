@@ -42,7 +42,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Create Family">
+				<Button variation="input" label="Create Family" />
 			</form>    
 		</main>
 	</div>
@@ -58,7 +58,9 @@
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import Input from "../../components/Input";
 	import SocialMedia from "../../components/SocialMedia";
-	import Select from "../../components/Select";
+  import Select from "../../components/Select";
+  import Button from "../../components/Button";
+
 	export default {
 		data() {
 			return {
@@ -86,6 +88,7 @@
 			}
 		},
 		components: {
+      Button,
 			ErrorsContainer, 
 			Input,
 			SocialMedia,

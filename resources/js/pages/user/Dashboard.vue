@@ -27,12 +27,20 @@
                     </div>
                 </div>
             </div>
+            <Button 
+              label="Button Component"
+              variation="primary"
+              v-on:clicked="handleClick"
+            />
         </main>
     </div>
 </template>
 <script>
 import { mapState } from "vuex";
+
+// Components
 import List from "../../components/Lists";
+import Button from "../../components/Button";
 
 export default {
     data() {
@@ -48,9 +56,15 @@ export default {
             await this.$store.dispatch("findUser");
         }
     },
+    methods: {
+      handleClick: function(e) {
+        e.preventDefault();
+      }
+    },
     components: {
         //
-        List
+        List,
+        Button,
     }
 };
 </script>

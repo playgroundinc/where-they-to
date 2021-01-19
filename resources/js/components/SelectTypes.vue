@@ -100,7 +100,6 @@ export default {
             }
         },
         addTerm: async function(term) {
-            console.log(term);
             const data = {
                 name: term,
                 type: this.type,

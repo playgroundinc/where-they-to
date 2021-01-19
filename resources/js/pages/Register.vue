@@ -90,7 +90,7 @@
                         />
                     </div>
                     <div class="col-xxs-12">
-                        <button type="submit" class="btn btn-default">Sign Up</button>
+                        <Button variation="input" classes="btn btn-default" label="Sign Up" />
                     </div>
             </div>
         </form>
@@ -98,6 +98,9 @@
 </template>
 <script>
 import { mapState } from "vuex";
+
+//Components
+import Button from "../components/Button";
 import Input from "../components/Input";
 import ErrorsContainer from "../components/ErrorsContainer";
 import Form from "../core/form";
@@ -130,6 +133,7 @@ export default {
         }
     },
     components: {
+        Button,
         Input,
         ErrorsContainer
     },

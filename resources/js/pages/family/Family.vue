@@ -22,7 +22,7 @@
 						/>
 					</div>
 					<div class="copy--center" v-if="familyMember">
-						<a class="btn" :href="'/families/' + family.id + '/edit'" >Edit Profile</a>
+						<Button :link="'/families/' + family.id + '/edit'" label="Edit Family" />
 					</div>
 				</div>
 			</div>
@@ -36,6 +36,7 @@
 import { mapState } from 'vuex';
 // Components 
 import SocialLinks from "../../components/SocialLinks";
+import Button from "../../components/Button";
 
 export default {
 
@@ -70,13 +71,13 @@ export default {
 		getFamily: async function() {
 			const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.id });
 			if (resp.status === 200) {
-				console.log(resp);
 				const fields = ['family', 'socialLinks', 'performers' ];
 				this.setStates(fields, resp.data);
 			}
 		},
 	},
 	components: {
+    Button,
 		SocialLinks,
 	},
     mounted() {

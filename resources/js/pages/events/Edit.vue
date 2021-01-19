@@ -105,7 +105,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<input class="btn" type="submit" value="Update Event">
+				<Button variation="input" label="Update Event"/>
 			</form>    
 		</main>
     </div>
@@ -128,6 +128,7 @@ import Select from "../../components/Select";
 import SelectTypes from "../../components/SelectTypes";
 import FamilySelect from "../../components/FamilySelect";
 import VenueSelect from "../../components/VenueSelect";
+import Button from "../../components/Button";
 
 export default {
     data() {
@@ -191,7 +192,8 @@ export default {
         Select,
         SelectTypes,
         Autocomplete,
-        VenueSelect,
+		VenueSelect,
+		Button,
     },
     methods: {
 		createEvent: async function(FormClass) {
@@ -229,7 +231,6 @@ export default {
 		getEvent: async function() {
 			try {
 				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
-				console.log(resp);
 				if (resp.status === 200) {
 					this.setEvent(resp.data.event);
 					this.setSocialLinks(resp.data.socialLinks);
@@ -321,7 +322,6 @@ export default {
 				}
 			},
 			updateArray: function(updateObject) {
-                console.log(updateObject);
 				const currentArray = this[updateObject.name];
 				if (currentArray && updateObject.add) {
 					this.addToArray(updateObject, currentArray);

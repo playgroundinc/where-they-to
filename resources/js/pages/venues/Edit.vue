@@ -44,12 +44,12 @@
                 v-on:update="updateValue"
             />
 			<div class="col-xxs-12">
-                <button type="submit" class="btn btn-default">Update Venue</button>
+                <Button variation="input" label="Update Venue" />
             </div>
 
 		</form>
 		<div class="copy--center">
-			<button class="btn--inline copy--center" @click.prevent="toggleModal">Delete Venue</button>
+			<Button v-on:clicked.prevent="toggleModal" label="Delete Venue" />
 		</div>
 		</main>
 		<Modal 
@@ -70,6 +70,7 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import Button from "../../components/Button";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
@@ -108,6 +109,7 @@ export default {
 	},
 	components: {
 		Address,
+		Button,
 		ErrorsContainer,
 		Input,
 		Modal,

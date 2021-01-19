@@ -6,16 +6,23 @@
         <a :href="'events/' + event.id"> {{ event.name }}</a>
       </li>
     </ul>
-    <a href="/events/create" class="btn">Create Event</a>
+    <Button link="/events/create" label="Create Event" />
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex';
+
+// Components.
+import Button from "../../components/Button";
+
 export default {
     data() {
       return {
       }
+    },
+    components: {
+      Button,
     },
     computed: {
       ...mapState(['events', 'user'])
