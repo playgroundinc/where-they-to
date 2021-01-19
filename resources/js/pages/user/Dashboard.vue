@@ -32,7 +32,10 @@
 </template>
 <script>
 import { mapState } from "vuex";
+
+// Components
 import List from "../../components/Lists";
+import Button from "../../components/Button";
 
 export default {
     data() {
@@ -50,7 +53,8 @@ export default {
     },
     components: {
         //
-        List
+        List,
+        Button,
     }
 };
 </script>
