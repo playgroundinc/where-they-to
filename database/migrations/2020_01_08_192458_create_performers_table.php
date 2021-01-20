@@ -25,7 +25,8 @@ class CreatePerformersTable extends Migration
 			$table->integer('role')->default(1);
 			$table->string('city')->nullable();
 			$table->string('province')->nullable();
-			$table->string('country')->nullable()->default('CA');
+      $table->string('country')->nullable()->default('CA');
+      $table->json('attending')->nullable();
 			$table->string('timezone')->nullable();
 			$table->rememberToken();
 		});
@@ -40,7 +41,7 @@ class CreatePerformersTable extends Migration
 			$table->string('province')->default('ON');
 			$table->integer('accessibility')->default('0');
 			$table->string('timezone')->nullable();
-			$table->text('description');
+			$table->text('description');      
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});

@@ -1,4 +1,5 @@
 import Vue from "vue";
+import axios from "axios";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
@@ -131,6 +132,29 @@ export default new Vuex.Store({
                     });
             });
         },
+        toggleEngagement({ commit, state }, data) {
+          return new Promise((resolve, reject) => {
+            const { user_id } = data;
+            const { route } = data;
+            const { route_id } = data;
+            commit("auth_request");
+            axios({
+                url: `http://127.0.0.1:8000/api/user/${user_id}/${route}`,
+                data: {
+                  route_id,
+                },
+                headers: {
+                  Authorization: `Bearer ${state.token}`
+                },
+                method: "POST"
+            }).then((resp) => {
+              resolve(resp);
+              return resp;
+            }).catch((err) => {
+              reject(err);
+            })
+          });
+        },
         findUser({ commit }) {
             const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
@@ -155,7 +179,8 @@ export default new Vuex.Store({
                                         events: res.data.user.events || [],
                                         venues: res.data.user.venues || [],
                                         performers: res.data.user.performers || [],
-                                        families: res.data.user.families || []
+                                        families: res.data.user.families || [],
+                                        attending: res.data.user.attending || []
                                     }
                                 });
                                 resolve(res);
