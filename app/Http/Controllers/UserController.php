@@ -80,14 +80,15 @@ class UserController extends Controller
 			return response()->json(['token_invalid'], $e->getStatusCode());
 		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 			return response()->json(['token_absent'], $e->getStatusCode());
-        }
-        
-		$user['performers'] = $user->performers;
-		$user['venues'] = $user->venues;
-		$user['events'] = $user->events;
-		$user['families'] = $user->families;
-		return response()->json(compact('user'));
     }
+        
+      $user['performers'] = $user->performers;
+      $user['venues'] = $user->venues;
+      $user['events'] = $user->events;
+      $user['families'] = $user->families;
+      return response()->json(compact('user'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -190,5 +191,34 @@ class UserController extends Controller
         return response()->json(array('status' => 'Not found'));
         $user->delete();
         return redirect('/users');
+    }
+
+    /**
+     * Updates if a user is attending an event.
+     */
+    public function toggleAttendance($id) {
+      $user = User::find($id);
+      $event_id = request('route_id');
+      if (empty($user) || empty($event_id)) {
+        return response()->json(array('error' => "Can't find necessary credentials"));
+      }
+      if (empty($user->attending)) {
+        $events = array($event_id);
+        $user->attending = $events;
+        $user->save();
+        return response()->json(array('status' => 'success'));
+      }
+      $current_attending = $user['attending'];
+      if (in_array($event_id, $current_attending)) {
+        $index = array_search($event_id, $current_attending);
+        array_splice($current_attending, $index, 1);
+        $user['attending'] = $current_attending;
+        $user->save();
+        return response()->json(array('status' => 'success'));
+      }
+      array_push($current_attending, $event_id);
+      $user['attending'] = $current_attending;
+      $user->save();
+      return response()->json(array('status' => 'success'));
     }
 }

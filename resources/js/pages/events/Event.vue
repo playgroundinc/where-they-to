@@ -12,6 +12,10 @@
 
 				</div>
 				<div class="col-xxs-12 col-md-6">
+          <Button 
+            :label="attendanceText"
+            v-on:clicked.prevent="handleAttendance"
+          />
 					<p>{{ event.date }} at {{ event.show_time }}</p>
 					<p v-if="event.doors">Doors @ {{ event.doors }}</p>
 					<div v-if="venue">
@@ -77,7 +81,17 @@ export default {
 		...mapState(['user']),
 		familyLink: function() {
 			return `/families/${this.family.id}`;
-		}
+    },
+    attendanceText: function(){
+      if (!this.user.attending) {
+        return 'RSVP';
+      }
+      const index = this.user.attending.indexOf(this.id);
+      if (index > -1) {
+        return 'Cancel RSVP';
+      }
+      return 'RSVP';
+    }
 	},
 	created() {
 		this.getEvent();
@@ -93,7 +107,18 @@ export default {
 			fields.forEach((field) => {
 				this[field] = update[field];
 			});
-		},
+    },
+    async handleAttendance() {
+      const data = {
+        user_id: this.user.id,
+        route: 'attendance',
+        route_id: this.id,
+      }
+      const resp = await this.$store.dispatch('toggleEngagement', data)
+      if (resp.data.status && resp.data.status === 'success') {
+        this.$store.dispatch('findUser');
+      }
+    },
 		getEvent: async function() {
 			try {
 				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });

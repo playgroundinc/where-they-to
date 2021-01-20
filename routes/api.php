@@ -19,6 +19,8 @@ Route::get('user/{id}/profile', 'UserController@profile');
 Route::post('user/existing', 'UserController@existing');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
+
+    Route::post('user/{id}/attendance', 'UserController@toggleAttendance');
     Route::get('user', 'UserController@getAuthenticatedUser');
 
     Route::post('events', 'EventController@store');
@@ -29,7 +31,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::delete('families/{id}', 'FamilyController@destroy');
     Route::post('families', 'FamilyController@store');
 
-    
     Route::post('performers', 'PerformerController@store');
     Route::delete('performers/{id}', 'PerformerController@destroy');
     Route::put('performers/{id}', 'PerformerController@edit');

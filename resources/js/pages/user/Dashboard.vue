@@ -27,11 +27,6 @@
                     </div>
                 </div>
             </div>
-            <Button 
-              label="Button Component"
-              variation="primary"
-              v-on:clicked="handleClick"
-            />
         </main>
     </div>
 </template>
@@ -57,9 +52,7 @@ export default {
         }
     },
     methods: {
-      handleClick: function(e) {
-        e.preventDefault();
-      }
+
     },
     components: {
         //
