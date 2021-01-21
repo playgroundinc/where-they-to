@@ -8,6 +8,10 @@
 
 				</div>
 				<div class="col-md-6 col-xxs-12">
+          <Button 
+            :label="followinglabel"
+            v-on:clicked.prevent="toggleFollowing"
+          />
 					<h2>About</h2>
 					<p>{{ venue.description }}</p>
 					<div>
@@ -44,7 +48,14 @@ export default {
 		}
     },
     computed: {
-		...mapState(['user']),
+      ...mapState(['user']),
+      followinglabel: function() {
+        const venues = this.user.following_venues;
+        if (!venues || !venues.length || venues.indexOf(this.id) === -1) {
+          return 'Follow';
+        }
+        return 'Unfollow'; 
+      }
     },
 	mounted() {
 		this.getVenue();
@@ -60,7 +71,18 @@ export default {
 				this.venue = resp.data.venue;
 				this.socialLinks = resp.data.socialLinks;
 			}
-		},
+    },
+    async toggleFollowing() {
+      const data = {
+        user_id: this.user.id,
+        route: 'follow/venue',
+        route_id: this.id,
+      }
+      const resp = await this.$store.dispatch('toggleEngagement', data)
+      if (resp.data.status && resp.data.status === 'success') {
+        this.$store.dispatch('findUser');
+      }
+    },
 		toggleModal: function() {
 			this.tipModal = !this.tipModal;
 		}

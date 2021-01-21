@@ -7,6 +7,10 @@
 				<div class="col-xxs-12 col-md-6">
 				</div>
 				<div class="col-xxs-12 col-md-6">
+          <Button 
+            :label="followinglabel"
+            v-on:clicked.prevent="toggleFollowing"
+          />
 					<p>{{ family.description }}</p>
 					<div>
 						<h2>Family Members</h2>
@@ -56,7 +60,14 @@ export default {
 				return Number(this.family.user_id) === Number(this.user.id); 
 			} 
 			return false;
-		}
+    },
+    followinglabel: function() {
+        const families = this.user.following_families;
+        if (!families|| !families.length || families.indexOf(this.id) === -1) {
+          return 'Follow';
+        }
+        return 'Unfollow'; 
+      }
 	},
 	methods: {
 		setStates: function(fields, object) {
@@ -74,7 +85,18 @@ export default {
 				const fields = ['family', 'socialLinks', 'performers' ];
 				this.setStates(fields, resp.data);
 			}
-		},
+    },
+    async toggleFollowing() {
+      const data = {
+        user_id: this.user.id,
+        route: 'follow/family',
+        route_id: this.id,
+      }
+      const resp = await this.$store.dispatch('toggleEngagement', data)
+      if (resp.data.status && resp.data.status === 'success') {
+        this.$store.dispatch('findUser');
+      }
+    },
 	},
 	components: {
     Button,

@@ -27,6 +27,9 @@ class CreatePerformersTable extends Migration
 			$table->string('province')->nullable();
       $table->string('country')->nullable()->default('CA');
       $table->json('attending')->nullable();
+      $table->json('following_performers')->nullable();
+      $table->json('following_venues')->nullable();
+      $table->json('following_families')->nullable();
 			$table->string('timezone')->nullable();
 			$table->rememberToken();
 		});

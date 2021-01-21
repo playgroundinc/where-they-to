@@ -10,6 +10,10 @@
 
 			</div>
 			<div class="col-xxs-12 col-md-6">
+        <Button 
+          :label="followinglabel"
+          v-on:clicked.prevent="toggleFollowing"
+        />
 				<p>{{ performer.bio }}</p>
 				<div v-if="socialLinks">
 					<SocialLinks
@@ -75,7 +79,14 @@ export default {
 		...mapState(['user']),
 		tipTitle() {
 			return `How to tip ${this.performer.name}`
-		}
+    },
+    followinglabel: function() {
+        const performers = this.user.following_performers;
+        if (!performers|| !performers.length || performers.indexOf(this.id) === -1) {
+          return 'Follow';
+        }
+        return 'Unfollow'; 
+      }
 	},
 	components: {
     Button,
@@ -94,7 +105,18 @@ export default {
 				this.family = resp.data.family;
 				this.socialLinks = resp.data.socialLinks;
 			}
-		},
+    },
+    async toggleFollowing() {
+      const data = {
+        user_id: this.user.id,
+        route: 'follow/performer',
+        route_id: this.id,
+      }
+      const resp = await this.$store.dispatch('toggleEngagement', data)
+      if (resp.data.status && resp.data.status === 'success') {
+        this.$store.dispatch('findUser');
+      }
+    },
 		toggleModal: function() {
 			this.tipModal = !this.tipModal;
 		}

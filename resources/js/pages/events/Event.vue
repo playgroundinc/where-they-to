@@ -83,14 +83,10 @@ export default {
 			return `/families/${this.family.id}`;
     },
     attendanceText: function(){
-      if (!this.user.attending) {
+      if (!this.user.attending || this.user.attending.indexOf(this.id) === -1) {
         return 'RSVP';
       }
-      const index = this.user.attending.indexOf(this.id);
-      if (index > -1) {
-        return 'Cancel RSVP';
-      }
-      return 'RSVP';
+      return 'Cancel RSVP';
     }
 	},
 	created() {

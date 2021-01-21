@@ -21,6 +21,10 @@ Route::post('user/existing', 'UserController@existing');
 Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::post('user/{id}/attendance', 'UserController@toggleAttendance');
+    Route::post('user/{id}/follow/venue', 'UserController@toggleVenueFollowing');
+    Route::post('user/{id}/follow/performer', 'UserController@togglePerformerFollowing');
+    Route::post('user/{id}/follow/family', 'UserController@toggleFamilyFollowing');
+
     Route::get('user', 'UserController@getAuthenticatedUser');
 
     Route::post('events', 'EventController@store');
