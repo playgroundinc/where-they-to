@@ -1,5 +1,6 @@
 import Vue from "vue";
-import Vuex from "vuex";
+import axios from "axios";
+import Vuex from "vuex"
 
 Vue.use(Vuex);
 
@@ -8,21 +9,28 @@ export default new Vuex.Store({
         status: "",
         user: 0,
         token: localStorage.getItem("token") || "",
-        events: [],
-        performers: [],
-        venues: [],
-        families: [],
-        performerTypes: [],
-        eventTypes: []
     },
     actions: {
+		checkEmail({commit}, data) {
+			return new Promise((resolve, reject) => {
+				axios({
+					method: "POST",
+					data,
+					url: "http://127.0.0.1:8000/api/user/existing",
+				}).then((resp) => {
+					return resolve(resp);
+				}).catch((err) => {
+					console.log(err);
+					return reject(err);
+				})
+			});
+		},
         login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("auth_request");
-                const { user } = data;
                 axios({
                     url: "http://127.0.0.1:8000/api/auth/login",
-                    data: user,
+                    data,
                     method: "POST"
                 })
                     .then(resp => {
@@ -84,10 +92,6 @@ export default new Vuex.Store({
                 axios
                     .get(`http://127.0.0.1:8000/api/${route}`)
                     .then(resp => {
-                        commit("set_state", {
-                            name: route,
-                            value: resp.data
-                        });
                         resolve(resp);
                         return resp.data;
                     })
@@ -128,11 +132,34 @@ export default new Vuex.Store({
                     });
             });
         },
+        toggleEngagement({ commit, state }, data) {
+			return new Promise((resolve, reject) => {
+				const { user_id } = data;
+				const { route } = data;
+				const { route_id } = data;
+				commit("auth_request");
+				axios({
+					url: `http://127.0.0.1:8000/api/user/${user_id}/${route}`,
+					data: {
+						route_id,
+					},
+					headers: {
+						Authorization: `Bearer ${state.token}`
+					},
+					method: "POST"
+				}).then((resp) => {
+					resolve(resp);
+					return resp;
+				}).catch((err) => {
+					reject(err);
+				})
+			});
+        },
         findUser({ commit }) {
             const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
                 if (user) {
-                    return axios({
+                    axios({
                         url: "http://127.0.0.1:8000/api/user",
                         headers: {
                             Authorization: `Bearer ${user}`
@@ -150,9 +177,14 @@ export default new Vuex.Store({
                                         country: res.data.user.country,
                                         timezone: res.data.user.timezone,
                                         events: res.data.user.events || [],
-                                        venues: res.data.user.events || [],
-                                        performers: res.data.user.events || [],
-                                        families: res.data.user.events || []
+                                        venues: res.data.user.venues || [],
+                                        performers: res.data.user.performers || [],
+                                        families: res.data.user.families || [],
+										attending: res.data.user.attending || [],
+										following_families: res.data.user.following_families || [],
+										following_performers: res.data.user.following_performers || [],
+										following_venues: res.data.user.following_venues || [],
+
                                     }
                                 });
                                 resolve(res);
@@ -169,7 +201,7 @@ export default new Vuex.Store({
                                 value: null
                             });
                             reject(error);
-                            return new Error(error);
+                            return;
                         });
                 }
             });
@@ -205,7 +237,6 @@ export default new Vuex.Store({
                     data: payload.data
                 })
                     .then(resp => {
-                        this.dispatch("fetchState", { route: payload.route });
                         resolve(resp);
                         return resp.data;
                     })
@@ -224,17 +255,47 @@ export default new Vuex.Store({
                     method: "DELETE",
                     data: payload.data
                 })
-                    .then(resp => {
-                        this.dispatch("fetchState", {
-                            route: payload.route
-                        });
-                        resolve(resp);
-                        return resp.data;
-                    })
-                    .catch(error => {
-                        reject(error);
-                        return error.message;
-                    });
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message;
+                });
+            });
+        },
+        search({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                axios({
+                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}`,
+                    method: "GET",
+                })
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
+            })
+        },
+        getNames({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                axios({
+                    method: 'POST',
+                    url: `http://127.0.0.1:8000/api/${payload.route}/names`,
+                    data: payload.data,
+                })
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
             });
         }
     },
@@ -248,7 +309,11 @@ export default new Vuex.Store({
             state.user = {
                 id: payload.user.id,
                 type: payload.user.type,
-                socialLinks: payload.user.socialLinks
+                socialLinks: payload.user.socialLinks,
+                events: payload.user.events,
+                families: payload.user.families,
+                venues: payload.user.venues,
+                performers: payload.user.performers,
             };
         },
         auth_error(state) {

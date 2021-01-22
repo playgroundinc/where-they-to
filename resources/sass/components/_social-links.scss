@@ -1,0 +1,21 @@
+.social-links {
+    &__list {
+        padding: 0;
+    }
+    &__single {
+        list-style-type: none;
+        &__link {
+            padding: spacing(2);
+            text-align: center;
+            display: block;
+            svg {
+                max-width: 95%;
+                margin: 0 auto;
+                display: inline-block;
+            }
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

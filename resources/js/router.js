@@ -21,9 +21,6 @@ import Performer from './pages/performer/Performer';
 import EditPerformer from './pages/performer/Edit';
 import CreatePerformer from './pages/performer/Create';
 
-import CreateSocialLinks from './pages/socialLinks/Create';
-import EditSocialLinks from './pages/socialLinks/Edit';
-
 import Venues from './pages/venues/Venues';
 import Venue from './pages/venues/Venue';
 import EditVenue from './pages/venues/Edit';
@@ -148,24 +145,6 @@ const routes = [
     }
   },
 
-
-  {
-    path: '/social-links/create',
-    name: 'createSocialLinks',
-    component: CreateSocialLinks,
-    meta: {
-      auth: false,
-    }
-  },
-  {
-    path: '/users/:id/social-links/:slid/edit',
-    name: 'editSocialLinks',
-    component: EditSocialLinks,
-    meta: {
-      auth: false,
-    }
-  },
-
   // EVENTS ROUTES
 
   {
@@ -193,22 +172,6 @@ const routes = [
     }
   },
   {
-    path: '/events/:eid/social-links',
-    name: 'EventSocials',
-    component: CreateSocialLinks,
-    meta: {
-      auth: false,
-    }
-  },
-  {
-    path: '/events/:eid/social-links/:slid',
-    name: 'EditEventSocials',
-    component: EditSocialLinks,
-    meta: {
-      auth: false,
-    }
-  },
-  {
     path: '/events/:id',
     name: 'Event',
     component: Event,
@@ -221,22 +184,6 @@ const routes = [
     path: '/families/create',
     name: 'createFamily',
     component: CreateFamily,
-    meta: {
-      auth: false,
-    }
-  },
-  {
-    path: '/families/:id/social-links',
-    name: 'familySocialLinks',
-    component: CreateSocialLinks,
-    meta: {
-      auth: false,
-    }
-  },
-  {
-    path: '/families/:fid/social-links/:slid/edit',
-    name: 'EditFamilySocialLinks',
-    component: EditSocialLinks,
     meta: {
       auth: false,
     }

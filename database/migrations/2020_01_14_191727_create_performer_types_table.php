@@ -14,10 +14,23 @@ class CreatePerformerTypesTable extends Migration
     public function up()
     {
         Schema::create('performer_performer_type', function (Blueprint $table) {
-          $table->bigIncrements('id');
-          $table->bigInteger('performer_id')->unsigned();
-          $table->bigInteger('performer_type_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('performer_id')->unsigned();
+            $table->bigInteger('performer_type_id')->unsigned();
         });
+
+        Schema::create('family_performer', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('family_id')->unsigned();
+            $table->bigInteger('performer_id')->unsigned();
+        });
+
+        Schema::create('event_event_type', function (Blueprint $table) {
+          $table->bigIncrements('id');
+          $table->bigInteger('event_id')->unsigned();
+          $table->bigInteger('event_type_id')->unsigned();
+      });
+
     }
 
     /**
@@ -28,5 +41,6 @@ class CreatePerformerTypesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('performer_performer_types');
+        Schema::dropIfExists('family_performer');
     }
 }

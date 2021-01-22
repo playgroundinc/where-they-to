@@ -27,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
       return $this->hasMany(Event::class);
     }
     protected $fillable = [
+      'attending',
       'password',
       'email',
       'performers',
@@ -34,7 +35,17 @@ class User extends Authenticatable implements JWTSubject
       'city',
       'province',
       'country',
-      'timezone'
+      'timezone',
+      'following_performers',
+      'following_families',
+      'following_venues',
+    ];
+
+    protected $casts = [
+      'attending' => 'array',
+      'following_performers' => 'array',
+      'following_families' => 'array',
+      'following_venues' => 'array',
     ];
 
     protected $hidden = [

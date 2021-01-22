@@ -1,3 +1,12 @@
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: $body-font;
+    font-size: 1.6rem;
+}
+
 h1,
 h2,
 h3,
@@ -6,8 +15,58 @@ h5,
 h6 {
     font-family: $main-font;
     font-weight: normal;
+    text-transform: capitalize;
+}
+
+h1 {
+    font-size: 5.6rem;
+    margin-bottom: 0;
+}
+a {
+    text-decoration: underline;
+    color: inherit;
+}
+h2 {
+    font-size: 4.4rem;
+}
+h3 {
+    font-size: 3.6rem;
+}
+
+p {
+    line-height: 1.5;
 }
 
 .title {
-  text-align: center;
+    text-align: center;
+}
+
+em {
+    font-weight: bold;
+}
+
+.copy {
+    margin-top: spacing(6);
+    &--italic {
+        font-style: italic;
+    }
+    &--small {
+        font-size: 1.4rem;
+    }
+    &--center {
+        text-align: center;
+    }
+    &--large {
+        font-size: 2rem;
+    }
+    &--error {
+        color: $accessible-red;
+    }
+    &--bold {
+      font-weight: bold;
+    }
+}
+
+.subtitle {
+    margin: spacing(1) 0 0;
 }

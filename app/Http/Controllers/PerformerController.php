@@ -16,29 +16,34 @@ use App\SocialLinks;
 
 class PerformerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() 
+	/**
+   * Display a listing of the resource.  
+   * 
+   * @return \Illuminate\Http\Response
+   * 
+   * */
+	public function index() 
     {
-        //
+		//
+	
         $performers = Performer::all();
         return response()->json($performers, 200);
     }
 
-    public function createSocialLinks($request) {
+	public function createSocialLinks($request) {
 		$attributes = $request->validate([
 			'facebook' => 'nullable',
-			'twitter' => 'nullable',
+            'twitter' => 'nullable',
+            'tiktok' => 'nullable',
+            'twitch' => 'nullable',
 			'instagram' => 'nullable',
 			'website' => 'nullable',
 			'youtube' => 'nullable',
 		]);
 		$socialLinks = SocialLinks::create($attributes);
 		return $socialLinks;
-    }
+	}
+
     /**
      * Store a newly created resource in storage.
      *
@@ -51,20 +56,20 @@ class PerformerController extends Controller
 		$socialLinks = $this->createSocialLinks($request);
         $attributes = request()->validate([
 			'name' => 'required',
-			'bio' => 'required',
+            'bio' => 'required',
+            'tips' => 'nullable',
         ]);
         $performer = Performer::create($attributes);
-        if ($request['performerType']) {
-			$types = PerformerType::find($request['performerType']);
-			if ($types) {
-				$performer->performerTypes()->detach();
-				foreach ($types as $type) {
-					$performer->performerTypes()->attach($type);
-				}
+        if ($request['performerTypes']) {
+			$types = PerformerType::find($request['performerTypes']);
+			$performer->performerTypes()->detach();
+			foreach ($types as $type) {
+				$performer->performerTypes()->attach($type);
 			}
         }
 		$performer->socialLinks()->save($socialLinks);
-        $user = User::find($request['user']->id);
+
+        $user = User::find($request['user_id']);
 
         if ($user) {
 			$user->performers()->save($performer);
@@ -83,20 +88,15 @@ class PerformerController extends Controller
     {
         //
         $performer = Performer::find($id);
-        $user = User::find($performer->user['id']);
-        $socialLinks = array();
-        if (isset($user)) {
-			$socialLinks = $user->socialLinks;
-        }
-        $platforms = config('enums.platforms');
+        $socialLinks = $performer->socialLinks;
         $family = Family::find($performer->family_id);
-        $type = $performer->performerTypes;
-        return response()->json(compact('performer', 'type', 'family', 'socialLinks'));
+        $types = $performer->performerTypes;
+        return response()->json(compact('performer', 'types', 'family', 'socialLinks'));
     }
 
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
-		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+		$socialLinks->update(request(['facebook', 'instagram', 'tiktok','twitter','twitch', 'website', 'youtube']));
 	}
 
     /**
@@ -112,12 +112,12 @@ class PerformerController extends Controller
 		$this->updateSocialLinks(request());
 		$performer = Performer::find($id);
         $user = $performer->user;
-        if ($user->id !== request('user')->id):
+        if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
-        $performer->update(request(['name', 'bio']));
+        $performer->update(request(['name', 'bio', 'tips']));
         $performer->performerTypes()->detach();
-        foreach (request('performerType') as $performerTypeId):
+        foreach (request('performerTypes') as $performerTypeId):
 			$performerType = PerformerType::find($performerTypeId);
 			$performer->performerTypes()->attach($performerType);
         endforeach;
@@ -139,6 +139,34 @@ class PerformerController extends Controller
     }
 
     /**
+     * Search for performers by name.
+     * 
+     * @param string $search_term.
+     */
+    public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $performers = Performer::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($performers)) {
+            return response()->json(compact('performers'), 200);
+        }
+        return response()->json([], 200);
+    }
+
+    /**
+     * Search for performers by name.
+     * 
+     * @param string $search_term.
+     */
+    public function getNames() {
+        $performer_ids = request();
+        return response()->json(['ids' => $performer_ids], 200);
+        $performers = Performer::find($performer_ids);
+        return response()->json(compact('performers'), 200);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -149,7 +177,7 @@ class PerformerController extends Controller
         //
         $performer = Performer::find($id);
         $user = $performer->user;
-        if ($user->id !== request('user')->id):
+        if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
         $performer->performerTypes()->detach();

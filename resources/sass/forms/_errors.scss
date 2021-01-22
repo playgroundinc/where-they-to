@@ -1,0 +1,12 @@
+.errors {
+    margin: spacing(6) auto 0;
+    &__list {
+        @extend .selections__list;
+    }
+    &__single {
+        @extend .selections__single;
+        &__link {
+            @extend .selections__single__link;
+        }
+    }
+}

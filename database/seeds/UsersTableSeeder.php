@@ -17,11 +17,13 @@ class UsersTableSeeder extends Seeder
       //
     $faker = Faker\Factory::create();
     DB::table('users')->insert([
-		'email' => $faker->email,
-		'password' => Hash::make('admin'),
+		'email' => 'ky.capstick@gmail.com',
+		'password' => Hash::make('password'),
 		'email_verified_at' => now(),
 		'remember_token' => Str::random(10),
 		'role' => '1',
+		'province' => 'ON',
+		'city' => 'Toronto',
     ]);
     DB::table('users')->insert([
 		'email' => $faker->email,

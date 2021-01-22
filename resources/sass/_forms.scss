@@ -1,27 +1,14 @@
-.input {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid black;
-    appearance: none;
-    border-radius: 0;
-    &[aria-invalid="true"] {
-        border: 1px solid red;
-        + .input__error-msg {
-            display: block;
-        }
-        ~ .input__helper-text {
-            display: none;
+.form {
+    &-group {
+        margin-top: spacing(10);
+        &:first-child {
+            margin-top: spacing(5);
         }
     }
-    &__error-msg {
-        color: red;
-        display: none;
-    }
 }
-.label {
-    font-family: $main-font;
-    padding: 10px 0;
-    display: block;
-    text-transform: capitalize;
-}
+
+@import "./forms/selections";
+@import "./forms/inputs";
+@import "./forms/labels";
+@import "./forms/errors";
+@import "./forms/autocomplete";

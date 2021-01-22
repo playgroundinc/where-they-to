@@ -1,6 +1,7 @@
 class Location {
     constructor() {
         this.provinces = {
+            OE: "Online Event",
             AB: "Alberta",
             BC: "British Columbia",
             NL: "Newfoundland and Labrador",

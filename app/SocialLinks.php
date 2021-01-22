@@ -24,10 +24,12 @@ class SocialLinks extends Model
       return $this->belongsTo(Event::class);
     }
     protected $fillable = [
+      'tiktok',
       'twitter',
       'facebook',
       'instagram',
       'website',
+      'twitch',
       'youtube',
       'user_id',
       'event_id',

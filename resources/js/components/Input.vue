@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <label class="label" v-if="type !== 'submit'" :for="name">{{
-            label
-        }}</label>
+    <div class="input__container">
+        <label class="label label--floating" v-if="type !== 'submit'" :for="name">
+            <span :class="floating">{{ label }}</span>
+        </label>
         <textarea
             v-if="type === 'textarea'"
             class="input"
@@ -14,6 +14,8 @@
             :value="value"
             :aria-invalid="invalid"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
         ></textarea>
         <select
             v-else-if="type === 'select'"
@@ -22,10 +24,12 @@
             :id="name"
             :required="required"
             :value="value"
-            :aria-invalid="invalid"
+            :aria-invalsid="invalid"
             v-on:change="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
         >
-            <option default="true" value="" disabled>Select {{ name }}</option>
+            <option class="input__default" default="true" value="" disabled></option>
             <option
                 v-for="(option, index) in options"
                 :value="index"
@@ -45,9 +49,11 @@
             :aria-invalid="invalid"
             :aria-describedby="helperText ? 'helper-text' : null"
             v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
         />
-        <p class="input__error-msg" v-if="errorMsg">{{ errorMsg }}</p>
-        <p id="helper-text" class="input__helper-text">{{ helperText }}</p>
+        <p class="input__error-msg copy--error copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
+        <p id="helper-text" class="copy--small copy--italic input__helper-text" v-if="helperText">{{ helperText }}</p>
     </div>
 </template>
 
@@ -88,8 +94,13 @@ export default {
             type: Object,
             required: false,
             default: () => {}
-        }
+        },
     },
+    data() {
+        return {
+            active: false,
+        }
+    }, 
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);
@@ -107,9 +118,15 @@ export default {
                 name: this.name,
                 value: event.target.value
             });
-        }
+        },
+        floatLabel: function(e) {
+            this.active = !this.active;
+        },
     },
     computed: {
+        floating() {
+            return this.active || this.value !== '' ? 'float' : 'sink';
+        },
         label() {
             const labelText = this.name.replace("_", " ");
             return labelText;

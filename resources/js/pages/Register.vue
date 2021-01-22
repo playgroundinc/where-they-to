@@ -1,86 +1,109 @@
 <template>
-    <div>
-        <div>
-            <p>
-                Have an Account?
-                <a href="/login">Log-In</a>
-            </p>
+    <main class="container--core container">
+        <h1 class="copy--center">Register</h1>
+        <p class="copy--center copy--italic subtitle">
+            Already have an account?
+            <a href="/login">Log-In</a>
+        </p>
+        <div class="copy">
+            <p>If you're a performer, venue, or someone else who plans/organizes events in your city, you will need to make an account in order to create a profile for yourself/your venue, your family/troupe/circus, and list events.</p>
+            <p>If you're a fan, there's nothing you can do with an account that you can't do without one.</p>
+            <p class="copy--italic"><em>IMPORTANT:</em> This application is only setup to support Canadian artists, or shows happening in Canada. There is an eventual plan to expand its capabilities, but for the time being it does not support non-Canadian addresses.</p>
         </div>
+
         <ErrorsContainer :errors="errors" />
         <form
             autocomplete="off"
             novalidate
             @submit.prevent="register"
-            v-if="!success"
             method="post"
+            novalidate
         >
-            <div class="form-group">
-                <Input
-                    name="email"
-                    :value="email"
-                    type="email"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                />
+            <div class="form-group row between-md">
+                <div class="col-xxs-12">
+                    <h3 class="copy--center">Account Information</h3>
+                    <Input
+                        name="email"
+                        :value="email"
+                        type="email"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <Input
+                        name="password"
+                        :value="password"
+                        type="password"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                        helperText="Passwords must be at least 6 characters long."
+                    />
+                </div>
+                <div class="col-md-6">
+                    <Input
+                        name="password_confirmation"
+                        :value="password_confirmation"
+                        type="password"
+                        :required="true"
+                        :errors="errors"
+                        v-on:update="updateValue"
+                        errorMsg="Passwords must match"
+                    />
+                </div>
             </div>
-            <div class="form-group">
-                <Input
-                    name="password"
-                    :value="password"
-                    type="password"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                    helperText="Passwords must be at least 6 characters long."
-                />
+            <div class="form-group row">
+                    <div class="col-xxs-12">
+                        <h3 class="copy--center">Geographic Information</h3>
+                        <Input
+                            name="timezone"
+                            :value="timezone"
+                            type="select"
+                            :required="true"
+                            :errors="errors"
+                            :options="timezones"
+                            v-on:update="updateValue"
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <Input
+                            name="city"
+                            :value="city"
+                            type="text"
+                            :required="true"
+                            :errors="errors"
+                            v-on:update="updateValue"
+                        />
+                        
+                    </div>
+                    <div class="col-md-6"> 
+                        <Input
+                            name="province"
+                            :value="province"
+                            type="select"
+                            :options="provinces"
+                            :required="true"
+                            :errors="errors"
+                            v-on:update="updateValue"
+                        />
+                    </div>
+                    <div class="col-xxs-12">
+                        <Button variation="input" classes="btn btn-default" label="Sign Up" />
+                    </div>
             </div>
-            <div class="form-group">
-                <Input
-                    name="password_confirmation"
-                    :value="password_confirmation"
-                    type="password"
-                    :required="true"
-                    :errors="errors"
-                    v-on:update="updateValue"
-                    errorMsg="Passwords must match"
-                />
-            </div>
-            <Input
-                name="province"
-                :value="province"
-                type="select"
-                :options="provinces"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="city"
-                :value="city"
-                type="text"
-                :required="true"
-                :errors="errors"
-                v-on:update="updateValue"
-            />
-            <Input
-                name="timezone"
-                :value="timezone"
-                type="select"
-                :required="true"
-                :errors="errors"
-                :options="timezones"
-                v-on:update="updateValue"
-            />
-            <button type="submit" class="btn btn-default">Submit</button>
         </form>
-    </div>
+    </main>
 </template>
 <script>
 import { mapState } from "vuex";
+
+//Components
+import Button from "../components/Button";
 import Input from "../components/Input";
 import ErrorsContainer from "../components/ErrorsContainer";
-import Errors from "../core/errors";
+import Form from "../core/form";
 import Location from "../Location";
 export default {
     data() {
@@ -93,7 +116,6 @@ export default {
             country: "CA",
             timezone: "",
             errors: [],
-            success: false
         };
     },
     computed: {
@@ -105,9 +127,13 @@ export default {
         },
         provinces() {
             return this.location.getProvinces();
+        },
+        valid() {
+            return this.errors.length === 0;
         }
     },
     components: {
+        Button,
         Input,
         ErrorsContainer
     },
@@ -115,13 +141,12 @@ export default {
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
         },
-        registerUser: function(data) {
-            this.$store
-                .dispatch("register", data)
-                .then(resp => {
-                    this.$router.push("/dashboard");
-                })
-                .catch(err => console.log(err));
+        registerUser: async function(FormClass) {
+            const resp = await FormClass.submitForm();
+            if (resp.status === 'success') {
+                await this.$store.dispatch('findUser');
+                this.$router.push('/dashboard');
+            }
         },
         register: function() {
             let data = {
@@ -133,25 +158,17 @@ export default {
                 province: this.province,
                 timezone: this.timezone
             };
-            const match = this.verifyPasswords();
+            const FormClass = new Form(data, "register");
+            const match = FormClass.verifyPasswords();
             if (match) {
-                let valid = this.checkRequiredFields(data);
-                this.registerUser(data);
+                this.errors = FormClass.checkRequiredFields();
+                if (this.valid) {
+                    this.registerUser(FormClass);
+                }
                 return;
             }
             this.errors.push("password_confirmation");
         },
-        verifyPasswords: function() {
-            return this.password === this.password_confirmation;
-        },
-        checkRequiredFields: function(data) {
-            const errors = new Errors(data);
-            this.errors = errors.checkFields();
-            if (this.errors.length) {
-                return false;
-            }
-            return true;
-        }
     }
 };
 </script>
