@@ -35,21 +35,34 @@
             :options="timezones"
             v-on:update="updateValue"            
         />
-        <Input
-            v-else
-            name="city"
-            :value="city"
-            type="text"
-            :required="true"
-            :errors="errors"
-            v-on:update="updateValue"
+        <Autocomplete 
+			v-else-if="'' === city"
+			:errors="errors"
+			label="City"
+			route="cities"
+			:additionalRoute="province"
+			:currentValue="city"
+			v-on:selection="updateCity"
+			v-on:new="createCity"
         />
+		<Input 
+			v-else
+			name="city"
+			:value="city"
+			type="text"
+			:required="true"
+			:errors="errors"
+			:disabled="true"
+			:clearButton="true"
+			v-on:update="updateValue"
+		/>
     </div>
 </div>
 </template>
 <script>
 // Components
 import Input from '../components/Input';
+import Autocomplete from '../components/Autocomplete';
 
 // Classes
 import Location from "../Location";
@@ -61,12 +74,12 @@ export default {
             required: true,
         },
         buttonText: {
-          type: String,
-          required: false,
+			type: String,
+			required: false,
         },
         helperText: {
-          type: String,
-          required: false,
+			type: String,
+			required: false,
         },
         province: {
             type: String,
@@ -86,6 +99,7 @@ export default {
         }
     },
     components: {
+        Autocomplete,
         Input,
     },
     computed: {
@@ -101,11 +115,35 @@ export default {
     },
     methods: {
         updateValue: function(updateObject) {
+			if (updateObject.name === 'province') {
+				this.$emit("update", { name: 'city', value: ''});
+			}
             this.$emit("update", updateObject);
         },
         handleClick: function() {
-          this.$emit("buttonClick");
-        }
+			this.$emit("buttonClick");
+		},
+		updateCity: function(selection) {
+			const updateObject = {
+				name: 'city',
+				value: selection.name,
+			}
+			this.updateValue(updateObject);
+		},
+		createCity: async function(newCity) {
+			const data = {
+                name: newCity,
+            }
+            const payload = {
+                route: `${this.province}/cities`,
+                data,
+            }
+			await this.$store.dispatch('create', payload);
+			this.updateValue({ 
+				name: 'city',
+				value: newCity,
+			});
+		}
     }
 }
 </script>

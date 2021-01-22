@@ -193,32 +193,70 @@ class UserController extends Controller
         return redirect('/users');
     }
 
+    public function updateArrayValue($user, $key, $new_value) {
+      if (empty($user) || empty($new_value)) {
+        return false;
+      }
+      if (empty($user->$key)) {
+        $new_array = array($new_value);
+        $user->$key = $new_array;
+        $user->save();
+        return true;
+      }
+      $current_value = $user[$key];
+      if (in_array($new_value, $current_value)) {
+        $index = array_search($new_value, $current_value);
+        array_splice($current_value, $index, 1);
+        $user[$key] = $current_value;
+        $user->save();
+        return true;
+      }
+      array_push($current_value, $new_value);
+      $user[$key] = $current_value;
+      $user->save();
+      return true;
+    }
+
+    public function toggleVenueFollowing($id) {
+      $user = User::find($id);
+      $venue_id = request('route_id');
+      $valid = $this->updateArrayValue($user, 'following_venues', $venue_id);
+      if (!$valid) {
+        return response()->json(array('error' => "Can't find necessary credentials"));
+      }
+      return response()->json(array('status' => 'success'));
+    }
+
+    public function togglePerformerFollowing($id) {
+      $user = User::find($id);
+      $performer_id = request('route_id');
+      $valid = $this->updateArrayValue($user, 'following_performers', $performer_id);
+      if (!$valid) {
+        return response()->json(array('error' => "Can't find necessary credentials"));
+      }
+      return response()->json(array('status' => 'success'));
+    }
+
+    public function toggleFamilyFollowing($id) {
+      $user = User::find($id);
+      $family_id = request('route_id');
+      $valid = $this->updateArrayValue($user, 'following_families', $family_id);
+      if (!$valid) {
+        return response()->json(array('error' => "Can't find necessary credentials"));
+      }
+      return response()->json(array('status' => 'success'));
+    }
+
     /**
      * Updates if a user is attending an event.
      */
     public function toggleAttendance($id) {
       $user = User::find($id);
       $event_id = request('route_id');
-      if (empty($user) || empty($event_id)) {
+      $valid = $this->updateArrayValue($user, 'attending', $event_id);
+      if (!$valid) {
         return response()->json(array('error' => "Can't find necessary credentials"));
       }
-      if (empty($user->attending)) {
-        $events = array($event_id);
-        $user->attending = $events;
-        $user->save();
-        return response()->json(array('status' => 'success'));
-      }
-      $current_attending = $user['attending'];
-      if (in_array($event_id, $current_attending)) {
-        $index = array_search($event_id, $current_attending);
-        array_splice($current_attending, $index, 1);
-        $user['attending'] = $current_attending;
-        $user->save();
-        return response()->json(array('status' => 'success'));
-      }
-      array_push($current_attending, $event_id);
-      $user['attending'] = $current_attending;
-      $user->save();
       return response()->json(array('status' => 'success'));
     }
 }

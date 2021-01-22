@@ -27,6 +27,9 @@ class CreatePerformersTable extends Migration
 			$table->string('province')->nullable();
       $table->string('country')->nullable()->default('CA');
       $table->json('attending')->nullable();
+      $table->json('following_performers')->nullable();
+      $table->json('following_venues')->nullable();
+      $table->json('following_families')->nullable();
 			$table->string('timezone')->nullable();
 			$table->rememberToken();
 		});
@@ -97,6 +100,13 @@ class CreatePerformersTable extends Migration
 			$table->text('tips')->nullable();
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+    });
+    
+    Schema::create('cities', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->timestamps();
+			$table->string('name');
+      $table->string('province');
 		});
 
 		Schema::create('social_links', function (Blueprint $table) {
@@ -135,6 +145,7 @@ class CreatePerformersTable extends Migration
         Schema::dropIfExists('families');
         Schema::dropIfExists('venues');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('cities');
 
     }
 }

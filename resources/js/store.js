@@ -1,6 +1,6 @@
 import Vue from "vue";
 import axios from "axios";
-import Vuex from "vuex";
+import Vuex from "vuex"
 
 Vue.use(Vuex);
 
@@ -11,20 +11,20 @@ export default new Vuex.Store({
         token: localStorage.getItem("token") || "",
     },
     actions: {
-      checkEmail({commit}, data) {
-        return new Promise((resolve, reject) => {
-            axios({
-              method: "POST",
-              data,
-              url: "http://127.0.0.1:8000/api/user/existing",
-            }).then((resp) => {
-              return resolve(resp);
-            }).catch((err) => {
-              console.log(err);
-              return reject(err);
-            })
-        });
-      },
+		checkEmail({commit}, data) {
+			return new Promise((resolve, reject) => {
+				axios({
+					method: "POST",
+					data,
+					url: "http://127.0.0.1:8000/api/user/existing",
+				}).then((resp) => {
+					return resolve(resp);
+				}).catch((err) => {
+					console.log(err);
+					return reject(err);
+				})
+			});
+		},
         login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("auth_request");
@@ -133,27 +133,27 @@ export default new Vuex.Store({
             });
         },
         toggleEngagement({ commit, state }, data) {
-          return new Promise((resolve, reject) => {
-            const { user_id } = data;
-            const { route } = data;
-            const { route_id } = data;
-            commit("auth_request");
-            axios({
-                url: `http://127.0.0.1:8000/api/user/${user_id}/${route}`,
-                data: {
-                  route_id,
-                },
-                headers: {
-                  Authorization: `Bearer ${state.token}`
-                },
-                method: "POST"
-            }).then((resp) => {
-              resolve(resp);
-              return resp;
-            }).catch((err) => {
-              reject(err);
-            })
-          });
+			return new Promise((resolve, reject) => {
+				const { user_id } = data;
+				const { route } = data;
+				const { route_id } = data;
+				commit("auth_request");
+				axios({
+					url: `http://127.0.0.1:8000/api/user/${user_id}/${route}`,
+					data: {
+						route_id,
+					},
+					headers: {
+						Authorization: `Bearer ${state.token}`
+					},
+					method: "POST"
+				}).then((resp) => {
+					resolve(resp);
+					return resp;
+				}).catch((err) => {
+					reject(err);
+				})
+			});
         },
         findUser({ commit }) {
             const user = localStorage.getItem("token");
@@ -180,7 +180,11 @@ export default new Vuex.Store({
                                         venues: res.data.user.venues || [],
                                         performers: res.data.user.performers || [],
                                         families: res.data.user.families || [],
-                                        attending: res.data.user.attending || []
+										attending: res.data.user.attending || [],
+										following_families: res.data.user.following_families || [],
+										following_performers: res.data.user.following_performers || [],
+										following_venues: res.data.user.following_venues || [],
+
                                     }
                                 });
                                 resolve(res);

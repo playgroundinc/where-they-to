@@ -10,6 +10,7 @@ use App\Venue;
 use App\Family;
 use App\EventType;
 use App\SocialLinks;
+use App\City;
 
 use Illuminate\Http\Request;
 
@@ -67,10 +68,10 @@ class EventController extends Controller
     {
         //
         $events = Event::all();
-        foreach($events as $index=>$event):
+        foreach($events as $index=>$event) {
 			$events[$index]['performers'] = $event->performers;
 			$events[$index]['social_links'] = $event->socialLinks;
-        endforeach;
+		}
         return $events;
     }
 	/**
