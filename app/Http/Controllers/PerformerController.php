@@ -25,7 +25,6 @@ class PerformerController extends Controller
 	public function index() 
     {
 		//
-	
         $performers = Performer::all();
         return response()->json($performers, 200);
     }

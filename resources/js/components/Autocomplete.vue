@@ -24,10 +24,19 @@
                     >
                         <a class="autocomplete__single__link" @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
                     </li>
-                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="value">No results found. <a href="#" @click.prevent="function() { newTerm(value) }">Add a new term.</a></li>
+                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="value">No results found. <a href="#" @click.prevent="toggleModal">Add a new term.</a></li>
                 </ul>
             </div>
+			<Modal
+				title="Are you sure?"
+				:open="newTermModal"
+				:copy="'Looks like you\'re the first person to use this ' + labelId + '. Please confirm the spelling of your ' + labelId + ' before hitting the button below. The spelling you\'ve provided is \' ' + value + ' \''"
+				button="Yes, I'm sure."
+				v-on:close="toggleModal"
+				v-on:confirm="newTerm"
+			/>
         </div>
+
     </div>
 </template>
 
@@ -36,6 +45,7 @@ import { mapState } from "vuex";
 
 // Components 
 import Input from "../components/Input";
+import Modal from "../components/Modal";
 
 export default {
     data() {
@@ -44,11 +54,13 @@ export default {
             timer: null,
             matches: [],
             searching: false,
-            floating: 'sink',
+			floating: 'sink',
+			newTermModal: false,
         };
     },
     components: {
-        Input,
+		Input,
+		Modal,
     },
     props: {
         errors: {
@@ -62,7 +74,11 @@ export default {
         route: {
             type: String, 
             required: true,
-        },
+		},
+		additionalRoute: {
+			type: String,
+			required: false,
+		},
         currentArray: {
             type: Array,
             required:false,
@@ -78,6 +94,10 @@ export default {
 		},
 		acitveSearch() {
 			return this.value !== '';
+		},
+		activeRoute() {
+			const route = this.additionalRoute ? `${this.route}/${this.additionalRoute}` : this.route;
+			return route;
 		}
     },
     methods: {
@@ -93,7 +113,8 @@ export default {
             return;
         },
         triggerSearch: async function() {
-            const resp = await this.$store.dispatch('search', { route: this.route, term: this.value });
+			
+            const resp = await this.$store.dispatch('search', { route: this.activeRoute, term: this.value });
             if (resp.status === 200) {
                 return resp.data[this.route];
             }
@@ -113,11 +134,15 @@ export default {
         clearQuery: function() {
             this.matches = [];
             this.value = "";
-        },
-        newTerm: function(term) {
-            // this.clearQuery();
-            this.$emit("new", term);
-        },
+		},
+		toggleModal: function() {
+			this.newTermModal = !this.newTermModal;
+		},
+		newTerm: function() {
+			this.$emit('new', this.value);
+			this.toggleModal();
+		}
+
     }
 };
 </script>

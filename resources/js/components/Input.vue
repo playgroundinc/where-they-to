@@ -51,13 +51,22 @@
             v-on:keyup="onChange"
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
+			:disabled="disabled"
         />
+		<Button 
+			v-if="clearButton" 
+			:label="'Clear '+ name"
+			v-on:clicked="clearValue"
+		/>
         <p class="input__error-msg copy--error copy--small copy--italic" v-if="errorMsg">{{ errorMsg }}</p>
         <p id="helper-text" class="copy--small copy--italic input__helper-text" v-if="helperText">{{ helperText }}</p>
     </div>
 </template>
 
 <script>
+
+import Button from "../components/Button";
+
 export default {
     props: {
         name: {
@@ -94,13 +103,26 @@ export default {
             type: Object,
             required: false,
             default: () => {}
-        },
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		clearButton: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
     },
     data() {
         return {
             active: false,
         }
-    }, 
+	}, 
+	components: {
+		Button,
+	},
     methods: {
         removeError: function() {
             const index = this.errors.indexOf(this.name);
@@ -121,7 +143,14 @@ export default {
         },
         floatLabel: function(e) {
             this.active = !this.active;
-        },
+		},
+		clearValue: function() {
+			console.log(this.name);
+			this.$emit("update",{
+				name: this.name,
+				value: "",
+			})
+		}
     },
     computed: {
         floating() {
@@ -135,7 +164,8 @@ export default {
             if (this.errors.length) {
                 return this.errors.includes(this.name);
             }
-        }
+		}
+		
     }
 };
 </script>
