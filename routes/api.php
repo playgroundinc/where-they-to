@@ -84,9 +84,11 @@ Route::resources([
 Route::get('/performerTypes', 'TypeController@performerIndex');
 Route::get('/eventTypes', 'TypeController@eventIndex');
 Route::post('/eventTypes', 'TypeController@eventStore');
+Route::post('/performerTypes', 'TypeController@performerStore');
 
 // SEARCH
 Route::get('/eventTypes/search/{term}', 'TypeController@eventSearch');
+Route::get('/performerTypes/search/{term}', 'TypeController@performerSearch');
 Route::get('performers/search/{term}', 'PerformerController@search');
 Route::get('/venues/search/{term}', 'VenueController@search');
 Route::get('/families/search/{term}', 'FamilyController@search');

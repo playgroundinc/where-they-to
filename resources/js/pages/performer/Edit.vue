@@ -49,9 +49,11 @@
                 :youtube="youtube"
                 v-on:update="updateValue"
             />
-            <SelectTypes
+              <SelectTypes
                 :errors="errors"
-                :performerTypes="performerTypes"
+                :types="performerTypes"
+                route="performerTypes"
+                type="performer"
                 v-on:update="updateArray"
             />
             <div class="col-xxs-12">
