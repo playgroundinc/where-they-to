@@ -30,7 +30,7 @@
 			<Modal
 				title="Are you sure?"
 				:open="newTermModal"
-				:copy="'Looks like you\'re the first person to use this ' + labelId + '. Please confirm the spelling of your ' + labelId + ' before hitting the button below. The spelling you\'ve provided is \' ' + value + ' \''"
+				:copy="'Looks like you\'re the first person to use this tag. Please confirm the spelling of your tag before hitting the button below. The spelling you\'ve provided is \' ' + value + ' \''"
 				button="Yes, I'm sure."
 				v-on:close="toggleModal"
 				v-on:confirm="newTerm"
@@ -113,8 +113,9 @@ export default {
             return;
         },
         triggerSearch: async function() {
-			
+          console.log(this.activeRoute);
             const resp = await this.$store.dispatch('search', { route: this.activeRoute, term: this.value });
+            
             if (resp.status === 200) {
                 return resp.data[this.route];
             }

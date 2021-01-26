@@ -128,6 +128,17 @@ class TypeController extends Controller
       return response()->json($eventTypes, 200);
     }
 
+    public function performerSearch($term) {
+      if (empty($term)) {
+        return response()->json([], 200);
+      }
+      $performerTypes = PerformerType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (!empty($performerTypes)) {
+            return response()->json(compact('performerTypes'), 200);
+        }
+        return response()->json([], 200);
+    }
+
     public function eventSearch($term) {
       if (empty($term)) {
         return response()->json([], 200);
@@ -139,11 +150,29 @@ class TypeController extends Controller
         return response()->json([], 200);
     }
 
+    /**
+     * Creates a new Event Type.
+     * 
+     * @param object $request the request object.
+     */
     public function eventStore($request) {
       $attributes = request()->validate([
         'name' => 'required'
       ]);
       $newType = EventType::create($attributes);
+      return response()->json(compact('newType'), 200);
+    }
+
+    /**
+     * Create a new Performer Type tag.
+     * 
+     * @param object $request the request object.
+     */
+    public function performerStore($request) {
+      $attributes = request()->validate([
+        'name' => 'required'
+      ]);
+      $newType = PerformerType::create($attributes);
       return response()->json(compact('newType'), 200);
     }
 }
