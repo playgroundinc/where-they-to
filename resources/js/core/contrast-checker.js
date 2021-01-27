@@ -14,9 +14,7 @@ class ContrastChecker {
   }
   compareL(rgb) {
     const luminance = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
-    const lowestContrast = luminance > 0.319 ? (luminance + 0.05) / 0.369 : 0.369 / (luminance + 0.05);
-    const highestContrast = luminance > 1 ? (luminance + 0.05) / 1.05 : 1.05 / (luminance + 0.05);  
-    const contrast = (lowestContrast + highestContrast) / 2;
+    const contrast = luminance > 1 ? (luminance + 0.05) / 1.05 : 1.05 / (luminance + 0.05);  
     return contrast;
   }
   hexToRgb() {

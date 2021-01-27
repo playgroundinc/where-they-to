@@ -34,6 +34,16 @@
                 v-on:update="updateValue"
                 helperText="Provide instructions on how people can leave you a tip."
             />
+            <Input
+                name="color"
+                :value="color"
+                type="color"
+                :required="true"
+                :errors="errors"
+                v-on:update="updateValue"
+				errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
+                helperText="Please select an accent color."
+            />
             <SocialMedia 
                 :errors="errors"
                 :facebook="facebook"
@@ -65,6 +75,8 @@ import { mapState } from "vuex";
 // Classes.
 import socials from "../../core/social-media";
 import Form from "../../core/form";
+import ContrastChecker from "../../core/contrast-checker";
+
 // Components.
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
@@ -86,6 +98,7 @@ export default {
             twitch: "",
             youtube: "",
             tips: "",
+            color: "#000000",
             socials,
             performerTypes: [],
         }
@@ -105,6 +118,12 @@ export default {
     },
     methods: {
         updateValue: function(updateObject) {
+			if (updateObject.name === 'color') {
+				const accessible = this.checkContrast(updateObject.value);
+				if (!accessible) {
+					this.errors.push(updateObject.name);
+				}
+			}
             this[updateObject.name] = updateObject.value;
         },
         addToArray: function(updateObject, currentArray) {
@@ -160,7 +179,12 @@ export default {
                 FormClass.setAdditionalFields(additionalData);
                 this.createPerformer(FormClass);
             }
-        }
+		},
+		checkContrast: function(color) {
+			const contrastCheck = new ContrastChecker(color);
+			const contrast = contrastCheck.checkContrast();
+			return contrast;
+		}
     },
     async mounted() {
         if (this.user === 0) {
