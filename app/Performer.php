@@ -38,5 +38,6 @@ class Performer extends Model
       'family_id',
       'event_id',
       'tips',
+      'accent_color',
     ];
 }

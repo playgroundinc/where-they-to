@@ -35,13 +35,13 @@
                 helperText="Provide instructions on how people can leave you a tip."
             />
             <Input
-                name="color"
-                :value="color"
+                name="accent_color"
+                :value="accent_color"
                 type="color"
                 :required="true"
                 :errors="errors"
                 v-on:update="updateValue"
-				errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
+                errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
                 helperText="Please select an accent color."
             />
             <SocialMedia 
@@ -98,7 +98,7 @@ export default {
             twitch: "",
             youtube: "",
             tips: "",
-            color: "#000000",
+            accent_color: "#000000",
             socials,
             performerTypes: [],
         }
@@ -169,6 +169,7 @@ export default {
                 name: this.name,
                 bio: this.bio,
                 user_id: this.user.id,
+				accent_color: this.accent_color,
             };
             const FormClass = new Form(data, "create", { route: "performers" });
             this.errors = FormClass.checkRequiredFields(data);

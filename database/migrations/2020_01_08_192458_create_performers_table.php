@@ -96,7 +96,8 @@ class CreatePerformersTable extends Migration
 			$table->bigIncrements('id');
 			$table->timestamps();
 			$table->string('name');
-			$table->text('bio');
+      $table->text('bio');
+      $table->string('accent_color')->default('#000000');
 			$table->text('tips')->nullable();
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
