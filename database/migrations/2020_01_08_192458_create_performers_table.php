@@ -44,7 +44,8 @@ class CreatePerformersTable extends Migration
 			$table->string('province')->default('ON');
 			$table->integer('accessibility')->default('0');
 			$table->string('timezone')->nullable();
-			$table->text('description');      
+      $table->text('description');      
+      $table->string('accent_color')->default('#000000');
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -53,7 +54,8 @@ class CreatePerformersTable extends Migration
 			$table->bigIncrements('id');
 			$table->timestamps();
 			$table->string('name');
-			$table->text('description');
+      $table->text('description');
+      $table->string('accent_color')->default('#000000');
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -83,13 +85,15 @@ class CreatePerformersTable extends Migration
 			$table->string('timezone')->nullable();
 			$table->text('description');
 			$table->text('tickets')->nullable();
-			$table->string('tickets_url')->nullable();
+      $table->string('tickets_url')->nullable();
+      $table->string('accent_color')->default('#000000');
 			$table->bigInteger('venue_id')->unsigned()->nullable();
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
 			$table->bigInteger('family_id')->unsigned()->nullable();
 			$table->foreign('family_id')->references('id')->on('families')->onDelete('set null');
 			$table->bigInteger('user_id')->unsigned()->nullable();
-			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+      $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+    
 		});
 
 		Schema::create('performers', function (Blueprint $table) {

@@ -22,6 +22,16 @@
 						:errors="errors"
 						v-on:update="updateValue"
 					/>
+					<Input
+						name="accent_color"
+						:value="accent_color"
+						type="color"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+						errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
+						helperText="Please select an accent color."
+					/>
 				</div>
 			</div>
 			<Address
@@ -99,6 +109,7 @@ export default {
 			socials,
 			socialLinksId: '',
 			confirmModal: false,
+			accent_color: "#000000",
 		}
     },
     computed: {
@@ -146,6 +157,7 @@ export default {
 				description: this.description,
 				address: this.address,
 				province: this.province,
+				accent_color: this.accent_color,
 				user_id: this.user.id,
 			}
 			const FormClass = new Form(data, "edit", { route: "venues", id: this.id });
@@ -179,7 +191,7 @@ export default {
 			});
 		},
 		setVenue: function(venue) {
-			const fields = ['name', 'description', 'address', 'province', 'city', 'timezone'];
+			const fields = ['name', 'description', 'address', 'province', 'city', 'timezone', 'accent_color'];
 			this.setStates(fields, venue);
 			this.socialLinksId = venue.social_links.id;
 		},

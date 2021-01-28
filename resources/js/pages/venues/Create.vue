@@ -22,6 +22,16 @@
 						:errors="errors"
 						v-on:update="updateValue"
 					/>
+					<Input
+						name="accent_color"
+						:value="accent_color"
+						type="color"
+						:required="true"
+						:errors="errors"
+						v-on:update="updateValue"
+						errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
+						helperText="Please select an accent color."
+					/>
 				</div>
 			</div>
 			<Address
@@ -83,6 +93,7 @@ export default {
             twitch: '',
 			youtube: '',
 			socials,
+			accent_color: "#000000",
 		}
     },
     computed: {
@@ -138,6 +149,7 @@ export default {
 				address: this.address,
 				province: this.province,
 				user_id: this.user.id,
+				accent_color: this.accent_color,
 			}
 			const FormClass = new Form(data, "create", { route: "venues" });
 			this.errors = FormClass.checkRequiredFields(data);
