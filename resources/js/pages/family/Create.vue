@@ -25,12 +25,17 @@
 					</div>
 				</div>
 				<Select
-                    label="Performers"
+                    label="performers"
                     route="performers"
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
 				/>	
+        <AccentColor 
+					:value="accent_color"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -42,7 +47,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<Button variation="input" label="Create Family" />
+				<Button variation="input" label="Create Family" :disabled="errors.length > 0" />
 			</form>    
 		</main>
 	</div>
@@ -60,6 +65,7 @@
 	import SocialMedia from "../../components/SocialMedia";
   import Select from "../../components/Select";
   import Button from "../../components/Button";
+  import AccentColor from "../../components/AccentColor";
 
 	export default {
 		data() {
@@ -74,7 +80,8 @@
 				tiktok: '',
 				twitch: '',
 				youtube: '',
-				instagram: '',
+        instagram: '',
+        accent_color: "#000000",
 				socials,
 			}
 		},
@@ -88,6 +95,7 @@
 			}
 		},
 		components: {
+      AccentColor,
       Button,
 			ErrorsContainer, 
 			Input,
@@ -109,7 +117,8 @@
 				let data = {
 					name: this.name,
 					description: this.description,
-					performers: this.performerIds,
+          performers: this.performerIds,
+          accent_color: this.accent_color,
 				}
 				const FormClass = new Form(data, "create", { route: "families" });
 				this.errors = FormClass.checkRequiredFields(data);

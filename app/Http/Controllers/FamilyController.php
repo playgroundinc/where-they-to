@@ -68,6 +68,7 @@ class FamilyController extends Controller
         $attributes = request()->validate([
 			'name' => 'required',
 			'description' => 'required',
+			'accent_color' => 'nullable',
 		]);
 		// Create a family with these atttributes.
 		$family = Family::create($attributes);
@@ -127,7 +128,7 @@ class FamilyController extends Controller
 		// Since performers and families are many-to-many, detach and re-attach.
         $family->performers()->detach();
         if ($user['id'] === $family['user_id']) {
-			$family->update(request(['name', 'description']));
+			$family->update(request(['name', 'description', 'accent_color']));
             foreach (request('performers') as $performerId):
                 $performer = Performer::find($performerId);
                 $family->performers()->attach($performer);

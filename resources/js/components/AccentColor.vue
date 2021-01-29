@@ -39,9 +39,11 @@ export default {
     },
     methods: {
         updateValue: function(updateObject) {
-			const valid = this.checkContrast(updateObject.value);
-			if (!valid) {
-				this.errors.push(updateObject.name);
+			if (updateObject.name !== 'errors') {
+				const valid = this.checkContrast(updateObject.value);
+				if (!valid) {
+					this.errors.push(updateObject.name);
+				}
 			}
 			this.$emit('update', updateObject);
 		},
