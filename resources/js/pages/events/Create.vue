@@ -94,15 +94,10 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
-				<Input
-					name="accent_color"
+				<AccentColor 
 					:value="accent_color"
-					type="color"
-					:required="true"
 					:errors="errors"
 					v-on:update="updateValue"
-					errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
-					helperText="Please select an accent color."
 				/>
 				<SocialMedia 
 					:errors="errors"
@@ -115,7 +110,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<Button variation="input" label="Create Event" />
+				<Button variation="input" label="Create Event" :disabled="errors.length > 0" />
 			</form>    
 		</main>
     </div>
@@ -129,6 +124,7 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import AccentColor from "../../components/AccentColor";
 import Autocomplete from "../../components/Autocomplete";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
@@ -195,6 +191,7 @@ export default {
         }
     },
     components: {
+		AccentColor,
 		Address,
 		Button,
 		ErrorsContainer,
