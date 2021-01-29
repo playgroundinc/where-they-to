@@ -94,6 +94,11 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
+				<AccentColor 
+					:value="accent_color"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -105,7 +110,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<Button variation="input" label="Update Event"/>
+				<Button variation="input" label="Update Event" :disabled="errors.length > 0"/>
 			</form>    
 		</main>
     </div>
@@ -129,11 +134,13 @@ import SelectTypes from "../../components/SelectTypes";
 import FamilySelect from "../../components/FamilySelect";
 import VenueSelect from "../../components/VenueSelect";
 import Button from "../../components/Button";
+import AccentColor from "../../components/AccentColor";
 
 export default {
     data() {
         return {
-            id: this.$route.params.id || "",
+			id: this.$route.params.id || "",
+			accent_color: "#000000",
             errors: [],
             name: "",
             description: "",
@@ -184,6 +191,7 @@ export default {
         }
     },
     components: {
+		AccentColor,
         Address,
 		ErrorsContainer,
 		FamilySelect,
@@ -225,7 +233,7 @@ export default {
 			this.setStates(fields, family);
 		},
 		setEvent: function(event) {
-			const fields = ['name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
+			const fields = ['accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
 			this.setStates(fields, event);
 		},
 		getEvent: async function() {
@@ -255,6 +263,7 @@ export default {
 				description: this.description,
 				date: this.date,
 				show_time: this.show_time,
+				accent_color: this.accent_color,
 			}
 			const FormClass = new Form(data, "edit", { route: "events", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);

@@ -94,6 +94,11 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
+				<AccentColor 
+					:value="accent_color"
+					:errors="errors"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -105,7 +110,7 @@
 					:youtube="youtube"
 					v-on:update="updateValue"
 				/>
-				<Button variation="input" label="Create Event" />
+				<Button variation="input" label="Create Event" :disabled="errors.length > 0" />
 			</form>    
 		</main>
     </div>
@@ -119,6 +124,7 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import AccentColor from "../../components/AccentColor";
 import Autocomplete from "../../components/Autocomplete";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
@@ -133,7 +139,8 @@ import Button from '../../components/Button.vue';
 export default {
     data() {
         return {
-            id: this.$route.params.id || "",
+			id: this.$route.params.id || "",
+			accent_color: "#000000",
             errors: [],
             name: "",
             description: "",
@@ -184,6 +191,7 @@ export default {
         }
     },
     components: {
+		AccentColor,
 		Address,
 		Button,
 		ErrorsContainer,
@@ -210,6 +218,7 @@ export default {
 				description: this.description,
 				date: this.date,
 				show_time: this.show_time,
+				accent_color: this.accent_color,	
 			}
 			const FormClass = new Form(data, "create", { route: "events" });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -229,7 +238,7 @@ export default {
             this[updateObject.name] = updateObject.value;
 		},
 		updateVenue: function(updateObject) {
-			const fields = ['address', 'city', 'province', 'timezone'];
+			const fields = ['accent_color', 'address', 'city', 'province', 'timezone'];
 			this.updateFields(updateObject, fields);
 			this.venue_id = updateObject.id;
 			this.venue_name = updateObject.name;
