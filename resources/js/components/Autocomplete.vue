@@ -105,6 +105,9 @@ export default {
             this.value = updateObject.value;
 		},
         addAutocomplete: function(updateObject) {
+			if (updateObject.name === 'errors') {
+				this.errors = updateObject.value;
+			}
             this.updateValue(updateObject);
             clearTimeout(this.timer);
             this.matches = [];
@@ -113,7 +116,6 @@ export default {
             return;
         },
         triggerSearch: async function() {
-          console.log(this.activeRoute);
             const resp = await this.$store.dispatch('search', { route: this.activeRoute, term: this.value });
             
             if (resp.status === 200) {

@@ -100,7 +100,7 @@ export default {
 	methods: {
 		getPerformer: async function() {
 			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
-			console.log(resp.data);
+			(resp.data);
 			if (resp.status === 200) {
 				this.performer = resp.data.performer;
 				this.types = resp.data.types;
