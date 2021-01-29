@@ -117,6 +117,7 @@ class EventController extends Controller
 		$socialLinks = $this->createSocialLinks($request);
 		// Valiate all fields.
         $attributes = request()->validate([
+			'accent_color' => 'nullable',
 			'show_time' => 'nullable',
 			'name' => 'required',
 			'doors' => 'nullable',
@@ -189,6 +190,7 @@ class EventController extends Controller
 		// Check that user attached to request is also the user stored in the system.
         if ($user['id'] === $validatedUser['id']):
 			$event->update(request([
+				'accent_color',
 				'name',
 				'address',
 				'city',

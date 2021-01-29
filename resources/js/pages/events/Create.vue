@@ -94,6 +94,16 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
+				<Input
+					name="accent_color"
+					:value="accent_color"
+					type="color"
+					:required="true"
+					:errors="errors"
+					v-on:update="updateValue"
+					errorMsg="Your color selection does not meet accessibility standards. Try a darker shade."
+					helperText="Please select an accent color."
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -133,7 +143,8 @@ import Button from '../../components/Button.vue';
 export default {
     data() {
         return {
-            id: this.$route.params.id || "",
+			id: this.$route.params.id || "",
+			accent_color: "#000000",
             errors: [],
             name: "",
             description: "",
@@ -210,6 +221,7 @@ export default {
 				description: this.description,
 				date: this.date,
 				show_time: this.show_time,
+				accent_color: this.accent_color,	
 			}
 			const FormClass = new Form(data, "create", { route: "events" });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -229,7 +241,7 @@ export default {
             this[updateObject.name] = updateObject.value;
 		},
 		updateVenue: function(updateObject) {
-			const fields = ['address', 'city', 'province', 'timezone'];
+			const fields = ['accent_color', 'address', 'city', 'province', 'timezone'];
 			this.updateFields(updateObject, fields);
 			this.venue_id = updateObject.id;
 			this.venue_name = updateObject.name;
