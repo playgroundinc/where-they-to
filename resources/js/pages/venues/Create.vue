@@ -37,6 +37,9 @@
 				:errors="errors"
 				v-on:update="updateValue"
 			/>
+			<Accessibility 
+				:value="accesssibility"
+			/>
 			<SocialMedia 
                 :errors="errors"
                 :facebook="facebook"
@@ -70,6 +73,7 @@ import SocialMedia from "../../components/SocialMedia";
 import Address from "../../components/Address";
 import Button from "../../components/Button";
 import AccentColor from "../../components/AccentColor";
+import Accessibility from '../../components/Accessibility.vue';
 
 export default {
     data() {
@@ -89,6 +93,7 @@ export default {
             twitch: '',
 			youtube: '',
 			socials,
+			accesssibility: [],
 			accent_color: "#000000",
 		}
     },
@@ -105,6 +110,7 @@ export default {
 		ErrorsContainer,
 		Input,
 		SocialMedia,
+		Accessibility,
 	},
 	watch: {
 		user: function(newUser, oldUser) {

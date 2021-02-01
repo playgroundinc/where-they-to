@@ -47,8 +47,13 @@ class Event extends Model
       'show_time',
       'type',
       'tickets',
-      'tickets_url'
+      'tickets_url',
+      'accessibility',
+      'acccessibility_description',
+    ];
+
+    protected $casts = [
+      'accessibility' => 'array',
     ];
   
-
 }
