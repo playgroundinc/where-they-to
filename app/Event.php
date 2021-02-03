@@ -49,7 +49,7 @@ class Event extends Model
       'tickets',
       'tickets_url',
       'accessibility',
-      'acccessibility_description',
+      'accessibility_description',
     ];
 
     protected $casts = [
