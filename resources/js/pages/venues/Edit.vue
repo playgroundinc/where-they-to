@@ -22,6 +22,11 @@
 						:errors="errors"
 						v-on:update="updateValue"
 					/>
+					<AccentColor 
+						:value="accent_color"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
 				</div>
 			</div>
 			<Address
@@ -30,6 +35,11 @@
 				:province="province"
 				:timezone="timezone"
 				:errors="errors"
+				v-on:update="updateValue"
+			/>
+      <Accessibility 
+				:value="accessibility"
+				:description="accessibility_description"
 				v-on:update="updateValue"
 			/>
 			<SocialMedia 
@@ -44,7 +54,7 @@
                 v-on:update="updateValue"
             />
 			<div class="col-xxs-12">
-                <Button variation="input" label="Update Venue" />
+                <Button variation="input" label="Update Venue" :disabled="errors.length > 0"/>
             </div>
 
 		</form>
@@ -70,12 +80,14 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import Accessibility from "../../components/Accessibility";
 import Button from "../../components/Button";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import Address from "../../components/Address";
 import Modal from "../../components/Modal";
+import AccentColor from "../../components/AccentColor"
 
 export default {
 	data() {
@@ -99,6 +111,10 @@ export default {
 			socials,
 			socialLinksId: '',
 			confirmModal: false,
+			accent_color: "#000000",
+			accessibility: [],
+			accessibility_description: '',
+
 		}
     },
     computed: {
@@ -108,6 +124,8 @@ export default {
 		}
 	},
 	components: {
+		Accessibility,
+		AccentColor,
 		Address,
 		Button,
 		ErrorsContainer,
@@ -146,7 +164,10 @@ export default {
 				description: this.description,
 				address: this.address,
 				province: this.province,
+				accent_color: this.accent_color,
 				user_id: this.user.id,
+				accessibility: this.accessibility,
+				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "edit", { route: "venues", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -179,7 +200,7 @@ export default {
 			});
 		},
 		setVenue: function(venue) {
-			const fields = ['name', 'description', 'address', 'province', 'city', 'timezone'];
+			const fields = ['name', 'description', 'address', 'province', 'city', 'timezone', 'accent_color', 'accessibility', 'accessibility_description'];
 			this.setStates(fields, venue);
 			this.socialLinksId = venue.social_links.id;
 		},

@@ -34,6 +34,13 @@
     &__default {
         opacity: 0;
     }
+    &[type="color"] {
+      display: inline-block;
+      width: auto;
+      appearance: none;
+      border: 1px solid black;
+      border-radius: 50%;
+    }
     &[type="submit"] {
         @extend .btn;
     }

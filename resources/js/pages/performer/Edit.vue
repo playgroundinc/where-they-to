@@ -36,6 +36,11 @@
 						v-on:update="updateValue"
 						helperText="Provide instructions on how people can leave you a tip."
 					/>
+					<AccentColor 
+						:value="accent_color"
+						:errors="errors"
+						v-on:update="updateValue"
+					/>
 				</div>
 			</div>
             <SocialMedia 
@@ -49,24 +54,27 @@
                 :youtube="youtube"
                 v-on:update="updateValue"
             />
-            <SelectTypes
-                :errors="errors"
-                :performerTypes="performerTypes"
-                v-on:update="updateArray"
-            />
+			<SelectTypes
+				:errors="errors"
+				:types="performerTypes"
+				route="performerTypes"
+				type="performer"
+				v-on:update="updateArray"
+			/>
             <div class="col-xxs-12">
-                <Button 
-                  variation="input" 
-                  label="Update Performer" 
-                />
+				<Button 
+					variation="input" 
+					label="Update Performer" 
+					:disabled="errors.length > 0"
+				/>
             </div>
         </form>
 		<div class="copy--center">
-      <Button 
-        classes="btn--inline copy--center"
-        label="Delete Performer" 
-        v-on:clicked.prevent="toggleModal"
-      />
+		<Button 
+		classes="btn--inline copy--center"
+		label="Delete Performer" 
+		v-on:clicked.prevent="toggleModal"
+		/>
 		</div>
 		<Modal 
 			title="Are you sure?"
@@ -87,18 +95,20 @@
 	import Form from "../../core/form";
 	
 	// Components
+	import AccentColor from "../../components/AccentColor";
 	import Input from "../../components/Input";
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import SocialMedia from "../../components/SocialMedia";
 	import SelectTypes from "../../components/SelectTypes";
-  import Modal from "../../components/Modal";
-  import Button from "../../components/Button";
+	import Modal from "../../components/Modal";
+	import Button from "../../components/Button";
 
 	export default {
 
 	data() {
 		return {
 			id: this.$route.params.id,
+			accent_color: '#000000',
 			name: '',
 			bio: '',
 			tips: '',
@@ -123,7 +133,8 @@
 		}
 	},
 	components: {
-    Button,
+		AccentColor,
+		Button,
 		Input,
 		ErrorsContainer,
 		SelectTypes,
@@ -168,7 +179,7 @@
             }
 		}, 
 		setPerformer: function(performer) {
-			const fields = ['name', 'bio', 'tips'];
+			const fields = ['name', 'bio', 'tips', 'accent_color'];
 			this.setStates(fields, performer);
 			this.social_links_id = performer.social_links.id;
 		},
@@ -211,7 +222,8 @@
             let data = {
                 name: this.name,
 				bio: this.bio,
-                user_id: this.user.id,
+				user_id: this.user.id,
+				accent_color: this.accent_color,
             };
 			const FormClass = new Form(data, "edit", { route: "performers", id: this.id });
             this.errors = FormClass.checkRequiredFields(data);

@@ -35,6 +35,7 @@ class Event extends Model
     }
 
     protected $fillable = [
+      'accent_color',
       'name',
       'address',
       'city',
@@ -46,8 +47,13 @@ class Event extends Model
       'show_time',
       'type',
       'tickets',
-      'tickets_url'
+      'tickets_url',
+      'accessibility',
+      'accessibility_description',
+    ];
+
+    protected $casts = [
+      'accessibility' => 'array',
     ];
   
-
 }

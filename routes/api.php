@@ -50,6 +50,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::delete('venues/{id}', 'VenueController@destroy');    
 
     Route::post('types', 'TypeController@store');
+
+    Route::post('{province}/cities', 'CityController@store');
 });
 
 Route::get('performers', 'PerformerController@index');
@@ -71,6 +73,10 @@ Route::get('events/{id}', 'EventController@show');
 Route::get('events/date/{date}', 'EventController@date');
 Route::get('events/week/{date}', 'EventController@week');
 
+Route::get('{province}/cities', 'CityController@index');
+Route::get('single/{province}/{city}', 'CityController@single');
+
+
 Route::resources([
   'users' => 'UserController',
 ]);
@@ -78,9 +84,12 @@ Route::resources([
 Route::get('/performerTypes', 'TypeController@performerIndex');
 Route::get('/eventTypes', 'TypeController@eventIndex');
 Route::post('/eventTypes', 'TypeController@eventStore');
+Route::post('/performerTypes', 'TypeController@performerStore');
 
 // SEARCH
 Route::get('/eventTypes/search/{term}', 'TypeController@eventSearch');
+Route::get('/performerTypes/search/{term}', 'TypeController@performerSearch');
 Route::get('performers/search/{term}', 'PerformerController@search');
 Route::get('/venues/search/{term}', 'VenueController@search');
 Route::get('/families/search/{term}', 'FamilyController@search');
+Route::get('/cities/{province}/search/{term}', 'CityController@search');

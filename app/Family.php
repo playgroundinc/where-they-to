@@ -23,6 +23,7 @@ class Family extends Model
     protected $fillable = [
       'name',
       'description',
-      'event_id'
+      'event_id',
+      'accent_color',
     ];
 }

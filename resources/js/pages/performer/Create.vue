@@ -34,6 +34,11 @@
                 v-on:update="updateValue"
                 helperText="Provide instructions on how people can leave you a tip."
             />
+            <AccentColor 
+              :value="accent_color"
+              :errors="errors"
+              v-on:update="updateValue"
+            />
             <SocialMedia 
                 :errors="errors"
                 :facebook="facebook"
@@ -47,11 +52,13 @@
             />
             <SelectTypes
                 :errors="errors"
-                :performerTypes="performerTypes"
+                :types="performerTypes"
+                route="performerTypes"
+                type="performer"
                 v-on:update="updateArray"
             />
             <div class="col-xxs-12">
-                <Button variation="input" label="Create Performer" />
+                <Button variation="input" label="Create Performer" :disabled="errors.length > 0" />
             </div>
         </form>
         </main>
@@ -63,7 +70,9 @@ import { mapState } from "vuex";
 // Classes.
 import socials from "../../core/social-media";
 import Form from "../../core/form";
+
 // Components.
+import AccentColor from "../../components/AccentColor";
 import Input from "../../components/Input";
 import SocialMedia from "../../components/SocialMedia";
 import ErrorsContainer from "../../components/ErrorsContainer";
@@ -84,6 +93,7 @@ export default {
             twitch: "",
             youtube: "",
             tips: "",
+            accent_color: "#000000",
             socials,
             performerTypes: [],
         }
@@ -95,6 +105,7 @@ export default {
         }
     },
     components: {
+		AccentColor,
         Button,
         Input,
         ErrorsContainer,
@@ -148,6 +159,7 @@ export default {
                 name: this.name,
                 bio: this.bio,
                 user_id: this.user.id,
+				accent_color: this.accent_color,
             };
             const FormClass = new Form(data, "create", { route: "performers" });
             this.errors = FormClass.checkRequiredFields(data);
@@ -158,7 +170,7 @@ export default {
                 FormClass.setAdditionalFields(additionalData);
                 this.createPerformer(FormClass);
             }
-        }
+		},
     },
     async mounted() {
         if (this.user === 0) {

@@ -30,6 +30,11 @@
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
+				/>
+				<AccentColor 
+					:value="accent_color"
+					:errors="errors"
+					v-on:update="updateValue"
 				/>		
 				<SocialMedia 
 					:errors="errors"
@@ -43,16 +48,17 @@
 					v-on:update="updateValue"
 				/>
 				<Button 
-          variation="input"
-          label="Edit Family"
-        />
+					variation="input"
+					label="Edit Family"
+					:disabled="errors.length > 0"
+				/>
 			</form>    
 			<div class="copy--center">
 				<Button 
-          classes="btn--inline copy--center" 
-          v-on:clicked.prevent="toggleModal" 
-          label="Delete Family" 
-        />
+					classes="btn--inline copy--center" 
+					v-on:clicked.prevent="toggleModal" 
+					label="Delete Family" 
+				/>
 			</div>
 		</main>
 		<Modal 
@@ -78,7 +84,8 @@
 	import SocialMedia from "../../components/SocialMedia";
 	import Select from "../../components/Select";
 	import Modal from "../../components/Modal";
-  import Button from "../../components/Button";
+	import Button from "../../components/Button";
+	import AccentColor from "../../components/AccentColor";
 
 	export default {
 		data() {
@@ -98,6 +105,7 @@
 				socials,
 				socialLinksId: '',
 				confirmModal: false,
+				accent_color: "#000000",
 			}
 		},
 		computed: {
@@ -110,8 +118,9 @@
 			}
 		},
 		components: {
-      ErrorsContainer, 
-      Button,
+			AccentColor,
+			ErrorsContainer, 
+			Button,
 			Input,
 			Modal,
 			SocialMedia,
@@ -149,7 +158,7 @@
 				}
 			},
 			setFamily: function(family) {
-				const fields = ['name', 'description'];
+				const fields = ['name', 'description', 'accent_color'];
 				this.setStates(fields, family);
 			},
 			getFamily: async function() {
@@ -173,6 +182,7 @@
 					name: this.name,
 					description: this.description,
 					performers: this.performerIds,
+					accent_color: this.accent_color,
 				}
 				const FormClass = new Form(data, "edit", { route: "families", id: this.id });
 				this.errors = FormClass.checkRequiredFields(data);

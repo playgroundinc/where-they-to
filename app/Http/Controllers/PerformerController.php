@@ -25,7 +25,6 @@ class PerformerController extends Controller
 	public function index() 
     {
 		//
-	
         $performers = Performer::all();
         return response()->json($performers, 200);
     }
@@ -57,7 +56,8 @@ class PerformerController extends Controller
         $attributes = request()->validate([
 			'name' => 'required',
             'bio' => 'required',
-            'tips' => 'nullable',
+			'tips' => 'nullable',
+			'accent_color' => 'nullable',
         ]);
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
@@ -115,7 +115,7 @@ class PerformerController extends Controller
         if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
-        $performer->update(request(['name', 'bio', 'tips']));
+        $performer->update(request(['name', 'bio', 'tips', 'accent_color']));
         $performer->performerTypes()->detach();
         foreach (request('performerTypes') as $performerTypeId):
 			$performerType = PerformerType::find($performerTypeId);

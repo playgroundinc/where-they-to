@@ -10,6 +10,7 @@ use App\Venue;
 use App\Family;
 use App\EventType;
 use App\SocialLinks;
+use App\City;
 
 use Illuminate\Http\Request;
 
@@ -67,10 +68,10 @@ class EventController extends Controller
     {
         //
         $events = Event::all();
-        foreach($events as $index=>$event):
+        foreach($events as $index=>$event) {
 			$events[$index]['performers'] = $event->performers;
 			$events[$index]['social_links'] = $event->socialLinks;
-        endforeach;
+		}
         return $events;
     }
 	/**
@@ -116,6 +117,9 @@ class EventController extends Controller
 		$socialLinks = $this->createSocialLinks($request);
 		// Valiate all fields.
         $attributes = request()->validate([
+			'accessibility' => 'nullable',
+			'accessibility_description' => 'nullable',
+			'accent_color' => 'nullable',
 			'show_time' => 'nullable',
 			'name' => 'required',
 			'doors' => 'nullable',
@@ -188,6 +192,9 @@ class EventController extends Controller
 		// Check that user attached to request is also the user stored in the system.
         if ($user['id'] === $validatedUser['id']):
 			$event->update(request([
+				'accessibility',
+				'accessibility_description',
+				'accent_color',
 				'name',
 				'address',
 				'city',

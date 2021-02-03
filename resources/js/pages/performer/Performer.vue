@@ -11,8 +11,8 @@
 			</div>
 			<div class="col-xxs-12 col-md-6">
         <Button 
-          :label="followinglabel"
-          v-on:clicked.prevent="toggleFollowing"
+			:label="followinglabel"
+			v-on:clicked.prevent="toggleFollowing"
         />
 				<p>{{ performer.bio }}</p>
 				<div v-if="socialLinks">
@@ -20,12 +20,12 @@
 						:socialLinks="socialLinks"
 					/>
 				</div>
-				<Button 
-          v-if="performer.tips" 
-          v-on:clicked.prevent="toggleModal" 
-          :label="'Tip ' + performer.name" 
-        />			
-      </div>
+				<Button
+					v-if="performer.tips" 
+					v-on:clicked.prevent="toggleModal" 
+					:label="'Tip ' + performer.name" 
+				/>			
+			</div>
 		</div>
 		<div v-if="events.length > 0">
 			<h2>Events</h2>
@@ -72,6 +72,7 @@ export default {
 			socialLinks: [],
 			family: [],
 			types: [],
+			accent_color: "#000000",
 			tipModal: false,
 		}
     },
@@ -83,10 +84,10 @@ export default {
     followinglabel: function() {
         const performers = this.user.following_performers;
         if (!performers|| !performers.length || performers.indexOf(this.id) === -1) {
-          return 'Follow';
+			return 'Follow';
         }
-        return 'Unfollow'; 
-      }
+		return 'Unfollow'; 
+		}
 	},
 	components: {
     Button,
@@ -99,6 +100,7 @@ export default {
 	methods: {
 		getPerformer: async function() {
 			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
+			(resp.data);
 			if (resp.status === 200) {
 				this.performer = resp.data.performer;
 				this.types = resp.data.types;

@@ -30,5 +30,12 @@ class Venue extends Model
       'address',
       'user_id',
       'family_id',
+      'accent_color',
+      'accessibility',
+      'accessibility_description',
+    ];
+
+    protected $casts = [
+      'accessibility' => 'array',
     ];
 }
