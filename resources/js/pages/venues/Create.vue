@@ -38,7 +38,9 @@
 				v-on:update="updateValue"
 			/>
 			<Accessibility 
-				:value="accesssibility"
+				:value="accessibility"
+				:description="accessibility_description"
+				v-on:update="updateValue"
 			/>
 			<SocialMedia 
                 :errors="errors"
@@ -93,7 +95,8 @@ export default {
             twitch: '',
 			youtube: '',
 			socials,
-			accesssibility: [],
+			accessibility: [],
+			accessibility_description: '',
 			accent_color: "#000000",
 		}
     },
@@ -153,6 +156,8 @@ export default {
 				province: this.province,
 				user_id: this.user.id,
 				accent_color: this.accent_color,
+				accessibility: this.accessibility,
+				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "create", { route: "venues" });
 			this.errors = FormClass.checkRequiredFields(data);

@@ -32,7 +32,7 @@ class Venue extends Model
       'family_id',
       'accent_color',
       'accessibility',
-      'acccessibility_description',
+      'accessibility_description',
     ];
 
     protected $casts = [

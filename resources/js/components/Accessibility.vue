@@ -3,34 +3,51 @@
 		<div class="col-xxs-12">
 			<h2 class="copy--center">Accessibility</h2>
 			<fieldset v-if="options.length > 0">
-				<legend>Accessibility Features:</legend>
+				<legend>Select all accessibility features that apply:</legend>
+        <div class="row">
+			<div class="col-md-4" 
+				v-for="option in options"
+				v-bind:key="option['value']" 
+			>
 				<Input 
-					v-for="option in options"
-					v-bind:key="option['value']"
 					type="checkbox"
 					:name="option['value']"
 					:value="option['value']"
 					:checked="option['checked']"
 					v-on:update="updateArray"
 				/>
+			</div>
+			<div class="col-xs-12">
+				<Input
+					type="textarea"
+					name="accessibility_description"
+					:value="description"
+					v-on:update="updateValue"
+				/>
+			</div>
+        </div>
+				
 			</fieldset>
 		</div>
 	</div>
 </template>
 <script>
 // Data 
-import accessibilityFields from "../core/accesssibility";
+import accessibilityFields from "../core/accessibility";
 
 // Components
 import Input from '../components/Input';
 
 export default {
     props: {
-
         value: {
             type: Array,
             required: true,
         },
+        description: {
+			type: String,
+			required: true,
+        }
 	},
 	
 	data() {
@@ -55,7 +72,7 @@ export default {
         Input,
 	},
 	mounted() {
-		console.log(this.options);
+		
 	},
     methods: {
 		addToArray: function(updateObject, currentArray) {
@@ -87,6 +104,12 @@ export default {
 				return;
 			} 
 			this.deleteFromArray(updateObject, currentArray);
+		},
+		updateValue: function(updateObject) {
+            this.$emit("update", {
+				name: updateObject.name,
+				value: updateObject.value,
+            });
 		},
     }
 }

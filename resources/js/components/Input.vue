@@ -57,6 +57,7 @@
 			:value="value" 
 			:required="required"
 			:aria-checked="checked"
+			:checked="checked"
 			:aria-describedby="helperText ? 'helper-text' : null"
             v-on:change="onCheck"
 		>
