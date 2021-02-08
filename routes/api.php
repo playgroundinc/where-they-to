@@ -51,6 +51,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::post('types', 'TypeController@store');
 
+    Route::post('updates', 'UpdateController@store');
+
     Route::post('{province}/cities', 'CityController@store');
 });
 
