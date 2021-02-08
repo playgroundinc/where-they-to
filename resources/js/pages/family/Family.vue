@@ -25,6 +25,10 @@
 							:socialLinks="socialLinks"
 						/>
 					</div>
+          <Updates 
+            type="family"
+            :id="id"
+          />
 					<div class="copy--center" v-if="familyMember">
 						<Button :link="'/families/' + family.id + '/edit'" label="Edit Family" />
 					</div>
@@ -41,6 +45,7 @@ import { mapState } from 'vuex';
 // Components 
 import SocialLinks from "../../components/SocialLinks";
 import Button from "../../components/Button";
+import Updates from "../../components/Updates";
 
 export default {
 
@@ -100,7 +105,8 @@ export default {
 	},
 	components: {
     Button,
-		SocialLinks,
+    SocialLinks,
+    Updates,
 	},
     mounted() {
 		this.getFamily();

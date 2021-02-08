@@ -78,6 +78,8 @@ Route::get('events/week/{date}', 'EventController@week');
 Route::get('{province}/cities', 'CityController@index');
 Route::get('single/{province}/{city}', 'CityController@single');
 
+Route::get('updates/{type}/{id}', 'UpdateController@index');
+
 
 Route::resources([
   'users' => 'UserController',

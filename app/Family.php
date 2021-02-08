@@ -22,7 +22,7 @@ class Family extends Model
     }
     
     public function updates() {
-      return $this->hasMany(Updates::class);
+      return $this->hasMany(Update::class);
     }
     protected $fillable = [
       'name',

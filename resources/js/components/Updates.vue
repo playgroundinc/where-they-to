@@ -17,6 +17,12 @@
           />
         </form>
       </div>
+      <div class="col-xxs-12">
+        <div v-for="post in updates" v-bind:key="post.id">
+          <p>{{ post.created_at }}</p>
+          <p>{{ post.update }}</p>
+        </div>
+      </div>
     </div>
 </template>
 <script>
@@ -30,6 +36,7 @@ export default {
   data() {
     return {
       update: "",
+      updates: [],
       errors: [],
     }
   },
@@ -48,16 +55,18 @@ export default {
     },
     computed: {
       valid: function() {
-        return this.errors.length > 0;
+        return !this.errors.length > 0;
       }
     },
     methods: {
       updateValue: function(updateObject) {
-        console.log(updateObject);
         this[updateObject.name] = updateObject.value;
       },
-      createUpdate: function() {
-
+      createUpdate: async function(FormClass) {
+        const resp = await FormClass.submitForm();
+        if (resp.status === 'success') {
+          this.fetchUpdates();
+        }
       },
       postUpdate: function() {
         let data = {
@@ -70,7 +79,23 @@ export default {
         if (this.valid) {
           this.createUpdate(FormClass);
         }
+      },
+      setUpdates(updates) {
+        this.updates = updates;
+      },
+      async fetchUpdates() {
+        const data = {
+          route: `updates/${this.type}`,
+          id: this.id,
+        }
+        const resp = await this.$store.dispatch('fetchSingle', data);
+        if (resp.status === 200 && resp.data && resp.data.updates) {
+          this.setUpdates(resp.data.updates);
+        }
       }
+    },
+    mounted() {
+      this.fetchUpdates();
     }
 }
 </script>
