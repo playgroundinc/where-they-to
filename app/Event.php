@@ -34,6 +34,10 @@ class Event extends Model
       return $this->belongsToMany(EventType::class);
     }
 
+    public function updates() {
+      return $this->hasMany(Update::class);
+    }
+
     protected $fillable = [
       'accent_color',
       'name',

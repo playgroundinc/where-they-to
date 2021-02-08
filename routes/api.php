@@ -51,6 +51,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::post('types', 'TypeController@store');
 
+    Route::post('updates', 'UpdateController@store');
+
     Route::post('{province}/cities', 'CityController@store');
 });
 
@@ -75,6 +77,8 @@ Route::get('events/week/{date}', 'EventController@week');
 
 Route::get('{province}/cities', 'CityController@index');
 Route::get('single/{province}/{city}', 'CityController@single');
+
+Route::get('updates/{type}/{id}', 'UpdateController@index');
 
 
 Route::resources([

@@ -21,6 +21,10 @@
 					<SocialLinks 
 						:socialLinks="socialLinks"
 					/>
+          <Updates 
+            type="venue"
+            :id="id"
+          />
 				</div>
 			</div>
 			<div v-if="venue.user_id && user && venue.user_id === user.id">
@@ -36,6 +40,7 @@ import { mapState } from 'vuex';
 // Components
 import Button from "../../components/Button";
 import SocialLinks from "../../components/SocialLinks";
+import Updates from "../../components/Updates";
 
 export default {
 
@@ -62,7 +67,8 @@ export default {
 	},
 	components: {
     Button,
-		SocialLinks,
+    SocialLinks,
+    Updates,
 	},
 	methods: {
 		getVenue: async function() {
