@@ -63,7 +63,7 @@
 		</main>
 		<Modal 
 			title="Are you sure?"
-			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			copy="This action will permanently delete this family."
 			:open="confirmModal"
 			button="Confirm Delete"
 			v-on:confirm="handleDelete"

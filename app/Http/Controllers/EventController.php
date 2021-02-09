@@ -227,9 +227,9 @@ class EventController extends Controller
         // Find event by ID.
         $event = Event::find($id);
         $user = $event->user;
-		$validatedUser = request('user');
+		$validatedUser = request('user_id');
 		// Check that user from request owns this event.
-        if ($user['id'] === $validatedUser['id']) {
+        if ($user['id'] === $validatedUser) {
 			$event->performers()->detach();
 			$event->delete();
 			return response()->json(['status' => 'success'], 200);
