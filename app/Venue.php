@@ -31,5 +31,6 @@ class Venue extends Model
       'user_id',
       'family_id',
       'accent_color',
+      'venue_name',
     ];
 }
