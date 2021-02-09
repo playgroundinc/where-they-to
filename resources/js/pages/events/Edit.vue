@@ -99,6 +99,11 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
+        <Accessibility 
+					:value="accessibility"
+					:description="accessibility_description"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -139,6 +144,7 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import Accessibility from "../../components/Accessibility";
 import Autocomplete from "../../components/Autocomplete";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import Input from "../../components/Input";
@@ -185,6 +191,8 @@ export default {
 			venue_name: "",
 			socialLinksId: "",
 			confirmModal: false,
+			accessibility: [],
+			accessibility_description: "",
         };
     },
 
@@ -208,6 +216,7 @@ export default {
         }
     },
     components: {
+		Accessibility,
 		AccentColor,
         Address,
 		ErrorsContainer,
@@ -251,7 +260,7 @@ export default {
 			this.setStates(fields, family);
 		},
 		setEvent: function(event) {
-			const fields = ['accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
+			const fields = ['accessibility', 'accessibility_description', 'accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url', 'address', 'city', 'province', 'timezone', 'venue_name'];
 			this.setStates(fields, event);
 		},
 		getEvent: async function() {
@@ -282,6 +291,8 @@ export default {
 				date: this.date,
 				show_time: this.show_time,
 				accent_color: this.accent_color,
+				accessibility: this.accessibility,
+				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "edit", { route: "events", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);

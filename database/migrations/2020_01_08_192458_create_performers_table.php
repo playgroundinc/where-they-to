@@ -42,10 +42,11 @@ class CreatePerformersTable extends Migration
 			$table->string('city')->nullable();
 			$table->string('country')->default('CA');
 			$table->string('province')->default('ON');
-			$table->integer('accessibility')->default('0');
 			$table->string('timezone')->nullable();
       $table->text('description');      
       $table->string('accent_color')->default('#000000');
+      $table->json('accessibility')->nullable();
+      $table->text('accessibility_description')->nullable();
 			$table->bigInteger('user_id')->unsigned()->nullable();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -76,6 +77,7 @@ class CreatePerformersTable extends Migration
 			$table->bigIncrements('id');
 			$table->string('name');
       $table->timestamps();
+      $table->string('venue_name')->nullable();
       $table->string('address')->nullable();
       $table->string('city')->nullable();
       $table->string('province')->nullable();
@@ -87,6 +89,8 @@ class CreatePerformersTable extends Migration
 			$table->text('tickets')->nullable();
       $table->string('tickets_url')->nullable();
       $table->string('accent_color')->default('#000000');
+      $table->json('accessibility')->nullable();
+      $table->text('accessibility_description')->nullable();
 			$table->bigInteger('venue_id')->unsigned()->nullable();
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
 			$table->bigInteger('family_id')->unsigned()->nullable();

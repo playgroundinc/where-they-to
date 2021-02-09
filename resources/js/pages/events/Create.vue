@@ -99,6 +99,11 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
+				<Accessibility 
+					:value="accessibility"
+					:description="accessibility_description"
+					v-on:update="updateValue"
+				/>
 				<SocialMedia 
 					:errors="errors"
 					:facebook="facebook"
@@ -124,6 +129,7 @@ import socials from "../../core/social-media";
 import Form from "../../core/form";
 
 // Components
+import Accessibility from "../../components/Accessibility";
 import AccentColor from "../../components/AccentColor";
 import Autocomplete from "../../components/Autocomplete";
 import ErrorsContainer from "../../components/ErrorsContainer";
@@ -168,6 +174,8 @@ export default {
 			venue_id: "",
 			venue_name: "",
 			socials,
+			accessibility: [],
+			accessibility_description: '',
         };
     },
 
@@ -191,6 +199,7 @@ export default {
         }
     },
     components: {
+		Accessibility,
 		AccentColor,
 		Address,
 		Button,
@@ -238,7 +247,7 @@ export default {
             this[updateObject.name] = updateObject.value;
 		},
 		updateVenue: function(updateObject) {
-			const fields = ['accent_color', 'address', 'city', 'province', 'timezone'];
+			const fields = ['accent_color', 'address', 'city', 'province', 'timezone', 'accessibility', 'accessibility_description'];
 			this.updateFields(updateObject, fields);
 			this.venue_id = updateObject.id;
 			this.venue_name = updateObject.name;
@@ -255,7 +264,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'accessibility', 'accessibility_description'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});

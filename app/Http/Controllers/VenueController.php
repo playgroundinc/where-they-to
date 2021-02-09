@@ -53,11 +53,14 @@ class VenueController extends Controller {
             'description' => 'required',
             'address' => 'required',
             'country' => 'nullable',
-			'province' => 'required',
-			// city and timezone are nullable since it could be an online venue.
+            'province' => 'required',
+            // city and timezone are nullable since it could be an online venue.
             'city' => 'nullable',
-			'timezone' => 'nullable',
-			'accent_color' => 'nullable',
+            'timezone' => 'nullable',
+            'venue_name' => 'nullable',
+            'accent_color' => 'nullable',
+            'accessibility' => 'nullable',
+            'accessibility_description' => 'nullable',
 		]);
 		// Create the venue.
 		$venue = Venue::create($attributes);
@@ -69,7 +72,6 @@ class VenueController extends Controller {
 		$user->venues()->save($venue);
 		// Send back success message.
         return response()->json(['status' => 'success'], 201);
-
     }
 
     /**
@@ -120,7 +122,7 @@ class VenueController extends Controller {
 			return response()->json(['status' => 'unauthorized'], 401);
 		}
 		// As long as they match, update venue.
-		$venue->update(request(['name', 'address', 'city', 'description', 'accent_color']));
+		$venue->update(request(['name', 'address', 'city', 'description', 'accent_color', 'accessibility', 'accessibility_description']));
 		// Send success message.
         return response()->json(['status'=> 'success'], 200);
     }

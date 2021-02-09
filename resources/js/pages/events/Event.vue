@@ -24,6 +24,7 @@
 						<p>{{ venue.city}}, {{ venue.province }}</p>
 					</div>
 					<div v-else-if="event.address">
+            <p class="copy--bold">{{ event.venue_name }}</p>
 						<p>{{ event.address }}</p>
 						<p>{{ event.city}}, {{ event.province }}</p>
 					</div>
@@ -48,6 +49,10 @@
 					<div>
 						<Button :link="'/events/' + id + '/edit'" label="Edit Event" />
 					</div>
+          <Updates 
+            type="event"
+            :id="id"
+          />
 				</div>
 
 				
@@ -63,6 +68,7 @@ import { mapState } from 'vuex';
 import SocialLinks from "../../components/SocialLinks";
 import Lists from "../../components/Lists";
 import Button from "../../components/Button";
+import Updates from "../../components/Updates";
 
 export default {
 
@@ -95,7 +101,8 @@ export default {
 	components: {
     Button,
 		Lists,
-		SocialLinks,
+    SocialLinks,
+    Updates,
 	},
 	methods: {
 		setState: function(update) {
