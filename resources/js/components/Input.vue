@@ -50,6 +50,17 @@
             :aria-invalid="invalid"
             v-on:change="onChange"
 		>
+		<input 
+			v-else-if="type === 'checkbox'" 
+			:id="name" 
+			type="checkbox" 
+			:value="value" 
+			:required="required"
+			:aria-checked="checked"
+			:checked="checked"
+			:aria-describedby="helperText ? 'helper-text' : null"
+            v-on:change="onCheck"
+		>
         <input
             v-else
             class="input"
@@ -125,6 +136,11 @@ export default {
 			type: Boolean,
 			required: false,
 			default: false,
+		},
+		checked: {
+			type: Boolean,
+			required: false,
+			default:false,
 		}
     },
     data() {
@@ -157,6 +173,14 @@ export default {
                 name: this.name,
                 value: event.target.value
             });
+		},
+		onCheck: function(event) {
+			this.removeError();
+            this.$emit("update", {
+                name: this.name,
+				value: event.target.value,
+				checked: event.target.checked,
+            });
         },
         floatLabel: function(e) {
             this.active = !this.active;
@@ -173,7 +197,7 @@ export default {
             return this.active || this.value !== '' ? 'float' : 'sink';
         },
         label() {
-            const labelText = this.name.replace("_", " ");
+            const labelText = this.name.replace(/_/g, " ");
             return labelText;
         },
         invalid() {

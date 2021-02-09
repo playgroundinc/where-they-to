@@ -34,6 +34,10 @@ class Event extends Model
       return $this->belongsToMany(EventType::class);
     }
 
+    public function updates() {
+      return $this->hasMany(Update::class);
+    }
+
     protected $fillable = [
       'accent_color',
       'name',
@@ -47,8 +51,13 @@ class Event extends Model
       'show_time',
       'type',
       'tickets',
-      'tickets_url'
+      'tickets_url',
+      'accessibility',
+      'accessibility_description',
+    ];
+
+    protected $casts = [
+      'accessibility' => 'array',
     ];
   
-
 }

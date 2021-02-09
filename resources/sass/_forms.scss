@@ -7,6 +7,10 @@
     }
 }
 
+fieldset {
+  border: 0;
+}
+
 @import "./forms/selections";
 @import "./forms/inputs";
 @import "./forms/labels";

@@ -43,6 +43,12 @@
 		<div v-if="performer.user_id && user && performer.user_id === user.id">
 			<Button :link="'/performers/' + performer.id + '/edit'" label="Edit Profile"/>
 		</div>
+    <div v-if="performer.user_id && user && performer.user_id === user.id">
+			<Update 
+        type="performer"
+        :id="id"
+      />
+		</div>
 		<Modal 
 			:title="tipTitle"
 			:copy="performer.tips || ''"
@@ -60,6 +66,7 @@ import { mapState } from 'vuex';
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import SocialLinks from "../../components/SocialLinks";
+import Update from "../../components/Updates";
 
 export default {
 
@@ -92,7 +99,8 @@ export default {
 	components: {
     Button,
 		Modal,
-		SocialLinks,
+    SocialLinks,
+    Update,
 	},
 	mounted() {
 		this.getPerformer();

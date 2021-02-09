@@ -31,6 +31,7 @@ class EventController extends Controller
 				$venue->events()->save($event);
 			}
 		} else {
+			$event->venue_name= $request['venue_name'];
 			$event->address = $request['address'];
 			$event->city = $request['city'];
 			$event->province = $request['province'];
@@ -117,6 +118,8 @@ class EventController extends Controller
 		$socialLinks = $this->createSocialLinks($request);
 		// Valiate all fields.
         $attributes = request()->validate([
+			'accessibility' => 'nullable',
+			'accessibility_description' => 'nullable',
 			'accent_color' => 'nullable',
 			'show_time' => 'nullable',
 			'name' => 'required',
@@ -190,6 +193,8 @@ class EventController extends Controller
 		// Check that user attached to request is also the user stored in the system.
         if ($user['id'] === $validatedUser['id']):
 			$event->update(request([
+				'accessibility',
+				'accessibility_description',
 				'accent_color',
 				'name',
 				'address',

@@ -20,6 +20,10 @@ class Venue extends Model
     public function events() {
       return $this->hasMany(Event::class);
     }
+
+    public function updates() {
+      return $this->hasMany(Update::class);
+    }
     protected $fillable = [
       'name',
       'description',
@@ -32,5 +36,11 @@ class Venue extends Model
       'family_id',
       'accent_color',
       'venue_name',
+      'accessibility',
+      'accessibility_description',
+    ];
+
+    protected $casts = [
+      'accessibility' => 'array',
     ];
 }

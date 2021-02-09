@@ -21,6 +21,10 @@ class Performer extends Model
       return $this->hasOne(socialLinks::class);
     }
 
+    public function updates() {
+      return $this->hasMany(Update::class);
+    }
+
     public function events() 
     {
       return $this->belongsToMany(Event::class);
