@@ -111,7 +111,22 @@
 					v-on:update="updateValue"
 				/>
 				<Button variation="input" label="Update Event" :disabled="errors.length > 0"/>
-			</form>    
+			</form>
+			<div class="copy--center">
+				<Button 
+					classes="btn--inline copy--center" 
+					v-on:clicked.prevent="toggleModal" 
+					label="Delete Family" 
+				/>
+				<Modal 
+					title="Are you sure?"
+					copy="This action will permanently delete this event."
+					:open="confirmModal"
+					button="Confirm Delete"
+					v-on:confirm="handleDelete"
+					v-on:close="toggleModal"
+				/>
+			</div>    
 		</main>
     </div>
 </template>
@@ -135,6 +150,7 @@ import FamilySelect from "../../components/FamilySelect";
 import VenueSelect from "../../components/VenueSelect";
 import Button from "../../components/Button";
 import AccentColor from "../../components/AccentColor";
+import Modal from "../../components/Modal";
 
 export default {
     data() {
@@ -168,6 +184,7 @@ export default {
 			venue_id: "",
 			venue_name: "",
 			socialLinksId: "",
+			confirmModal: false,
         };
     },
 
@@ -202,6 +219,7 @@ export default {
         Autocomplete,
 		VenueSelect,
 		Button,
+		Modal,
     },
     methods: {
 		createEvent: async function(FormClass) {
@@ -307,38 +325,52 @@ export default {
 			return additionalData;
         },
         addToArray: function(updateObject, currentArray) {
-                const index = this.findValue(currentArray, updateObject.value);
-				if (index <= -1) {
-					currentArray.push(updateObject.value);
-					this[updateObject.name] = currentArray;
+			const index = this.findValue(currentArray, updateObject.value);
+			if (index <= -1) {
+				currentArray.push(updateObject.value);
+				this[updateObject.name] = currentArray;
+			}
+		},
+		findValue: function(currentArray, updateObject) {
+			let index = -1;
+			currentArray.forEach((item, i) => {
+				if (item.id === updateObject.id) {
+					index = i;
+					return index;
 				}
-			},
-			findValue: function(currentArray, updateObject) {
-				let index = -1;
-				currentArray.forEach((item, i) => {
-					if (item.id === updateObject.id) {
-						index = i;
-						return index;
-					}
-				});
-				return index;
-			},
-			deleteFromArray: function(updateObject, currentArray) {
-                const index = this.findValue(currentArray, updateObject.value);
-				if (index > -1) {
-					currentArray.splice(index, 1);
-					this[updateObject.name] = currentArray;
-				}
-			},
-			updateArray: function(updateObject) {
-				const currentArray = this[updateObject.name];
-				if (currentArray && updateObject.add) {
-					this.addToArray(updateObject, currentArray);
-				} 
-				if (currentArray && !updateObject.add) {
-					this.deleteFromArray(updateObject, currentArray);
-				}
-            },
+			});
+			return index;
+		},
+		deleteFromArray: function(updateObject, currentArray) {
+			const index = this.findValue(currentArray, updateObject.value);
+			if (index > -1) {
+				currentArray.splice(index, 1);
+				this[updateObject.name] = currentArray;
+			}
+		},
+		updateArray: function(updateObject) {
+			const currentArray = this[updateObject.name];
+			if (currentArray && updateObject.add) {
+				this.addToArray(updateObject, currentArray);
+			} 
+			if (currentArray && !updateObject.add) {
+				this.deleteFromArray(updateObject, currentArray);
+			}
+		},
+		handleDelete: async function() {
+			const data = {
+				user_id: this.user.id,
+			}
+			const DeleteForm = new Form(data, 'destroy', { route: 'events', id: this.id });
+			const resp = await DeleteForm.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch('findUser');
+				this.$router.push('/dashboard');
+			}
+		},
+		toggleModal: function() {
+			this.setValue('confirmModal', !this.confirmModal);
+		}
     },
     async mounted() {
         try {
