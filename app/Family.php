@@ -29,5 +29,10 @@ class Family extends Model
       'description',
       'event_id',
       'accent_color',
+      'performers_no_profile',
+    ];
+
+    protected $casts = [
+      'performers_no_profile' => 'array',
     ];
 }

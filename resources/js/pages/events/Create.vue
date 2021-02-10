@@ -58,6 +58,7 @@
                     route="performers"
 					:errors="errors"
 					:currentArray="performers"
+					:noProfile="performers_no_profile"
 					v-on:update="updateArray"
 				/>	
                 <SelectTypes 
@@ -156,6 +157,7 @@ export default {
             show_time: "",
             venue: "",
             performers: [],
+			performers_no_profile: [],
 			province: "",
 			city: "",
 			address: "",
@@ -264,7 +266,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'accessibility', 'accessibility_description'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'accessibility', 'accessibility_description', 'performers_no_profile'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});

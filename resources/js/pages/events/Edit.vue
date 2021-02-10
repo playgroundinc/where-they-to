@@ -59,6 +59,7 @@
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
+					:noProfile="performers_no_profile"
 				/>	
                 <SelectTypes 
                     :errors="errors"
@@ -193,6 +194,7 @@ export default {
 			confirmModal: false,
 			accessibility: [],
 			accessibility_description: "",
+			performers_no_profile: [],
         };
     },
 
@@ -260,7 +262,7 @@ export default {
 			this.setStates(fields, family);
 		},
 		setEvent: function(event) {
-			const fields = ['accessibility', 'accessibility_description', 'accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url', 'address', 'city', 'province', 'timezone', 'venue_name'];
+			const fields = ['accessibility', 'accessibility_description', 'accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url', 'address', 'city', 'province', 'timezone', 'venue_name', 'performers_no_profile'];
 			this.setStates(fields, event);
 		},
 		getEvent: async function() {
@@ -291,8 +293,6 @@ export default {
 				date: this.date,
 				show_time: this.show_time,
 				accent_color: this.accent_color,
-				accessibility: this.accessibility,
-				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "edit", { route: "events", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -329,13 +329,14 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'performers_no_profile', 'accessibility', 'accessibility_description'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});
 			return additionalData;
         },
         addToArray: function(updateObject, currentArray) {
+			console.log(updateObject.value);
 			const index = this.findValue(currentArray, updateObject.value);
 			if (index <= -1) {
 				currentArray.push(updateObject.value);
@@ -345,6 +346,9 @@ export default {
 		findValue: function(currentArray, updateObject) {
 			let index = -1;
 			currentArray.forEach((item, i) => {
+				if (item.id === 0) {
+					return index;
+				}
 				if (item.id === updateObject.id) {
 					index = i;
 					return index;

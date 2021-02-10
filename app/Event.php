@@ -54,10 +54,12 @@ class Event extends Model
       'tickets_url',
       'accessibility',
       'accessibility_description',
+      'performers_no_profile',
     ];
 
     protected $casts = [
       'accessibility' => 'array',
+      'performers_no_profile' => 'array',
     ];
   
 }
