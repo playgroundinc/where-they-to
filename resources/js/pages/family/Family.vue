@@ -19,6 +19,9 @@
 								<a :href="'/performers/' + performer.id " v-text="performer.name"></a>
 							</li>
 						</ul>
+            <ul v-if="family.performers_no_profile && family.performers_no_profile.length">
+              <li v-for="performer in family.performers_no_profile" v-bind:key="performer.name">{{ performer.name }}</li>
+            </ul>
 					</div>
 					<div v-if="socialLinks">
 						<SocialLinks

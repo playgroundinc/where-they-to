@@ -20,7 +20,7 @@
                 <p class="label label--floating"><span class="float">Current {{ label }}</span></p>
                 <ul class="row selections__list">
                     <li class="selections__single col-md-4 col-xxs-6" v-for="item in allSelections" v-bind:key="item.id !== 0 ? item.id : item.name">
-                        <a href="#" class="selections__single__link" @click.prevent="function() { removeValue(item.id) }">
+                        <a href="#" class="selections__single__link" @click.prevent="function() { removeValue(item) }">
                             {{ item.name }} 
                             <svg class="selections__single__close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -38,7 +38,7 @@ import Autocomplete from "./Autocomplete";
 export default {
     computed: {
 		allSelections() {
-			if (this.noProfile.length) {
+			if (this.noProfile && this.noProfile.length) {
 				const newArray = this.currentArray.concat(this.noProfile);
 				return newArray;
 			}
@@ -91,14 +91,15 @@ export default {
         },
         removeValue: function(updateObject) {
 			let name = this.route;
-			if (updateObject === 0) {
+			if (updateObject.id === 0) {
 				name = `${this.route}_no_profile` 
 			}
             const updateArray = {
                 name,
                 add: false,
                 value: {
-                    id: updateObject,
+                    id: updateObject.id,
+					name: updateObject.name
                 }
             };
             this.$emit("update", updateArray);
