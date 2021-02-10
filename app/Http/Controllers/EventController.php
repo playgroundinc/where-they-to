@@ -127,7 +127,8 @@ class EventController extends Controller
 			'description' => 'required',
 			'timezone' => 'nullable',
 			'tickets' => 'nullable',
-			'tickets_url' => 'nullable'
+			'tickets_url' => 'nullable',
+			'performers_no_profile' => 'nullable',
 		]);
 		// Use Carbon to parse and format date.
         $date = Carbon::parse(request('date'));
@@ -205,7 +206,8 @@ class EventController extends Controller
 				'description',
 				'show_time',
 				'tickets',
-				'tickets_url'
+				'tickets_url',
+        'performers_no_profile',
 			]));
 
 			// Save the fields.

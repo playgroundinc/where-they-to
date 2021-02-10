@@ -24,13 +24,13 @@
                     >
                         <a class="autocomplete__single__link" @click.prevent="function() { handleSelect(match) }" href="#">{{ match.name }}</a>
                     </li>
-                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="value">No results found. <a href="#" @click.prevent="toggleModal">Add a new term.</a></li>
+                    <li class="autocomplete__single col-xxs-12 no-link" v-else-if="value">No results found. <a v-if="newBtn" href="#" @click.prevent="toggleModal">{{ newBtn }}</a></li>
                 </ul>
             </div>
 			<Modal
 				title="Are you sure?"
 				:open="newTermModal"
-				:copy="'Looks like you\'re the first person to use this tag. Please confirm the spelling of your tag before hitting the button below. The spelling you\'ve provided is \' ' + value + ' \''"
+				:copy="'Please confirm the spelling before hitting the button below. The spelling you\'ve provided is \' ' + value + ' \''"
 				button="Yes, I'm sure."
 				v-on:close="toggleModal"
 				v-on:confirm="newTerm"
@@ -86,7 +86,11 @@ export default {
         currentValue: {
             type: String,
             required: false,
-        }
+        },
+		newBtn: {
+			type: String,
+			required: false,
+		}
     },
     computed: {
         labelId() {

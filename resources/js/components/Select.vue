@@ -7,17 +7,19 @@
             <Autocomplete 
                 :errors="errors"
                 :label="label"
-                :values="currentArray"
+                :values="allSelections"
                 :route="route"
                 v-on:search="search"
                 v-on:selection="updateValue"
+				newBtn="Add performer without profile."
+				v-on:new="handleNoProfile"
             />
         </div>
         <div class="col-xxs-12 col-md-6">
             <div class="input__container">
                 <p class="label label--floating"><span class="float">Current {{ label }}</span></p>
                 <ul class="row selections__list">
-                    <li class="selections__single col-md-4 col-xxs-6" v-for="item in currentArray" v-bind:key="item.id">
+                    <li class="selections__single col-md-4 col-xxs-6" v-for="item in allSelections" v-bind:key="item.id !== 0 ? item.id : item.name">
                         <a href="#" class="selections__single__link" @click.prevent="function() { removeValue(item.id) }">
                             {{ item.name }} 
                             <svg class="selections__single__close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" height="18" width="18" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,12 +36,14 @@
 import Input from "./Input";
 import Autocomplete from "./Autocomplete";
 export default {
-    data() {
-        return {
-            allOptions: [],
-        }
-    },
     computed: {
+		allSelections() {
+			if (this.noProfile.length) {
+				const newArray = this.currentArray.concat(this.noProfile);
+				return newArray;
+			}
+			return this.currentArray;
+		}
     },
     props: {
         errors: {
@@ -57,7 +61,11 @@ export default {
         label: {
             type: String,
             required: true,
-        }
+        },
+		noProfile: {
+			type: Array,
+			required: false,
+		}
     },
     components: {
         Input,
@@ -82,8 +90,12 @@ export default {
             }
         },
         removeValue: function(updateObject) {
+			let name = this.route;
+			if (updateObject === 0) {
+				name = `${this.route}_no_profile` 
+			}
             const updateArray = {
-                name: this.route,
+                name,
                 add: false,
                 value: {
                     id: updateObject,
@@ -91,6 +103,9 @@ export default {
             };
             this.$emit("update", updateArray);
         },
+		handleNoProfile: function(newTerm) {
+			this.$emit('update', { name: `${this.route}_no_profile`, value: { id: 0, name: newTerm }, add: true });
+		}
     }
 }
 </script>

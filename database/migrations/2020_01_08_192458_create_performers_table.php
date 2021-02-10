@@ -90,6 +90,7 @@ class CreatePerformersTable extends Migration
       $table->string('tickets_url')->nullable();
       $table->string('accent_color')->default('#000000');
       $table->json('accessibility')->nullable();
+      $table->json('performers_no_profile')->nullable();
       $table->text('accessibility_description')->nullable();
 			$table->bigInteger('venue_id')->unsigned()->nullable();
 			$table->foreign('venue_id')->references('id')->on('venues')->onDelete('set null');
