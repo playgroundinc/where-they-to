@@ -44,6 +44,7 @@
 			:currentValue="city"
 			v-on:selection="updateCity"
 			v-on:new="createCity"
+            newBtn="Add City"
         />
 		<Input 
 			v-else

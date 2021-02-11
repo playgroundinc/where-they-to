@@ -29,7 +29,7 @@
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
         >
-            <option class="input__default" default="true" value="" disabled></option>
+            <option class="input__default" default="true" value="">Select</option>
             <option
                 v-for="(option, index) in options"
                 :value="index"
@@ -61,6 +61,21 @@
 			:aria-describedby="helperText ? 'helper-text' : null"
             v-on:change="onCheck"
 		>
+        <input
+            v-else-if="type === 'date'"
+            class="input"
+            :id="name"
+            :type="type"
+            :name="name"
+            :value="value"
+            :required="required"
+            :aria-invalid="invalid"
+            :aria-describedby="helperText ? 'helper-text' : null"
+            v-on:keyup="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
+			:disabled="disabled"
+		/>
         <input
             v-else
             class="input"
@@ -194,6 +209,9 @@ export default {
     },
     computed: {
         floating() {
+            if (this.type === 'select' || this.type === 'date') {
+                return 'float';
+            }
             return this.active || this.value !== '' ? 'float' : 'sink';
         },
         label() {
