@@ -26,6 +26,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('user/{id}/follow/family', 'UserController@toggleFamilyFollowing');
 
     Route::get('user', 'UserController@getAuthenticatedUser');
+    Route::get('user/events/{date}', 'EventController@myEvents');
+    Route::get('user/events/week/{date}', 'EventController@myEventsWeekly');
 
     Route::post('events', 'EventController@store');
     Route::put('events/{id}', 'EventController@update');

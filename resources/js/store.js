@@ -116,13 +116,16 @@ export default new Vuex.Store({
             });
         },
         fetchDate({ commit }, data) {
+            const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
                 const { date } = data;
-                const { parameter } = data;
-                axios
-                    .get(
-                        `http://127.0.0.1:8000/api/events/${parameter}/${date}`
-                    )
+                axios({
+                    url: `http://127.0.0.1:8000/api/user/events/${date}`,
+                    headers: {
+                        Authorization: `Bearer ${user}`
+                    },
+
+                })
                     .then(resp => {
                         resolve(resp);
                         return resp;

@@ -207,7 +207,7 @@ class EventController extends Controller
 				'show_time',
 				'tickets',
 				'tickets_url',
-        'performers_no_profile',
+                'performers_no_profile',
 			]));
 
 			// Save the fields.
@@ -243,6 +243,76 @@ class EventController extends Controller
 		}
 		// If user does not own this event, return unauthorized. 
         return response()->json(['status' => 'unauthorized'], 401);
+    }
+
+    public function getFollowing($user, $fields) {
+        $following = array();
+        foreach ($fields as $field) {
+            $current_value = $user['following_' . $field];
+            if (!empty($current_value)) {
+                $following[$field] = $current_value;
+            }
+        }
+        return $following;
+    }
+
+
+    public function getActiveEvents($today, $following, $fields) {
+		// Find events on this date.    
+        $active_events = array();
+        foreach ($fields as $key => $field) {
+            $events = array();
+            if ($field === 'performers') {
+                $events =  Event::where('date', '=', $today)->whereHas($field, function($q) use ($key, $field, $following) {
+                    $q->whereIn($key, $following[$field]);
+                })->pluck('id'); 
+            } elseif (!empty($following[$field])) {
+                $events = Event::where('date', '=', $today)->whereIn($key, $following[$field])->pluck('id'); 
+            }
+            $active_events[$field] = json_decode(json_encode($events, true));
+        }
+        return $active_events;
+    } 
+
+    public function getEventsByDate($date, $user, $page) {
+        $fields = array('performer_id' => 'performers', 'venue_id' => 'venues', 'family_id' => 'families');
+        $following = $this->getFollowing($user, $fields);
+        $today = Carbon::parse($date)->format('Y-m-d');
+        $active_events = $this->getActiveEvents($today, $following, $fields);
+        $all_events = array_unique(array_merge($active_events['performers'], $active_events['venues'], $active_events['families']));
+        $total = ceil(count($all_events) / 10);
+        $event_ids = array_splice($all_events, intval($page) * 10, intval($page) + 10);
+        $events = Event::whereIn('id', $event_ids)->get();
+        $response = compact('events', 'total', 'page', 'date');
+        return $response;
+    }
+
+    /**
+     * Pull events for following or attending.
+     *
+     * @param  \App\Event  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function myEvents($date) {
+        $user = request('user');
+        $request = request();
+        $page = $request->query('page', '0');
+        $response = $this->getEventsByDate($date, $user, $page);
+        return response()->json($response);
+    }
+
+    public function myEventsWeekly($date) {
+        $weeks_events = array();
+        for ($i = 1; $i <= 7; $i = $i + 1) {
+            $current_date = Carbon::parse($date)->addDays($i)->format('Y-m-d');
+            $user = request('user');
+            $request = request();
+            $page = $request->query('page', '0');
+            $response = $this->getEventsByDate($current_date, $user, $page);
+            $key = Carbon::parse($current_date)->format('l F jS');
+            $weeks_events[$key] = $response;
+        }
+        return response()->json($weeks_events);
     }
 
 	/**

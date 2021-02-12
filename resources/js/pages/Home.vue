@@ -15,7 +15,7 @@
                             type="date"
                             name="date"
                             :value="today"
-                            v-on:update="updateValue"
+                            v-on:update="getTodaysEvents"
                         />
                     </div>
                     <div class="col-md-4">
@@ -62,12 +62,23 @@
                 </div>
             </form>
             <h2>On Tonight</h2>
-            <ul v-if="todays.length"> 
-                <li v-for="event in todays" v-bind:key="event.id">
+            <ul v-if="todaysEvents.events && todaysEvents.events.length"> 
+                <li v-for="event in todaysEvents.events" v-bind:key="event.id">
                     <a :href="'/events/' + event.id">{{ event.name }}</a>
                 </li>
             </ul>
+            <p v-else>No one you're following has an event this night.</p>
             <h2>This Week</h2>
+            <div v-if="weeksEvents"> 
+                <div v-for="(date, key) in weeksEvents" v-bind:key="date">
+                    <h3>{{ key }}</h3>
+                    <ul>
+                        <li v-for="event in date.events" v-bind:key="event.id">
+                            <a :href="'/events/' + event.id">{{ event.name }}</a>
+                        </li>
+                    </ul>            
+                </div>
+            </div>
         </main>
     </div>
 </template>
@@ -85,8 +96,8 @@
         data() {
             return {
                 errors: [],
-                todays: {},
-                weeks: [],
+                todaysEvents: [],
+                weeksEvents: [],
                 province: "",
                 cities: [],
                 city: "",
@@ -121,7 +132,6 @@
                     return this.date;
                 },
                 set: function(update) {
-                    console.log(update);
                     this.date = update;
                 }
             },
@@ -146,30 +156,38 @@
             },
             updateValue: function(updateObject) {
                 this[updateObject.name] = updateObject.value;
+            },
+            getTodaysEvents: async function(updateObject) {
+                try {
+                    if (updateObject) {
+                        this.updateValue(updateObject);
+                    }
+                    const resp = await this.$store.dispatch('fetchDate', {
+                        date: this.today,
+                    });
+                    if (resp.status === 200) {
+                        this.todaysEvents = resp.data;
+                        this.getThisWeeksEvents();
+                    }
+                } catch(err) {
+                    console.log(err);
+                }
+            },
+            getThisWeeksEvents: async function() {
+                try {
+                    const resp = await this.$store.dispatch('fetchDate', {
+                        date: `week/${this.today}`,
+                    });
+                    if (resp.status === 200) {
+                        this.weeksEvents = resp.data;
+                    }
+                } catch(err) {
+                    console.log(err);
+                }
             }
         },
         mounted() {
-            
-
-            // this.$store.dispatch('fetchDate', {
-            //     parameter: 'date',
-            //     date: today,
-            // }).then((response) => {
-            //     this.todays = JSON.parse(response.data.events);
-            // });
-            // const tempArray = [];
-            // for (let i = 1; i < 7; i = i + 1) {
-            //     const thisWeeks = {};
-            //     let weekdate = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate() + i}`;
-            //     this.$store.dispatch('fetchDate', {
-            //         parameter: 'date',
-            //         date: weekdate,
-            //     }).then((response) => {
-            //         thisWeeks[response.data.date] = JSON.parse(response.data.events);
-            //         tempArray.push(thisWeeks);
-            //     });
-            // }
-            // this.weeks = tempArray;
+            this.getTodaysEvents();
         }
     }
 </script>
