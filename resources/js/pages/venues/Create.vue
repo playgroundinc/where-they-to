@@ -135,7 +135,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['timezone', 'city'];
+			const fields = ['timezone', 'city', 'accessibility', 'accessibility_description'];
 			fields.forEach((field) => {
 				additionalData[field] = this[field];
 			});
@@ -156,8 +156,6 @@ export default {
 				province: this.province,
 				user_id: this.user.id,
 				accent_color: this.accent_color,
-				accessibility: this.accessibility,
-				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "create", { route: "venues" });
 			this.errors = FormClass.checkRequiredFields(data);

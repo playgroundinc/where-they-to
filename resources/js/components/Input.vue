@@ -71,7 +71,7 @@
             :required="required"
             :aria-invalid="invalid"
             :aria-describedby="helperText ? 'helper-text' : null"
-            v-on:keyup="onChange"
+            v-on:change="onChange"
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
 			:disabled="disabled"
