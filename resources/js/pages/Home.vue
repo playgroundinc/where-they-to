@@ -15,7 +15,7 @@
                             type="date"
                             name="date"
                             :value="today"
-                            v-on:update="getTodaysEvents"
+                            v-on:update="handleDateChange"
                         />
                     </div>
                     <div class="col-md-4">
@@ -24,38 +24,6 @@
                             type="select"
                             :value="province"
                             :options="provinces"
-                            v-on:update="updateValue"
-                        />
-                    </div>
-                    <div class="col-md-4">
-                        <Input 
-                            v-if="'OE' === province || '' === province"
-                            name="timezone"
-                            :value="timezone"
-                            type="select"
-                            :required="true"
-                            :errors="errors"
-                            :options="timezones"
-                            v-on:update="updateValue"            
-                        />
-                        <Autocomplete 
-                            v-if="'OE' !== province && '' !== province && '' === city"
-                            :errors="errors"
-                            label="City"
-                            route="cities"
-                            :additionalRoute="province"
-                            :currentValue="city"
-                            v-on:selection="updateCity"
-                        />
-                        <Input 
-                            v-else-if="'' !== city"
-                            name="city"
-                            :value="city"
-                            type="text"
-                            :required="true"
-                            :errors="errors"
-                            :disabled="true"
-                            :clearButton="true"
                             v-on:update="updateValue"
                         />
                     </div>
@@ -70,12 +38,17 @@
             <p v-else>No one you're following has an event this night.</p>
             <h2>This Week</h2>
             <div v-if="weeksEvents"> 
-                <div v-for="(date, key) in weeksEvents" v-bind:key="date">
+                <div v-for="(date, key) in weeksEventsFiltered" v-bind:key="key">
                     <h3>{{ key }}</h3>
                     <ul>
                         <li v-for="event in date.events" v-bind:key="event.id">
                             <a :href="'/events/' + event.id">{{ event.name }}</a>
                         </li>
+                        <Button
+                            v-if="date.page + 1 <= date.total"
+                            label="View more" 
+                            v-on:clicked="loadMoreEvents(key, date.date, date.page)"   
+                        />
                     </ul>            
                 </div>
             </div>
@@ -97,7 +70,9 @@
             return {
                 errors: [],
                 todaysEvents: [],
+                todaysEventsFiltered: {},
                 weeksEvents: [],
+                weeksEventsFiltered: {},
                 province: "",
                 cities: [],
                 city: "",
@@ -143,7 +118,7 @@
             },
             timezones() {
                 return this.location.getTimezones();
-            }
+            },
         },
         components: {
             Autocomplete,
@@ -155,20 +130,52 @@
                 this.city = selection.name;
             },
             updateValue: function(updateObject) {
+                console.log(updateObject);
                 this[updateObject.name] = updateObject.value;
-            },
-            getTodaysEvents: async function(updateObject) {
-                try {
-                    if (updateObject) {
-                        this.updateValue(updateObject);
+                if (updateObject.name === 'province') {
+                    this.todaysEvents.events = this.filterByProvince(this.todaysEvents.events);
+                    for (let date in this.weeksEvents) {
+                        this.weeksEventsFiltered[date] = {};
+                        if (this.weeksEvents[date].events && this.weeksEvents[date].events.length) {
+                            this.weeksEventsFiltered[date].events = this.filterByProvince(this.weeksEvents[date].events);
+                        }
                     }
+                }
+            },
+            filterByProvince(array) {
+                let filteredArr = [];
+                if (array.length) {
+                    filteredArr = array.filter((item) => {
+                        if (this.province !== '' && item.province && item.province !== this.province) {
+                            return false;
+                        }
+                        if (this.city !== '' && item.city && item.city !== this.city) {
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+                return filteredArr;
+            },
+            getTodaysEvents: async function() {
+                try {
                     const resp = await this.$store.dispatch('fetchDate', {
                         date: this.today,
                     });
                     if (resp.status === 200) {
+                        this.filterByProvince(resp.data.events);
                         this.todaysEvents = resp.data;
                         this.getThisWeeksEvents();
                     }
+                } catch(err) {
+                    console.log(err);
+                }
+            },
+            handleDateChange: async function(updateObject) {
+                try {
+                    this.updateValue(updateObject);
+                    await this.getTodaysEvents();
+                    await this.getThisWeeksEvents();
                 } catch(err) {
                     console.log(err);
                 }
@@ -179,13 +186,39 @@
                         date: `week/${this.today}`,
                     });
                     if (resp.status === 200) {
+                        this.updateValue({ name: 'weeksEvents', value: {}});
+                        this.updateValue({ name: 'weeksEventsFiltered', value: {}});
+                        for (let date in resp.data) {
+                            this.weeksEventsFiltered[date] = resp.data[date];
+                            if (resp.data[date].events && resp.data[date].events.length) {
+                                this.weeksEventsFiltered[date].events = this.filterByProvince(resp.data[date].events);
+                            }
+                        }
                         this.weeksEvents = resp.data;
                     }
                 } catch(err) {
                     console.log(err);
                 }
-            }
+            },
+            loadMoreEvents: async function(key, date, page) {
+                console.log(date);
+                try {
+                    const resp = await this.$store.dispatch('fetchDate', {
+                        date,
+                        query: `page=${page}`,
+                    })
+                    if (resp.status === 200) {
+                        this.weeksEvents[key].events = this.weeksEvents[key].events.concat(resp.data.events);
+                        this.weeksEvents[key].page = resp.data.page;
+                        this.weeksEventsFiltered[key].events = this.filterByProvince(this.weeksEvents.events);
+                    }
+                } catch(err) {
+                    console.log(err);
+                }
+                
+            },
         },
+        
         mounted() {
             this.getTodaysEvents();
         }
