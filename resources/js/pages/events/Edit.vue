@@ -100,7 +100,7 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
-        <Accessibility 
+                <Accessibility 
 					:value="accessibility"
 					:description="accessibility_description"
 					v-on:update="updateValue"

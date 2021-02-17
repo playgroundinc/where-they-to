@@ -271,8 +271,12 @@ export default new Vuex.Store({
         },
         search({ state }, payload) {
             return new Promise((resolve, reject) => {
+                let query = '';
+                if (payload.query) {
+                    query = `?${payload.query}`;
+                }
                 axios({
-                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}`,
+                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}${query}`,
                     method: "GET",
                 })
                 .then(resp => {
