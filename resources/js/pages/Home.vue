@@ -59,7 +59,7 @@
 <script>
     import { mapState } from 'vuex'
 
-    import Location from "../Location";
+    import Location from "../core/Location";
 
     import Button from "../components/Button";
     import Input from "../components/Input";
@@ -130,7 +130,6 @@
                 this.city = selection.name;
             },
             updateValue: function(updateObject) {
-                console.log(updateObject);
                 this[updateObject.name] = updateObject.value;
                 if (updateObject.name === 'province') {
                     this.todaysEvents.events = this.filterByProvince(this.todaysEvents.events);

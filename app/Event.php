@@ -8,58 +8,57 @@ class Event extends Model
 {
     //
     public function user() {
-      return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
     public function venue() 
     {
-      return $this->belongsTo(Venue::class);
+        return $this->belongsTo(Venue::class);
     }
 
     public function performers() 
     {
-      return $this->belongsToMany(Performer::class);
+        return $this->belongsToMany(Performer::class);
     }
 
     public function family() 
     {
-      return $this->belongsTo(Family::class);
+        return $this->belongsTo(Family::class);
     }
 
     public function socialLinks() 
     {
-      return $this->hasOne(SocialLinks::class);
+        return $this->hasOne(SocialLinks::class);
     }
     public function eventTypes() 
     {
-      return $this->belongsToMany(EventType::class);
+        return $this->belongsToMany(EventType::class);
     }
 
     public function updates() {
-      return $this->hasMany(Update::class);
+        return $this->hasMany(Update::class);
     }
 
     protected $fillable = [
-      'accent_color',
-      'name',
-      'address',
-      'city',
-      'doors',
-      'province',
-      'timezone',
-      'description',
-      'date',
-      'show_time',
-      'type',
-      'tickets',
-      'tickets_url',
-      'accessibility',
-      'accessibility_description',
-      'performers_no_profile',
+        'accent_color',
+        'name',
+        'address',
+        'city',
+        'doors',
+        'province',
+        'timezone',
+        'description',
+        'date',
+        'show_time',
+        'type',
+        'tickets',
+        'tickets_url',
+        'accessibility',
+        'accessibility_description',
+        'performers_no_profile',
     ];
 
     protected $casts = [
-      'accessibility' => 'array',
-      'performers_no_profile' => 'array',
+        'accessibility' => 'array',
+        'performers_no_profile' => 'array',
     ];
-  
 }

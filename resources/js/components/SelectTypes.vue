@@ -11,6 +11,7 @@
                 :values="allTypes"
                 v-on:new="addTerm"
                 v-on:selection="updateValue"
+                newBtn="Add new tag"
             />
         </div>
         <div class="col-xxs-12 col-md-6">

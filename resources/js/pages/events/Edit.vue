@@ -100,7 +100,7 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
-        <Accessibility 
+                <Accessibility 
 					:value="accessibility"
 					:description="accessibility_description"
 					v-on:update="updateValue"
@@ -336,7 +336,6 @@ export default {
 			return additionalData;
         },
         addToArray: function(updateObject, currentArray) {
-			console.log(updateObject.value);
 			const index = this.findValue(currentArray, updateObject.value);
 			if (index <= -1) {
 				currentArray.push(updateObject.value);

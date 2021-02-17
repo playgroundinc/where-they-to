@@ -25,11 +25,12 @@
             :required="required"
             :value="value"
             :aria-invalid="invalid"
+            :disabled="disabled"
             v-on:change="onChange"
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
         >
-            <option class="input__default" default="true" value="">Select</option>
+            <option v-if="defaultValue" class="input__default" default="true" value="">Select</option>
             <option
                 v-for="(option, index) in options"
                 :value="index"
@@ -156,7 +157,12 @@ export default {
 			type: Boolean,
 			required: false,
 			default:false,
-		}
+		},
+        defaultValue: {
+            type: Boolean,
+            required: false,
+            default: true,
+        }
     },
     data() {
         return {
@@ -224,6 +230,8 @@ export default {
             }
 		}
 		
+    },
+    mounted() {
     }
 };
 </script>

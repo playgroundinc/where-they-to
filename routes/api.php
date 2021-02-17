@@ -84,7 +84,7 @@ Route::get('updates/{type}/{id}', 'UpdateController@index');
 
 
 Route::resources([
-  'users' => 'UserController',
+    'users' => 'UserController',
 ]);
 
 Route::get('/performerTypes', 'TypeController@performerIndex');
@@ -98,4 +98,5 @@ Route::get('/performerTypes/search/{term}', 'TypeController@performerSearch');
 Route::get('performers/search/{term}', 'PerformerController@search');
 Route::get('/venues/search/{term}', 'VenueController@search');
 Route::get('/families/search/{term}', 'FamilyController@search');
+Route::get('/events/search/{term}', 'EventController@search');
 Route::get('/cities/{province}/search/{term}', 'CityController@search');

@@ -12,32 +12,32 @@
 
 <script>
 export default {
-  props: {
-    label: {
-      type: String,
-      required: true,
+    props: {
+        label: {
+            type: String,
+            required: true,
+        },
+        link: {
+            type: String,
+            required: false,
+        }, 
+        variation: {
+            type: String,
+            required: false,
+        },
+        classes: {
+            type: String,
+            required: false,
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
+        }
     },
-    link: {
-      type: String,
-      required: false,
-    }, 
-    variation: {
-      type: String,
-      required: false,
-    },
-    classes: {
-      type: String,
-      required: false,
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
+    methods: {
+        handleClick: function(e) {
+            this.$emit('clicked', e);
+        }
     }
-  },
-  methods: {
-    handleClick: function(e) {
-      this.$emit('clicked', e);
-    }
-  }
 }
 </script>

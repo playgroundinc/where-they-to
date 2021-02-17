@@ -106,7 +106,9 @@ class EventController extends Controller
 	 */
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
-		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+        if (!empty($socialLinks)) {
+            $socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+        }
 	}
 
     /**
@@ -358,5 +360,47 @@ class EventController extends Controller
 		->toJSON();
 		// Return any events found.
 		return response()->json(['events' => $events]);
+    }
+
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+                    case 'accessibility':
+                        $field = explode(',', $field);
+                        $query = $query->whereJsonContains($param, $field);
+                    break;
+                    default:
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->where('name', $field );
+                        });
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Search for events by name.
+     * 
+     * @param string $search_term.
+     */
+    public function search($term) {
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $request = request();
+        $query = Event::query();
+        $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        $params = array('eventTypes', 'performers', 'venue', 'family', 'accessibility');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $events = $query->take($offset)->get();
+        if (!empty($events)) {
+            return response()->json($events, 200);
+        }
+        return response()->json([], 200);
     }
 }

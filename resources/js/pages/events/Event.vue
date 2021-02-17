@@ -47,7 +47,7 @@
 						</ul>
 					</div>
 					<SocialLinks 
-					:socialLinks="socialLinks"
+                        :socialLinks="socialLinks"  
 					/>
 					<div>
 						<Button :link="'/events/' + id + '/edit'" label="Edit Event" />
@@ -102,17 +102,18 @@ export default {
 		this.getEvent();
 	},
 	components: {
-    Button,
+        Button,
 		Lists,
-    SocialLinks,
-    Updates,
+        SocialLinks,
+        Updates,
 	},
 	methods: {
 		setState: function(update) {
-
 			const fields = ['event', 'eventTypes', 'family', 'performers', 'socialLinks', 'venue'];
 			fields.forEach((field) => {
-				this[field] = update[field];
+                if (update[field]) {
+                    this[field] = update[field];
+                }
 			});
     },
     async handleAttendance() {

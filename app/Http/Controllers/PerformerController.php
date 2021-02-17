@@ -147,7 +147,9 @@ class PerformerController extends Controller
         if (empty($term)) {
             return response()->json([], 200);
         }
-        $performers = Performer::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        $request = request();
+        $offset = $request->query('offset', 10);
+        $performers = Performer::where('name','LIKE','%'.$term.'%')->take($offset)->get();
         if (!empty($performers)) {
             return response()->json(compact('performers'), 200);
         }
