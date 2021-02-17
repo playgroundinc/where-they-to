@@ -30,6 +30,9 @@ class EventController extends Controller
 			if ($venue) {
 				$venue->events()->save($event);
 			}
+            $province = $venue['province'];
+            $city = $venue['city'];
+            $event->update(['city'=> $city, 'province' => $province]);
 		} else {
 			$event->venue_name= $request['venue_name'];
 			$event->address = $request['address'];
@@ -262,7 +265,7 @@ class EventController extends Controller
         $active_events = array();
         foreach ($fields as $key => $field) {
             $events = array();
-            if ($field === 'performers') {
+            if ($field === 'performers' && !empty($following[$field])) {
                 $events =  Event::where('date', '=', $today)->whereHas($field, function($q) use ($key, $field, $following) {
                     $q->whereIn($key, $following[$field]);
                 })->pluck('id'); 
@@ -282,6 +285,7 @@ class EventController extends Controller
         $all_events = array_unique(array_merge($active_events['performers'], $active_events['venues'], $active_events['families']));
         $total = ceil(count($all_events) / 10);
         $event_ids = array_splice($all_events, intval($page) * 10, intval($page) + 10);
+        $page = intval($page) + 1;
         $events = Event::whereIn('id', $event_ids)->get();
         $response = compact('events', 'total', 'page', 'date');
         return $response;
@@ -301,6 +305,10 @@ class EventController extends Controller
         return response()->json($response);
     }
 
+    public function filterByProvince($event, $city, $province) {
+        return response()->json($event);
+    }
+
     public function myEventsWeekly($date) {
         $weeks_events = array();
         for ($i = 1; $i <= 7; $i = $i + 1) {
@@ -308,9 +316,11 @@ class EventController extends Controller
             $user = request('user');
             $request = request();
             $page = $request->query('page', '0');
+            $province = $request->query('province', false);
+            $city = $request->query('city', false);
             $response = $this->getEventsByDate($current_date, $user, $page);
             $key = Carbon::parse($current_date)->format('l F jS');
-            $weeks_events[$key] = $response;
+            $weeks_events[$key] = $response;      
         }
         return response()->json($weeks_events);
     }

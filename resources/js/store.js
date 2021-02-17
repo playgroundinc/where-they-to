@@ -119,8 +119,9 @@ export default new Vuex.Store({
             const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
                 const { date } = data;
+                const query = data.query ? data.query : '';
                 axios({
-                    url: `http://127.0.0.1:8000/api/user/events/${date}`,
+                    url: `http://127.0.0.1:8000/api/user/events/${date}?${query}`,
                     headers: {
                         Authorization: `Bearer ${user}`
                     },
