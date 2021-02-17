@@ -66,7 +66,7 @@ import Input from '../components/Input';
 import Autocomplete from '../components/Autocomplete';
 
 // Classes
-import Location from "../Location";
+import Location from "../core/Location";
 
 export default {
     props: {

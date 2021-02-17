@@ -207,7 +207,6 @@
 			},
 			findValue: function(currentArray, updateObject) {
 				let index = -1;
-				console.log(currentArray, updateObject);
 				currentArray.forEach((item, i) => {
 					if (updateObject.id === 0) {
 						if (item.name === updateObject.name) {

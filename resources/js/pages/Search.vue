@@ -27,13 +27,15 @@
                     />
                 </div>
             </div>
-            <div class="row" v-if="category === 'events'">
-                <Accessibility 
-					:value="accessibility"
-					v-on:update="updateValue"
-				/>
-
-            </div>
+            <Filters 
+                :type="category"
+                :accessibility="accessibility"
+                :venue="venue"
+                :province="province"
+                :city="city"
+                :timezone="timezone"
+                v-on:update="updateValue"
+            />
             <div class="row">
                 <div class="col-md-12">
                     <Button 
@@ -56,6 +58,7 @@ import Accessibility from "../components/Accessibility";
 import Button from "../components/Button";
 import ErrorsContainer from "../components/ErrorsContainer";
 import Input from "../components/Input";
+import Filters from "../components/Filters"
 
 //Components
 
@@ -73,6 +76,10 @@ export default {
             },
             route: '',
             searchResults: [],
+            venue: '',
+            province: '',
+            city: '',
+            timezone: '',
         };
     },
     computed: {
@@ -101,6 +108,7 @@ export default {
         Accessibility,
         Button,
         ErrorsContainer,
+        Filters,
         Input,
     },
     methods: {

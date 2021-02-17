@@ -25,6 +25,7 @@
             :required="required"
             :value="value"
             :aria-invalid="invalid"
+            :disabled="disabled"
             v-on:change="onChange"
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
@@ -229,6 +230,8 @@ export default {
             }
 		}
 		
+    },
+    mounted() {
     }
 };
 </script>
