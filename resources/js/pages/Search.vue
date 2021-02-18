@@ -4,8 +4,7 @@
             <h1 class="copy--center">Search</h1>
         </div>
         <ErrorsContainer :errors="errors"/>
-
-        <form v-on:submit.prevent="handleSubmit">
+        <form v-on:submit.prevent="handleSubmit" novalidate>
             <div class="row">
                 <div class="col-md-3">
                     <Input 
@@ -44,7 +43,9 @@
                     />
                 </div>
             </div>
-            
+            <SearchResult 
+                :results="searchResults"
+            />
             
         </form>
     </main>
@@ -59,6 +60,7 @@ import Button from "../components/Button";
 import ErrorsContainer from "../components/ErrorsContainer";
 import Input from "../components/Input";
 import Filters from "../components/Filters"
+import SearchResult from "../components/SearchResult";
 
 //Components
 
@@ -110,10 +112,31 @@ export default {
         ErrorsContainer,
         Filters,
         Input,
+        SearchResult,
     },
     methods: {
         updateValue: function(updateObject) {
             this[updateObject.name] = updateObject.value;
+        },
+        buildQuery: function() {
+            const fields = ['city', 'province', 'venue', 'timezone', 'accessibility'];
+            let first = true;
+            let query = '';
+            fields.forEach((field) => {
+                console.log(this[field]);   
+                if (this[field] && this[field] !== '' && this[field].length ) {
+                    let value = this[field]
+                    if (Array.isArray(value)) {
+                        value = value.join();
+                    }
+                    if (first) {
+                        query += `${field}=${value}`;
+                    } else {
+                        query += `&${field}=${value}`;
+                    }
+                }
+            });
+            return query;
         },
         handleSubmit: async function() {
             const data = {
@@ -122,9 +145,11 @@ export default {
             const FormClass = new Form(data, "search", data);
 			this.errors = FormClass.checkRequiredFields(data);
             if (!this.valid) {
-                const resp = await this.$store.dispatch('search', { route: this.route, term: this.search});
+                const query = this.buildQuery();
+                const resp = await this.$store.dispatch('search', { route: this.route, term: this.search, query });
                 if (resp.status === 200) { 
-                    this.searchResults = resp.data[this.route];
+                    console.log(resp);
+                    this.searchResults = resp.data;
                 }
             }
         }
