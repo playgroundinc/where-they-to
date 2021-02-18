@@ -35,6 +35,7 @@
                 :timezone="timezone"
                 v-on:update="updateValue"
                 :date="date"
+                :family="family"
             />
             <div class="row">
                 <div class="col-md-12">
@@ -82,6 +83,7 @@ export default {
             province: '',
             city: '',
             timezone: '',
+            family: '',
         };
     },
     computed: {
@@ -119,7 +121,7 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
-            const fields = ['date', 'city', 'province', 'venue', 'timezone', 'accessibility'];
+            const fields = ['family', 'date', 'city', 'province', 'venue', 'timezone', 'accessibility'];
             let first = true;
             let query = '';
             fields.forEach((field) => { 
@@ -145,7 +147,6 @@ export default {
             const resp = await this.$store.dispatch('search', { route: this.route, term, query });
             if (resp.status === 200) { 
                 this.searchResults = resp.data;
-                console.log(resp.data);
             }
         }
     }
