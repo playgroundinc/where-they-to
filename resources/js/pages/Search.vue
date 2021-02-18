@@ -34,6 +34,7 @@
                 :city="city"
                 :timezone="timezone"
                 v-on:update="updateValue"
+                :date="date"
             />
             <div class="row">
                 <div class="col-md-12">
@@ -53,8 +54,6 @@
 <script>
 import { mapState } from "vuex";
 
-import Form from "../core/form";
-
 import Accessibility from "../components/Accessibility";
 import Button from "../components/Button";
 import ErrorsContainer from "../components/ErrorsContainer";
@@ -70,6 +69,7 @@ export default {
             accessibility: [],
             errors: [],
             search: '',
+            date: '',
             types: {
                 events: 'Events',
                 performers: 'Performers',
@@ -119,18 +119,18 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
-            const fields = ['city', 'province', 'venue', 'timezone', 'accessibility'];
+            const fields = ['date', 'city', 'province', 'venue', 'timezone', 'accessibility'];
             let first = true;
             let query = '';
-            fields.forEach((field) => {
-                console.log(this[field]);   
+            fields.forEach((field) => { 
                 if (this[field] && this[field] !== '' && this[field].length ) {
-                    let value = this[field]
+                    let value = encodeURIComponent(this[field]);
                     if (Array.isArray(value)) {
                         value = value.join();
                     }
                     if (first) {
                         query += `${field}=${value}`;
+                        first = false;
                     } else {
                         query += `&${field}=${value}`;
                     }
@@ -139,18 +139,13 @@ export default {
             return query;
         },
         handleSubmit: async function() {
-            const data = {
-                search: this.search,
-            }
-            const FormClass = new Form(data, "search", data);
-			this.errors = FormClass.checkRequiredFields(data);
-            if (!this.valid) {
-                const query = this.buildQuery();
-                const resp = await this.$store.dispatch('search', { route: this.route, term: this.search, query });
-                if (resp.status === 200) { 
-                    console.log(resp);
-                    this.searchResults = resp.data;
-                }
+            const query = this.buildQuery();
+            const term = this.search !== '' ? this.search : '*';
+            console.log(query);
+            const resp = await this.$store.dispatch('search', { route: this.route, term, query });
+            if (resp.status === 200) { 
+                this.searchResults = resp.data;
+                console.log(resp.data);
             }
         }
     }
