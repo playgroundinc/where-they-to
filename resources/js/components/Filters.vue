@@ -16,6 +16,11 @@
             :city="city"
             v-on:update="updateValue"
         />
+        <FamilyFilters 
+            :errors="errors"
+            :family="family"
+            v-on:update="updateValue"
+        />
         
     </div>
 </template>
@@ -30,6 +35,7 @@ import Input from "../components/Input";
 // Filters
 import VenueFilters from "../components/filters/VenueFilters";
 import DateFilters from "../components/filters/DateFilters";
+import FamilyFilters from "../components/filters/FamilyFilters";
 
 export default {
     props: {
@@ -71,6 +77,11 @@ export default {
         date: {
             type: String,
             required: false,
+        },
+        family: {
+            type: String, 
+            required: false,
+            default: '',
         }
     },
     data() {
@@ -83,6 +94,7 @@ export default {
         Autocomplete,
         Input,
         DateFilters,
+        FamilyFilters,
         VenueFilters,
 	},
 	mounted() {
