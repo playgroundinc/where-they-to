@@ -268,7 +268,13 @@ export default {
 		getAdditionalData: function(additionalData) {
 			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'accessibility', 'accessibility_description', 'performers_no_profile'];
 			fields.forEach((field) => {
-				additionalData[field] = this[field];
+                let value = this[field];
+                if (field === 'performers') {
+                    value = this[field].map((item) => {
+                        return item.id;
+                    });
+                }
+				additionalData[field] = value;
 			});
 			return additionalData;
         },

@@ -374,6 +374,12 @@ class EventController extends Controller
                     case 'date':
                         $query->where('date', '=', $field);
                     break;
+                    case 'performers': 
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('name', $field );
+                        });
+                    break;
                     default:
                         $query = $query->whereHas($param, function($q) use ($field) {
                             $q->where('name', $field );
