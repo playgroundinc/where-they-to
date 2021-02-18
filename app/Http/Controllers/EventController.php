@@ -371,6 +371,9 @@ class EventController extends Controller
                         $field = explode(',', $field);
                         $query = $query->whereJsonContains($param, $field);
                     break;
+                    case 'date':
+                        $query->where('date', '=', $field);
+                    break;
                     default:
                         $query = $query->whereHas($param, function($q) use ($field) {
                             $q->where('name', $field );
@@ -388,13 +391,12 @@ class EventController extends Controller
      * @param string $search_term.
      */
     public function search($term) {
-        if (empty($term)) {
-            return response()->json([], 200);
-        }
         $request = request();
         $query = Event::query();
-        $query = $query->where('name', 'LIKE', '%' . $term . '%');
-        $params = array('eventTypes', 'performers', 'venue', 'family', 'accessibility');
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('eventTypes', 'date', 'performers', 'venue', 'family', 'accessibility');
         $offset = $request->query('offset', 10);
         $query = $this->buildQuery($query, $request, $params);
         $events = $query->take($offset)->get();

@@ -1,5 +1,9 @@
 <template>
     <div class="row" v-if="type  === 'events'">
+        <DateFilters 
+            :date="date"
+            v-on:update="updateValue"
+        />
         <Accessibility 
             :value="accessibility"
             v-on:update="updateValue"
@@ -12,6 +16,7 @@
             :city="city"
             v-on:update="updateValue"
         />
+        
     </div>
 </template>
 
@@ -24,6 +29,7 @@ import Input from "../components/Input";
 
 // Filters
 import VenueFilters from "../components/filters/VenueFilters";
+import DateFilters from "../components/filters/DateFilters";
 
 export default {
     props: {
@@ -61,6 +67,10 @@ export default {
             type: String,
             required: false,
             default: '',
+        },
+        date: {
+            type: String,
+            required: false,
         }
     },
     data() {
@@ -72,6 +82,7 @@ export default {
 		Accessibility,
         Autocomplete,
         Input,
+        DateFilters,
         VenueFilters,
 	},
 	mounted() {
