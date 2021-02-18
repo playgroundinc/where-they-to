@@ -36,6 +36,7 @@
                 v-on:update="updateValue"
                 :date="date"
                 :family="family"
+                :performers="performers"
             />
             <div class="row">
                 <div class="col-md-12">
@@ -84,6 +85,7 @@ export default {
             city: '',
             timezone: '',
             family: '',
+            performers: [],
         };
     },
     computed: {
@@ -121,13 +123,20 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
-            const fields = ['family', 'date', 'city', 'province', 'venue', 'timezone', 'accessibility'];
+            const fields = ['family', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
             let first = true;
             let query = '';
             fields.forEach((field) => { 
                 if (this[field] && this[field] !== '' && this[field].length ) {
-                    let value = encodeURIComponent(this[field]);
-                    if (Array.isArray(value)) {
+                    let value;
+                    if (field === 'performers') {
+                        value = this.performers.map((performer) => {
+                            return encodeURIComponent(performer.name);
+                        });
+                    } else {
+                        value = encodeURIComponent(this[field]);
+                    }
+                    if (Array.isArray(value)) { 
                         value = value.join();
                     }
                     if (first) {
@@ -143,7 +152,6 @@ export default {
         handleSubmit: async function() {
             const query = this.buildQuery();
             const term = this.search !== '' ? this.search : '*';
-            console.log(query);
             const resp = await this.$store.dispatch('search', { route: this.route, term, query });
             if (resp.status === 200) { 
                 this.searchResults = resp.data;

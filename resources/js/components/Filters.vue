@@ -21,6 +21,11 @@
             :family="family"
             v-on:update="updateValue"
         />
+        <PerformerFilters 
+            :errors="errors"
+            :performers="performers"
+            v-on:update="updateValue"
+        />
         
     </div>
 </template>
@@ -36,6 +41,7 @@ import Input from "../components/Input";
 import VenueFilters from "../components/filters/VenueFilters";
 import DateFilters from "../components/filters/DateFilters";
 import FamilyFilters from "../components/filters/FamilyFilters";
+import PerformerFilters from "../components/filters/PerformerFilters";
 
 export default {
     props: {
@@ -82,6 +88,11 @@ export default {
             type: String, 
             required: false,
             default: '',
+        },
+        performers: {
+            type: Array,
+            required: false,
+            default: () => [],
         }
     },
     data() {
@@ -96,6 +107,7 @@ export default {
         DateFilters,
         FamilyFilters,
         VenueFilters,
+        PerformerFilters,
 	},
 	mounted() {
 	},
