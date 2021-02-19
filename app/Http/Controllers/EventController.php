@@ -386,6 +386,11 @@ class EventController extends Controller
                             $q->whereIn('name', $field );
                         });
                     break;
+                    case 'city':
+                    case 'province':
+                    case 'timezone':
+                        $query = $query->where($param, $field);
+                    break;
                     default:
                         $query = $query->whereHas($param, function($q) use ($field) {
                             $q->where('name', $field );
@@ -408,7 +413,7 @@ class EventController extends Controller
         if ($term !== '*') {
             $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
-        $params = array('eventTypes', 'date', 'performers', 'venue', 'family', 'accessibility');
+        $params = array('eventTypes', 'date', 'performers', 'venue', 'family', 'accessibility', 'city', 'province', 'timezone');
         $offset = $request->query('offset', 10);
         $query = $this->buildQuery($query, $request, $params);
         $events = $query->take($offset)->get();

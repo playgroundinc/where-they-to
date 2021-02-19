@@ -200,7 +200,6 @@
                 }
             },
             loadMoreEvents: async function(key, date, page) {
-                console.log(date);
                 try {
                     const resp = await this.$store.dispatch('fetchDate', {
                         date,

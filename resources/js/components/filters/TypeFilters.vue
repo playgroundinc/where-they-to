@@ -2,7 +2,7 @@
     <div class="col-xs-12">
         <SelectTypes 
             :errors="errors"
-            :types="eventTypes"
+            :types="types"
             :route="route"
             :type="type"
             v-on:update="updateArray"
@@ -13,7 +13,7 @@
 import SelectTypes from "../SelectTypes";
 export default {
     props: {
-        eventTypes: {
+        types: {
             type: Array,
             required: true,
             default: () => [],
@@ -42,7 +42,10 @@ export default {
             const index = this.findValue(currentArray, updateObject.value);
             if (index <= -1) {
                 currentArray.push(updateObject.value);
-                this[updateObject.name] = currentArray;
+                this.$emit('update', {
+                    name: updateObject.name,
+                    value: currentArray,
+                });
             }
         },
         findValue: function(currentArray, updateObject) {
@@ -63,7 +66,7 @@ export default {
             }
         },
         updateArray: function(updateObject) {
-            const currentArray = this[updateObject.name];
+            const currentArray = this.types;
             if (currentArray && updateObject.add) {
                 this.addToArray(updateObject, currentArray);
             } 

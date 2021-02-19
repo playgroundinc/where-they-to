@@ -29,7 +29,7 @@ class TypeController extends Controller
     public function create()
     {
       //
-      return view('types.create');
+        return view('types.create');
     }
 
     /**
@@ -42,13 +42,13 @@ class TypeController extends Controller
     {
         //
         $attributes = request()->validate([
-          'name' => 'required'
+            'name' => 'required'
         ]);
         $newType;
         if ($request['type'] === 'performer'):
-          $newType = PerformerType::create($attributes);
+            $newType = PerformerType::create($attributes);
         elseif ($request['type'] === 'event'):
-          $newType = EventType::create($attributes);
+            $newType = EventType::create($attributes);
         endif;
 
         return response()->json(array('addition' => $newType), 201);
@@ -90,9 +90,9 @@ class TypeController extends Controller
         //
         $postType = request('type');
         if ($postType === 'event'):
-          $type = EventType::find($id);
+            $type = EventType::find($id);
         else: 
-          $type = PerformerType::find($id);
+            $type = PerformerType::find($id);
         endif;
         $type->update(['name'=>request('name')]);
         return redirect('/types');
@@ -108,10 +108,10 @@ class TypeController extends Controller
     {
         //
         if (request('type') === 'event'):
-          $type = EventType::find($id);
+            $type = EventType::find($id);
         elseif (request('type') === 'performer'): 
-          $type = PerformerType::find($id);
-          $type->performers()->detach();
+            $type = PerformerType::find($id);
+            $type->performers()->detach();
         endif;
         $type->delete();
         return redirect('/types');
@@ -119,33 +119,33 @@ class TypeController extends Controller
     }
     
     public function performerIndex() {
-      $performerTypes = PerformerType::all();
-      return response()->json($performerTypes, 200);
+        $performerTypes = PerformerType::all();
+        return response()->json($performerTypes, 200);
     }
 
     public function eventIndex() {
-      $eventTypes = EventType::all();
-      return response()->json($eventTypes, 200);
+        $eventTypes = EventType::all();
+        return response()->json($eventTypes, 200);
     }
 
     public function performerSearch($term) {
-      if (empty($term)) {
-        return response()->json([], 200);
-      }
-      $performerTypes = PerformerType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $performerTypes = PerformerType::where('name','LIKE','%'.$term.'%')->take(10)->get();
         if (!empty($performerTypes)) {
-            return response()->json(compact('performerTypes'), 200);
+            return response()->json($performerTypes, 200);
         }
         return response()->json([], 200);
     }
 
     public function eventSearch($term) {
-      if (empty($term)) {
-        return response()->json([], 200);
-      }
-      $eventTypes = EventType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        if (empty($term)) {
+            return response()->json([], 200);
+        }
+        $eventTypes = EventType::where('name','LIKE','%'.$term.'%')->take(10)->get();
         if (!empty($eventTypes)) {
-            return response()->json(compact('eventTypes'), 200);
+            return response()->json($eventTypes, 200);
         }
         return response()->json([], 200);
     }
@@ -156,11 +156,11 @@ class TypeController extends Controller
      * @param object $request the request object.
      */
     public function eventStore($request) {
-      $attributes = request()->validate([
-        'name' => 'required'
-      ]);
-      $newType = EventType::create($attributes);
-      return response()->json(compact('newType'), 200);
+        $attributes = request()->validate([
+            'name' => 'required'
+        ]);
+        $newType = EventType::create($attributes);
+        return response()->json(compact('newType'), 200);
     }
 
     /**
@@ -169,10 +169,10 @@ class TypeController extends Controller
      * @param object $request the request object.
      */
     public function performerStore($request) {
-      $attributes = request()->validate([
-        'name' => 'required'
-      ]);
-      $newType = PerformerType::create($attributes);
-      return response()->json(compact('newType'), 200);
+        $attributes = request()->validate([
+            'name' => 'required'
+        ]);
+        $newType = PerformerType::create($attributes);
+        return response()->json(compact('newType'), 200);
     }
 }

@@ -48,6 +48,18 @@ export default {
             return `${this.type}_types`
         }
     },
+    watch: {
+        route: async function(newRoute, oldRoute) {
+            try {
+                const resp = this.getAllTypes();
+                if (resp.status === 200) {
+                    this.allTypes = resp.data;
+                }
+            } catch(err) {
+                console.log(err);
+            }
+        }
+    },
     props: {
         errors: {
             type: Array,
@@ -70,8 +82,8 @@ export default {
         Input,
         Autocomplete
     },
-    mounted() {
-        this.getAllTypes();
+    async created() {
+        await this.getAllTypes();
     },
     methods: {
         updateValue: function(updateObject) {
