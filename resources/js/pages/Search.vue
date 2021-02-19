@@ -37,6 +37,7 @@
                 :date="date"
                 :family="family"
                 :performers="performers"
+                :eventTypes="eventTypes"
             />
             <div class="row">
                 <div class="col-md-12">
@@ -86,6 +87,7 @@ export default {
             timezone: '',
             family: '',
             performers: [],
+            eventTypes: [],
         };
     },
     computed: {
@@ -123,15 +125,18 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
-            const fields = ['family', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
+            const fields = ['family', 'eventTypes', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
             let first = true;
             let query = '';
             fields.forEach((field) => { 
                 if (this[field] && this[field] !== '' && this[field].length ) {
                     let value;
-                    if (field === 'performers') {
-                        value = this.performers.map((performer) => {
-                            return encodeURIComponent(performer.name);
+                    if (field === 'performers' || field === 'eventTypes') {
+                        value = this[field].map((item) => {
+                            if (item.name) {
+                                return encodeURIComponent(item.name);
+                            }
+                            return encodeURIComponent(item);
                         });
                     } else {
                         value = encodeURIComponent(this[field]);
@@ -147,6 +152,7 @@ export default {
                     }
                 }
             });
+            console.log(query);
             return query;
         },
         handleSubmit: async function() {
