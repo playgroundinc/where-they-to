@@ -26,6 +26,12 @@
             :performers="performers"
             v-on:update="updateValue"
         />
+        <TypeFilters 
+            :errors="errors"
+            :eventTypes="eventTypes"
+            route="eventTypes"
+            type="event"
+        />
         
     </div>
 </template>
@@ -42,6 +48,7 @@ import VenueFilters from "../components/filters/VenueFilters";
 import DateFilters from "../components/filters/DateFilters";
 import FamilyFilters from "../components/filters/FamilyFilters";
 import PerformerFilters from "../components/filters/PerformerFilters";
+import TypeFilters from "../components/filters/TypeFilters";
 
 export default {
     props: {
@@ -93,6 +100,11 @@ export default {
             type: Array,
             required: false,
             default: () => [],
+        },
+        eventTypes: {
+            type: Array,
+            required: false,
+            default: () => [],
         }
     },
     data() {
@@ -108,6 +120,7 @@ export default {
         FamilyFilters,
         VenueFilters,
         PerformerFilters,
+        TypeFilters,
 	},
 	mounted() {
 	},
