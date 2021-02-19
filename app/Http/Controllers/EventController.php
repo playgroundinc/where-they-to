@@ -165,7 +165,7 @@ class EventController extends Controller
 		// Parse the date.
 		$event_date = Carbon::parse($event['date']);
 		// Format the date.
-		$event->date = $event_date->format('M d, Y');
+		$event->date = $event_date->format('Y-m-d');
 		// Find the social links.
 		$socialLinks = $event->socialLinks;
 		// Find the family.

@@ -25,7 +25,7 @@
                         <Input
 							name="date"
 							:value="date"
-							type="text"
+							type="date"
 							:required="true"
 							:errors="errors"
 							v-on:update="updateValue"
