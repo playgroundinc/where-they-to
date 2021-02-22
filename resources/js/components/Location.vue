@@ -73,7 +73,9 @@ export default {
             return new Location();
         },
         provinces() {
-            return this.location.getProvinces();
+            const allProvinces = this.location.getProvinces();
+            delete allProvinces.OE;
+            return allProvinces;
         },
     },
     methods: {
