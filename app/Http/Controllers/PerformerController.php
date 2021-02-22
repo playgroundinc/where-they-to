@@ -58,6 +58,8 @@ class PerformerController extends Controller
             'bio' => 'required',
 			'tips' => 'nullable',
 			'accent_color' => 'nullable',
+            'province' => 'nullable',
+            'city' => 'nullable',
         ]);
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
@@ -115,7 +117,7 @@ class PerformerController extends Controller
         if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
-        $performer->update(request(['name', 'bio', 'tips', 'accent_color']));
+        $performer->update(request(['name', 'bio', 'tips', 'accent_color', 'province', 'city']));
         $performer->performerTypes()->detach();
         foreach (request('performerTypes') as $performerTypeId):
 			$performerType = PerformerType::find($performerTypeId);

@@ -34,10 +34,16 @@
                 v-on:update="updateValue"
                 helperText="Provide instructions on how people can leave you a tip."
             />
+            <Location 
+                :errors="errors"
+                :city="city"
+                :province="province"
+                v-on:update="updateValue"
+            />
             <AccentColor 
-              :value="accent_color"
-              :errors="errors"
-              v-on:update="updateValue"
+                :value="accent_color"
+                :errors="errors"
+                v-on:update="updateValue"
             />
             <SocialMedia 
                 :errors="errors"
@@ -67,6 +73,7 @@
 
 <script>
 import { mapState } from "vuex";
+
 // Classes.
 import socials from "../../core/social-media";
 import Form from "../../core/form";
@@ -78,6 +85,7 @@ import SocialMedia from "../../components/SocialMedia";
 import ErrorsContainer from "../../components/ErrorsContainer";
 import SelectTypes from "../../components/SelectTypes";
 import Button from "../../components/Button";
+import Location from "../../components/Location";
 
 export default {
     data() {
@@ -96,6 +104,8 @@ export default {
             accent_color: "#000000",
             socials,
             performerTypes: [],
+            city: '',
+            province: '',
         }
     },
     computed: {
@@ -109,6 +119,7 @@ export default {
         Button,
         Input,
         ErrorsContainer,
+        Location,
         SocialMedia,
         SelectTypes,
     },
@@ -154,6 +165,14 @@ export default {
             }
             return socialMediaData;
         },
+        getAdditionalData: function(additionalData) {
+            const fields = ['city', 'province', 'tips', 'performerTypes'];
+			fields.forEach((field) => {
+                let value = this[field];
+				additionalData[field] = value;
+			});
+			return additionalData;
+        },
         handleSubmit: function() {
             let data = {
                 name: this.name,
@@ -164,9 +183,8 @@ export default {
             const FormClass = new Form(data, "create", { route: "performers" });
             this.errors = FormClass.checkRequiredFields(data);
             if (this.valid) {
-                const additionalData = this.getSocialMediaData();
-                additionalData.performerTypes = this.performerTypes;
-                additionalData.tips = this.tips;
+                let additionalData = this.getSocialMediaData();
+                additionalData = this.getAdditionalData(additionalData);
                 FormClass.setAdditionalFields(additionalData);
                 this.createPerformer(FormClass);
             }
