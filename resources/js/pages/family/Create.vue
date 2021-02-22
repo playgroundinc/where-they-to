@@ -24,6 +24,12 @@
 						/>
 					</div>
 				</div>
+                <Location 
+                    :errors='errors'
+                    :city="city"
+                    :province="province"
+                    v-on:update="updateValue"
+                />
 				<Select
                     label="performers"
                     route="performers"
@@ -67,6 +73,7 @@
 	import Select from "../../components/Select";
 	import Button from "../../components/Button";
 	import AccentColor from "../../components/AccentColor";
+    import Location from "../../components/Location";
 
 	export default {
 		data() {
@@ -85,6 +92,8 @@
 				accent_color: "#000000",
 				performers_no_profile: [],
 				socials,
+                city: '',
+                province: '',
 			}
 		},
 		computed: {
@@ -101,6 +110,7 @@
 			Button,
 			ErrorsContainer, 
 			Input,
+            Location,
 			SocialMedia,
 			Select,
 		},
@@ -132,7 +142,7 @@
 				}
 			},
 			getAdditionalData: function(additionalData) {
-				const fields = ['performers_no_profile'];
+				const fields = ['performers_no_profile', 'city', 'province'];
 				fields.forEach((field) => {
 					additionalData[field] = this[field];
 				});
