@@ -43,5 +43,8 @@ class Performer extends Model
         'event_id',
         'tips',
         'accent_color',
+        'city',
+        'province',
+        'timezone',
     ];
 }

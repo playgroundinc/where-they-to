@@ -36,6 +36,12 @@
 						v-on:update="updateValue"
 						helperText="Provide instructions on how people can leave you a tip."
 					/>
+                    <Location 
+                        :errors="errors"
+                        :city="city"
+                        :province="province"
+                        v-on:update="updateValue"
+                    />
 					<AccentColor 
 						:value="accent_color"
 						:errors="errors"
@@ -102,6 +108,7 @@
 	import SelectTypes from "../../components/SelectTypes";
 	import Modal from "../../components/Modal";
 	import Button from "../../components/Button";
+    import Location from "../../components/Location";
 
 	export default {
 
@@ -124,6 +131,8 @@
 			social_links_id: '',
 			socials,
 			confirmModal: false,
+            city: '',
+            province: '',
 		}
     },
     computed: {
@@ -140,6 +149,7 @@
 		SelectTypes,
 		SocialMedia,
 		Modal,
+        Location,
 	},
     methods: {
 		updateValue: function(updateObject) {
@@ -179,7 +189,7 @@
             }
 		}, 
 		setPerformer: function(performer) {
-			const fields = ['name', 'bio', 'tips', 'accent_color'];
+			const fields = ['name', 'bio', 'tips', 'accent_color', 'city', 'province'];
 			this.setStates(fields, performer);
 			this.social_links_id = performer.social_links.id;
 		},
@@ -218,6 +228,14 @@
 				this.$router.push(`/performers/${this.id}`);
 			}
 		},
+        getAdditionalData: function(additionalData) {
+            const fields = ['city', 'province', 'tips', 'performerTypes'];
+			fields.forEach((field) => {
+                let value = this[field];
+				additionalData[field] = value;
+			});
+			return additionalData;
+        },
 		handleSubmit: function() {
             let data = {
                 name: this.name,
@@ -228,10 +246,9 @@
 			const FormClass = new Form(data, "edit", { route: "performers", id: this.id });
             this.errors = FormClass.checkRequiredFields(data);
             if (this.valid) {
-                const additionalData = this.getSocialMediaData();
-				additionalData.performerTypes = this.performerTypes;
+                let additionalData = this.getSocialMediaData();
+                additionalData = this.getAdditionalData(additionalData);
 				additionalData.socialLinksId = this.social_links_id;
-				additionalData.tips = this.tips;
 				FormClass.setAdditionalFields(additionalData);
                 this.editPerformer(FormClass);
             }
