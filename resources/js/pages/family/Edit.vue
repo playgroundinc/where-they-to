@@ -24,6 +24,12 @@
 						/>
 					</div>
 				</div>
+                <Location 
+                    :errors="errors"
+                    :city="city"
+                    :province="province"
+                    v-on:update="updateValue"
+                />
 				<Select
                     label="performers"
                     route="performers"
@@ -87,6 +93,7 @@
 	import Modal from "../../components/Modal";
 	import Button from "../../components/Button";
 	import AccentColor from "../../components/AccentColor";
+    import Location from "../../components/Location";
 
 	export default {
 		data() {
@@ -108,6 +115,8 @@
 				confirmModal: false,
 				accent_color: "#000000",
 				performers_no_profile: [],
+                city: '',
+                province: '',
 			}
 		},
 		computed: {
@@ -124,6 +133,7 @@
 			ErrorsContainer, 
 			Button,
 			Input,
+            Location,
 			Modal,
 			SocialMedia,
 			Select,
@@ -161,7 +171,7 @@
 				}
 			},
 			setFamily: function(family) {
-				const fields = ['name', 'description', 'accent_color'];
+				const fields = ['name', 'description', 'accent_color', 'city', 'province'];
 				this.setStates(fields, family);
 			},
 			getFamily: async function() {
@@ -226,7 +236,7 @@
 				return index;
 			},
 			addAdditionalData: function(currentFields) {
-				const fields = ['socialLinksId', 'performers_no_profile'];
+				const fields = ['socialLinksId', 'performers_no_profile', 'city', 'province'];
 				fields.forEach((field) => {
 					currentFields[field] = this[field];
 				});

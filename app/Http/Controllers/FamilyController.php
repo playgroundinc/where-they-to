@@ -72,7 +72,6 @@ class FamilyController extends Controller
 			'performers_no_profile' => 'nullable',
             'province' => 'nullable',
             'city' => 'nullable',
-            'timezone' => 'nullable',
 		]);
 		// Create a family with these atttributes.
 		$family = Family::create($attributes);
