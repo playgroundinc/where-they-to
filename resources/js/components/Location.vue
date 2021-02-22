@@ -74,7 +74,7 @@ export default {
         },
         provinces() {
             const allProvinces = this.location.getProvinces();
-            allProvinces.shift();
+            delete allProvinces.OE;
             return allProvinces;
         },
     },
