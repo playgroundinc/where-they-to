@@ -123,7 +123,7 @@ export default {
             const resp = await this.$store.dispatch('search', { route: this.activeRoute, term: this.value });
             
             if (resp.status === 200) {
-                return resp.data[this.route];
+                return resp.data;
             }
             return [];
         },

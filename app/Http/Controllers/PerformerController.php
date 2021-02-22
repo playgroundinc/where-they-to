@@ -138,20 +138,52 @@ class PerformerController extends Controller
 		return response()->json(['status'=>'success'], 200);
     }
 
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+
+                    case 'performerTypes':
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('performer_type_id', $field );
+                        });
+                    break;
+                    case 'performers': 
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('name', $field );
+                        });
+                    break;
+                    default:
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->where('name', $field );
+                        });
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
     /**
      * Search for performers by name.
      * 
      * @param string $search_term.
      */
     public function search($term) {
-        if (empty($term)) {
-            return response()->json([], 200);
-        }
         $request = request();
+        $query = Performer::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('performerTypes', 'families');
         $offset = $request->query('offset', 10);
-        $performers = Performer::where('name','LIKE','%'.$term.'%')->take($offset)->get();
+        $query = $this->buildQuery($query, $request, $params);
+        $performers = $query->take($offset)->get();
         if (!empty($performers)) {
-            return response()->json(compact('performers'), 200);
+            return response()->json($performers, 200);
         }
         return response()->json([], 200);
     }

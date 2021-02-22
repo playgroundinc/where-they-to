@@ -154,21 +154,46 @@ class FamilyController extends Controller
         $family->delete();
         return response()->json(['status' => 'success'], 200);
     }
+
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+                    case 'performers': 
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('name', $field );
+                        });
+                    break;
+                    default:
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->where('name', $field );
+                        });
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
 	/** 
 	 * Search for a family by a search term.
 	 * 
 	 * @param string $term the term to be searched for.
 	 */
 	public function search($term) {
-		// If no term has been provided return an empty array.
-        if (empty($term)) {
-            return response()->json([], 200);
-		}
-		// Search families for term.
-		$families = Family::where('name','LIKE','%'.$term.'%')->take(10)->get();
-		// Return  either results  or an empty array.
+        $request = request();
+        $query = Family::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('performers');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $families = $query->take($offset)->get();
         if (!empty($families)) {
-            return response()->json(compact('families'), 200);
+            return response()->json($families, 200);
         }
         return response()->json([], 200);
     }

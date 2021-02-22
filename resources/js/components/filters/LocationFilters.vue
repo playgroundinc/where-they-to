@@ -1,24 +1,5 @@
 <template>
     <div class="row">
-        <div class="col-xs-12">
-            <Input 
-                v-if="venue !== ''"
-                :value="venue"
-                name="venue"
-                type="text"
-                :disabled="true"
-                :clearButton="true"
-                v-on:update="updateVenue"
-            />
-            <Autocomplete 
-                v-else
-                :errors="errors"
-                label="venue"
-                route="venues"
-                name="venue"
-                v-on:selection="updateVenue"
-            />
-        </div>
         <div class="col-md-6">
             <Input 
                 type="select"
@@ -65,11 +46,6 @@ export default {
             required: false,
             default: () => { return []},
         },
-        venue: {
-            type: String,
-            required: false,
-            default: '',
-        },
         province: {
             type: String,
             required: false,
@@ -115,24 +91,11 @@ export default {
                 const cities = {};
                 if (resp.data.length) {
                     resp.data.forEach(city => {
-                        const key = city.name.replace(' ', '_');
-                        cities[key] = city.name;
+                        cities[city.name] = city.name;
                     });
                 } 
                 this.cities = cities;
             }
-        },
-        updateVenue: function(venue) {
-            if (venue.province) {
-                this.$emit('update', { name: 'venue', value: venue.name })
-                this.$emit('update', { name: 'province', value: venue.province});
-                this.$emit('update', { name: 'timezone', value: venue.timezone });
-                this.$emit('update', { name: 'city', value: venue.city });
-                return;
-            }
-            this.$emit('update', { name: 'venue', value: '' })
-            this.$emit('update', { name: 'province', value: ''});
-            this.$emit('update', { name: 'timezone', value: '' });
         },
         updateValue: function(updateObject) {
             this.$emit('update', updateObject);

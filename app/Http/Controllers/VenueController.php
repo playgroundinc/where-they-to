@@ -141,6 +141,20 @@ class VenueController extends Controller {
         return response()->json(['status' => 'success'], 200);
     }
 
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+                    default: 
+                        $query = $query->where($param, $field);
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
 	/**
 	 * Search for a venue by a search term.
 	 * 
@@ -148,18 +162,18 @@ class VenueController extends Controller {
 	 * @return array $venue either the matching venues or an empty array.
 	 */
     public function search($term) {
-		// If term is empty, return empty array.
-        if (empty($term)) {
-            return response()->json([], 200);
-		}
-		// Searches for venue by name.
-		// Caps at 10 items to keep autocomplete manageable.
-		$venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
-		// As long as something is found, returns values.
+        $request = request();
+        $query = Venue::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('province', 'city');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $venues = $query->take($offset)->get();
         if (!empty($venues)) {
-            return response()->json(compact('venues'), 200);
-		}
-		// If no venues found, returns empty array.
+            return response()->json($venues, 200);
+        }
         return response()->json([], 200);
     }
 }

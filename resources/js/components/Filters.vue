@@ -1,38 +1,71 @@
 <template>
-    <div class="row" v-if="type  === 'events'">
-        <DateFilters 
-            :date="date"
-            v-on:update="updateValue"
-        />
-        <Accessibility 
-            :value="accessibility"
-            v-on:update="updateValue"
-        />
-        <VenueFilters 
-            :errors="errors"
-            :venue="venue"
-            :province="province"
-            :timezone="timezone"
-            :city="city"
-            v-on:update="updateValue"
-        />
-        <FamilyFilters 
-            :errors="errors"
-            :family="family"
-            v-on:update="updateValue"
-        />
-        <PerformerFilters 
-            :errors="errors"
-            :performers="performers"
-            v-on:update="updateValue"
-        />
-        <TypeFilters 
-            :errors="errors"
-            :eventTypes="eventTypes"
-            route="eventTypes"
-            type="event"
-        />
+    <div>
+        <div class="row" v-if="type  === 'events'">
+            <DateFilters 
+                :date="date"
+                v-on:update="updateValue"
+            />
+            <Accessibility 
+                :value="accessibility"
+                v-on:update="updateValue"
+            />
+            <VenueFilters 
+                :errors="errors"
+                :venue="venue"
+                :province="province"
+                :timezone="timezone"
+                :city="city"
+                v-on:update="updateValue"
+            />
+            <FamilyFilters 
+                :errors="errors"
+                :family="family"
+                v-on:update="updateValue"
+            />
+            <PerformerFilters 
+                :errors="errors"
+                :performers="performers"
+                v-on:update="updateValue"
+            />
+            <TypeFilters 
+                :errors="errors"
+                :types="eventTypes"
+                route="eventTypes"
+                type="event"
+            />
         
+        </div>
+        <div class="row" v-if="type === 'performers'">
+            <FamilyFilters 
+                :errors="errors"
+                :family="family"
+                v-on:update="updateValue"
+            />
+            
+            <TypeFilters 
+                :errors="errors"
+                :types="performerTypes"
+                route="performerTypes"
+                type="performer"
+                v-on:update="updateValue"
+            />
+        </div>
+        <div class="row" v-if="type === 'venues'">
+            <LocationFilters 
+                :errors="errors"
+                :province="province"
+                :timezone="timezone"
+                :city="city"
+                v-on:update="updateValue"
+            />
+        </div>
+        <div class="row" v-if="type === 'families'">
+            <PerformerFilters 
+                :errors="errors"
+                :performers="performers"
+                v-on:update="updateValue"
+            />
+        </div>
     </div>
 </template>
 
@@ -49,6 +82,7 @@ import DateFilters from "../components/filters/DateFilters";
 import FamilyFilters from "../components/filters/FamilyFilters";
 import PerformerFilters from "../components/filters/PerformerFilters";
 import TypeFilters from "../components/filters/TypeFilters";
+import LocationFilters from "../components/filters/LocationFilters";
 
 export default {
     props: {
@@ -105,6 +139,11 @@ export default {
             type: Array,
             required: false,
             default: () => [],
+        },
+        performerTypes: {
+            type: Array,
+            required: false,
+            default: () => [],
         }
     },
     data() {
@@ -121,6 +160,7 @@ export default {
         VenueFilters,
         PerformerFilters,
         TypeFilters,
+        LocationFilters,
 	},
 	mounted() {
 	},

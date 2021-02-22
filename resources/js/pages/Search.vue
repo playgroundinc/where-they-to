@@ -36,8 +36,10 @@
                 v-on:update="updateValue"
                 :date="date"
                 :family="family"
+                :families="families"
                 :performers="performers"
                 :eventTypes="eventTypes"
+                :performerTypes="performerTypes"
             />
             <div class="row">
                 <div class="col-md-12">
@@ -77,7 +79,7 @@ export default {
                 events: 'Events',
                 performers: 'Performers',
                 venues: 'Venues',
-                families: 'families'
+                families: 'Families'
             },
             route: '',
             searchResults: [],
@@ -88,6 +90,7 @@ export default {
             family: '',
             performers: [],
             eventTypes: [],
+            performerTypes: [],
         };
     },
     computed: {
@@ -110,6 +113,14 @@ export default {
         },
         valid: function() {
             return this.errors.length > 0;
+        },
+        families: {
+            get: function() {
+                return this.family;
+            },
+            set: function(value) {
+                this.family = value;
+            }
         }
     },
     components: {
@@ -125,7 +136,16 @@ export default {
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
-            const fields = ['family', 'eventTypes', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
+            let fields = [];
+            if (this.route === 'events') {
+                fields = ['family', 'eventTypes', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
+            } else if (this.route === 'performers') {
+                fields = ['families', 'performerTypes'];
+            } else if (this.route === 'venues') {
+                fields = ['province', 'city'];
+            } else if (this.route === 'families') {
+                fields = ['performers'];
+            }
             let first = true;
             let query = '';
             fields.forEach((field) => { 
@@ -138,6 +158,9 @@ export default {
                             }
                             return encodeURIComponent(item);
                         });
+                    } else if (field === 'city') {
+                        value = this[field].replace('_', ' ');
+                        value = encodeURIComponent(value);
                     } else {
                         value = encodeURIComponent(this[field]);
                     }
@@ -152,7 +175,6 @@ export default {
                     }
                 }
             });
-            console.log(query);
             return query;
         },
         handleSubmit: async function() {

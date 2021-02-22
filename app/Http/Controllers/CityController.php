@@ -49,7 +49,7 @@ class CityController extends Controller
 		}
 		$cities = City::where('province', '=', $province)->where('name','LIKE','%'.$term.'%')->take(10)->get();
 		if (!empty($cities)) {
-			return response()->json(compact('cities'), 200);
+			return response()->json($cities, 200);
 		}
 		return response()->json([], 200);
     }
