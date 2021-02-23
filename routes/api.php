@@ -100,3 +100,5 @@ Route::get('/venues/search/{term}', 'VenueController@search');
 Route::get('/families/search/{term}', 'FamilyController@search');
 Route::get('/events/search/{term}', 'EventController@search');
 Route::get('/cities/{province}/search/{term}', 'CityController@search');
+
+Route::get('/venues/{id}/events', 'VenueController@events');

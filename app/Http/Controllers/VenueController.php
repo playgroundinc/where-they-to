@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use App\Venue;
 use App\User;
@@ -74,6 +76,20 @@ class VenueController extends Controller {
         return response()->json(['status' => 'success'], 201);
     }
 
+    public function upcomingEvents($id, $page ) {
+        $today = Carbon::today();
+        $offset = intval($page) * 10;
+        $events = array();
+        $query = Event::query();
+        $query = $query->where('date', '>=', $today)->whereHas('venue', function($q) use ($id) {
+            $q->where('id', $id );
+        });
+        $events['total'] = $query->count();
+        $events['entries'] = $query->orderby('date')->skip($offset)->take(10)->get();
+        $events['page'] = $page;
+        return $events;
+    }
+
     /**
      * Display the specified resource.
      *
@@ -86,8 +102,11 @@ class VenueController extends Controller {
 		$venue = Venue::find($id);
 		// Pulls the associated social links.
 		$socialLinks = $venue->socialLinks;
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
 		// Returns venue and socialLinks as data.
-        return response()->json(compact('venue', 'socialLinks'));
+        return response()->json(compact('venue', 'socialLinks', 'events'));
 	}
 	
 	/**
@@ -175,5 +194,12 @@ class VenueController extends Controller {
             return response()->json($venues, 200);
         }
         return response()->json([], 200);
+    }
+
+    public function events($id) {
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
+        return response()->json($events);
     }
 }

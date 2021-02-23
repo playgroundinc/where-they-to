@@ -289,6 +289,26 @@ export default new Vuex.Store({
                 })
             })
         },
+        upcomingEvents({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                let query = '';
+                if (payload.query) {
+                    query = `?${payload.query}`;
+                }
+                axios({
+                    url: `http://127.0.0.1:8000/api/${payload.route}/events${query}`,
+                    method: "GET",
+                })
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
+            })
+        },
         getNames({ state }, payload) {
             return new Promise((resolve, reject) => {
                 axios({
