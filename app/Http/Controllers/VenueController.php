@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use App\Venue;
 use App\User;
@@ -53,13 +55,14 @@ class VenueController extends Controller {
             'description' => 'required',
             'address' => 'required',
             'country' => 'nullable',
-			'province' => 'required',
-			// city and timezone are nullable since it could be an online venue.
+            'province' => 'required',
+            // city and timezone are nullable since it could be an online venue.
             'city' => 'nullable',
-			'timezone' => 'nullable',
-			'accent_color' => 'nullable',
-			'accessibility' => 'nullable',
-			'accessibility_description' => 'nullable',
+            'timezone' => 'nullable',
+            'venue_name' => 'nullable',
+            'accent_color' => 'nullable',
+            'accessibility' => 'nullable',
+            'accessibility_description' => 'nullable',
 		]);
 		// Create the venue.
 		$venue = Venue::create($attributes);
@@ -71,7 +74,20 @@ class VenueController extends Controller {
 		$user->venues()->save($venue);
 		// Send back success message.
         return response()->json(['status' => 'success'], 201);
+    }
 
+    public function upcomingEvents($id, $page ) {
+        $today = Carbon::today();
+        $offset = intval($page) * 10;
+        $events = array();
+        $query = Event::query();
+        $query = $query->where('date', '>=', $today)->whereHas('venue', function($q) use ($id) {
+            $q->where('id', $id );
+        });
+        $events['total'] = $query->count();
+        $events['entries'] = $query->orderby('date')->skip($offset)->take(10)->get();
+        $events['page'] = $page;
+        return $events;
     }
 
     /**
@@ -86,8 +102,11 @@ class VenueController extends Controller {
 		$venue = Venue::find($id);
 		// Pulls the associated social links.
 		$socialLinks = $venue->socialLinks;
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
 		// Returns venue and socialLinks as data.
-        return response()->json(compact('venue', 'socialLinks'));
+        return response()->json(compact('venue', 'socialLinks', 'events'));
 	}
 	
 	/**
@@ -141,6 +160,20 @@ class VenueController extends Controller {
         return response()->json(['status' => 'success'], 200);
     }
 
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+                    default: 
+                        $query = $query->where($param, $field);
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
 	/**
 	 * Search for a venue by a search term.
 	 * 
@@ -148,18 +181,25 @@ class VenueController extends Controller {
 	 * @return array $venue either the matching venues or an empty array.
 	 */
     public function search($term) {
-		// If term is empty, return empty array.
-        if (empty($term)) {
-            return response()->json([], 200);
-		}
-		// Searches for venue by name.
-		// Caps at 10 items to keep autocomplete manageable.
-		$venues = Venue::where('name','LIKE','%'.$term.'%')->take(10)->get();
-		// As long as something is found, returns values.
+        $request = request();
+        $query = Venue::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('province', 'city');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $venues = $query->take($offset)->get();
         if (!empty($venues)) {
-            return response()->json(compact('venues'), 200);
-		}
-		// If no venues found, returns empty array.
+            return response()->json($venues, 200);
+        }
         return response()->json([], 200);
+    }
+
+    public function events($id) {
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
+        return response()->json($events);
     }
 }

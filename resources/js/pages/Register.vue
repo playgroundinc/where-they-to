@@ -104,7 +104,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import ErrorsContainer from "../components/ErrorsContainer";
 import Form from "../core/form";
-import Location from "../Location";
+import Location from "../core/Location";
 export default {
     data() {
         return {

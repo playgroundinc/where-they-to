@@ -24,12 +24,19 @@
 						/>
 					</div>
 				</div>
+                <Location 
+                    :errors="errors"
+                    :city="city"
+                    :province="province"
+                    v-on:update="updateValue"
+                />
 				<Select
-                    label="Performers"
+                    label="performers"
                     route="performers"
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
+					:noProfile="performers_no_profile"
 				/>
 				<AccentColor 
 					:value="accent_color"
@@ -63,7 +70,7 @@
 		</main>
 		<Modal 
 			title="Are you sure?"
-			copy="This action will permanently delete this performer profile and any families and/or events created by it."
+			copy="This action will permanently delete this family."
 			:open="confirmModal"
 			button="Confirm Delete"
 			v-on:confirm="handleDelete"
@@ -86,6 +93,7 @@
 	import Modal from "../../components/Modal";
 	import Button from "../../components/Button";
 	import AccentColor from "../../components/AccentColor";
+    import Location from "../../components/Location";
 
 	export default {
 		data() {
@@ -106,6 +114,9 @@
 				socialLinksId: '',
 				confirmModal: false,
 				accent_color: "#000000",
+				performers_no_profile: [],
+                city: '',
+                province: '',
 			}
 		},
 		computed: {
@@ -122,6 +133,7 @@
 			ErrorsContainer, 
 			Button,
 			Input,
+            Location,
 			Modal,
 			SocialMedia,
 			Select,
@@ -147,9 +159,10 @@
 				this.setStates(socials, socialLinks);
 				this.socialLinksId = socialLinks.id;
 			},
-			setPerformers: function(performers) {
-				this.performers = performers;
+			setState: function(name, value) {
+				this[name] = value;
 			},
+
 			updateFamily: async function(FormClass) {
 				const resp = await FormClass.submitForm();
 				if (resp.status === 'success') {
@@ -158,7 +171,7 @@
 				}
 			},
 			setFamily: function(family) {
-				const fields = ['name', 'description', 'accent_color'];
+				const fields = ['name', 'description', 'accent_color', 'city', 'province'];
 				this.setStates(fields, family);
 			},
 			getFamily: async function() {
@@ -166,7 +179,8 @@
 				if (resp.status === 200) {
 					this.setFamily(resp.data.family);
 					this.setSocialLinks(resp.data.family.social_links);
-					this.setPerformers(resp.data.family.performers);
+					this.setState('performers', resp.data.family.performers);
+					this.setState('performers_no_profile', resp.data.family.performers_no_profile);
 					return;
 				}
 			},
@@ -204,9 +218,15 @@
 			findValue: function(currentArray, updateObject) {
 				let index = -1;
 				currentArray.forEach((item, i) => {
+					if (updateObject.id === 0) {
+						if (item.name === updateObject.name) {
+							index = i;
+							return index;
+						}
+					}
 					if (updateObject.id && item.id === updateObject.id) {
 						index = i;
-						return;
+						return index;
 					}
 					if (item.id === updateObject) {
 						index = i;
@@ -216,7 +236,7 @@
 				return index;
 			},
 			addAdditionalData: function(currentFields) {
-				const fields = ['socialLinksId'];
+				const fields = ['socialLinksId', 'performers_no_profile', 'city', 'province'];
 				fields.forEach((field) => {
 					currentFields[field] = this[field];
 				});

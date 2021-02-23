@@ -58,6 +58,8 @@ class PerformerController extends Controller
             'bio' => 'required',
 			'tips' => 'nullable',
 			'accent_color' => 'nullable',
+            'province' => 'nullable',
+            'city' => 'nullable',
         ]);
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
@@ -115,7 +117,7 @@ class PerformerController extends Controller
         if ($user->id !== request('user_id')):
 			return response()->json(['status' => 'unauthorized'], 401);
         endif;
-        $performer->update(request(['name', 'bio', 'tips', 'accent_color']));
+        $performer->update(request(['name', 'bio', 'tips', 'accent_color', 'province', 'city']));
         $performer->performerTypes()->detach();
         foreach (request('performerTypes') as $performerTypeId):
 			$performerType = PerformerType::find($performerTypeId);
@@ -138,18 +140,52 @@ class PerformerController extends Controller
 		return response()->json(['status'=>'success'], 200);
     }
 
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+
+                    case 'performerTypes':
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('performer_type_id', $field );
+                        });
+                    break;
+                    case 'performers': 
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('name', $field );
+                        });
+                    break;
+                    default:
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->where('name', $field );
+                        });
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
     /**
      * Search for performers by name.
      * 
      * @param string $search_term.
      */
     public function search($term) {
-        if (empty($term)) {
-            return response()->json([], 200);
+        $request = request();
+        $query = Performer::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
-        $performers = Performer::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        $params = array('performerTypes', 'families');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $performers = $query->take($offset)->get();
         if (!empty($performers)) {
-            return response()->json(compact('performers'), 200);
+            return response()->json($performers, 200);
         }
         return response()->json([], 200);
     }

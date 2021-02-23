@@ -24,13 +24,21 @@
 			</div>
 		</div>
 		<div v-else>
+			<h2 class="copy--center">Venue</h2>
+			<p class="copy--center">
+				Does your venue already have a profile? <a href="#" @click.prevent="toggleExisting" type="button">Search venues</a>		
+			</p>
+			<Input 
+				type="text"
+				name="venue_name"
+				:value="name"
+				v-on:update="updateValue"
+			/>
 			<Address 
 				:address="address"
 				:province="province"
 				:city="city"
 				:errors="errors"
-				buttonText="Search venues."
-				helperText="Does your venu already have a profile?"
 				:timezone="timezone"
 				v-on:update="updateValue"
 				v-on:buttonClick="toggleExisting"
@@ -41,6 +49,7 @@
 <script>
 import Address from "../components/Address";
 import Autocomplete from "../components/Autocomplete";
+import Input from "../components/Input";
 
 export default {
 	data() {
@@ -56,6 +65,10 @@ export default {
 		name: {
 			type: String,
 			required: true,
+		},
+		venue_name: {
+			type: String,
+			requited: false,
 		},
 		province: {
 			type: String,
@@ -77,10 +90,11 @@ export default {
 	components: {
 		Address,
 		Autocomplete,
+		Input,
 	},
 	methods: {
 		clearValues: function() {
-			const fields = ['address', 'city', 'province', 'venue_id', 'timezone'];
+			const fields = ['address', 'city', 'province', 'venue_id', 'timezone', 'venue_name'];
 			fields.forEach(field => {
 				this.$emit('update', { name: field, value: '' });
 			});

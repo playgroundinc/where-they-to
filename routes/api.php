@@ -26,6 +26,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('user/{id}/follow/family', 'UserController@toggleFamilyFollowing');
 
     Route::get('user', 'UserController@getAuthenticatedUser');
+    Route::get('user/events/{date}', 'EventController@myEvents');
+    Route::get('user/events/week/{date}', 'EventController@myEventsWeekly');
 
     Route::post('events', 'EventController@store');
     Route::put('events/{id}', 'EventController@update');
@@ -82,7 +84,7 @@ Route::get('updates/{type}/{id}', 'UpdateController@index');
 
 
 Route::resources([
-  'users' => 'UserController',
+    'users' => 'UserController',
 ]);
 
 Route::get('/performerTypes', 'TypeController@performerIndex');
@@ -96,4 +98,7 @@ Route::get('/performerTypes/search/{term}', 'TypeController@performerSearch');
 Route::get('performers/search/{term}', 'PerformerController@search');
 Route::get('/venues/search/{term}', 'VenueController@search');
 Route::get('/families/search/{term}', 'FamilyController@search');
+Route::get('/events/search/{term}', 'EventController@search');
 Route::get('/cities/{province}/search/{term}', 'CityController@search');
+
+Route::get('/venues/{id}/events', 'VenueController@events');

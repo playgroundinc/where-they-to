@@ -25,11 +25,12 @@
             :required="required"
             :value="value"
             :aria-invalid="invalid"
+            :disabled="disabled"
             v-on:change="onChange"
             v-on:focus="floatLabel"
             v-on:blur="floatLabel"
         >
-            <option class="input__default" default="true" value="" disabled></option>
+            <option v-if="defaultValue" class="input__default" default="true" value="">Select</option>
             <option
                 v-for="(option, index) in options"
                 :value="index"
@@ -61,6 +62,21 @@
 			:aria-describedby="helperText ? 'helper-text' : null"
             v-on:change="onCheck"
 		>
+        <input
+            v-else-if="type === 'date'"
+            class="input"
+            :id="name"
+            :type="type"
+            :name="name"
+            :value="value"
+            :required="required"
+            :aria-invalid="invalid"
+            :aria-describedby="helperText ? 'helper-text' : null"
+            v-on:change="onChange"
+            v-on:focus="floatLabel"
+            v-on:blur="floatLabel"
+			:disabled="disabled"
+		/>
         <input
             v-else
             class="input"
@@ -141,7 +157,12 @@ export default {
 			type: Boolean,
 			required: false,
 			default:false,
-		}
+		},
+        defaultValue: {
+            type: Boolean,
+            required: false,
+            default: true,
+        }
     },
     data() {
         return {
@@ -194,6 +215,9 @@ export default {
     },
     computed: {
         floating() {
+            if (this.type === 'select' || this.type === 'date') {
+                return 'float';
+            }
             return this.active || this.value !== '' ? 'float' : 'sink';
         },
         label() {
@@ -206,6 +230,8 @@ export default {
             }
 		}
 		
+    },
+    mounted() {
     }
 };
 </script>

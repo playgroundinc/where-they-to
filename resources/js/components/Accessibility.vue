@@ -15,14 +15,16 @@
 					:value="option['value']"
 					:checked="option['checked']"
 					v-on:update="updateArray"
+                    :required="false"
 				/>
 			</div>
-			<div class="col-xs-12">
+			<div v-if="description" class="col-xs-12">
 				<Input
 					type="textarea"
 					name="accessibility_description"
 					:value="description"
 					v-on:update="updateValue"
+                    :required="false"
 				/>
 			</div>
         </div>
@@ -43,10 +45,11 @@ export default {
         value: {
             type: Array,
             required: true,
+            default: () => [],  
         },
         description: {
 			type: String,
-			required: true,
+			required: false,
         }
 	},
 	

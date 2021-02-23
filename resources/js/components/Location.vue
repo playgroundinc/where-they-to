@@ -1,17 +1,8 @@
 <template>
 <div class="form-group row">
     <div class="col-xxs-12">
-        <h2 class="copy--center">Address</h2>
-        <p class="copy--center">This site is only currently set up to support Canadian addresses or web addresses. If you're creating a profile for a digital platform, make the address the web address and set the province to Online. Rather than a city, we ask that you provide the timezone.</p>
-        <p class="copy--center">{{ helperText }} <a v-if="buttonText" href="#" @click.prevent="handleClick">{{ buttonText }}</a></p>
-        <Input
-            name="address"
-            :value="address"
-            type="text"
-            :required="true"
-            :errors="errors"
-            v-on:update="updateValue"
-        />
+        <h2 class="copy--center">Location</h2>
+        <p class="copy--center">This site is only currently set up to support Canadian locations or online events.</p>
     </div>
     <div class="col-md-6"> 
         <Input
@@ -24,19 +15,9 @@
             v-on:update="updateValue"
         />
     </div>
-    <div class="col-md-6">
-        <Input 
-            v-if="'OE' === province"
-            name="timezone"
-            :value="timezone"
-            type="select"
-            :required="true"
-            :errors="errors"
-            :options="timezones"
-            v-on:update="updateValue"            
-        />
+    <div class="col-md-6" v-if="'' !== province">
         <Autocomplete 
-			v-else-if="'' === city"
+			v-if="'' === city"
 			:errors="errors"
 			label="City"
 			route="cities"
@@ -70,18 +51,6 @@ import Location from "../core/Location";
 
 export default {
     props: {
-        address: {
-            type: String,
-            required: true,
-        },
-        buttonText: {
-			type: String,
-			required: false,
-        },
-        helperText: {
-			type: String,
-			required: false,
-        },
         province: {
             type: String,
             required: true,
@@ -94,10 +63,6 @@ export default {
             type: Array,
             required: true,
         },
-        timezone: {
-            type: String,
-            required: true,
-        }
     },
     components: {
         Autocomplete,
@@ -108,11 +73,10 @@ export default {
             return new Location();
         },
         provinces() {
-            return this.location.getProvinces();
+            const allProvinces = this.location.getProvinces();
+            delete allProvinces.OE;
+            return allProvinces;
         },
-        timezones() {
-            return this.location.getTimezones();
-        }
     },
     methods: {
         updateValue: function(updateObject) {

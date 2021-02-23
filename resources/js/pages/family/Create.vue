@@ -24,14 +24,21 @@
 						/>
 					</div>
 				</div>
+                <Location 
+                    :errors='errors'
+                    :city="city"
+                    :province="province"
+                    v-on:update="updateValue"
+                />
 				<Select
                     label="performers"
                     route="performers"
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
+					:noProfile="performers_no_profile"
 				/>	
-        <AccentColor 
+				<AccentColor 
 					:value="accent_color"
 					:errors="errors"
 					v-on:update="updateValue"
@@ -63,9 +70,10 @@
 	import ErrorsContainer from "../../components/ErrorsContainer";
 	import Input from "../../components/Input";
 	import SocialMedia from "../../components/SocialMedia";
-  import Select from "../../components/Select";
-  import Button from "../../components/Button";
-  import AccentColor from "../../components/AccentColor";
+	import Select from "../../components/Select";
+	import Button from "../../components/Button";
+	import AccentColor from "../../components/AccentColor";
+    import Location from "../../components/Location";
 
 	export default {
 		data() {
@@ -80,9 +88,12 @@
 				tiktok: '',
 				twitch: '',
 				youtube: '',
-        instagram: '',
-        accent_color: "#000000",
+				instagram: '',
+				accent_color: "#000000",
+				performers_no_profile: [],
 				socials,
+                city: '',
+                province: '',
 			}
 		},
 		computed: {
@@ -95,10 +106,11 @@
 			}
 		},
 		components: {
-      AccentColor,
-      Button,
+			AccentColor,
+			Button,
 			ErrorsContainer, 
 			Input,
+            Location,
 			SocialMedia,
 			Select,
 		},
@@ -117,16 +129,24 @@
 				let data = {
 					name: this.name,
 					description: this.description,
-          performers: this.performerIds,
-          accent_color: this.accent_color,
+					performers: this.performerIds,
+					accent_color: this.accent_color,
 				}
 				const FormClass = new Form(data, "create", { route: "families" });
 				this.errors = FormClass.checkRequiredFields(data);
 				if (this.valid) {
-					const additionalData = this.getSocialMediaData();
+					let additionalData = this.getSocialMediaData();
+					additionalData = this.getAdditionalData(additionalData);
 					FormClass.setAdditionalFields(additionalData);
 					this.createFamily(FormClass);
 				}
+			},
+			getAdditionalData: function(additionalData) {
+				const fields = ['performers_no_profile', 'city', 'province'];
+				fields.forEach((field) => {
+					additionalData[field] = this[field];
+				});
+				return additionalData
 			},
 			addToArray: function(updateObject, currentArray) {
 				const index = this.findValue(currentArray, updateObject.value);

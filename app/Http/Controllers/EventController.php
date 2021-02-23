@@ -30,7 +30,11 @@ class EventController extends Controller
 			if ($venue) {
 				$venue->events()->save($event);
 			}
+            $province = $venue['province'];
+            $city = $venue['city'];
+            $event->update(['city'=> $city, 'province' => $province]);
 		} else {
+			$event->venue_name= $request['venue_name'];
 			$event->address = $request['address'];
 			$event->city = $request['city'];
 			$event->province = $request['province'];
@@ -102,7 +106,9 @@ class EventController extends Controller
 	 */
 	public function updateSocialLinks($request) {
 		$socialLinks = SocialLinks::find(request('socialLinksId'));
-		$socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+        if (!empty($socialLinks)) {
+            $socialLinks->update(request(['facebook', 'instagram', 'twitter', 'website', 'youtube']));
+        }
 	}
 
     /**
@@ -126,7 +132,8 @@ class EventController extends Controller
 			'description' => 'required',
 			'timezone' => 'nullable',
 			'tickets' => 'nullable',
-			'tickets_url' => 'nullable'
+			'tickets_url' => 'nullable',
+			'performers_no_profile' => 'nullable',
 		]);
 		// Use Carbon to parse and format date.
         $date = Carbon::parse(request('date'));
@@ -158,7 +165,7 @@ class EventController extends Controller
 		// Parse the date.
 		$event_date = Carbon::parse($event['date']);
 		// Format the date.
-		$event->date = $event_date->format('M d, Y');
+		$event->date = $event_date->format('Y-m-d');
 		// Find the social links.
 		$socialLinks = $event->socialLinks;
 		// Find the family.
@@ -204,7 +211,8 @@ class EventController extends Controller
 				'description',
 				'show_time',
 				'tickets',
-				'tickets_url'
+				'tickets_url',
+                'performers_no_profile',
 			]));
 
 			// Save the fields.
@@ -231,15 +239,92 @@ class EventController extends Controller
         // Find event by ID.
         $event = Event::find($id);
         $user = $event->user;
-		$validatedUser = request('user');
+		$validatedUser = request('user_id');
 		// Check that user from request owns this event.
-        if ($user['id'] === $validatedUser['id']) {
+        if ($user['id'] === $validatedUser) {
 			$event->performers()->detach();
 			$event->delete();
 			return response()->json(['status' => 'success'], 200);
 		}
 		// If user does not own this event, return unauthorized. 
         return response()->json(['status' => 'unauthorized'], 401);
+    }
+
+    public function getFollowing($user, $fields) {
+        $following = array();
+        foreach ($fields as $field) {
+            $current_value = $user['following_' . $field];
+            if (!empty($current_value)) {
+                $following[$field] = $current_value;
+            }
+        }
+        return $following;
+    }
+
+
+    public function getActiveEvents($today, $following, $fields) {
+		// Find events on this date.    
+        $active_events = array();
+        foreach ($fields as $key => $field) {
+            $events = array();
+            if ($field === 'performers' && !empty($following[$field])) {
+                $events =  Event::where('date', '=', $today)->whereHas($field, function($q) use ($key, $field, $following) {
+                    $q->whereIn($key, $following[$field]);
+                })->pluck('id'); 
+            } elseif (!empty($following[$field])) {
+                $events = Event::where('date', '=', $today)->whereIn($key, $following[$field])->pluck('id'); 
+            }
+            $active_events[$field] = json_decode(json_encode($events, true));
+        }
+        return $active_events;
+    } 
+
+    public function getEventsByDate($date, $user, $page) {
+        $fields = array('performer_id' => 'performers', 'venue_id' => 'venues', 'family_id' => 'families');
+        $following = $this->getFollowing($user, $fields);
+        $today = Carbon::parse($date)->format('Y-m-d');
+        $active_events = $this->getActiveEvents($today, $following, $fields);
+        $all_events = array_unique(array_merge($active_events['performers'], $active_events['venues'], $active_events['families']));
+        $total = ceil(count($all_events) / 10);
+        $event_ids = array_splice($all_events, intval($page) * 10, intval($page) + 10);
+        $page = intval($page) + 1;
+        $events = Event::whereIn('id', $event_ids)->get();
+        $response = compact('events', 'total', 'page', 'date');
+        return $response;
+    }
+
+    /**
+     * Pull events for following or attending.
+     *
+     * @param  \App\Event  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function myEvents($date) {
+        $user = request('user');
+        $request = request();
+        $page = $request->query('page', '0');
+        $response = $this->getEventsByDate($date, $user, $page);
+        return response()->json($response);
+    }
+
+    public function filterByProvince($event, $city, $province) {
+        return response()->json($event);
+    }
+
+    public function myEventsWeekly($date) {
+        $weeks_events = array();
+        for ($i = 1; $i <= 7; $i = $i + 1) {
+            $current_date = Carbon::parse($date)->addDays($i)->format('Y-m-d');
+            $user = request('user');
+            $request = request();
+            $page = $request->query('page', '0');
+            $province = $request->query('province', false);
+            $city = $request->query('city', false);
+            $response = $this->getEventsByDate($current_date, $user, $page);
+            $key = Carbon::parse($current_date)->format('l F jS');
+            $weeks_events[$key] = $response;      
+        }
+        return response()->json($weeks_events);
     }
 
 	/**
@@ -275,5 +360,66 @@ class EventController extends Controller
 		->toJSON();
 		// Return any events found.
 		return response()->json(['events' => $events]);
+    }
+
+    public function buildQuery($query, $request, $params) {
+        foreach($params as $param) {
+            $field = $request->query($param, false);
+            if ($field) {
+                switch ($param) {
+                    case 'accessibility':
+                        $field = explode(',', $field);
+                        $query = $query->whereJsonContains($param, $field);
+                    break;
+                    case 'date':
+                        $query->where('date', '=', $field);
+                    break;
+                    case 'eventTypes':
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('event_type_id', $field );
+                        });
+                    break;
+                    case 'performers': 
+                        $field = explode(',', $field);
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->whereIn('name', $field );
+                        });
+                    break;
+                    case 'city':
+                    case 'province':
+                    case 'timezone':
+                        $query = $query->where($param, $field);
+                    break;
+                    default:
+                        $query = $query->whereHas($param, function($q) use ($field) {
+                            $q->where('name', $field );
+                        });
+                    break;
+                }
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Search for events by name.
+     * 
+     * @param string $search_term.
+     */
+    public function search($term) {
+        $request = request();
+        $query = Event::query();
+        if ($term !== '*') {
+            $query = $query->where('name', 'LIKE', '%' . $term . '%');
+        }
+        $params = array('eventTypes', 'date', 'performers', 'venue', 'family', 'accessibility', 'city', 'province', 'timezone');
+        $offset = $request->query('offset', 10);
+        $query = $this->buildQuery($query, $request, $params);
+        $events = $query->take($offset)->get();
+        if (!empty($events)) {
+            return response()->json($events, 200);
+        }
+        return response()->json([], 200);
     }
 }

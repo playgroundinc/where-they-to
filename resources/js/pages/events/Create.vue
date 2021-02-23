@@ -25,7 +25,7 @@
                         <Input
 							name="date"
 							:value="date"
-							type="text"
+							type="date"
 							:required="true"
 							:errors="errors"
 							v-on:update="updateValue"
@@ -58,6 +58,7 @@
                     route="performers"
 					:errors="errors"
 					:currentArray="performers"
+					:noProfile="performers_no_profile"
 					v-on:update="updateArray"
 				/>	
                 <SelectTypes 
@@ -156,6 +157,7 @@ export default {
             show_time: "",
             venue: "",
             performers: [],
+			performers_no_profile: [],
 			province: "",
 			city: "",
 			address: "",
@@ -228,8 +230,6 @@ export default {
 				date: this.date,
 				show_time: this.show_time,
 				accent_color: this.accent_color,	
-				accessibility: this.accessibility,
-				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "create", { route: "events" });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -266,9 +266,15 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'accessibility', 'accessibility_description', 'performers_no_profile'];
 			fields.forEach((field) => {
-				additionalData[field] = this[field];
+                let value = this[field];
+                if (field === 'performers') {
+                    value = this[field].map((item) => {
+                        return item.id;
+                    });
+                }
+				additionalData[field] = value;
 			});
 			return additionalData;
         },

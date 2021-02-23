@@ -39,7 +39,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(),
@@ -48,7 +48,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(),
@@ -57,7 +57,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(2),
@@ -66,7 +66,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(2),
@@ -75,7 +75,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(2),
@@ -84,7 +84,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(2),
@@ -93,7 +93,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(3),
@@ -102,7 +102,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(3),
@@ -111,7 +111,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(3),
@@ -120,7 +120,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(3),
@@ -129,7 +129,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(4),
@@ -138,7 +138,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(4),
@@ -147,7 +147,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(4),
@@ -156,7 +156,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(5),
@@ -165,7 +165,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(5),
@@ -174,7 +174,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(5),
@@ -183,7 +183,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(5),
@@ -192,7 +192,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(6),
@@ -201,7 +201,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(6),
@@ -210,7 +210,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(6),
@@ -219,7 +219,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
       DB::table('events')->insert([
         'date' => Carbon::now()->addDay(7),
@@ -228,7 +228,7 @@ class EventsTableSeeder extends Seeder
         'description' => $faker->text,
         'venue_id' => '1',
         'family_id' => '2',
-        'user_id' => '2',
+        'user_id' => '1',
       ]);
     }
 }

@@ -25,7 +25,7 @@
                         <Input
 							name="date"
 							:value="date"
-							type="text"
+							type="date"
 							:required="true"
 							:errors="errors"
 							v-on:update="updateValue"
@@ -59,6 +59,7 @@
 					:errors="errors"
 					:currentArray="performers"
 					v-on:update="updateArray"
+					:noProfile="performers_no_profile"
 				/>	
                 <SelectTypes 
                     :errors="errors"
@@ -99,7 +100,7 @@
 					:errors="errors"
 					v-on:update="updateValue"
 				/>
-        <Accessibility 
+                <Accessibility 
 					:value="accessibility"
 					:description="accessibility_description"
 					v-on:update="updateValue"
@@ -116,7 +117,22 @@
 					v-on:update="updateValue"
 				/>
 				<Button variation="input" label="Update Event" :disabled="errors.length > 0"/>
-			</form>    
+			</form>
+			<div class="copy--center">
+				<Button 
+					classes="btn--inline copy--center" 
+					v-on:clicked.prevent="toggleModal" 
+					label="Delete Family" 
+				/>
+				<Modal 
+					title="Are you sure?"
+					copy="This action will permanently delete this event."
+					:open="confirmModal"
+					button="Confirm Delete"
+					v-on:confirm="handleDelete"
+					v-on:close="toggleModal"
+				/>
+			</div>    
 		</main>
     </div>
 </template>
@@ -141,6 +157,7 @@ import FamilySelect from "../../components/FamilySelect";
 import VenueSelect from "../../components/VenueSelect";
 import Button from "../../components/Button";
 import AccentColor from "../../components/AccentColor";
+import Modal from "../../components/Modal";
 
 export default {
     data() {
@@ -174,8 +191,10 @@ export default {
 			venue_id: "",
 			venue_name: "",
 			socialLinksId: "",
+			confirmModal: false,
 			accessibility: [],
 			accessibility_description: "",
+			performers_no_profile: [],
         };
     },
 
@@ -211,6 +230,7 @@ export default {
         Autocomplete,
 		VenueSelect,
 		Button,
+		Modal,
     },
     methods: {
 		createEvent: async function(FormClass) {
@@ -242,7 +262,7 @@ export default {
 			this.setStates(fields, family);
 		},
 		setEvent: function(event) {
-			const fields = ['accessibility', 'accessibility_description', 'accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url'];
+			const fields = ['accessibility', 'accessibility_description', 'accent_color', 'name', 'description', 'date', 'doors', 'show_time', 'tickets', 'tickets_url', 'address', 'city', 'province', 'timezone', 'venue_name', 'performers_no_profile'];
 			this.setStates(fields, event);
 		},
 		getEvent: async function() {
@@ -273,8 +293,6 @@ export default {
 				date: this.date,
 				show_time: this.show_time,
 				accent_color: this.accent_color,
-				accessibility: this.accessibility,
-				accessibility_description: this.accessibility_description,
 			}
 			const FormClass = new Form(data, "edit", { route: "events", id: this.id });
 			this.errors = FormClass.checkRequiredFields(data);
@@ -311,45 +329,68 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'performers_no_profile', 'accessibility', 'accessibility_description'];
 			fields.forEach((field) => {
-				additionalData[field] = this[field];
+				let value = this[field];
+                if (field === 'performers') {
+                    value = this[field].map((item) => {
+                        return item.id;
+                    });
+                }
+				additionalData[field] = value;
 			});
 			return additionalData;
         },
         addToArray: function(updateObject, currentArray) {
-                const index = this.findValue(currentArray, updateObject.value);
-				if (index <= -1) {
-					currentArray.push(updateObject.value);
-					this[updateObject.name] = currentArray;
+			const index = this.findValue(currentArray, updateObject.value);
+			if (index <= -1) {
+				currentArray.push(updateObject.value);
+				this[updateObject.name] = currentArray;
+			}
+		},
+		findValue: function(currentArray, updateObject) {
+			let index = -1;
+			currentArray.forEach((item, i) => {
+				if (item.id === 0) {
+					return index;
 				}
-			},
-			findValue: function(currentArray, updateObject) {
-				let index = -1;
-				currentArray.forEach((item, i) => {
-					if (item.id === updateObject.id) {
-						index = i;
-						return index;
-					}
-				});
-				return index;
-			},
-			deleteFromArray: function(updateObject, currentArray) {
-                const index = this.findValue(currentArray, updateObject.value);
-				if (index > -1) {
-					currentArray.splice(index, 1);
-					this[updateObject.name] = currentArray;
+				if (item.id === updateObject.id) {
+					index = i;
+					return index;
 				}
-			},
-			updateArray: function(updateObject) {
-				const currentArray = this[updateObject.name];
-				if (currentArray && updateObject.add) {
-					this.addToArray(updateObject, currentArray);
-				} 
-				if (currentArray && !updateObject.add) {
-					this.deleteFromArray(updateObject, currentArray);
-				}
-            },
+			});
+			return index;
+		},
+		deleteFromArray: function(updateObject, currentArray) {
+			const index = this.findValue(currentArray, updateObject.value);
+			if (index > -1) {
+				currentArray.splice(index, 1);
+				this[updateObject.name] = currentArray;
+			}
+		},
+		updateArray: function(updateObject) {
+			const currentArray = this[updateObject.name];
+			if (currentArray && updateObject.add) {
+				this.addToArray(updateObject, currentArray);
+			} 
+			if (currentArray && !updateObject.add) {
+				this.deleteFromArray(updateObject, currentArray);
+			}
+		},
+		handleDelete: async function() {
+			const data = {
+				user_id: this.user.id,
+			}
+			const DeleteForm = new Form(data, 'destroy', { route: 'events', id: this.id });
+			const resp = await DeleteForm.submitForm();
+			if (resp.status === 'success') {
+				await this.$store.dispatch('findUser');
+				this.$router.push('/dashboard');
+			}
+		},
+		toggleModal: function() {
+			this.setValue('confirmModal', !this.confirmModal);
+		}
     },
     async mounted() {
         try {

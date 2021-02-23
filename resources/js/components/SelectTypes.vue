@@ -11,6 +11,7 @@
                 :values="allTypes"
                 v-on:new="addTerm"
                 v-on:selection="updateValue"
+                newBtn="Add new tag"
             />
         </div>
         <div class="col-xxs-12 col-md-6">
@@ -47,6 +48,18 @@ export default {
             return `${this.type}_types`
         }
     },
+    watch: {
+        route: async function(newRoute, oldRoute) {
+            try {
+                const resp = this.getAllTypes();
+                if (resp.status === 200) {
+                    this.allTypes = resp.data;
+                }
+            } catch(err) {
+                console.log(err);
+            }
+        }
+    },
     props: {
         errors: {
             type: Array,
@@ -69,8 +82,8 @@ export default {
         Input,
         Autocomplete
     },
-    mounted() {
-        this.getAllTypes();
+    async created() {
+        await this.getAllTypes();
     },
     methods: {
         updateValue: function(updateObject) {

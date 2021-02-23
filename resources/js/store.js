@@ -116,13 +116,17 @@ export default new Vuex.Store({
             });
         },
         fetchDate({ commit }, data) {
+            const user = localStorage.getItem("token");
             return new Promise((resolve, reject) => {
                 const { date } = data;
-                const { parameter } = data;
-                axios
-                    .get(
-                        `http://127.0.0.1:8000/api/events/${parameter}/${date}`
-                    )
+                const query = data.query ? data.query : '';
+                axios({
+                    url: `http://127.0.0.1:8000/api/user/events/${date}?${query}`,
+                    headers: {
+                        Authorization: `Bearer ${user}`
+                    },
+
+                })
                     .then(resp => {
                         resolve(resp);
                         return resp;
@@ -267,8 +271,32 @@ export default new Vuex.Store({
         },
         search({ state }, payload) {
             return new Promise((resolve, reject) => {
+                let query = '';
+                if (payload.query) {
+                    query = `?${payload.query}`;
+                }
                 axios({
-                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}`,
+                    url: `http://127.0.0.1:8000/api/${payload.route}/search/${payload.term}${query}`,
+                    method: "GET",
+                })
+                .then(resp => {
+                    resolve(resp);
+                    return resp.data;
+                })
+                .catch(error => {
+                    reject(error);
+                    return error.message; 
+                })
+            })
+        },
+        upcomingEvents({ state }, payload) {
+            return new Promise((resolve, reject) => {
+                let query = '';
+                if (payload.query) {
+                    query = `?${payload.query}`;
+                }
+                axios({
+                    url: `http://127.0.0.1:8000/api/${payload.route}/events${query}`,
                     method: "GET",
                 })
                 .then(resp => {
