@@ -56,16 +56,16 @@ export default {
         handleLoadMore: async function() {
             const data = {
                 route: `${this.route}/${this.id}`,
-                query: `?page=${this.nextPage}`,
+                query: `page=${this.nextPage}`,
             }
             const resp = await this.$store.dispatch('upcomingEvents', data);
             if (resp.status === 200 && resp.data) {
                 const events = {};
-                events.entries = this.events;
+                events.current = this.events;
                 events.total = Number(resp.data.total);
                 events.page = Number(resp.data.page);
-                if (resp.data.entries) {
-                    events.entries = this.events.concat(resp.data.entries);
+                if (resp.data.current) {
+                    events.current = this.events.concat(resp.data.current);
                 } 
                 this.$emit('update', { name: 'events', value: events });
             }

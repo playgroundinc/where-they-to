@@ -85,7 +85,7 @@ class VenueController extends Controller {
             $q->where('id', $id );
         });
         $events['total'] = $query->count();
-        $events['entries'] = $query->orderby('date')->skip($offset)->take(10)->get();
+        $events['current'] = $query->orderby('date')->skip($offset)->take(10)->get();
         $events['page'] = $page;
         return $events;
     }
