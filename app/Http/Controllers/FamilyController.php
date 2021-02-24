@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Family;
 use App\Performer;
 use App\User;
 use App\SocialLinks;
+use App\Event;
 use Illuminate\Http\Request;
 
 class FamilyController extends Controller
@@ -109,8 +112,9 @@ class FamilyController extends Controller
 		$performers = $family->performers;
 		// Get all social links for family.
 		$socialLinks = $family->socialLinks;
+        $events = $this->upcomingEvents($id);
 		// Return these variables.
-        return response()->json(compact('family', 'performers', 'socialLinks'), 200);
+        return response()->json(compact('family', 'performers', 'socialLinks', 'events'), 200);
     }
 
     /**
@@ -198,5 +202,26 @@ class FamilyController extends Controller
             return response()->json($families, 200);
         }
         return response()->json([], 200);
+    }
+
+    public function upcomingEvents($id, $page = 0 ) {
+        $today = Carbon::today();
+        $offset = intval($page) * 10;
+        $events = array();
+        $query = Event::query();
+        $query = $query->where('date', '>=', $today)->whereHas('family', function($q) use ($id) {
+            $q->where('id', $id );
+        });
+        $events['total'] = $query->count();
+        $events['current'] = $query->orderby('date')->skip($offset)->take(10)->get();
+        $events['page'] = $page;
+        return $events;
+    }
+
+	public function events($id) {
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
+		return response()->json($events);
     }
 }
