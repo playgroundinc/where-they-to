@@ -26,7 +26,7 @@
                         :id="id"
                     />
                     <UpcomingEvents 
-                        :events="events.entries"
+                        :events="events.current"
                         :total="events.total"
                         :page="events.page"
                         :id="id"
@@ -60,7 +60,7 @@ export default {
 			venue: [],
 			socialLinks: [],
             events: {
-                entries: [],
+                current: [],
                 total: 0,
                 page: 0,
             },

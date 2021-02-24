@@ -93,7 +93,8 @@ class PerformerController extends Controller
         $socialLinks = $performer->socialLinks;
         $family = Family::find($performer->family_id);
         $types = $performer->performerTypes;
-        return response()->json(compact('performer', 'types', 'family', 'socialLinks'));
+        $events = $this->upcomingEvents($id);
+        return response()->json(compact('performer', 'types', 'family', 'socialLinks', 'events'));
     }
 
 	public function updateSocialLinks($request) {
@@ -125,20 +126,6 @@ class PerformerController extends Controller
         endforeach;
         return response()->json(['status'=>'success'], 200);
 	}
-
-    public function addType($id) {
-		$performer = Performer::find($id);
-		$performerType = PerformerType::find(request('performerType_id'));
-		$performer->performerTypes()->attach($performerType);
-		return response()->json(['status'=>'success'], 200);
-    }
-
-    public function removeType($id) {
-		$performer = Performer::find($id);
-		$performerType = PerformerType::find(request('performerType_id'));
-		$performer->performerTypes()->detach($performerType);
-		return response()->json(['status'=>'success'], 200);
-    }
 
     public function buildQuery($query, $request, $params) {
         foreach($params as $param) {
@@ -222,16 +209,24 @@ class PerformerController extends Controller
         return response()->json(['status' => 'success'], 200);
 	}
 
+    public function upcomingEvents($id, $page = 0 ) {
+        $today = Carbon::today();
+        $offset = intval($page) * 10;
+        $events = array();
+        $query = Event::query();
+        $query = $query->where('date', '>=', $today)->whereHas('venue', function($q) use ($id) {
+            $q->where('id', $id );
+        });
+        $events['total'] = $query->count();
+        $events['current'] = $query->orderby('date')->skip($offset)->take(10)->get();
+        $events['page'] = $page;
+        return $events;
+    }
+
 	public function events($id) {
-		$performer = Performer::find($id);
-		$events = $performer->events;
-		$events = array_map(function($event) {
-			$date = Carbon::parse($event['date']);
-			$event['date'] = $date->format('F d Y');
-			$venue = Venue::find($event['venue_id']);
-			$event['venue'] = $venue;
-			return $event;
-		}, $events->toArray());
-		return response()->json(['events' => $events]);
+        $request = request();
+        $page = $request->query('page', 0);
+        $events = $this->upcomingEvents($id, $page);
+		return response()->json($events);
     }
 }
