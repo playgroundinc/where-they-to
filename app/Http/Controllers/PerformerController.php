@@ -214,8 +214,8 @@ class PerformerController extends Controller
         $offset = intval($page) * 10;
         $events = array();
         $query = Event::query();
-        $query = $query->where('date', '>=', $today)->whereHas('venue', function($q) use ($id) {
-            $q->where('id', $id );
+        $query = $query->where('date', '>=', $today)->whereHas('performers', function($q) use ($id) {
+            $q->where('performer_id', $id );
         });
         $events['total'] = $query->count();
         $events['current'] = $query->orderby('date')->skip($offset)->take(10)->get();
