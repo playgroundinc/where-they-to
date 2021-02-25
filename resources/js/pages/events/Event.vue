@@ -18,13 +18,13 @@
 					/>
 					<p>{{ event.date }} at {{ event.show_time }}</p>
 					<p v-if="event.doors">Doors @ {{ event.doors }}</p>
-					<div v-if="venue">
+					<div v-if="venue.id">
 						<p>{{ venue.name }}</p>
 						<p>{{ venue.address }}</p>
 						<p>{{ venue.city}}, {{ venue.province }}</p>
 					</div>
 					<div v-else-if="event.address">
-            <p class="copy--bold">{{ event.venue_name }}</p>
+                        <p class="copy--bold">{{ event.venue_name }}</p>
 						<p>{{ event.address }}</p>
 						<p>{{ event.city}}, {{ event.province }}</p>
 					</div>

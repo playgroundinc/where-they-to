@@ -329,7 +329,7 @@ export default {
             return socialMediaData;
 		},
 		getAdditionalData: function(additionalData) {
-			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'performers_no_profile', 'accessibility', 'accessibility_description'];
+			const fields = ['address', 'city', 'doors', 'eventTypes', 'family_id', 'performers', 'province', 'socialLinksId', 'tickets', 'tickets_url', 'timezone', 'venue_id', 'venue_name', 'performers_no_profile', 'accessibility', 'accessibility_description'];
 			fields.forEach((field) => {
 				let value = this[field];
                 if (field === 'performers') {

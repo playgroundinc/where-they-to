@@ -34,6 +34,7 @@ class EventController extends Controller
             $city = $venue['city'];
             $event->update(['city'=> $city, 'province' => $province]);
 		} else {
+            $event->venue()->dissociate();
 			$event->venue_name= $request['venue_name'];
 			$event->address = $request['address'];
 			$event->city = $request['city'];

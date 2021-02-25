@@ -45,6 +45,7 @@ class Event extends Model
         'city',
         'doors',
         'province',
+        'venue_name',
         'timezone',
         'description',
         'date',
