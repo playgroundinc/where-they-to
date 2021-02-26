@@ -132,7 +132,8 @@ class TypeController extends Controller
         if (empty($term)) {
             return response()->json([], 200);
         }
-        $performerTypes = PerformerType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        $performerTypes = array();
+        $performerTypes['current'] = PerformerType::where('name','LIKE','%'.$term.'%')->take(10)->get();
         if (!empty($performerTypes)) {
             return response()->json($performerTypes, 200);
         }
@@ -143,7 +144,8 @@ class TypeController extends Controller
         if (empty($term)) {
             return response()->json([], 200);
         }
-        $eventTypes = EventType::where('name','LIKE','%'.$term.'%')->take(10)->get();
+        $eventTypes = array();
+        $eventTypes['current'] = EventType::where('name','LIKE','%'.$term.'%')->take(10)->get();
         if (!empty($eventTypes)) {
             return response()->json($eventTypes, 200);
         }
