@@ -50,7 +50,10 @@
                 </div>
             </div>
             <SearchResult 
-                :results="searchResults"
+                :results="searchResults.current"
+                :total="searchResults.total"
+                :page="searchResults.page"
+                v-on:loadMore="loadMore"
             />
             
         </form>
@@ -91,6 +94,8 @@ export default {
             performers: [],
             eventTypes: [],
             performerTypes: [],
+            page: 0,
+            total: 0,
         };
     },
     computed: {
@@ -121,6 +126,9 @@ export default {
             set: function(value) {
                 this.family = value;
             }
+        },
+        nextPage: function() {
+            return Number(this.page) + 1;
         }
     },
     components: {
@@ -132,13 +140,24 @@ export default {
         SearchResult,
     },
     methods: {
+        clearResults: function() {
+            this.page = 0;
+            this.searchResults = {
+                current: [],
+                total: 0,
+                page: 0,
+            }
+        },
         updateValue: function(updateObject) {
+            if (updateObject.name === 'category') {
+                this.clearResults();
+            }
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
             let fields = [];
             if (this.route === 'events') {
-                fields = ['family', 'eventTypes', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility'];
+                fields = ['family', 'eventTypes', 'date', 'city', 'performers', 'province', 'venue', 'timezone', 'accessibility', 'page'];
             } else if (this.route === 'performers') {
                 fields = ['families', 'performerTypes'];
             } else if (this.route === 'venues') {
@@ -149,7 +168,8 @@ export default {
             let first = true;
             let query = '';
             fields.forEach((field) => { 
-                if (this[field] && this[field] !== '' && this[field].length ) {
+                console.log(this[field]);
+                if (this[field] && this[field] !== '' ) {
                     let value;
                     if (field === 'performers' || field === 'eventTypes') {
                         value = this[field].map((item) => {
@@ -183,6 +203,23 @@ export default {
             const resp = await this.$store.dispatch('search', { route: this.route, term, query });
             if (resp.status === 200) { 
                 this.searchResults = resp.data;
+            }
+        },
+        loadMore: async function() {
+            this.updateValue({ name: 'page', value: this.nextPage });
+            const query = this.buildQuery();
+            const term = this.search !== '' ? this.search : '*';
+            const resp = await this.$store.dispatch('search', { route: this.route, term, query });
+            if (resp.status === 200) {
+                const events = resp.data;
+                const currentEvents = this.searchResults.current;
+                events.current = currentEvents.concat(events.current);
+                console.log(events);
+                this.updateValue('page', events.page);
+                this.updateValue({
+                    name: 'searchResults',
+                    value: events,
+                })
             }
         }
     }

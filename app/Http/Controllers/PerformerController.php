@@ -168,9 +168,12 @@ class PerformerController extends Controller
             $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
         $params = array('performerTypes', 'families');
-        $offset = $request->query('offset', 10);
+        $page = $request->query('page', 0);
+        $offset = intval($page) * 10; 
         $query = $this->buildQuery($query, $request, $params);
-        $performers = $query->take($offset)->get();
+        $performers['total'] = $query->count();
+        $performers['current'] = $query->skip($offset)->take(10)->get();
+        $performers['page'] = $page;
         if (!empty($performers)) {
             return response()->json($performers, 200);
         }

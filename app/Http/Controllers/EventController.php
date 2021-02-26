@@ -414,10 +414,13 @@ class EventController extends Controller
         if ($term !== '*') {
             $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
+        $page = $request->query('page', 0);
+        $offset = intval($page) * 10;
         $params = array('eventTypes', 'date', 'performers', 'venue', 'family', 'accessibility', 'city', 'province', 'timezone');
-        $offset = $request->query('offset', 10);
         $query = $this->buildQuery($query, $request, $params);
-        $events = $query->take($offset)->get();
+        $events['total'] = $query->count();
+        $events['current'] = $query->skip($offset)->take(10)->get();
+        $events['page'] = intval($page);
         if (!empty($events)) {
             return response()->json($events, 200);
         }
