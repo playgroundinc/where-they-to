@@ -187,10 +187,14 @@ class VenueController extends Controller {
             $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
         $params = array('province', 'city');
-        $offset = $request->query('offset', 10);
+        $page = $request->query('page', 0);
+        $offset = $page * 10;
         $query = $this->buildQuery($query, $request, $params);
-        $venues = $query->take($offset)->get();
-        if (!empty($venues)) {
+        $venues = array();
+        $venues['total'] = $query->count();
+        $venues['page'] = $page;
+        $venues['current'] = $query->skip($offset)->take(10)->get();
+        if (!empty($venues['current'])) {
             return response()->json($venues, 200);
         }
         return response()->json([], 200);

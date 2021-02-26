@@ -195,9 +195,13 @@ class FamilyController extends Controller
             $query = $query->where('name', 'LIKE', '%' . $term . '%');
         }
         $params = array('performers');
-        $offset = $request->query('offset', 10);
+        $page = $request->query('page', 0);
+        $offset = $page * 10;
         $query = $this->buildQuery($query, $request, $params);
-        $families = $query->take($offset)->get();
+        $families = array();
+        $families['total'] = $query->count();
+        $families['current'] = $query->skip($offset)->take(10)->get();
+        $families['page'] = $page;
         if (!empty($families)) {
             return response()->json($families, 200);
         }

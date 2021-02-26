@@ -149,9 +149,6 @@ export default {
             }
         },
         updateValue: function(updateObject) {
-            if (updateObject.name === 'category') {
-                this.clearResults();
-            }
             this[updateObject.name] = updateObject.value;
         },
         buildQuery: function() {
@@ -198,6 +195,7 @@ export default {
             return query;
         },
         handleSubmit: async function() {
+            this.clearResults();
             const query = this.buildQuery();
             const term = this.search !== '' ? this.search : '*';
             const resp = await this.$store.dispatch('search', { route: this.route, term, query });
