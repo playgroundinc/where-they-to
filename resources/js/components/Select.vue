@@ -86,7 +86,7 @@ export default {
         search: async function(term) {
             const resp = await this.$store.dispatch('search', { route: this.route, term });
             if (resp.status === 200) {
-                this.currentArray = resp.data[this.route];
+                this.currentArray = resp.data['current'];
             }
         },
         removeValue: function(updateObject) {
