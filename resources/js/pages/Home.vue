@@ -19,12 +19,9 @@
                         />
                     </div>
                     <div class="col-md-4">
-                        <Input
-                            name="province"
-                            type="select"
-                            :value="province"
-                            :options="provinces"
-                            v-on:update="updateValue"
+                        <Button 
+                            label="Clear filters"
+                            v-on:clicked="clearFilters"
                         />
                     </div>
                 </div>
@@ -73,11 +70,7 @@
                 todaysEventsFiltered: {},
                 weeksEvents: [],
                 weeksEventsFiltered: {},
-                province: "",
-                cities: [],
-                city: "",
                 date: '',
-                timezone: '',
             }
         },
         computed: {
@@ -86,7 +79,11 @@
                 return new Date();
             },
             day() {
-                return  this.dateObj.getDate();
+                const date = this.dateObj.getDate();
+                if (Number(date) < 10) {
+                    return '0' + date;
+                }
+                return  date;
             },
             year() {
                 return this.dateObj.getFullYear();
@@ -131,30 +128,6 @@
             },
             updateValue: function(updateObject) {
                 this[updateObject.name] = updateObject.value;
-                if (updateObject.name === 'province') {
-                    this.todaysEvents.events = this.filterByProvince(this.todaysEvents.events);
-                    for (let date in this.weeksEvents) {
-                        this.weeksEventsFiltered[date] = {};
-                        if (this.weeksEvents[date].events && this.weeksEvents[date].events.length) {
-                            this.weeksEventsFiltered[date].events = this.filterByProvince(this.weeksEvents[date].events);
-                        }
-                    }
-                }
-            },
-            filterByProvince(array) {
-                let filteredArr = [];
-                if (array.length) {
-                    filteredArr = array.filter((item) => {
-                        if (this.province !== '' && item.province && item.province !== this.province) {
-                            return false;
-                        }
-                        if (this.city !== '' && item.city && item.city !== this.city) {
-                            return false;
-                        }
-                        return true;
-                    });
-                }
-                return filteredArr;
             },
             getTodaysEvents: async function() {
                 try {
@@ -162,7 +135,6 @@
                         date: this.today,
                     });
                     if (resp.status === 200) {
-                        this.filterByProvince(resp.data.events);
                         this.todaysEvents = resp.data;
                         this.getThisWeeksEvents();
                     }
@@ -189,9 +161,6 @@
                         this.updateValue({ name: 'weeksEventsFiltered', value: {}});
                         for (let date in resp.data) {
                             this.weeksEventsFiltered[date] = resp.data[date];
-                            if (resp.data[date].events && resp.data[date].events.length) {
-                                this.weeksEventsFiltered[date].events = this.filterByProvince(resp.data[date].events);
-                            }
                         }
                         this.weeksEvents = resp.data;
                     }
@@ -207,14 +176,17 @@
                     })
                     if (resp.status === 200) {
                         this.weeksEvents[key].events = this.weeksEvents[key].events.concat(resp.data.events);
-                        this.weeksEvents[key].page = resp.data.page;
-                        this.weeksEventsFiltered[key].events = this.filterByProvince(this.weeksEvents.events);
+                        this.weeksEvents[key].page = resp.data.page
                     }
                 } catch(err) {
                     console.log(err);
                 }
                 
             },
+            clearFilters: function() {
+                this.updateValue({ name: "today", value: ''});
+                this.getTodaysEvents();
+            }
         },
         
         mounted() {
