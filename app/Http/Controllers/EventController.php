@@ -254,7 +254,7 @@ class EventController extends Controller
     public function getFollowing($user, $fields) {
         $following = array();
         foreach ($fields as $field) {
-            $current_value = $user['following_' . $field];
+            $current_value = $user['following_' . $field];  
             if (!empty($current_value)) {
                 $following[$field] = $current_value;
             }
@@ -285,7 +285,7 @@ class EventController extends Controller
         $following = $this->getFollowing($user, $fields);
         $today = Carbon::parse($date)->format('Y-m-d');
         $active_events = $this->getActiveEvents($today, $following, $fields);
-        $all_events = array_unique(array_merge($active_events['performers'], $active_events['venues'], $active_events['families']));
+        $all_events = array_unique(array_merge($user['attending'], $active_events['performers'], $active_events['venues'], $active_events['families']));
         $total = ceil(count($all_events) / 10);
         $event_ids = array_splice($all_events, intval($page) * 10, intval($page) + 10);
         $page = intval($page) + 1;

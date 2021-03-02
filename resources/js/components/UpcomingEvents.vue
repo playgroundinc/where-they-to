@@ -1,5 +1,6 @@
 <template>
     <div v-if="events.length">
+        <h2>Upcoming Events</h2>
         <ul>
             <li v-for="event in events" v-bind:key="event.id">{{ event.name }}</li>
             <Button 

@@ -66,6 +66,10 @@
                 v-on:update="updateValue"
             />
         </div>
+        <Button 
+            label="Clear Filters"
+            v-on:clicked="clearFilters"
+        />
     </div>
 </template>
 
@@ -75,6 +79,7 @@ import Location from "../core/Location.js";
 import Accessibility from "../components/Accessibility";
 import Autocomplete from "../components/Autocomplete";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 // Filters
 import VenueFilters from "../components/filters/VenueFilters";
@@ -94,12 +99,12 @@ export default {
         accessibility: {
             type: Array,
             required: false,
-            default: [],    
+            default: () => [],    
         },
         errors: {
             type: Array,
             required: false,
-            default: () => { return []},
+            default: () => [],
         },
         venue: {
             type: String,
@@ -154,6 +159,7 @@ export default {
 	components: {
 		Accessibility,
         Autocomplete,
+        Button,
         Input,
         DateFilters,
         FamilyFilters,
@@ -167,6 +173,16 @@ export default {
     methods: {
         updateValue: function(updateObject) {
             this.$emit('update', updateObject);
+        },
+        clearFilters: function() {
+            const stringFields = ['venue', 'province', 'timezone', 'city', 'date', 'family'];
+            const arrayFields = ['accessibility', 'errors', 'performers', 'eventTypes', 'performerTypes'];
+            stringFields.forEach((field) => {
+                this.updateValue({ name: field, value: ''});
+            });
+            arrayFields.forEach((field) => {
+                this.updateValue({ name: field, value: [] });
+            })
         }
     },
     computed: {

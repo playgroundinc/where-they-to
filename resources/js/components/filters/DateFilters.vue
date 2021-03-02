@@ -5,7 +5,6 @@
             :value="date"
             name="date"
             v-on:update="updateValue"
-            :clearButton="true"
         />
     </div>
 </template>

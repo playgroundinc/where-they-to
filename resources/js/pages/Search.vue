@@ -34,7 +34,7 @@
                 :city="city"
                 :timezone="timezone"
                 v-on:update="updateValue"
-                :date="date"
+                :date="today"
                 :family="family"
                 :families="families"
                 :performers="performers"
@@ -116,6 +116,38 @@ export default {
                 this.route = newValue;
             }
         },
+        day() {
+            const date = this.dateObj.getDate();
+            if (Number(date) < 10) {
+                return '0' + date;
+            }
+            return  date;
+        },
+        year() {
+            return this.dateObj.getFullYear();
+        },
+        month() {
+            let month = this.dateObj.getMonth() + 1;
+            if (Number(month) < 10) {
+                month = '0' + month;
+            }
+            return month;
+        },
+        dateObj() {
+            return new Date();
+        },
+        today: {
+            get: function() {
+                if (this.date === '') {
+                    const todaysDate = `${this.year}-${this.month}-${this.day}`;
+                    this.date = todaysDate;
+                }
+                return this.date;
+            },
+            set: function(update) {
+                this.date = update;
+            }
+        },
         valid: function() {
             return this.errors.length > 0;
         },
@@ -165,7 +197,6 @@ export default {
             let first = true;
             let query = '';
             fields.forEach((field) => { 
-                console.log(this[field]);
                 if (this[field] && this[field] !== '' ) {
                     let value;
                     if (field === 'performers' || field === 'eventTypes') {
