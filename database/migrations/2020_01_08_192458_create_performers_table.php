@@ -37,6 +37,7 @@
         Schema::create('venues', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->string('slug')->nullable();
             $table->string('name');
             $table->string('address');
             $table->string('city')->nullable();
@@ -54,6 +55,7 @@
         Schema::create('families', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->string('slug')->nullable();
             $table->string('name');
             $table->text('description');
             $table->string('accent_color')->default('#000000');
@@ -78,8 +80,9 @@
 
         Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
             $table->timestamps();
+            $table->string('slug')->nullable();
+            $table->string('name');
             $table->string('venue_name')->nullable();
             $table->string('address')->nullable();
             $table->string('city')->nullable();
@@ -107,6 +110,7 @@
         Schema::create('performers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->string('slug')->nullable();
             $table->string('name');
             $table->text('bio');
             $table->string('accent_color')->default('#000000');

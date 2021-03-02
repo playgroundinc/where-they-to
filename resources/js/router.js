@@ -130,7 +130,7 @@ const routes = [
     },
     
     {
-        path: '/performers/:id',
+        path: '/performers/:slug',
         name: 'performer',
         component: Performer,
         meta: {

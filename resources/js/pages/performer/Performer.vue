@@ -1,5 +1,5 @@
 <template>
-	<div v-if="performer">
+	<div v-if="slug && id">
 		<main class="container">
             <h1 class="copy--center">{{ performer.name }}</h1>
             <ul class="selections__list row center-md" v-if="performer.performer_types">
@@ -68,7 +68,8 @@ export default {
 
     data() {
 		return {
-			id: this.$route.params.id,
+            id: 0,
+			slug: this.$route.params.slug,
 			platforms: [],
 			events: {},
 			performer: [],
@@ -108,9 +109,7 @@ export default {
 	},
 	methods: {
         updateValue: function(updateObject) {
-            if (this[updateObject.name]) {
-                this[updateObject.name] = updateObject.value;
-            }
+            this[updateObject.name] = updateObject.value;
         },
         setStates: function(fields, data) {
             fields.forEach((field) => {
@@ -120,10 +119,10 @@ export default {
             });
         },
 		getPerformer: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
-			(resp.data);
+			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.slug });
 			if (resp.status === 200) {
-                const fields = ['performer', 'types', 'family', 'socialLinks', 'events'];
+                this.updateValue({name: 'id', value: `${resp.data.performer.id}` });
+                const fields = ['performer', 'types', 'family', 'socialLinks', 'events', 'id'];
                 this.setStates(fields, resp.data);
 			}
         },
