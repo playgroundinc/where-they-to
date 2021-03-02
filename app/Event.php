@@ -39,6 +39,7 @@ class Event extends Model
     }
 
     protected $fillable = [
+        'slug',
         'accent_color',
         'name',
         'address',

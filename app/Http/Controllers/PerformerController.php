@@ -43,6 +43,23 @@ class PerformerController extends Controller
 		return $socialLinks;
 	}
 
+    private function generateSlug($name) {
+        $slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $slug = strtolower(str_replace(' ', '-', $name));
+        $duplicate = true;
+        $count = 0;
+        while ($duplicate) {
+            $performer = Performer::where('slug', $slug)->first(); 
+            if (empty($performer)) {
+                $duplicate = false;
+            } else {
+                $count = $count + 1;
+                $slug = $slug . '-' . $count;
+            }
+        }
+        return $slug;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -61,6 +78,7 @@ class PerformerController extends Controller
             'province' => 'nullable',
             'city' => 'nullable',
         ]);
+        $attributes['slug'] = $this->generateSlug($attributes['name']);
         $performer = Performer::create($attributes);
         if ($request['performerTypes']) {
 			$types = PerformerType::find($request['performerTypes']);
@@ -86,14 +104,14 @@ class PerformerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
         //
-        $performer = Performer::find($id);
+        $performer = Performer::where('slug', $slug)->first();
         $socialLinks = $performer->socialLinks;
         $family = Family::find($performer->family_id);
         $types = $performer->performerTypes;
-        $events = $this->upcomingEvents($id);
+        $events = $this->upcomingEvents($performer['id']);
         return response()->json(compact('performer', 'types', 'family', 'socialLinks', 'events'));
     }
 

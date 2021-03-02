@@ -25,6 +25,7 @@ class Venue extends Model
         return $this->hasMany(Update::class);
     }
     protected $fillable = [
+        'slug',
         'name',
         'description',
         'country',

@@ -25,6 +25,7 @@ class Family extends Model
         return $this->hasMany(Update::class);
     }
     protected $fillable = [
+        'slug',
         'name',
         'description',
         'event_id',

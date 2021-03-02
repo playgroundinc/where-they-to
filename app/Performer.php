@@ -36,6 +36,7 @@ class Performer extends Model
     }
 
     protected $fillable = [
+        'slug',
         'name',
         'bio',
         'user_id',

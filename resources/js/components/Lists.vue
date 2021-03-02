@@ -4,7 +4,7 @@
             <h3>Edit {{ slug }}:</h3>
             <ul>
                 <li v-for="item in listitems" v-bind:key="item.id">
-                    <a :href="'/' + slug + '/' + item.id">{{ item.name }}</a>
+                    <a :href="'/' + slug + '/' + item.slug">{{ item.name }}</a>
                 </li>
             </ul>
         </div>
