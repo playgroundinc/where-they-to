@@ -19,7 +19,7 @@
 					<p>{{ event.date }} at {{ event.show_time }}</p>
 					<p v-if="event.doors">Doors @ {{ event.doors }}</p>
 					<div v-if="venue.id">
-						<p>{{ venue.name }}</p>
+						<p><a :href="'/venues/' + venue.slug">{{ venue.name }}</a></p>
 						<p>{{ venue.address }}</p>
 						<p>{{ venue.city}}, {{ venue.province }}</p>
 					</div>
@@ -39,7 +39,7 @@
 						<h2>Performers</h2>
 						<ul v-if="performers && performers.length">
 							<li v-for="performer in performers" v-bind:key="performer.id">
-								<a :href="'/performers/' + performer.id">{{ performer.name }}</a>
+								<a :href="'/performers/' + performer.slug">{{ performer.name }}</a>
 							</li>
 						</ul>
 						<ul v-if="event.performers_no_profile && event.performers_no_profile.length">
@@ -50,7 +50,7 @@
                         :socialLinks="socialLinks"  
 					/>
 					<div>
-						<Button :link="'/events/' + id + '/edit'" label="Edit Event" />
+						<Button :link="'/events/' + slug + '/edit'" label="Edit Event" />
 					</div>
 					<Updates 
 						type="event"
@@ -77,7 +77,8 @@ export default {
 
 	data() {
 		return {
-			id: this.$route.params.id || '',
+			slug: this.$route.params.slug,
+            id: '',
 			family: "",
 			event: {},
 			eventTypes: [],
@@ -89,7 +90,7 @@ export default {
 	computed: {
 		...mapState(['user']),
 		familyLink: function() {
-			return `/families/${this.family.id}`;
+			return `/families/${this.family.slug}`;
 		},
 		attendanceText: function(){
 			if (!this.user.attending || this.user.attending.indexOf(this.id) === -1) {
@@ -108,6 +109,9 @@ export default {
         Updates,
 	},
 	methods: {
+        updateValue: function(updateObject) {
+            this[updateObject.name] = updateObject.value;
+        },
 		setState: function(update) {
 			const fields = ['event', 'eventTypes', 'family', 'performers', 'socialLinks', 'venue'];
 			fields.forEach((field) => {
@@ -129,8 +133,11 @@ export default {
 	},
 		getEvent: async function() {
 			try {
-				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
-				this.setState(resp.data);
+				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.slug });
+                if (resp.status === 200) {
+                    this.updateValue({ name: 'id', value: `${resp.data.event.id}`});
+                    this.setState(resp.data);
+                }
 			} catch(err) {
 				console.log(err);
 			}
