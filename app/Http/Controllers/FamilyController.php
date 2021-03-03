@@ -108,8 +108,8 @@ class FamilyController extends Controller
         $duplicate = true;
         $count = 1;
         while ($duplicate) {
-            $performer = Performer::where('slug', $slug)->first(); 
-            if (empty($performer)) {
+            $family = Family::where('slug', $slug)->first(); 
+            if (empty($family)) {
                 $duplicate = false;
             } else {
                 $slug = $slug . '-' . $count;

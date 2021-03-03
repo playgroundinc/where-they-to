@@ -94,7 +94,7 @@ const routes = [
         }
     },
     {
-        path: '/venues/:id',
+        path: '/venues/:slug',
         name: 'venue',
         component: Venue,
         meta: {
