@@ -44,17 +44,18 @@ class PerformerController extends Controller
 	}
 
     private function generateSlug($name) {
-        $slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
-        $slug = strtolower(str_replace(' ', '-', $name));
+        $original_slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $original_slug = strtolower(str_replace(' ', '-', $original_slug));
         $duplicate = true;
         $count = 0;
+        $slug = $original_slug;
         while ($duplicate) {
             $performer = Performer::where('slug', $slug)->first(); 
             if (empty($performer)) {
                 $duplicate = false;
             } else {
                 $count = $count + 1;
-                $slug = $slug . '-' . $count;
+                $slug = $original_slug . '-' . $count;
             }
         }
         return $slug;
