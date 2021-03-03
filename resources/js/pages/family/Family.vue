@@ -16,7 +16,7 @@
 						<h2>Family Members</h2>
 						<ul>
 							<li v-for="performer in family.performers" v-bind:key="performer.id">
-								<a :href="'/performers/' + performer.id " v-text="performer.name"></a>
+								<a :href="'/performers/' + performer.slug" v-text="performer.name"></a>
 							</li>
 						</ul>
                         <ul v-if="family.performers_no_profile && family.performers_no_profile.length">
@@ -41,7 +41,7 @@
                         :id="id"
                     />
 					<div class="copy--center" v-if="familyMember">
-						<Button :link="'/families/' + family.id + '/edit'" label="Edit Family" />
+						<Button :link="'/families/' + family.slug + '/edit'" label="Edit Family" />
 					</div>
 				</div>
 			</div>

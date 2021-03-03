@@ -63,7 +63,7 @@ Route::get('performers/{slug}', 'PerformerController@show');
 Route::post('performers/names', 'PerformerController@getNames');
 
 Route::get('venues', 'VenueController@index');
-Route::get('venues/{id}', 'VenueController@show');
+Route::get('venues/{slug}', 'VenueController@show');
 
 Route::get('social-links', 'SocialLinksController@index');
 Route::get('social-links/{id}', 'SocialLinksController@show');

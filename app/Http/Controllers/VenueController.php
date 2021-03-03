@@ -64,6 +64,7 @@ class VenueController extends Controller {
             'accessibility' => 'nullable',
             'accessibility_description' => 'nullable',
 		]);
+        $attributes['slug'] = $this->generateSlug($attributes['name']);
 		// Create the venue.
 		$venue = Venue::create($attributes);
 		// Save the social links to the newly created venue.
@@ -96,15 +97,15 @@ class VenueController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     { 
         // Finds venue by the id.
-		$venue = Venue::find($id);
+        $venue = Venue::where('slug', $slug)->first();
 		// Pulls the associated social links.
 		$socialLinks = $venue->socialLinks;
         $request = request();
         $page = $request->query('page', 0);
-        $events = $this->upcomingEvents($id, $page);
+        $events = $this->upcomingEvents($venue['id'], $page);
 		// Returns venue and socialLinks as data.
         return response()->json(compact('venue', 'socialLinks', 'events'));
 	}
@@ -172,6 +173,26 @@ class VenueController extends Controller {
             }
         }
         return $query;
+    }
+
+    /**
+     * Generates a slug for the families page.
+     */
+    private function generateSlug($name) {
+        $slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $slug = strtolower(str_replace(' ', '-', $name));
+        $duplicate = true;
+        $count = 1;
+        while ($duplicate) {
+            $venue = Venue::where('slug', $slug)->first(); 
+            if (empty($venue)) {
+                $duplicate = false;
+            } else {
+                $slug = $slug . '-' . $count;
+                $count = $count + 1;
+            }
+        }
+        return $slug;
     }
 
 	/**

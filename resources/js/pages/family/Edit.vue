@@ -98,7 +98,8 @@
 	export default {
 		data() {
 			return {
-				id: this.$route.params.id,
+                id: '',
+				slug: this.$route.params.slug,
 				name: '',
 				description: '',
 				performers: [],
@@ -167,7 +168,7 @@
 				const resp = await FormClass.submitForm();
 				if (resp.status === 'success') {
 					await this.$store.dispatch("findUser");
-					this.$router.push(`/families/${this.id}`);
+					this.$router.push(`/families/${this.slug}`);
 				}
 			},
 			setFamily: function(family) {
@@ -175,8 +176,9 @@
 				this.setStates(fields, family);
 			},
 			getFamily: async function() {
-				const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.id });
+				const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.slug });
 				if (resp.status === 200) {
+                    this.updateValue({ name: 'id', value: `${resp.data.family.id }`})
 					this.setFamily(resp.data.family);
 					this.setSocialLinks(resp.data.family.social_links);
 					this.setState('performers', resp.data.family.performers);

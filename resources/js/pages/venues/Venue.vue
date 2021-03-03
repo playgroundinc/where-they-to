@@ -36,7 +36,7 @@
 				</div>
 			</div>
 			<div v-if="venue.user_id && user && venue.user_id === user.id">
-				<Button :link="'/venues/' + venue.id + '/edit'" label="Edit Venue" />
+				<Button :link="'/venues/' + venue.slug + '/edit'" label="Edit Venue" />
 			</div>
 		</main>
 	</div>
@@ -55,7 +55,8 @@ export default {
 
     data() {
 		return {
-			id: this.$route.params.id,
+            slug: this.$route.params.slug,
+			id: "",
 			platforms: [],
 			venue: [],
 			socialLinks: [],
@@ -87,8 +88,9 @@ export default {
 	},
 	methods: {
 		getVenue: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "venues", id: this.id });
+			const resp = await this.$store.dispatch('fetchSingle', { route: "venues", id: this.slug });
 			if (resp.status === 200) {
+                this.updateValue({ name: 'id', value: `${resp.data.venue.id}` })
 				this.venue = resp.data.venue;
 				this.socialLinks = resp.data.socialLinks;
                 this.events = resp.data.events;

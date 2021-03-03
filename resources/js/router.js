@@ -94,7 +94,7 @@ const routes = [
         }
     },
     {
-        path: '/venues/:id',
+        path: '/venues/:slug',
         name: 'venue',
         component: Venue,
         meta: {
@@ -102,7 +102,7 @@ const routes = [
         }
     },
     {
-        path: '/venues/:id/edit',
+        path: '/venues/:slug/edit',
         name: 'editVenue',
         component: EditVenue,
         meta: {
@@ -138,7 +138,7 @@ const routes = [
         }
     },
     {
-        path: '/performers/:id/edit',
+        path: '/performers/:slug/edit',
         name: 'edit performer',
         component: EditPerformer,
         meta: {
@@ -190,7 +190,7 @@ const routes = [
         }
     },
     {
-        path: '/families/:id/edit',
+        path: '/families/:slug/edit',
         name: 'editFamily',
         component: EditFamily,
         meta: {

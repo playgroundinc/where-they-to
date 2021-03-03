@@ -37,7 +37,7 @@
 				:errors="errors"
 				v-on:update="updateValue"
 			/>
-      <Accessibility 
+            <Accessibility 
 				:value="accessibility"
 				:description="accessibility_description"
 				v-on:update="updateValue"
@@ -93,7 +93,8 @@ export default {
 	data() {
 		return {
 			errors: [],
-			id: this.$route.params.id,
+			slug: this.$route.params.slug,
+            id: '',
 			name: '',
 			description: '',
 			address: '',
@@ -155,7 +156,7 @@ export default {
             const resp = await FormClass.submitForm();
             if (resp.status === 'success') {
                 await this.$store.dispatch("findUser");
-                this.$router.push(`/venues/${this.id}`);
+                this.$router.push(`/venues/${this.slug}`);
             }
         },
 		handleSubmit: function() {
@@ -207,8 +208,9 @@ export default {
 			this.setStates(socials, socialLinks );
 		},
 		getVenue: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "venues", id: this.id });
+			const resp = await this.$store.dispatch('fetchSingle', { route: "venues", id: this.slug });
 			if (resp.status === 200) {
+                this.updateValue({ name: 'id', value: `${resp.data.venue.id}`});
 				this.setVenue(resp.data.venue);
 				this.setSocialLinks(resp.data.socialLinks);
 			}
