@@ -63,7 +63,8 @@ export default {
 
     data() {
 		return {
-			id: this.$route.params.id,
+            slug: this.$route.params.slug,
+            id: "",
 			family: '',
 			socialLinks: [],
 			performers: [],
@@ -98,8 +99,9 @@ export default {
 			}
 		},
 		getFamily: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.id });
+			const resp = await this.$store.dispatch('fetchSingle', { route: "families", id: this.slug});
 			if (resp.status === 200) {
+                this.updateValue({ name: 'id', value: `${resp.data.family.id}`})
 				const fields = ['family', 'socialLinks', 'performers', 'events' ];
 				this.setStates(fields, resp.data);
 			}
@@ -116,9 +118,7 @@ export default {
             } 
         },
         updateValue: function(updateObject) {
-            if (this[updateObject.name]) {
-                this[updateObject.name] = updateObject.value;
-            }
+            this[updateObject.name] = updateObject.value;
         }
 	},
 	components: {

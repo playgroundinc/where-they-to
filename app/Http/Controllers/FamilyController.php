@@ -76,6 +76,7 @@ class FamilyController extends Controller
             'province' => 'nullable',
             'city' => 'nullable',
 		]);
+        $attributes['slug'] = $this->generateSlug($attributes['name']);
 		// Create a family with these atttributes.
 		$family = Family::create($attributes);
 		// Attach social links to family.
@@ -99,20 +100,40 @@ class FamilyController extends Controller
     }
 
     /**
+     * Generates a slug for the families page.
+     */
+    private function generateSlug($name) {
+        $slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $slug = strtolower(str_replace(' ', '-', $name));
+        $duplicate = true;
+        $count = 1;
+        while ($duplicate) {
+            $performer = Performer::where('slug', $slug)->first(); 
+            if (empty($performer)) {
+                $duplicate = false;
+            } else {
+                $slug = $slug . '-' . $count;
+                $count = $count + 1;
+            }
+        }
+        return $slug;
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        // Find family by ID.
-		$family = Family::find($id);
+        // Find family by slug.
+        $family = Family::where('slug', $slug)->first();
 		// Get all performers in family.
 		$performers = $family->performers;
 		// Get all social links for family.
 		$socialLinks = $family->socialLinks;
-        $events = $this->upcomingEvents($id);
+        $events = $this->upcomingEvents($family['id']);
 		// Return these variables.
         return response()->json(compact('family', 'performers', 'socialLinks', 'events'), 200);
     }
