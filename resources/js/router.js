@@ -198,7 +198,7 @@ const routes = [
         }
     },
     {
-        path: '/families/:id',
+        path: '/families/:slug',
         name: 'family',
         component: Family,
         meta: {

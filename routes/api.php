@@ -69,7 +69,7 @@ Route::get('social-links', 'SocialLinksController@index');
 Route::get('social-links/{id}', 'SocialLinksController@show');
 
 Route::get('families', 'FamilyController@index');
-Route::get('families/{id}', 'FamilyController@show');
+Route::get('families/{slug}', 'FamilyController@show');
 
 Route::get('events', 'EventController@index');
 Route::get('events/{id}', 'EventController@show');
