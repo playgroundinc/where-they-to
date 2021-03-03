@@ -1,7 +1,7 @@
 <template>
 	<div class="main" v-if="id">
 		<main class="container container--core">
-        <h1 class="copy--center">Create Performer Profile</h1>
+        <h1 class="copy--center">Edit Performer Profile</h1>
         <ErrorsContainer :errors="errors" />
         <form
             novalidate
@@ -114,7 +114,8 @@
 
 	data() {
 		return {
-			id: this.$route.params.id,
+            id: '',
+            slug: this.$route.params.slug,
 			accent_color: '#000000',
 			name: '',
 			bio: '',
@@ -211,8 +212,9 @@
 			}
 		},
 		getPerformer: async function() {
-			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.id });
+			const resp = await this.$store.dispatch('fetchSingle', { route: "performers", id: this.slug });
 			if (resp.status === 200) {
+                this.updateValue({name: 'id', value: `${resp.data.performer.id}`})
 				this.setPerformer(resp.data.performer);
 				this.setSocialLinks(resp.data.socialLinks);
 				this.setPerformerTypes(resp.data.types);
@@ -225,7 +227,7 @@
 		editPerformer: async function(FormClass) {
 			const resp = await FormClass.submitForm();
 			if (resp.status === 'success') {
-				this.$router.push(`/performers/${this.id}`);
+				this.$router.push(`/performers/${this.slug}`);
 			}
 		},
         getAdditionalData: function(additionalData) {

@@ -36,7 +36,7 @@
 				</div>
 			</div>
 			<div v-if="venue.user_id && user && venue.user_id === user.id">
-				<Button :link="'/venues/' + venue.id + '/edit'" label="Edit Venue" />
+				<Button :link="'/venues/' + venue.slug + '/edit'" label="Edit Venue" />
 			</div>
 		</main>
 	</div>

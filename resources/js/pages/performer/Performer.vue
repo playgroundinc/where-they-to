@@ -36,7 +36,7 @@
                 v-on:update="updateValue"
             />
             <div v-if="performer.user_id && user && performer.user_id === user.id">
-                <Button :link="'/performers/' + performer.id + '/edit'" label="Edit Profile"/>
+                <Button :link="'/performers/' + performer.slug + '/edit'" label="Edit Profile"/>
             </div>
             <div v-if="performer.user_id && user && performer.user_id === user.id">
                 <Update 
