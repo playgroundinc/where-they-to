@@ -162,7 +162,8 @@ import Modal from "../../components/Modal";
 export default {
     data() {
         return {
-			id: this.$route.params.id || "",
+            slug: this.$route.params.slug,
+			id: "",
 			accent_color: "#000000",
             errors: [],
             name: "",
@@ -237,7 +238,7 @@ export default {
 			const resp = await FormClass.submitForm();
 			if (resp.status === 'success') {
 				await this.$store.dispatch("findUser");
-                this.$router.push('/dashboard');
+                this.$router.push(`/events/${this.slug}`);
 			}
 		},
 		setStates: function(fields, object) {
@@ -267,8 +268,9 @@ export default {
 		},
 		getEvent: async function() {
 			try {
-				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.id });
+				const resp = await this.$store.dispatch('fetchSingle', { route: "events", id: this.slug });
 				if (resp.status === 200) {
+                    this.updateValue({ name: 'id', value: `${resp.data.event.id}`})
 					this.setEvent(resp.data.event);
 					this.setSocialLinks(resp.data.socialLinks);
 					if (resp.data.family) {

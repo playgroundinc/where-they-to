@@ -165,7 +165,7 @@ const routes = [
         }
     },
     {
-        path: '/events/:id/edit',
+        path: '/events/:slug/edit',
         name: 'editEvent',
         component: EditEvent,
         meta: {
@@ -173,7 +173,7 @@ const routes = [
         }
     },
     {
-        path: '/events/:id',
+        path: '/events/:slug',
         name: 'Event',
         component: Event,
         meta: {

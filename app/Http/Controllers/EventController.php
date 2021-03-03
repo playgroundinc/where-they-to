@@ -79,6 +79,28 @@ class EventController extends Controller
 		}
         return $events;
     }
+
+    /**
+     * Generates a slug for the families page.
+     */
+    private function generateSlug($name) {
+        $original_slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $original_slug = strtolower(str_replace(' ', '-', $original_slug));
+        $duplicate = true;
+        $count = 1;
+        $slug = $original_slug;
+        while ($duplicate) {
+            $event = Event::where('slug', $slug)->first(); 
+            if (empty($event)) {
+                $duplicate = false;
+            } else {
+                $slug = $original_slug . '-' . $count;
+                $count = $count + 1;
+            }
+        }
+        return $slug;
+    }
+
 	/**
 	 * Create social links for current event.
 	 * 
@@ -136,6 +158,7 @@ class EventController extends Controller
 			'tickets_url' => 'nullable',
 			'performers_no_profile' => 'nullable',
 		]);
+        $attributes['slug'] = $this->generateSlug($attributes['name']);
 		// Use Carbon to parse and format date.
         $date = Carbon::parse(request('date'));
         $event = Event::create($attributes);
@@ -159,10 +182,10 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
         // Find event by ID.
-		$event = Event::find($id);
+		$event = Event::where('slug', $slug)->first();
 		// Parse the date.
 		$event_date = Carbon::parse($event['date']);
 		// Format the date.

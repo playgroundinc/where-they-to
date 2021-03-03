@@ -179,16 +179,17 @@ class VenueController extends Controller {
      * Generates a slug for the families page.
      */
     private function generateSlug($name) {
-        $slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
-        $slug = strtolower(str_replace(' ', '-', $name));
+        $original_slug = preg_replace('/[^A-Za-z0-9 ]/', '', $name);
+        $original_slug = strtolower(str_replace(' ', '-', $original_slug));
         $duplicate = true;
         $count = 1;
+        $slug = $original_slug;
         while ($duplicate) {
             $venue = Venue::where('slug', $slug)->first(); 
             if (empty($venue)) {
                 $duplicate = false;
             } else {
-                $slug = $slug . '-' . $count;
+                $slug = $original_slug . '-' . $count;
                 $count = $count + 1;
             }
         }
